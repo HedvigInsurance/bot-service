@@ -39,6 +39,7 @@ public class InternalMessagesController {
 
     	Message msg = m.msg;
     	String hid = m.userId;
+    	Boolean addButtons = m.addActionButtons;
     	
      	log.info("Message from Hedvig to hid:"+ hid +" with messageId: " + msg.globalId);
 
@@ -49,7 +50,7 @@ public class InternalMessagesController {
         msg.header.messageId = null;
         msg.body.id = null;
 
-        sessionManager.addMessageFromHedvig(msg, hid);
+        sessionManager.addMessageFromHedvig(msg, hid, addButton);
 
     	return ResponseEntity.noContent().build();
     }

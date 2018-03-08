@@ -11,11 +11,19 @@ public class BackOfficeMessageDTO {
 
     public String userId;
     public Message msg;
-    
+    public Boolean addActionButtons;
     public BackOfficeMessageDTO(){}
 
     public BackOfficeMessageDTO(Message msg, String userId) {
         this.msg = msg;
         this.userId = userId;
+        this.addActionButtons = false;
     }
+    
+    public BackOfficeMessageDTO(Message msg, String userId, Boolean addActionButtons) {
+        this.msg = msg;
+        this.userId = userId;
+        this.addActionButtons = addActionButtons;
+    }
+    
 }
