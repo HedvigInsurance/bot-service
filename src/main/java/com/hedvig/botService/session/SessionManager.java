@@ -4,6 +4,10 @@ import com.hedvig.botService.chat.*;
 import com.hedvig.botService.chat.Conversation.EventTypes;
 import com.hedvig.botService.enteties.*;
 import com.hedvig.botService.enteties.message.Message;
+import com.hedvig.botService.enteties.message.MessageBodySingleSelect;
+import com.hedvig.botService.enteties.message.MessageBodyText;
+import com.hedvig.botService.enteties.message.SelectItem;
+import com.hedvig.botService.enteties.message.SelectOption;
 import com.hedvig.botService.serviceIntegration.FakeMemberCreator;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdCollectResponse;
@@ -232,13 +236,30 @@ public class SessionManager {
     	userrepo.saveAndFlush(uc);
     }
     
-    public void addMessageFromHedvig(Message m, String hid){
+    public void addMessageFromHedvig(Message m, String hid, Boolean addButton){
     	
         UserContext uc = userrepo.findByMemberId(hid).orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
     	MemberChat mc = uc.getMemberChat();
+    	
+    	if(m.body.getClass().equals(MessageBodyText.class)){
+    		mc.addToHistory(addUIButtonsToMessage(m));
+    	}
     	mc.addToHistory(m);
     	userrepo.saveAndFlush(uc);
     	
+    }
+    
+    /*
+     * Temporal solution which adds ways for user to escape dead-ends
+     * */
+    public Message addUIButtonsToMessage(Message m){
+    	MessageBodySingleSelect msg =   new MessageBodySingleSelect(m.body.text,
+                        new ArrayList<SelectItem>() {{
+                            add(new SelectOption("Jag har en till fråga", "message.frifraga"));
+                        }}
+        );
+    	m.body = msg;
+    	return m;
     }
     
     /*
