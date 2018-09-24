@@ -520,7 +520,7 @@ public class OnboardingConversationDevi extends Conversation implements BankIdCh
     createMessage(MESSAGE_FORSAKRINGIDAGJA, new MessageBodySingleSelect(
         "Okej! Vilket försäkringsbolag har du?", new ArrayList<SelectItem>() {
           {
-            add(new SelectOption("If", "if"));
+            add(new SelectOption("If", "If"));
             add(new SelectOption("Folksam", "Folksam"));
             add(new SelectOption("Trygg-Hansa", "Trygg-Hansa"));
             add(new SelectOption("Länsförsäkringar", "Länsförsäkringar"));
