@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 
-  @Query("select m from Message m where m.timestamp >= :timestamp")
+  @Query("select m from Message m join m.body mb where m.timestamp >= :timestamp and (mb.text is not null or mb.imageURL is not null)")
   List<Message> findFromTimestamp(@Param("timestamp") Instant timestamp);
 }
