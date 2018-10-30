@@ -196,7 +196,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-ses</artifactId>
-			<version>1.11.228</version>
+			<version>1.11.438</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
