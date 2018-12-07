@@ -194,7 +194,7 @@
     <dependency>
       <groupId>io.github.openfeign</groupId>
       <artifactId>feign-jaxb</artifactId>
-      <version>9.3.1</version>
+      <version>10.1.0</version>
     </dependency>
 		<!-- AWS -->
 		<dependency>
