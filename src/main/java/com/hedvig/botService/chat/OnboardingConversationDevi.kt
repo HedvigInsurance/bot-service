@@ -84,7 +84,7 @@ constructor(
         this.createChatMessage(
             MESSAGE_ONBOARDINGSTART_REPLY_NAME,
             MessageBodySingleSelect(
-                "Trevligt att träffas {NAME}!\u000CFör att kunne ge dig ett prisförslag"
+                "Trevligt att träffas {NAME}!\u000CFör att kunna ge dig ett prisförslag"
                         + " behöver jag ställa några snabba frågor"
                 // + "\u000C"
                 , SelectOption("Okej!", MESSAGE_ONBOARDINGSTART_ASK_EMAIL),
@@ -335,7 +335,7 @@ constructor(
             MESSAGE_LAGENHET_NO_PERSONNUMMER,
             WrappedMessage(
                 MessageBodyNumber(
-                    "Vad är ditt personnumer? Jag behöver det så att jag kan hämta din adress ☺️",
+                    "Vad är ditt personnummer? Jag behöver det så att jag kan hämta din adress",
                     "ååååmmddxxxx"
                 )
             ) { body, uc, m ->
@@ -458,7 +458,7 @@ constructor(
         this.createMessage(
             "message.bankid.start.manual",
             MessageBodyNumber(
-                "Om du anger ditt personnumer så får du använda bankId på din andra enhet$emoji_smile"
+                "Om du anger ditt personnummer så får du använda bankId på din andra enhet$emoji_smile"
             )
         )
 
@@ -554,10 +554,10 @@ constructor(
         this.createMessage(
             MESSAGE_VARBORDUFELADRESS,
             MessageBodyText("Inga problem! Vad är gatuadressen till lägenheten du vill försäkra?",
-                TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT)
+                TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT, "Kungsgatan 1")
         )
         this.createMessage(
-            "message.varbordufelpostnr", MessageBodyNumber("Och vad har du för postnummer?")
+            "message.varbordufelpostnr", MessageBodyNumber("Och vad har du för postnummer?", TextContentType.POSTAL_CODE, "123 45")
         )
         this.setExpectedReturnType("message.varbordufelpostnr", ZipCodeSweden())
 
@@ -582,8 +582,8 @@ constructor(
             MessageBodyNumber("Tack! Vad är ditt personnummer? (12 siffror)")
         )
         this.setExpectedReturnType("message.manuellpersonnr", SSNSweden())
-        this.createMessage("message.varborduadress", MessageBodyText("Vilken gatuadress bor du på?", TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT))
-        this.createMessage("message.varbordupostnr", MessageBodyNumber("Vad är ditt postnummer?", TextContentType.POSTAL_CODE))
+        this.createMessage("message.varborduadress", MessageBodyText("Vilken gatuadress bor du på?", TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT, "Kungsgatan 1"))
+        this.createMessage("message.varbordupostnr", MessageBodyNumber("Vad är ditt postnummer?", TextContentType.POSTAL_CODE, "123 45"))
         this.setExpectedReturnType("message.varbordupostnr", ZipCodeSweden())
 
         this.createMessage(
@@ -1138,8 +1138,7 @@ constructor(
 
         this.createChatMessage(
             MESSAGE_STUDENT_25K_LIMIT,
-            MessageBodySingleSelect(
-                "Okej!\u000C" + "Äger du något som du tar med dig utanför hemmet som är värt över 25 000 kr som du vill försäkra? 💍⌚",
+            MessageBodySingleSelect("Äger du något som du tar med dig utanför hemmet som är värt över 25 000 kr som du vill försäkra? 💍⌚",
                 Lists.newArrayList<SelectItem>(
                     SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_50K_LIMIT_YES),
                     SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
