@@ -1474,7 +1474,7 @@ constructor(
                 nxtMsg = if (nrPersons > 6) {
                     "message.uwlimit.householdsize"
                 } else {
-                    handleStudentPolicyPersonLimit(MESSAGE_STUDENT_25K_LIMIT, userContext)
+                    handleStudentPolicyPersonLimit(MESSAGE_50K_LIMIT, userContext)
                 }
             }
             MESSAGE_KVADRAT -> {
