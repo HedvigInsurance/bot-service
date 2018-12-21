@@ -726,7 +726,7 @@ constructor(
             )
         )
 
-        this.createMessage(MESSAGE_50K_LIMIT_YES_YES, MessageBodyParagraph("Det fixar jag!"), 1500)
+        this.createMessage(MESSAGE_50K_LIMIT_YES_YES, MessageBodyParagraph("Toppen, så hör bara av dig i chatten så fixar jag det!"), 1500)
         this.addRelay(MESSAGE_50K_LIMIT_YES_YES, MESSAGE_FORSAKRINGIDAG)
 
         this.createMessage(
