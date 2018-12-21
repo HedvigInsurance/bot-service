@@ -711,7 +711,7 @@ constructor(
         this.createChatMessage(
             MESSAGE_50K_LIMIT,
             MessageBodySingleSelect(
-                "Toppen!\u000CÄger du något som du tar med dig utanför hemmet som är värt över 50 000 kr som du vill försäkra? 💍⌚",
+                "Toppen!\u000CÄger du något som du tar med dig utanför hemmet som är värt över 50 000 kr som du vill försäkra? 💍",
 
                 SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_50K_LIMIT_YES),
                 SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
