@@ -1138,11 +1138,19 @@ constructor(
 
         this.createChatMessage(
             MESSAGE_STUDENT_25K_LIMIT,
-            MessageBodySingleSelect("Om du har något som är värt mer än 25 000 kr och som du har med dig på stan, så behöver du lägga till ett extra skydd för den saken? 💍",
+            MessageBodySingleSelect("Äger du något som du tar med dig utanför hemmet som är värt över 25 000 kr som du vill försäkra? 💍",
                 Lists.newArrayList<SelectItem>(
-                    SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_50K_LIMIT_YES),
+                    SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_STUDENT_25K_LIMIT_YES),
                     SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
                 )
+            )
+        )
+
+        this.createChatMessage(
+            MESSAGE_STUDENT_25K_LIMIT_YES,
+            MessageBodySingleSelect(
+                "Om du har något som är värt mer än 25 000 kr och som du har med dig på stan, så behöver du lägga till ett extra skydd för den saken !\u000CDet kallas objektsförsäkring, och du lägger enkelt till det i efterhand om du skaffar Hedvig",
+                SelectOption("Jag förstår!", MESSAGE_50K_LIMIT_YES_YES)
             )
         )
     }
@@ -2046,6 +2054,7 @@ constructor(
         const val MESSAGE_STUDENT_ELIGIBLE_BRF = "message.student.eligible.brf"
         const val MESSAGE_STUDENT_ELIGIBLE_RENT = "message.student.eligible.rent"
         const val MESSAGE_STUDENT_25K_LIMIT = "message.student.25klimit"
+        const val MESSAGE_STUDENT_25K_LIMIT_YES = "message.student.25klimit.yes"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"
