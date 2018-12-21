@@ -763,9 +763,9 @@ constructor(
         this.createMessage(
             MESSAGE_FORSLAG2,
             MessageBodySingleSelect(
-                "Sådärja, tack {NAME}! Ditt förslag är nu klart!",
+                "Sådärja, tack {NAME}! Det var alla frågor jag hade!",
                 Lists.newArrayList<SelectItem>(
-                    SelectLink.toOffer("Visa mig förslaget 👏", "message.forslag.dashboard")
+                    SelectLink.toOffer("Gå vidare för att se ditt förslag 👏", "message.forslag.dashboard")
                 )
             )
         )
