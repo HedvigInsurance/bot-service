@@ -721,7 +721,7 @@ constructor(
         this.createChatMessage(
             MESSAGE_50K_LIMIT_YES,
             MessageBodySingleSelect(
-                "Okej!\u000COm du skaffar Hedvig är det enkelt att lägga till en separat objektsförsäkring efteråt",
+                "Om du har något som är värt mer än 50 000 kr och som du har med dig på stan, så behöver du lägga till ett extra skydd för den saken !\u000CDet kallas objektsförsäkring, och du lägger enkelt till det i efterhand om du skaffar Hedvig",
                 SelectOption("Jag förstår!", MESSAGE_50K_LIMIT_YES_YES)
             )
         )
@@ -1083,7 +1083,7 @@ constructor(
         this.createMessage(
             "message.studentja",
             MessageBodySingleSelect(
-                "Vad kul! Jag har tagit fram ett extra grymt erbjudande som är skräddarsytt för studenter som bor max två personer på max 50 kvm ‍🎓",
+                "Vad kul! Då har jag ett erbjudande som är skräddarsytt för studenter som bor max två personer på max 50 kvm",
                 object : ArrayList<SelectItem>() {
                     init {
                         add(SelectOption("Okej, toppen!", MESSAGE_KVADRAT))
@@ -1138,7 +1138,7 @@ constructor(
 
         this.createChatMessage(
             MESSAGE_STUDENT_25K_LIMIT,
-            MessageBodySingleSelect("Äger du något som du tar med dig utanför hemmet som är värt över 25 000 kr som du vill försäkra? 💍⌚",
+            MessageBodySingleSelect("Om du har något som är värt mer än 25 000 kr och som du har med dig på stan, så behöver du lägga till ett extra skydd för den saken? 💍",
                 Lists.newArrayList<SelectItem>(
                     SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_50K_LIMIT_YES),
                     SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
