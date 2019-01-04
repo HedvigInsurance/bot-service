@@ -1824,7 +1824,7 @@ constructor(
     }
 
     override fun canAcceptAnswerToQuestion(uc: UserContext): Boolean {
-        return uc.onBoardingData.houseType != null
+        return true
     }
 
     override fun bankIdAuthComplete(userContext: UserContext) {
