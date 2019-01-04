@@ -393,7 +393,7 @@ class OnboardingConversationDeviTest {
     userContext.onBoardingData.let {
       assertThat(it.ssn).isEqualTo("191212121212")
       assertThat(it.familyName).isNull()
-      assertThat(it.birthDate).isNull()
+      assertThat(it.birthDate).isEqualTo(LocalDate.parse("1912-12-12"))
       assertThat(it.addressStreet).isNull()
       assertThat(it.addressZipCode).isNull()
       assertThat(it.addressCity).isNull()

@@ -344,19 +344,21 @@ constructor(
                 body.text = "${trimmedSSN.dropLast(4)}-****"
                 addToChat(m, uc)
 
-                uc.onBoardingData.ssn = trimmedSSN
+                uc.onBoardingData.apply {
+                    ssn = trimmedSSN
+                    birthDate = LocalDate.parse(
+                        "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
+                            4,
+                            6
+                        )}-${trimmedSSN.substring(6, 8)}"
+                    )
+                }
                 val response = memberService.lookupAddressSWE(trimmedSSN, uc.memberId)
 
                 if (response != null) {
                     uc.onBoardingData.let {
                         it.familyName = response.lastName
                         it.firstName = response.firstName
-                        it.birthDate = LocalDate.parse(
-                            "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
-                                4,
-                                6
-                            )}-${trimmedSSN.substring(6, 8)}"
-                        )
 
                         if (response.address != null) {
                             it.addressCity = response.address.city
