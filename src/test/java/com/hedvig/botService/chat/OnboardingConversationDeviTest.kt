@@ -196,21 +196,10 @@ class OnboardingConversationDeviTest {
   }
 
   @Test
-  fun returnFalse_WhenChat_IsBeforeHouseChoice() {
+  fun canAlwaysAcceptAnswersToQuestion() {
 
     val uc = UserContext(TOLVANSSON_MEMBER_ID)
     val canAcceptAnswer = testConversation.canAcceptAnswerToQuestion(uc)
-
-    assertThat(canAcceptAnswer).isEqualTo(false)
-  }
-
-  @Test
-  fun returnTrue_WhenUserContext_ContainsHouseChoice() {
-
-    userContext
-      .onBoardingData.houseType = OnboardingConversationDevi.ProductTypes.BRF.toString()
-
-    val canAcceptAnswer = testConversation.canAcceptAnswerToQuestion(userContext)
 
     assertThat(canAcceptAnswer).isEqualTo(true)
   }
