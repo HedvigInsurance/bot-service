@@ -778,7 +778,7 @@ constructor(
             )
         )
 
-        //This message is used as the last message to the 25K LIMIT flow
+        //This message is used as the last message to the 25K LIMIT flow as well as to 50K LIMIT flow 
         this.createMessage(
             MESSAGE_50K_LIMIT_YES_YES,
             MessageBodyParagraph("Toppen, så hör bara av dig i chatten så fixar jag det!"),
