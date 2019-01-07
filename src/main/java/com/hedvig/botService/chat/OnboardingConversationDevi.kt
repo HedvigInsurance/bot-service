@@ -72,7 +72,10 @@ constructor(
             MESSAGE_ONBOARDINGSTART_ASK_NAME,
             WrappedMessage(
                 MessageBodyText(
-                    "Hej! Jag heter Hedvig 👋\u000CVad heter du?", TextContentType.GIVEN_NAME, KeyboardType.DEFAULT, "Förnamn"
+                    "Hej! Jag heter Hedvig 👋\u000CVad heter du?",
+                    TextContentType.GIVEN_NAME,
+                    KeyboardType.DEFAULT,
+                    "Förnamn"
                 )
             )
             { body, u, message ->
@@ -122,14 +125,22 @@ constructor(
         this.createMessage(
             MESSAGE_SIGNUP_TO_WAITLIST,
             MessageHeader(MessageHeader.HEDVIG_USER_ID, -1, true),
-            MessageBodyText("Det ordnar jag! Vad är din mailadress?", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS)
+            MessageBodyText(
+                "Det ordnar jag! Vad är din mailadress?",
+                TextContentType.EMAIL_ADDRESS,
+                KeyboardType.EMAIL_ADDRESS
+            )
         )
         this.setExpectedReturnType(MESSAGE_SIGNUP_TO_WAITLIST, EmailAdress())
 
         this.createMessage(
             "message.signup.email",
             MessageHeader(MessageHeader.HEDVIG_USER_ID, -1, true),
-            MessageBodyText("Det ordnar jag! Vad är din mailadress?", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS)
+            MessageBodyText(
+                "Det ordnar jag! Vad är din mailadress?",
+                TextContentType.EMAIL_ADDRESS,
+                KeyboardType.EMAIL_ADDRESS
+            )
         )
         this.setExpectedReturnType("message.signup.email", EmailAdress())
 
@@ -384,7 +395,8 @@ constructor(
                 MessageBodyText(
                     "Konstigt, just nu kan jag inte hitta din adress. Så jag behöver ställa några extra frågor 😊\u000C"
                             + "Vad heter du i efternamn?"
-                , TextContentType.FAMILY_NAME, KeyboardType.DEFAULT)
+                    , TextContentType.FAMILY_NAME, KeyboardType.DEFAULT
+                )
             ) { b, uc, m ->
                 uc.onBoardingData.familyName = b.text.trim().toLowerCase().capitalize()
                 addToChat(m, uc)
@@ -489,7 +501,10 @@ constructor(
             )
         )
 
-        this.createMessage(MESSAGE_NYHETSBREV, MessageBodyText("Topp! Vad är mailadressen?", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS))
+        this.createMessage(
+            MESSAGE_NYHETSBREV,
+            MessageBodyText("Topp! Vad är mailadressen?", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS)
+        )
         this.setExpectedReturnType(MESSAGE_NYHETSBREV, EmailAdress())
         this.createMessage(
             MESSAGE_TIPSA,
@@ -549,17 +564,22 @@ constructor(
 
         this.createMessage(
             "message.bankidja.noaddress",
-            MessageBodyText("Tack {NAME}! Nu skulle jag behöva veta vilken gatuadress bor du på?",
-                TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT)
+            MessageBodyText(
+                "Tack {NAME}! Nu skulle jag behöva veta vilken gatuadress bor du på?",
+                TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT
+            )
         )
 
         this.createMessage(
             MESSAGE_VARBORDUFELADRESS,
-            MessageBodyText("Inga problem! Vad är gatuadressen till lägenheten du vill försäkra?",
-                TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT, "Kungsgatan 1")
+            MessageBodyText(
+                "Inga problem! Vad är gatuadressen till lägenheten du vill försäkra?",
+                TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT, "Kungsgatan 1"
+            )
         )
         this.createMessage(
-            "message.varbordufelpostnr", MessageBodyNumber("Och vad har du för postnummer?", TextContentType.POSTAL_CODE, "123 45")
+            "message.varbordufelpostnr",
+            MessageBodyNumber("Och vad har du för postnummer?", TextContentType.POSTAL_CODE, "123 45")
         )
         this.setExpectedReturnType("message.varbordufelpostnr", ZipCodeSweden())
 
@@ -570,13 +590,17 @@ constructor(
             "message.manuellnamn",
             MessageBodyText(
                 "Inga problem! Då ställer jag bara några extra frågor nu\u000CMen om du vill bli medlem sen så måste du signera med BankID, bara så du vet!\u000CVad heter du i förnamn?"
-            ,TextContentType.GIVEN_NAME, KeyboardType.DEFAULT
+                , TextContentType.GIVEN_NAME, KeyboardType.DEFAULT
             )
         )
 
         this.createMessage(
             "message.manuellfamilyname",
-            MessageBodyText("Kul att ha dig här {NAME}! Vad heter du i efternamn?", TextContentType.FAMILY_NAME, KeyboardType.DEFAULT)
+            MessageBodyText(
+                "Kul att ha dig här {NAME}! Vad heter du i efternamn?",
+                TextContentType.FAMILY_NAME,
+                KeyboardType.DEFAULT
+            )
         )
 
         this.createMessage(
@@ -584,8 +608,19 @@ constructor(
             MessageBodyNumber("Tack! Vad är ditt personnummer? (12 siffror)")
         )
         this.setExpectedReturnType("message.manuellpersonnr", SSNSweden())
-        this.createMessage("message.varborduadress", MessageBodyText("Vilken gatuadress bor du på?", TextContentType.STREET_ADDRESS_LINE1, KeyboardType.DEFAULT, "Kungsgatan 1"))
-        this.createMessage("message.varbordupostnr", MessageBodyNumber("Vad är ditt postnummer?", TextContentType.POSTAL_CODE, "123 45"))
+        this.createMessage(
+            "message.varborduadress",
+            MessageBodyText(
+                "Vilken gatuadress bor du på?",
+                TextContentType.STREET_ADDRESS_LINE1,
+                KeyboardType.DEFAULT,
+                "Kungsgatan 1"
+            )
+        )
+        this.createMessage(
+            "message.varbordupostnr",
+            MessageBodyNumber("Vad är ditt postnummer?", TextContentType.POSTAL_CODE, "123 45")
+        )
         this.setExpectedReturnType("message.varbordupostnr", ZipCodeSweden())
 
         this.createMessage(
@@ -634,7 +669,9 @@ constructor(
         this.createMessage(
             MESSAGE_EMAIL,
             MessageBodyText(
-                "Nu behöver jag bara din mailadress så att jag kan skicka en bekräftelse", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS
+                "Nu behöver jag bara din mailadress så att jag kan skicka en bekräftelse",
+                TextContentType.EMAIL_ADDRESS,
+                KeyboardType.EMAIL_ADDRESS
             )
         )
         this.setExpectedReturnType(MESSAGE_EMAIL, EmailAdress())
@@ -711,13 +748,26 @@ constructor(
         )
 
         this.createChatMessage(
-            MESSAGE_50K_LIMIT,
-            MessageBodySingleSelect(
-                "Toppen!\u000CÄger du något som du tar med dig utanför hemmet som är värt över 50 000 kr som du vill försäkra? 💍",
+            MESSAGE_50K_LIMIT, WrappedMessage(
+                MessageBodySingleSelect(
+                    "Toppen!\u000CÄger du något som du tar med dig utanför hemmet som är värt över 50 000 kr som du vill försäkra? 💍",
 
-                SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_50K_LIMIT_YES),
-                SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
-            )
+                    SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_50K_LIMIT_YES),
+                    SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
+                )
+            ) { body, userContext, m ->
+                for (o in body.choices) {
+                    if (o.selected) {
+                        m.body.text = o.text
+                        addToChat(m, userContext)
+                    }
+                }
+                if (body.selectedItem.value.equals(MESSAGE_50K_LIMIT_YES, ignoreCase = true)) {
+
+                    userContext.putUserData("{50K_LIMIT}", "true")
+                }
+                body.selectedItem.value
+            }
         )
 
         this.createChatMessage(
@@ -728,7 +778,12 @@ constructor(
             )
         )
 
-        this.createMessage(MESSAGE_50K_LIMIT_YES_YES, MessageBodyParagraph("Toppen, så hör bara av dig i chatten så fixar jag det!"), 1500)
+        //This message is used as the last message to the 25K LIMIT flow
+        this.createMessage(
+            MESSAGE_50K_LIMIT_YES_YES,
+            MessageBodyParagraph("Toppen, så hör bara av dig i chatten så fixar jag det!"),
+            1500
+        )
         this.addRelay(MESSAGE_50K_LIMIT_YES_YES, MESSAGE_FORSAKRINGIDAG)
 
         this.createMessage(
@@ -1015,7 +1070,10 @@ constructor(
             )
         )
 
-        this.createMessage("message.kontrakt.email", MessageBodyText("OK! Vad är din mailadress?", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS))
+        this.createMessage(
+            "message.kontrakt.email",
+            MessageBodyText("OK! Vad är din mailadress?", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS)
+        )
         this.setExpectedReturnType("message.kontrakt.email", EmailAdress())
 
         this.createMessage(
@@ -1139,13 +1197,26 @@ constructor(
         )
 
         this.createChatMessage(
-            MESSAGE_STUDENT_25K_LIMIT,
-            MessageBodySingleSelect("Äger du något som du tar med dig utanför hemmet som är värt över 25 000 kr som du vill försäkra? 💍",
-                Lists.newArrayList<SelectItem>(
-                    SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_STUDENT_25K_LIMIT_YES),
-                    SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
+            MESSAGE_STUDENT_25K_LIMIT, WrappedMessage(
+                MessageBodySingleSelect(
+                    "Äger du något som du tar med dig utanför hemmet som är värt över 25 000 kr som du vill försäkra? 💍",
+                    Lists.newArrayList<SelectItem>(
+                        SelectOption("Ja, berätta om objektsförsäkring", MESSAGE_STUDENT_25K_LIMIT_YES),
+                        SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
+                    )
                 )
-            )
+            ) { body, userContext, m ->
+                for (o in body.choices) {
+                    if (o.selected) {
+                        m.body.text = o.text
+                        addToChat(m, userContext)
+                    }
+                }
+                if (body.selectedItem.value.equals(MESSAGE_STUDENT_25K_LIMIT_YES, ignoreCase = true)) {
+                    userContext.putUserData(UserData.TWENTYFIVE_THOUSAND_LIMIT, "true")
+                }
+                body.selectedItem.value
+            }
         )
 
         this.createChatMessage(
@@ -1572,16 +1643,7 @@ constructor(
                 return
             }
             // nxtMsg = MESSAGE_FORSAKRINGIDAG;
-            MESSAGE_50K_LIMIT_YES -> {
-                val body1 = m.body as MessageBodySingleSelect
-                for (o in body1.choices) {
-                    if (o.selected) {
-                        m.body.text = o.text
-                        addToChat(m, userContext)
-                    }
-                }
-                nxtMsg = handle50KLimitAnswer(userContext, m.body as MessageBodySingleSelect)
-            }
+
             // case "message.bytesinfo":
             "message.bytesinfo2", MESSAGE_FORSAKRINGIDAG, "message.missingvalue", MESSAGE_FORSLAG2 -> {
                 val item = (m.body as MessageBodySingleSelect).selectedItem
@@ -1721,21 +1783,6 @@ constructor(
 
         log.error("This state should be unreachable")
         return defaultMessage
-    }
-
-    private fun handle50KLimitAnswer(
-        userContext: UserContext, body: MessageBodySingleSelect
-    ): String {
-        if (body.selectedItem.value.equals(MESSAGE_50K_LIMIT_YES_YES, ignoreCase = true)) {
-            val userData = userContext.onBoardingData
-            val studentPolicyEligibility = userData.studentPolicyEligibility
-            if (studentPolicyEligibility != null && studentPolicyEligibility == true) {
-                userContext.putUserData(UserData.TWENTYFIVE_THOUSAND_LIMIT, "true")
-            } else {
-                userContext.putUserData("{50K_LIMIT}", "true")
-            }
-        }
-        return MESSAGE_FORSAKRINGIDAG
     }
 
     private fun handleFriFraga(userContext: UserContext, m: Message) {
