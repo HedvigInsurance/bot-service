@@ -1,6 +1,8 @@
 package com.hedvig.botService.enteties.userContextHelpers;
 
 import com.hedvig.botService.enteties.UserContext;
+import org.jetbrains.annotations.Nullable;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,7 @@ public class UserData {
     ctx.putUserData(FIRST_NAME, firstName);
   }
 
+  @Nullable
   public String getFirstName() {
     return ctx.getDataEntry(FIRST_NAME);
   }
