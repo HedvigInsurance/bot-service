@@ -79,7 +79,9 @@ constructor(
                 )
             )
             { body, u, message ->
-                u.onBoardingData.firstName = body.text.trim().toLowerCase().capitalize()
+                val name = body.text.trim().replace(Regex("[!.,]"), "").replace(Regex("Hej jag heter", RegexOption.IGNORE_CASE), "").trim().toLowerCase().capitalize()
+
+                u.onBoardingData.firstName = name
                 addToChat(message, u)
                 MESSAGE_ONBOARDINGSTART_REPLY_NAME
             })
@@ -398,7 +400,18 @@ constructor(
                     , TextContentType.FAMILY_NAME, KeyboardType.DEFAULT
                 )
             ) { b, uc, m ->
-                uc.onBoardingData.familyName = b.text.trim().toLowerCase().capitalize()
+
+                val familyName = b.text.trim().toLowerCase().capitalize()
+                val firstName = uc.onBoardingData.firstName
+                if(firstName != null){
+                    if(firstName.split(" ").size > 1 && firstName.endsWith(familyName, true) == true){
+                        val lastNameIndex = firstName.length - (familyName.length + 1)
+                        if(lastNameIndex > 0) {
+                            uc.onBoardingData.firstName = firstName.substring(0, lastNameIndex)
+                        }
+                    }
+                }
+                uc.onBoardingData.familyName = familyName
                 addToChat(m, uc)
 
                 "message.varborduadress"
