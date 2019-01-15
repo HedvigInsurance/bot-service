@@ -1,5 +1,12 @@
 package com.hedvig.botService.chat;
 
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE;
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW;
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE;
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE_END;
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_OK;
+import static com.hedvig.botService.chat.ClaimsConversation.PHONE_CLAIM;
+import static com.hedvig.botService.chat.ClaimsConversation.PHONE_NUMBER;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -132,4 +139,61 @@ public class ClaimsConversationTest {
                 m.body.text,
                 false));
   }
+
+  @Test
+  public void givenThatMemberCanReportClaim_WhenPhoneNumberIsMissing_ThenQuestionAboutPhoneShouldPopUp(){
+    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
+
+    userContext.getOnBoardingData().setPhoneNumber(null);
+
+    Message m = testConversation.getMessage(ClaimsConversation.MESSAGE_CLAIMS_OK);
+
+    testConversation.receiveMessage(userContext, m);
+
+    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE);
+  }
+
+  @Test
+  public void givenThatMemberCanReportClaim_WhenPhoneNumberIsMissingAndProvided_ThenToppenMessagePopsUp(){
+    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
+
+    userContext.getOnBoardingData().setPhoneNumber(null);
+
+    Message m = testConversation.getMessage(MESSAGE_CLAIMS_ASK_PHONE);
+    m.body.text = TOLVANSSON_PHONE_NUMBER;
+    testConversation.handleMessage(userContext,m);
+
+    assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
+    assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
+    assertThat(userContext.getDataEntry(PHONE_CLAIM)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
+  }
+
+  @Test
+  public void givenThatMemberCanReportClaim_WhenPhoneNumberIsPresent_ThenQuestionAboutPhoneShouldPopUp(){
+    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
+
+    userContext.getOnBoardingData().setPhoneNumber(TOLVANSSON_PHONE_NUMBER);
+
+    Message m = testConversation.getMessage(MESSAGE_CLAIMS_OK);
+
+    testConversation.receiveMessage(userContext, m);
+
+    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_EXISTING_PHONE);
+  }
+
+  @Test
+  public void givenThatMemberCanReportClaim_WhenPhoneNumberIsPresentButMemberWantsToChange__ThenQuestionAboutNewPhoneShouldPopUp(){
+    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
+
+    userContext.getOnBoardingData().setPhoneNumber("0700700707");
+    Message m = testConversation.getMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW);
+    m.body.text = TOLVANSSON_PHONE_NUMBER;
+
+    testConversation.handleMessage(userContext, m);
+
+    assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
+    assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo("0700700707");
+    assertThat(userContext.getDataEntry(PHONE_CLAIM)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
+  }
+
 }
