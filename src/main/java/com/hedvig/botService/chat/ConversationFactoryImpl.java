@@ -52,7 +52,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
     }
 
     if (conversationClass.equals(ClaimsConversation.class)) {
-      return new ClaimsConversation(eventPublisher, claimsService, productPricingService, this);
+      return new ClaimsConversation(eventPublisher, claimsService, productPricingService, this, memberService);
     }
 
     if (conversationClass.equals(MainConversation.class)) {

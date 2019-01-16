@@ -13,6 +13,7 @@ import com.hedvig.botService.enteties.message.SelectItem;
 import com.hedvig.botService.enteties.message.SelectLink;
 import com.hedvig.botService.enteties.message.SelectOption;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
+import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
@@ -50,18 +51,21 @@ public class ClaimsConversation extends Conversation {
   private final ClaimsService claimsService;
   private final ProductPricingService productPricingService;
   private final ConversationFactory conversationFactory;
+  private final MemberService memberService;
 
   @Autowired
   ClaimsConversation(
     ApplicationEventPublisher eventPublisher,
     ClaimsService claimsService,
     ProductPricingService productPricingService,
-    ConversationFactory conversationFactory) {
+    ConversationFactory conversationFactory,
+    MemberService memberService) {
     super();
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.productPricingService = productPricingService;
     this.conversationFactory = conversationFactory;
+    this.memberService = memberService;
 
     createMessage(
       MESSAGE_CLAIMS_START, new MessageBodyParagraph("Okej, det här löser vi på nolltid!"), 2000);
@@ -277,6 +281,7 @@ public class ClaimsConversation extends Conversation {
     val onBoardingPhone = userContext.getOnBoardingData().getPhoneNumber();
     if (onBoardingPhone == null || onBoardingPhone.isEmpty()) {
       userContext.getOnBoardingData().setPhoneNumber(m.body.text);
+      memberService.updatePhoneNumber(userContext.getMemberId(), m.body.text.trim());
     }
 
     userContext.putUserData("{PHONE_CLAIM}", m.body.text);

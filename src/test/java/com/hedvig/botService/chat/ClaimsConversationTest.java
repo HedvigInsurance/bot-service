@@ -4,7 +4,6 @@ import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_E
 import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW;
 import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE;
 import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE_END;
-import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_OK;
 import static com.hedvig.botService.chat.ClaimsConversation.PHONE_CLAIM;
 import static com.hedvig.botService.chat.ClaimsConversation.PHONE_NUMBER;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
@@ -21,6 +20,7 @@ import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.message.MessageBodyAudio;
 import com.hedvig.botService.enteties.message.MessageBodyParagraph;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
+import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
@@ -44,6 +44,8 @@ public class ClaimsConversationTest {
 
   @Mock private ConversationFactory conversationFactory;
 
+  @Mock private MemberService memberService;
+
   private ClaimsConversation testConversation;
   private UserContext userContext;
 
@@ -52,7 +54,7 @@ public class ClaimsConversationTest {
 
     testConversation =
         new ClaimsConversation(
-            eventPublisher, claimsService, productPricingService, conversationFactory);
+            eventPublisher, claimsService, productPricingService, conversationFactory, memberService);
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
   }
 
