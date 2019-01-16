@@ -33,4 +33,6 @@ public interface MemberService {
 
   @Nullable
   LookupResponse lookupAddressSWE(String ssn, String memberId);
+
+  void updatePhoneNumber(String memberId, String phoneNumber);
 }
