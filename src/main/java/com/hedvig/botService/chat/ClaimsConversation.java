@@ -135,7 +135,7 @@ public class ClaimsConversation extends Conversation {
         }
       }));
 
-    createMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW,new MessageBodyNumber("Okej, vilket nummer ska jag kontakta dig på?"));
+    createMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW, new MessageBodyNumber("Okej, vilket nummer ska jag kontakta dig på?"));
 
     createMessage(MESSAGE_CLAIMS_ASK_PHONE, new MessageBodyNumber("Om jag skulle behöva nå dig på telefon, vad är ditt nummer?"));
 
@@ -246,14 +246,6 @@ public class ClaimsConversation extends Conversation {
         assignPhoneNumberToUserContext(userContext, m, false);
         nxtMsg = MESSAGE_CLAIMS_ASK_PHONE_END;
         break;
-      case MESSAGE_CLAIMS_OK:
-        val phone = userContext.getOnBoardingData().getPhoneNumber();
-        if (phone == null || phone.isEmpty()) {
-          nxtMsg = MESSAGE_CLAIMS_ASK_PHONE;
-        } else {
-          nxtMsg = MESSAGE_CLAIMS_ASK_EXISTING_PHONE;
-        }
-        break;
 
       case MESSAGE_CLAIMS_NOT_ACTIVE:
         nxtMsg = handleClaimNotActive(userContext, m);
@@ -350,6 +342,15 @@ public class ClaimsConversation extends Conversation {
         String relay = getRelay(value);
         if (relay != null) {
           completeRequest(relay, userContext);
+        }
+
+        if (value.equals(MESSAGE_CLAIMS_OK)) {
+          val phone = userContext.getOnBoardingData().getPhoneNumber();
+          if (phone == null || phone.isEmpty()) {
+            completeRequest(MESSAGE_CLAIMS_ASK_PHONE, userContext);
+          } else {
+            completeRequest(MESSAGE_CLAIMS_ASK_EXISTING_PHONE, userContext);
+          }
         }
         break;
       default:
