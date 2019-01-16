@@ -286,9 +286,11 @@ public class ClaimsConversation extends Conversation {
 
     userContext.putUserData("{PHONE_CLAIM}", m.body.text);
     addToChat(m, userContext); // Response parsed to nice format
-    userContext.completeConversation(this);
 
-    if (shouldBeCalledRightAway) sendCallMeEvent(userContext, m);
+    if (shouldBeCalledRightAway) {
+      sendCallMeEvent(userContext, m);
+      userContext.completeConversation(this);
+    }
   }
 
   private void sendCallMeEvent(UserContext userContext, Message m) {
