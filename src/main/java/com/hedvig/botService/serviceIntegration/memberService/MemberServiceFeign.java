@@ -1,13 +1,23 @@
 package com.hedvig.botService.serviceIntegration.memberService;
 
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
-import com.hedvig.botService.serviceIntegration.memberService.dto.*;
+import com.hedvig.botService.serviceIntegration.memberService.dto.Address;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthRequest;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdCollectResponse;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignRequest;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse;
+import com.hedvig.botService.serviceIntegration.memberService.dto.FinalizeOnBoardingRequest;
+import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse;
+import com.hedvig.botService.serviceIntegration.memberService.dto.StartOnboardingWithSSNRequest;
+import com.hedvig.botService.serviceIntegration.memberService.dto.SweAddressRequest;
+import com.hedvig.botService.serviceIntegration.memberService.dto.UpdateEmailRequest;
+import com.hedvig.botService.serviceIntegration.memberService.dto.UpdatePhoneNumberRequest;
 import com.hedvig.botService.web.dto.Member;
 import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientResponseException;
@@ -15,10 +25,10 @@ import org.springframework.web.client.RestClientResponseException;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class MemberServiceFeign implements MemberService {
 
-  private final Logger log = LoggerFactory.getLogger(MemberServiceFeign.class);
   private final MemberServiceClient client;
 
   public MemberServiceFeign(MemberServiceClient client) {
@@ -101,24 +111,24 @@ public class MemberServiceFeign implements MemberService {
     MemberAddress address = null;
     if (profile.getStreet() != null && profile.getZipCode() != null && profile.getCity() != null) {
       address =
-          new MemberAddress(
-              profile.getStreet(),
-              profile.getCity(),
-              profile.getZipCode(),
-              profile.getApartment(),
-              profile.getFloor() == null ? 0 : profile.getFloor());
+        new MemberAddress(
+          profile.getStreet(),
+          profile.getCity(),
+          profile.getZipCode(),
+          profile.getApartment(),
+          profile.getFloor() == null ? 0 : profile.getFloor());
     }
 
     return new MemberProfile(
-        memberId,
-        profile.getSsn(),
-        profile.getFirstName(),
-        profile.getLastName(),
-        Optional.ofNullable(address),
-        "",
-        profile.getPhoneNumber(),
-        profile.getCountry(),
-        profile.getBirthDate());
+      memberId,
+      profile.getSsn(),
+      profile.getFirstName(),
+      profile.getLastName(),
+      Optional.ofNullable(address),
+      "",
+      profile.getPhoneNumber(),
+      profile.getCountry(),
+      profile.getBirthDate());
   }
 
   @Override
@@ -139,12 +149,23 @@ public class MemberServiceFeign implements MemberService {
   @Nullable
   @Override
   public LookupResponse lookupAddressSWE(String trimmedSSN, String memberId) {
-    try{
+    try {
       val response = this.client.lookupAddressSwe(new SweAddressRequest(trimmedSSN, memberId));
       return new LookupResponse(response.getFirstName(), response.getLastName(), response.getAddress());
-    }catch (RuntimeException ex){
+    } catch (RuntimeException ex) {
       log.error("Caught error lookingup memberAddress", ex);
       return null;
+    }
+  }
+
+  @Override
+  public void updatePhoneNumber(String memberId, String phoneNumber) {
+    try {
+      this.client.updatePhoneNumber(memberId, new UpdatePhoneNumberRequest(phoneNumber));
+    } catch (RestClientResponseException e) {
+      log.error("Cannot update phoneNumber for memberId {} with the following phone number {}", memberId, phoneNumber);
+    }catch (FeignException ex){
+      log.error("Cannot update phoneNumber for memberId {} with the following phone number {}", memberId, phoneNumber);
     }
   }
 
