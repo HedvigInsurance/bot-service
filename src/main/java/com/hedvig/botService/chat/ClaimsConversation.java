@@ -247,6 +247,7 @@ public class ClaimsConversation extends Conversation {
       case MESSAGE_CLAIMS_ASK_PHONE:
       case MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW:
         assignPhoneNumberToUserContext(userContext, m, false);
+        addToChat(m, userContext);
         nxtMsg = MESSAGE_CLAIMS_ASK_PHONE_END;
         break;
 
