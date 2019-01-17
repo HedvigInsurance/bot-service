@@ -2,8 +2,6 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.hedvig.botService.dataTypes.*
-import com.hedvig.botService.enteties.SignupCode
-import com.hedvig.botService.enteties.SignupCodeRepository
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.enteties.userContextHelpers.UserData
@@ -26,7 +24,6 @@ class OnboardingConversationDevi
 constructor(
     private val memberService: MemberService,
     private val productPricingService: ProductPricingService,
-    private val signupRepo: SignupCodeRepository,
     private val eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory
 ) : Conversation(), BankIdChat {
@@ -125,68 +122,6 @@ constructor(
         )
 
         this.createMessage(
-            MESSAGE_SIGNUP_TO_WAITLIST,
-            MessageHeader(MessageHeader.HEDVIG_USER_ID, -1, true),
-            MessageBodyText(
-                "Det ordnar jag! Vad är din mailadress?",
-                TextContentType.EMAIL_ADDRESS,
-                KeyboardType.EMAIL_ADDRESS
-            )
-        )
-        this.setExpectedReturnType(MESSAGE_SIGNUP_TO_WAITLIST, EmailAdress())
-
-        this.createMessage(
-            "message.signup.email",
-            MessageHeader(MessageHeader.HEDVIG_USER_ID, -1, true),
-            MessageBodyText(
-                "Det ordnar jag! Vad är din mailadress?",
-                TextContentType.EMAIL_ADDRESS,
-                KeyboardType.EMAIL_ADDRESS
-            )
-        )
-        this.setExpectedReturnType("message.signup.email", EmailAdress())
-
-        this.createChatMessage(
-            "message.signup.checkposition",
-            MessageBodySingleSelect(
-                "Tack!" + "\u000CJag hör av mig till dig snart, ha det fint så länge! ✌️",
-                listOf(
-                    SelectOption(
-                        "Jag har fått ett aktiveringsmail", MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST
-                    )
-                )
-            )
-        )
-
-        this.createChatMessage(
-            MESSAGE_SIGNUP_NOT_ACTIVATED_YET,
-            MessageBodySingleSelect(
-                "Hmm, det verkar inte som att du är aktiverad än 👀"
-                        + "\u000CTitta in igen när du fått aktiveringsmailet"
-                        + "\u000CJag hör av mig snart!",
-                listOf(
-                    SelectOption(
-                        "Jag har fått ett aktiveringsmail", MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST
-                    )
-                )
-            )
-        )
-
-        this.createChatMessage(
-            MESSAGE_SIGNUP_NOT_REGISTERED_YET,
-            MessageBodySingleSelect(
-                "Det ser inte ut som att du har skrivit upp dig på väntelistan än"
-                        + "\u000CMen nu har jag din mailadress, så jag lägger till den!"
-                        + "\u000CVi hörs snart!",
-                listOf(
-                    SelectOption(
-                        "Jag har fått ett aktiveringsmail", MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST
-                    )
-                )
-            )
-        )
-
-        this.createMessage(
             MESSAGE_NOTMEMBER,
             MessageBodyParagraph(
                 "Okej! Då tar jag fram ett försäkringsförslag till dig på nolltid"
@@ -200,90 +135,7 @@ constructor(
                 "Jag ställer några snabba frågor så att jag kan räkna ut ditt pris"
             )
         )
-        this.addRelay("message.notmember.start", MESSAGE_FORSLAGSTART)
-
-        // Deprecated
-        this.createChatMessage(
-            "message.waitlist.user.alreadyactive",
-            MessageBodyText(
-                "Grattis! "
-                        + emoji_tada
-                        + " Nu kan du bli medlem hos Hedvig\u000CKolla din mail, där ska du ha fått en aktiveringkod som du ska ange här\u000CVi ses snart! "
-                        + emoji_smile
-            )
-        )
-
-        // Deprecated
-        this.createChatMessage(
-            "message.activate.code.used",
-            MessageBodySingleSelect(
-                "Det verkar som koden redan är använd... \u000CHar du aktiverat koden på en annan enhet så kan du logga in direkt med bankId.",
-                listOf(SelectOption("Jag är redan medlem och vill logga in", "message.medlem"))
-            )
-        )
-
-        // Deprecated
-        this.createMessage(
-            "message.signup.flerval",
-            MessageBodySingleSelect(
-                "",
-                listOf(
-                    SelectOption(
-                        "Kolla min plats på väntelistan", "message.signup.checkposition"
-                    ),
-                    SelectOption(
-                        "Jag har fått ett aktiveringsmail", MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST
-                    )
-                )
-            )
-        )
-
-        this.createMessage(
-            MESSAGE_WAITLIST_NOT_ACTIVATED,
-            MessageBodySingleSelect(
-                "Du verkar redan stå på väntelistan. Din plats är {SIGNUP_POSITION}!",
-                listOf(
-                    SelectOption(
-                        "Kolla min plats på väntelistan", "message.signup.checkposition"
-                    ),
-                    SelectOption(
-                        "Jag har fått ett aktiveringsmail", MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST
-                    )
-                )
-            )
-        )
-
-        // Deprecated
-        this.createMessage(
-            "message.activate.nocode",
-            MessageBodySingleSelect(
-                "Jag känner inte igen den koden tyvärr $emoji_thinking",
-                listOf(
-                    SelectOption(
-                        "Kolla min plats på väntelistan", "message.signup.checkposition"
-                    ),
-                    SelectOption(
-                        "Jag har fått ett aktiveringsmail", MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST
-                    )
-                )
-            )
-        )
-
-        this.createMessage(
-            MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST,
-            MessageBodyText("Kul! Skriv in din mailadress här")
-        )
-        this.setExpectedReturnType(MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST, EmailAdress())
-
-        this.createMessage(MESSAGE_ACTIVATE_OK_A, MessageBodyParagraph("Välkommen!"), 1000)
-        this.addRelay(MESSAGE_ACTIVATE_OK_A, MESSAGE_ACTIVATE_OK_B)
-
-        this.createMessage(
-            MESSAGE_ACTIVATE_OK_B,
-            MessageBodyParagraph("Nu ska jag ta fram ett försäkringsförslag åt dig"),
-            2000
-        )
-        this.addRelay(MESSAGE_ACTIVATE_OK_B, MESSAGE_FORSLAGSTART)
+        this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
 
         this.createMessage(
             "message.uwlimit.tack",
@@ -1290,11 +1142,7 @@ constructor(
 
     override fun init(userContext: UserContext) {
         log.info("Starting onboarding conversation")
-        if (userContext.getDataEntry("{SIGNED_UP}") == null) {
             startConversation(userContext, MESSAGE_ONBOARDINGSTART_ASK_NAME) // Id of first message
-        } else {
-            startConversation(userContext, MESSAGE_ACTIVATE_OK_B) // Id of first message
-        }
     }
 
     override fun init(userContext: UserContext, startMessage: String) {
@@ -1387,39 +1235,8 @@ constructor(
 
         val onBoardingData = userContext.onBoardingData
 
-        val selectedOption = if (m.body.javaClass == MessageBodySingleSelect::class.java)
-            getValue(m.body as MessageBodySingleSelect)
-        else
-            null
-
-        if (selectedOption != null) {
-            // Check the selected option first...
-            when (selectedOption) {
-                "message.signup.checkposition" -> {
-                    log.info("Checking position...")
-                    // We do not have the users email
-                    if (!(onBoardingData.email != null && onBoardingData.email != "")) {
-                        nxtMsg = "message.signup.email"
-                    } else { // Update position if there is a code
-                        userContext.putUserData(
-                            "{SIGNUP_POSITION}",
-                            Objects.toString(getSignupQueuePosition(onBoardingData.email))
-                        )
-                    }
-                }
-            }
-        }
-
-        // ... and then the incomming message id
+        // ... and then the incoming message id
         when (m.baseMessageId) {
-            MESSAGE_ONBOARDINGSTART -> {
-                val email = userContext.getDataEntry(EMAIL)
-                if (emailIsActivated(email)) {
-                    flagCodeAsUsed(email)
-                    userContext.putUserData(SIGNED_UP, "true")
-                    nxtMsg = MESSAGE_ACTIVATE_OK_A
-                }
-            }
             MESSAGE_STUDENT_LIMIT_LIVING_SPACE_HOUSE_TYPE, "message.lghtyp" -> {
                 val item = (m.body as MessageBodySingleSelect).selectedItem
 
@@ -1457,81 +1274,6 @@ constructor(
                 onBoardingData.newsLetterEmail = m.body.text
                 addToChat(m, userContext)
                 nxtMsg = MESSAGE_NAGOTMER
-            }
-            "message.signup.email", MESSAGE_SIGNUP_TO_WAITLIST -> {
-                // Logic goes here
-                val userEmail = m.body.text.toLowerCase().trim { it <= ' ' }
-                onBoardingData.email = userEmail
-                m.body.text = userEmail
-                addToChat(m, userContext)
-
-                // --------- Logic for user state ------------- //
-                val existingSignupCode = findSignupCodeByEmail(userEmail)
-
-                // User already has a signup code
-                nxtMsg = if (existingSignupCode.isPresent) {
-                    val esc = existingSignupCode.get()
-                    if (esc.getActive()!!) { // User should have got an activation code
-                        flagCodeAsUsed(userEmail)
-                        userContext.putUserData(SIGNED_UP, "true")
-                        MESSAGE_ACTIVATE_OK_A
-                    } else {
-                        "message.signup.checkposition"
-                    }
-                } else {
-                    val sc = createSignupCode(userEmail)
-                    userContext.putUserData(EMAIL, userEmail)
-                    userContext.putUserData("{SIGNUP_CODE}", sc.code)
-                    "message.signup.checkposition"
-                }
-                userContext.putUserData(
-                    "{SIGNUP_POSITION}", Objects.toString(getSignupQueuePosition(userEmail))
-                )
-            }
-            "message.signup.flerval" -> userContext.putUserData(
-                "{SIGNUP_POSITION}",
-                Objects.toString(getSignupQueuePosition(onBoardingData.email))
-            )
-            "message.waitlist.user.alreadyactive", "message.activate.nocode.tryagain", MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST -> {
-                // Logic goes here
-                val email = m.body.text.trim { it <= ' ' }.toLowerCase()
-                when {
-                    emailIsActivated(email) -> {
-                        flagCodeAsUsed(email)
-                        userContext.putUserData(SIGNED_UP, "true")
-                        userContext.putUserData(EMAIL, email)
-                        nxtMsg = MESSAGE_ACTIVATE_OK_A
-                        addToChat(m, userContext)
-
-                    }
-                    emailIsRegistered(email) == false -> {
-                        onBoardingData.email = email
-                        val signupCode = createSignupCode(m.body.text)
-                        userContext.putUserData("{SIGNUP_CODE}", signupCode.code)
-                        userContext.putUserData(EMAIL, email)
-                        userContext.putUserData(
-                            "{SIGNUP_POSITION}", Objects.toString(getSignupQueuePosition(email))
-                        )
-                        nxtMsg = MESSAGE_SIGNUP_NOT_REGISTERED_YET
-
-                    }
-                    else -> {
-                        nxtMsg = MESSAGE_SIGNUP_NOT_ACTIVATED_YET
-                        addToChat(m, userContext)
-                    }
-                }
-            }
-            MESSAGE_SIGNUP_NOT_REGISTERED_YET, MESSAGE_SIGNUP_NOT_ACTIVATED_YET, "message.signup.checkposition" -> {
-                m.body.text = (m.body as MessageBodySingleSelect).selectedItem.text
-                addToChat(m, userContext)
-                val email = userContext.getDataEntry(EMAIL)
-                if (email != null) {
-                    nxtMsg = if (emailIsActivated(email)) {
-                        MESSAGE_ACTIVATE_OK_A
-                    } else {
-                        MESSAGE_SIGNUP_NOT_ACTIVATED_YET
-                    }
-                }
             }
             "message.uwlimit.housingsize", "message.uwlimit.householdsize" -> nxtMsg =
                     handleUnderwritingLimitResponse(userContext, m, m.baseMessageId)
@@ -1997,76 +1739,9 @@ constructor(
         addToChat(getMessage(messageID), uc)
     }
 
-    private fun createSignupCode(email: String): SignupCode {
-        log.debug("Generate signup code for email: $email")
-        val sc = signupRepo
-            .findByEmail(email)
-            .orElseGet {
-                val newCode = SignupCode(email)
-                signupRepo.save(newCode)
-                newCode
-            }
-        signupRepo.saveAndFlush(sc)
-
-        eventPublisher.publishEvent(SignedOnWaitlistEvent(email))
-
-        return sc
-    }
-
-    private fun findSignupCodeByEmail(email: String): Optional<SignupCode> {
-        return signupRepo.findByEmail(email)
-    }
-
-    private fun getSignupQueuePosition(email: String): Int {
-        val scList = signupRepo.findAllByOrderByDateAsc() as ArrayList<SignupCode>
-        var pos = 1
-        for (sc in scList) {
-            if (!sc.used) {
-                log.debug(sc.code + "|" + sc.email + "(" + sc.date + "): " + pos)
-                if (sc.email == email) {
-                    return queuePos!! + pos
-                }
-                pos++
-            }
-        }
-        return -1
-    }
-
-    private fun emailIsActivated(email: String?): Boolean {
-        if (email == null) {
-            return false
-        }
-
-        val maybeSignupCode = signupRepo.findByEmail(email)
-        if (maybeSignupCode.isPresent == false) {
-            return false
-        }
-
-        val signupCode = maybeSignupCode.get()
-        return signupCode.getActive()!!
-    }
-
-    private fun emailIsRegistered(email: String): Boolean {
-        val maybeSignupCode = signupRepo.findByEmail(email)
-
-        return maybeSignupCode.isPresent
-    }
-
-    private fun flagCodeAsUsed(email: String) {
-        val maybeSignupCode = signupRepo.findByEmail(email)
-        if (maybeSignupCode.isPresent == false) {
-            log.error("Attempted to flag nonexistent code as used with email: {}", email)
-            return
-        }
-        val signupCode = maybeSignupCode.get()
-        signupCode.setUsed(true)
-        signupRepo.save(signupCode)
-    }
-
     companion object {
 
-        const val EMAIL = "{EMAIL}"
-        const val SIGNED_UP = "{SIGNED_UP}"
+
         const val MESSAGE_HUS = "message.hus"
         const val MESSAGE_NYHETSBREV = "message.nyhetsbrev"
         const val MESSAGE_FRIONBOARDINGFRAGA = "message.frionboardingfraga"
@@ -2079,13 +1754,6 @@ constructor(
         const val MESSAGE_ONBOARDINGSTART_ASK_NAME = "message.onboardingstart.ask.name"
         const val MESSAGE_ONBOARDINGSTART_REPLY_NAME = "message.onboardingstart.reply.name"
         const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL = "message.onboardingstart.ask.email"
-        const val MESSAGE_ACTIVATE_OK_A = "message.activate.ok.a"
-        const val MESSAGE_ACTIVATE_OK_B = "message.activate.ok.b"
-        const val MESSAGE_SIGNUP_TO_WAITLIST = "message.waitlist"
-        const val MESSAGE_CHECK_IF_ACTIVE_ON_WAITLIST = "message.activate"
-        const val MESSAGE_WAITLIST_NOT_ACTIVATED = "message.activate.notactive"
-        const val MESSAGE_SIGNUP_NOT_ACTIVATED_YET = "message.signup.notactivatedyet"
-        const val MESSAGE_SIGNUP_NOT_REGISTERED_YET = "message.signup.notregisteredyet"
         const val MESSAGE_FORSLAG = "message.forslag"
         const val MESSAGE_FORSLAG2 = "message.forslag2"
         const val MESSAGE_50K_LIMIT = "message.50k.limit"
@@ -2146,10 +1814,6 @@ constructor(
             byteArrayOf(0xF0.toByte(), 0x9F.toByte(), 0x94.toByte(), 0x8D.toByte()),
             Charset.forName("UTF-8")
         )
-        val emoji_tada = String(
-            byteArrayOf(0xF0.toByte(), 0x9F.toByte(), 0x8E.toByte(), 0x89.toByte()),
-            Charset.forName("UTF-8")
-        )
         val emoji_thumbs_up = String(
             byteArrayOf(0xF0.toByte(), 0x9F.toByte(), 0x91.toByte(), 0x8D.toByte()),
             Charset.forName("UTF-8")
@@ -2160,10 +1824,6 @@ constructor(
         )
         val emoji_flushed_face = String(
             byteArrayOf(0xF0.toByte(), 0x9F.toByte(), 0x98.toByte(), 0xB3.toByte()),
-            Charset.forName("UTF-8")
-        )
-        val emoji_thinking = String(
-            byteArrayOf(0xF0.toByte(), 0x9F.toByte(), 0xA4.toByte(), 0x94.toByte()),
             Charset.forName("UTF-8")
         )
     }

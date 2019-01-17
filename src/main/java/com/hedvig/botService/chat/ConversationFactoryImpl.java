@@ -1,6 +1,5 @@
 package com.hedvig.botService.chat;
 
-import com.hedvig.botService.enteties.SignupCodeRepository;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
@@ -17,7 +16,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
   private final MemberService memberService;
   private final ProductPricingService productPricingService;
   private final TriggerService triggerService;
-  private final SignupCodeRepository signupCodeRepository;
   private final ApplicationEventPublisher eventPublisher;
   private final ClaimsService claimsService;
 
@@ -28,7 +26,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
       MemberService memberService,
       ProductPricingService productPricingService,
       TriggerService triggerService,
-      SignupCodeRepository signupCodeRepository,
       ApplicationEventPublisher eventPublisher,
       ClaimsService claimsService,
       StatusBuilder statusBuilder,
@@ -37,7 +34,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
     this.productPricingService = productPricingService;
     this.triggerService = triggerService;
 
-    this.signupCodeRepository = signupCodeRepository;
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.statusBuilder = statusBuilder;
@@ -62,7 +58,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
     if (conversationClass.equals(OnboardingConversationDevi.class)) {
       final OnboardingConversationDevi onboardingConversationDevi =
           new OnboardingConversationDevi(
-              memberService, productPricingService, signupCodeRepository, eventPublisher, this);
+              memberService, productPricingService, eventPublisher, this);
       onboardingConversationDevi.setQueuePos(queuePos);
       return onboardingConversationDevi;
     }
