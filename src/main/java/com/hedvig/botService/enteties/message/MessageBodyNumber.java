@@ -1,5 +1,6 @@
 package com.hedvig.botService.enteties.message;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -30,6 +31,7 @@ public class MessageBodyNumber extends MessageBodyText {
 
   MessageBodyNumber() {}
 
+  @JsonIgnore
   public Integer getValue(){
     return Integer.parseInt(text);
   }
