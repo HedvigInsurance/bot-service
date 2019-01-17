@@ -4,7 +4,6 @@ import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_E
 import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW;
 import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE;
 import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE_END;
-import static com.hedvig.botService.chat.ClaimsConversation.PHONE_CLAIM;
 import static com.hedvig.botService.chat.ClaimsConversation.PHONE_NUMBER;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER;
@@ -163,9 +162,8 @@ public class ClaimsConversationTest {
     m.body.text = TOLVANSSON_PHONE_NUMBER;
     testConversation.handleMessage(userContext,m);
 
-    assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
+    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
     assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
-    assertThat(userContext.getDataEntry(PHONE_CLAIM)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
   }
 
   @Test
@@ -189,9 +187,8 @@ public class ClaimsConversationTest {
 
     testConversation.handleMessage(userContext, m);
 
-    assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
-    assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo("0700700707");
-    assertThat(userContext.getDataEntry(PHONE_CLAIM)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
+    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
+    assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
   }
 
 }
