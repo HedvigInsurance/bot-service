@@ -1248,6 +1248,12 @@ constructor(
                 }
             }
 
+            MESSAGE_NYHETSBREV -> {
+                onBoardingData.newsLetterEmail = m.body.text
+                addToChat(m, userContext)
+                nxtMsg = MESSAGE_NAGOTMER
+            }
+
             "message.uwlimit.housingsize", "message.uwlimit.householdsize" -> nxtMsg =
                     handleUnderwritingLimitResponse(userContext, m, m.baseMessageId)
             MESSAGE_TIPSA -> {
@@ -1716,6 +1722,7 @@ constructor(
 
 
         const val MESSAGE_HUS = "message.hus"
+        const val MESSAGE_NYHETSBREV = "message.nyhetsbrev"
         const val MESSAGE_FRIONBOARDINGFRAGA = "message.frionboardingfraga"
         const val MESSAGE_FRIFRAGA = "message.frifraga"
         const val MESSAGE_TIPSA = "message.tipsa"
