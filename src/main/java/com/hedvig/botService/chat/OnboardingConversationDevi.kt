@@ -360,18 +360,19 @@ constructor(
 
         this.createChatMessage(
             MESSAGE_HUS,
-            MessageBodySingleSelect(
-                "Åh, typiskt! Just nu försäkrar jag bara lägenheter\u000C" + "Om du vill ge mig din mailadress så kan jag höra av mig när jag försäkrar annat också",
-                SelectOption("Okej!", MESSAGE_NYHETSBREV),
-                SelectOption("Tack, men nej tack", "message.avslutok")
+            WrappedMessage(MessageBodySingleSelect(
+                "Åh, typiskt! Just nu försäkrar jag bara lägenheter\u000C" + "Om du vill så kan jag höra av mig när jag försäkrar hus och villor också?",
+                SelectOption("Okej!", MESSAGE_NAGOTMER),
+                SelectOption("Tack, men nej tack", MESSAGE_AVSLUTOK)
             )
+            ){ m, uc, _ ->
+                if (m.selectedItem.value.equals(MESSAGE_NAGOTMER)){
+                    uc.onBoardingData.newsLetterEmail = uc.onBoardingData.email
+                }
+                m.selectedItem.value
+            }
         )
 
-        this.createMessage(
-            MESSAGE_NYHETSBREV,
-            MessageBodyText("Topp! Vad är mailadressen?", TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS)
-        )
-        this.setExpectedReturnType(MESSAGE_NYHETSBREV, EmailAdress())
         this.createMessage(
             MESSAGE_TIPSA,
             MessageBodyText(
@@ -958,7 +959,7 @@ constructor(
         )
 
         this.createMessage(
-            "message.avslutok",
+            MESSAGE_AVSLUTOK,
             MessageBodySingleSelect(
                 "Okej! Trevligt att chattas, ha det fint och hoppas vi hörs igen!",
                 Lists.newArrayList<SelectItem>(
@@ -1252,6 +1253,7 @@ constructor(
                 addToChat(m, userContext)
                 nxtMsg = MESSAGE_NAGOTMER
             }
+
             "message.uwlimit.housingsize", "message.uwlimit.householdsize" -> nxtMsg =
                     handleUnderwritingLimitResponse(userContext, m, m.baseMessageId)
             MESSAGE_TIPSA -> {
