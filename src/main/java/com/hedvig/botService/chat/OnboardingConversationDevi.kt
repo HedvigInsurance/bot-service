@@ -365,11 +365,14 @@ constructor(
                 SelectOption("Okej!", MESSAGE_NAGOTMER),
                 SelectOption("Tack, men nej tack", MESSAGE_AVSLUTOK)
             )
-            ){ m, uc, _ ->
-                if (m.selectedItem.value.equals(MESSAGE_NAGOTMER)){
+            ){ body, uc, message ->
+                if (body.selectedItem.value.equals(MESSAGE_NAGOTMER)){
                     uc.onBoardingData.newsLetterEmail = uc.onBoardingData.email
                 }
-                m.selectedItem.value
+                addToChat(message, uc)
+                body.text = body.selectedItem.text
+                body.selectedItem.value
+                body.selectedItem.value
             }
         )
 
