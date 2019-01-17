@@ -1,18 +1,5 @@
 package com.hedvig.botService.chat;
 
-import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE;
-import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW;
-import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE;
-import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE_END;
-import static com.hedvig.botService.chat.ClaimsConversation.PHONE_NUMBER;
-import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
-import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.when;
-
 import com.google.common.collect.Iterables;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.Message;
@@ -30,6 +17,19 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
+
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE;
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW;
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE;
+import static com.hedvig.botService.chat.ClaimsConversation.MESSAGE_CLAIMS_ASK_PHONE_END;
+import static com.hedvig.botService.chat.ClaimsConversation.PHONE_NUMBER;
+import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
+import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ClaimsConversationTest {
@@ -162,7 +162,7 @@ public class ClaimsConversationTest {
     m.body.text = TOLVANSSON_PHONE_NUMBER;
     testConversation.handleMessage(userContext,m);
 
-    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
+    assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
     assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
   }
 
@@ -187,7 +187,10 @@ public class ClaimsConversationTest {
 
     testConversation.handleMessage(userContext, m);
 
-    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
+    val lastMessage = userContext.getMemberChat().chatHistory.get(0);
+    assertThat(lastMessage.body.text).isEqualTo(TOLVANSSON_PHONE_NUMBER);
+
+    assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_ASK_PHONE_END);
     assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
   }
 
