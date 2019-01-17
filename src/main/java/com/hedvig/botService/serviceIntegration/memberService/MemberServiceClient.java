@@ -49,6 +49,6 @@ public interface MemberServiceClient {
   @RequestMapping(value = "/_/addresslookup/swe", method = RequestMethod.POST)
   SweAddressResponse lookupAddressSwe(@NotNull SweAddressRequest request);
 
-  @RequestMapping(value = "/{memberId}/updatePhoneNumber", method = RequestMethod.POST)
+  @RequestMapping(value = "/i/member/{memberId}/updatePhoneNumber", method = RequestMethod.POST)
   void updatePhoneNumber(@PathVariable("memberId") String memberId, @RequestBody UpdatePhoneNumberRequest request);
 }

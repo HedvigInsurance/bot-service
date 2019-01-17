@@ -43,7 +43,6 @@ public class ClaimsConversation extends Conversation {
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE = "message.claims.ask.existing.phone";
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW = "message.claims.ask.existing.phone.ask.new";
   static final String PHONE_NUMBER = "{PHONE_NUMBER}"; // The phone that we have from the onboarding;
-  static final String PHONE_CLAIM = "{PHONE_CLAIM}"; // emergency phone for the claim, will be set only if you don't have PHONE_NUMBER or the user wants otherwise
   /*
    * Need to be stateless. I.e no variables apart from logger
    * */
@@ -278,14 +277,8 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void assignPhoneNumberToUserContext(UserContext userContext, Message m, boolean shouldBeCalledRightAway) {
-    val onBoardingPhone = userContext.getOnBoardingData().getPhoneNumber();
-    if (onBoardingPhone == null || onBoardingPhone.isEmpty()) {
-      userContext.getOnBoardingData().setPhoneNumber(m.body.text);
-      memberService.updatePhoneNumber(userContext.getMemberId(), m.body.text.trim());
-    }
-
-    userContext.putUserData("{PHONE_CLAIM}", m.body.text);
-    addToChat(m, userContext); // Response parsed to nice format
+    userContext.getOnBoardingData().setPhoneNumber(m.body.text);
+    memberService.updatePhoneNumber(userContext.getMemberId(), m.body.text.trim());
 
     if (shouldBeCalledRightAway) {
       sendCallMeEvent(userContext, m);
