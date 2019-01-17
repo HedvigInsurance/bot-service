@@ -4,6 +4,7 @@ package com.hedvig.botService.chat
 import com.hedvig.botService.chat.Conversation.EventTypes
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_50K_LIMIT_YES_YES
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_BANKIDJA
+import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_NAGOTMER
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_ONBOARDINGSTART_REPLY_NAME
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_VARBORDUFELADRESS
 import com.hedvig.botService.enteties.UserContext
@@ -578,6 +579,22 @@ class OnboardingConversationDeviTest {
         testConversation.receiveMessage(userContext, message)
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_VARBORDUFELADRESS)
+    }
+
+    @Test
+    fun dontAskForTheEmailAddress_whenHouseFlow_nextMessageIs_MESSAGE_NAGOTMER(){
+
+        val remarkableEmail = "remarkable.testing@hedvig.com"
+
+        userContext.onBoardingData.email = remarkableEmail
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_HUS)
+        (message.body as MessageBodySingleSelect).choices.findLast { it.value == MESSAGE_NAGOTMER }!!.selected = true
+
+        testConversation.receiveMessage(userContext, message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_NAGOTMER)
+        assertThat(userContext.onBoardingData.newsLetterEmail).isEqualTo(remarkableEmail)
+
     }
 
 
