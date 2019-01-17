@@ -30,5 +30,9 @@ public class MessageBodyNumber extends MessageBodyText {
 
   MessageBodyNumber() {}
 
+  public Integer getValue(){
+    return Integer.parseInt(text);
+  }
+
 
 }

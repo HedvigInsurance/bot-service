@@ -139,30 +139,6 @@ abstract class Conversation internal constructor() {
     addToChat(messageList[startId], userContext)
   }
 
-  open fun getValue(body: MessageBodyNumber): Int {
-    return Integer.parseInt(body.text)
-  }
-
-  open fun getValue(body: MessageBodySingleSelect): String {
-
-    for (o in body.choices) {
-      if (SelectOption::class.java.isInstance(o) && SelectOption::class.java.cast(o).selected) {
-        return SelectOption::class.java.cast(o).value
-      }
-    }
-    return ""
-  }
-
-  open fun getValue(body: MessageBodyMultipleSelect): ArrayList<String> {
-    val selectedOptions = ArrayList<String>()
-    for (o in body.choices) {
-      if (SelectOption::class.java.isInstance(o) && SelectOption::class.java.cast(o).selected) {
-        selectedOptions.add(SelectOption::class.java.cast(o).value)
-      }
-    }
-    return selectedOptions
-  }
-
   fun setExpectedReturnType(messageId: String, type: HedvigDataType) {
     if (getMessage(messageId) != null) {
       log.debug(

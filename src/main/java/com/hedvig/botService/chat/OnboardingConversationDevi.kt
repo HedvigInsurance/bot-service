@@ -1154,30 +1154,6 @@ constructor(
     }
     // --------------------------------------------------------------------------- //
 
-    override fun getValue(body: MessageBodyNumber): Int {
-        return Integer.parseInt(body.text)
-    }
-
-    override fun getValue(body: MessageBodySingleSelect): String {
-
-        for (o in body.choices) {
-            if (SelectOption::class.java.isInstance(o) && SelectOption::class.java.cast(o).selected) {
-                return SelectOption::class.java.cast(o).value
-            }
-        }
-        return ""
-    }
-
-    override fun getValue(body: MessageBodyMultipleSelect): ArrayList<String> {
-        val selectedOptions = ArrayList<String>()
-        for (o in body.choices) {
-            if (SelectOption::class.java.isInstance(o) && SelectOption::class.java.cast(o).selected) {
-                selectedOptions.add(SelectOption::class.java.cast(o).value)
-            }
-        }
-        return selectedOptions
-    }
-
     // ------------------------------------------------------------------------------- //
     override fun receiveEvent(e: Conversation.EventTypes, value: String, userContext: UserContext) {
         when (e) {
@@ -1290,7 +1266,7 @@ constructor(
                 nxtMsg = "message.frionboardingfragatack"
             }
             "message.pers" -> {
-                val nrPersons = getValue(m.body as MessageBodyNumber)
+                val nrPersons = (m.body as MessageBodyNumber).value
                 onBoardingData.setPersonInHouseHold(nrPersons)
                 m.body.text = if (nrPersons == 1) {
                     "Jag bor själv"
@@ -1432,7 +1408,7 @@ constructor(
                 addToChat(m, userContext)
             }
             MESSAGE_FORSAKRINGIDAGJA, "message.bolag.annat.expand" -> {
-                val comp = getValue(m.body as MessageBodySingleSelect)
+                val comp = (m.body as MessageBodySingleSelect).selectedItem.value
                 if (!comp.startsWith("message.")) {
                     userContext.onBoardingData.currentInsurer = comp
                     m.body.text = comp
