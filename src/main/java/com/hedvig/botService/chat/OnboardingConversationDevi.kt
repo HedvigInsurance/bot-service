@@ -117,7 +117,7 @@ constructor(
             "message.membernotfound",
             MessageBodySingleSelect(
                 "Hmm, det verkar som att du inte är medlem här hos mig ännu" + "\u000CMen jag tar gärna fram ett försäkringsförslag till dig, det är precis som allt annat med mig superenkelt",
-                Lists.newArrayList<SelectItem>(SelectOption("Låter bra!", MESSAGE_FORSLAGSTART))
+                Lists.newArrayList<SelectItem>(SelectOption("Låter bra!", MESSAGE_ONBOARDINGSTART_ASK_EMAIL))
             )
         )
 
@@ -320,13 +320,13 @@ constructor(
                         "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
                         false
                     ),
-                    SelectOption("Jag är inte medlem", MESSAGE_NOTMEMBER)
+                    SelectOption("Jag är inte medlem", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
                 )
             ) { m, uc, _ ->
                 val obd = uc.onBoardingData
                 if (m.selectedItem.value == "message.bankid.autostart.respond") {
                     obd.bankIdMessage = "message.bankid.start"
-                } else if (m.selectedItem.value == MESSAGE_NOTMEMBER) {
+                } else if (m.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
                     uc.putUserData(LOGIN, "false")
                 }
 
