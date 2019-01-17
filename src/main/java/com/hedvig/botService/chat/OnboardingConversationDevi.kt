@@ -108,6 +108,7 @@ constructor(
             ) { body, userContext, message ->
                 val trimmedEmail = body.text.trim()
                 userContext.onBoardingData.email = trimmedEmail
+                memberService.updateEmail(userContext.memberId, trimmedEmail)
                 body.text = "Min email är $trimmedEmail"
                 addToChat(message, userContext)
                 MESSAGE_FORSLAGSTART
