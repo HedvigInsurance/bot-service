@@ -1,6 +1,5 @@
 package com.hedvig.botService.chat;
 
-import com.hedvig.botService.enteties.SignupCodeRepository;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
@@ -26,7 +25,6 @@ public class ConversationFactoryTest {
 
   private final Class<?> conversationClass;
   @Mock ClaimsService claimsService;
-  @Mock SignupCodeRepository signupCodeRepository;
   @Mock ApplicationEventPublisher applicationEventPublisher;
   @Mock StatusBuilder statusBuilder;
   @Mock Environment springEnvironment;
@@ -65,7 +63,6 @@ public class ConversationFactoryTest {
             memberService,
             productPricingService,
             triggerService,
-            signupCodeRepository,
             applicationEventPublisher,
             claimsService,
             statusBuilder,

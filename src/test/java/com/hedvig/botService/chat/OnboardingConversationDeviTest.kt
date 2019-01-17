@@ -6,7 +6,6 @@ import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_5
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_BANKIDJA
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_ONBOARDINGSTART_REPLY_NAME
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_VARBORDUFELADRESS
-import com.hedvig.botService.enteties.SignupCodeRepository
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.enteties.userContextHelpers.UserData
@@ -42,9 +41,6 @@ class OnboardingConversationDeviTest {
     private lateinit var productPricingService: ProductPricingService
 
     @Mock
-    private lateinit var signupRepo: SignupCodeRepository
-
-    @Mock
     private lateinit var publisher: ApplicationEventPublisher
 
     @Mock
@@ -59,7 +55,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, signupRepo, publisher, conversationFactory
+            memberService, productPricingService, publisher, conversationFactory
         )
     }
 

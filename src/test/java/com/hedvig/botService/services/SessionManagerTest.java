@@ -1,19 +1,11 @@
 package com.hedvig.botService.services;
 
-import static com.hedvig.botService.enteties.message.MessageHeader.HEDVIG_USER_ID;
-import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.hedvig.botService.chat.Conversation;
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
-import com.hedvig.botService.enteties.SignupCodeRepository;
 import com.hedvig.botService.enteties.TrackingDataRespository;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.UserContextRepository;
@@ -26,8 +18,6 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResp
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusType;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +26,16 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
+
+import java.util.Optional;
+import java.util.UUID;
+
+import static com.hedvig.botService.enteties.message.MessageHeader.HEDVIG_USER_ID;
+import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SessionManagerTest {
@@ -49,8 +49,6 @@ public class SessionManagerTest {
 
   @Mock ProductPricingService productPricingService;
 
-  @Mock SignupCodeRepository signupCodeRepository;
-
   @Mock TrackingDataRespository campaignCodeRepository;
 
   @Mock ConversationFactory conversationFactory;
@@ -61,8 +59,6 @@ public class SessionManagerTest {
   @Mock MessagesService messagesService;
 
   @Mock ClaimsService claimsService;
-
-  @Mock SignupCodeRepository signRepo;
 
   @Mock
   ApplicationEventPublisher applicationEventPublisher;
@@ -166,7 +162,7 @@ public class SessionManagerTest {
   }
 
   private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, signRepo, applicationEventPublisher, conversationFactory);
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory);
   }
 
   private BankIdAuthResponse makeBankIdResponse() {
