@@ -130,7 +130,7 @@ public class ClaimsConversation extends Conversation {
 
     createMessage(MESSAGE_CLAIMS_OK, new MessageBodyParagraph("Tusen tack!"), 2000);
 
-    createMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE, new MessageBodySingleSelect("Om jag skulle behöva kontakta dig. Ska vi använda detta nummer {PHONE_NUMBER} ?",
+    createMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE, new MessageBodySingleSelect("Om jag skulle behöva kontakta dig. Ska vi använda detta nummer {PHONE_NUMBER}?",
       new ArrayList<SelectItem>() {
         {
           add(new SelectOption("Ja", MESSAGE_CLAIMS_ASK_PHONE_END));
