@@ -370,6 +370,17 @@ class OnboardingConversationDeviTest {
 
     }
 
+    @Test
+    fun messageAskEmail_always_forwardsEmailToMemberService() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
+        message.body.text = "tolvan@hej.com"
+
+        testConversation.receiveMessage(userContext, message)
+
+        then(memberService).should(times(1)).updateEmail(TOLVANSSON_MEMBER_ID, "tolvan@hej.com")
+
+    }
+
 
     @Test
     fun lookupAddressDetails_whenMemberEntersTheirSSN() {
