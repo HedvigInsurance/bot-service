@@ -1744,7 +1744,6 @@ constructor(
         const val MESSAGE_ONBOARDINGSTART_REPLY_NAME = "message.onboardingstart.reply.name"
         const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL = "message.onboardingstart.ask.email"
         const val MESSAGE_FORSLAG = "message.forslag"
-        @JvmField
         const val MESSAGE_FORSLAG2 = "message.forslag2"
         const val MESSAGE_50K_LIMIT = "message.50k.limit"
         const val MESSAGE_50K_LIMIT_YES_NO = "message.50k.limit.yes.no"
