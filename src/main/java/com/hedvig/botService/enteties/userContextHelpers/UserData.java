@@ -71,10 +71,6 @@ public class UserData {
     return ctx.getDataEntry(FIRST_NAME);
   }
 
-  public void setStudent(String student) {
-    ctx.putUserData(IS_STUDENT, student);
-  }
-
   public Boolean isStudent() {
     return (ctx.getDataEntry(IS_STUDENT) != null
         && Objects.equals(ctx.getDataEntry(IS_STUDENT), "1"));

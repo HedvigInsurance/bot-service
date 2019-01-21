@@ -5,6 +5,7 @@ import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.enteties.userContextHelpers.UserData
+import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
@@ -76,7 +77,7 @@ constructor(
                 )
             )
             { body, u, message ->
-                val name = body.text.trim().replace(Regex("[!.,]"), "").replace(Regex("Hej jag heter", RegexOption.IGNORE_CASE), "").trim().toLowerCase().capitalize()
+                val name = body.text.trim().replace(Regex("[!.,]"), "").replace(Regex("Hej jag heter", RegexOption.IGNORE_CASE), "").trim().capitalizeAll()
 
                 u.onBoardingData.firstName = name
                 addToChat(message, u)
@@ -254,7 +255,7 @@ constructor(
                 )
             ) { b, uc, m ->
 
-                val familyName = b.text.trim().toLowerCase().capitalize()
+                val familyName = b.text.trim().capitalizeAll()
                 val firstName = uc.onBoardingData.firstName
                 if(firstName != null){
                     if(firstName.split(" ").size > 1 && firstName.endsWith(familyName, true) == true){
@@ -327,6 +328,7 @@ constructor(
                 val obd = uc.onBoardingData
                 if (m.selectedItem.value == "message.bankid.autostart.respond") {
                     obd.bankIdMessage = "message.bankid.start"
+                    uc.putUserData(LOGIN, "true")
                 } else if (m.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
                     uc.putUserData(LOGIN, "false")
                 }
@@ -1245,9 +1247,10 @@ constructor(
                 if (sitem2.value == "message.studentja") {
                     m.body.text = "Yes"
                     addToChat(m, userContext)
-                    userContext.putUserData("{STUDENT}", "1")
+                    userContext.putUserData(IS_STUDENT, "1")
                 } else {
                     m.body.text = "Nix"
+                    userContext.putUserData(IS_STUDENT, "0")
                 }
             }
 
@@ -1719,6 +1722,10 @@ constructor(
         val messageID = baseMessage + errorPostfix
         log.info("Adding bankIDerror message: {}", messageID)
         addToChat(getMessage(messageID), uc)
+    }
+
+    private fun String.capitalizeAll():String{
+        return this.split(regex = Regex("\\s")).map { it.toLowerCase().capitalize() }.joinToString(" ")
     }
 
     companion object {

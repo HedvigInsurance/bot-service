@@ -317,9 +317,9 @@ class OnboardingConversationDeviTest {
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_ONBOARDINGSTART_REPLY_NAME)
-        assertThat(lastMessage.body.text).isEqualTo("Trevligt att träffas Hejs jag heter tolvan!")
+        assertThat(lastMessage.body.text).isEqualTo("Trevligt att träffas Hejs Jag Heter Tolvan!")
 
-        assertThat(userContext.onBoardingData.firstName).isEqualTo("Hejs jag heter tolvan")
+        assertThat(userContext.onBoardingData.firstName).isEqualTo("Hejs Jag Heter Tolvan")
     }
 
     @Test
@@ -517,18 +517,18 @@ class OnboardingConversationDeviTest {
     @Test
     fun receiveMessageLagenhetAddressnotfound_whenMemberHasTwoNamesInFirstnameThatMatchesLastname_thenDoNotRemoveLastName() {
 
-        userContext.onBoardingData.firstName = "a Tolvan"
+        userContext.onBoardingData.firstName = "A Tolvan"
 
         val message = getMessage("message.lagenhet.addressnotfound")
 
         val body = message.body as MessageBodyText
-        body.text = "a Tolvan"
+        body.text = "A Tolvan"
 
         testConversation.receiveMessage(userContext, message)
 
         userContext.onBoardingData.let {
-            assertThat(it.firstName).isEqualTo("a Tolvan")
-            assertThat(it.familyName).isEqualTo("A tolvan")
+            assertThat(it.firstName).isEqualTo("A Tolvan")
+            assertThat(it.familyName).isEqualTo("A Tolvan")
         }
     }
 
