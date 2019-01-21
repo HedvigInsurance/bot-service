@@ -2,9 +2,14 @@ package com.hedvig.botService.enteties;
 
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.message.MessageHeader;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import com.hedvig.botService.web.dto.AddMessageRequestDTO;
+import com.hedvig.botService.web.dto.BackOfficeAnswerDTO;
+import lombok.Getter;
+import lombok.ToString;
+import lombok.var;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,10 +19,11 @@ import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
-import lombok.Getter;
-import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.hedvig.botService.chat.OnboardingConversationDevi.MESSAGE_FORSLAG2;
 
 /*
  * All timestamp information is set from here
@@ -102,11 +108,20 @@ public class MemberChat {
         m.header.editAllowed = false;
       }
     }
-    if (!hasUserInput) return;
+    if (!hasUserInput) {
+      return;
+    }
 
+    var backOfficeReplied = false;
     for (Message m : chatHistory) {
+      backOfficeReplied = backOfficeReplied
+        || m.id.equals(BackOfficeAnswerDTO.MESSAGE_ID)
+        || !m.id.equals(AddMessageRequestDTO.MESSAGE_ID);
+
       if (!(m.header.fromId == MessageHeader.HEDVIG_USER_ID)) {
-        m.header.editAllowed = true;
+        if (!backOfficeReplied && !m.getBaseMessageId().equals(MESSAGE_FORSLAG2)) {
+          m.header.editAllowed = true;
+        }
         break;
       }
     }
