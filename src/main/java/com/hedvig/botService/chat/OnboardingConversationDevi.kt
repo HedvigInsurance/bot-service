@@ -324,16 +324,18 @@ constructor(
                     ),
                     SelectOption("Jag är inte medlem", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
                 )
-            ) { m, uc, _ ->
+            ) { body, uc, message ->
+                body.text = body.selectedItem.text
+                addToChat(message, uc)
                 val obd = uc.onBoardingData
-                if (m.selectedItem.value == "message.bankid.autostart.respond") {
+                if (body.selectedItem.value == "message.bankid.autostart.respond") {
                     obd.bankIdMessage = "message.bankid.start"
                     uc.putUserData(LOGIN, "true")
-                } else if (m.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
+                } else if (body.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
                     uc.putUserData(LOGIN, "false")
                 }
 
-                m.selectedItem.value
+                body.selectedItem.value
             })
         setupBankidErrorHandlers("message.bankid.start")
 

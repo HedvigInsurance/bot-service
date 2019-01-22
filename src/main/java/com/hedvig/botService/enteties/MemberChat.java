@@ -116,7 +116,7 @@ public class MemberChat {
     for (Message m : chatHistory) {
       backOfficeReplied = backOfficeReplied
         || m.id.equals(BackOfficeAnswerDTO.MESSAGE_ID)
-        || !m.id.equals(AddMessageRequestDTO.MESSAGE_ID);
+        || m.id.equals(AddMessageRequestDTO.MESSAGE_ID);
 
       if (!(m.header.fromId == MessageHeader.HEDVIG_USER_ID)) {
         if (!backOfficeReplied && !m.getBaseMessageId().equals(MESSAGE_FORSLAG2)) {
