@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_BO;
 import static com.hedvig.botService.chat.OnboardingConversationDevi.MESSAGE_FORSLAG2;
 
 /*
@@ -116,7 +117,8 @@ public class MemberChat {
     for (Message m : chatHistory) {
       backOfficeReplied = backOfficeReplied
         || m.id.equals(BackOfficeAnswerDTO.MESSAGE_ID)
-        || m.id.equals(AddMessageRequestDTO.MESSAGE_ID);
+        || m.id.equals(AddMessageRequestDTO.MESSAGE_ID)
+        || m.id.equals(FREE_CHAT_FROM_BO);
 
       if (!(m.header.fromId == MessageHeader.HEDVIG_USER_ID)) {
         if (!backOfficeReplied && !m.getBaseMessageId().equals(MESSAGE_FORSLAG2)) {
