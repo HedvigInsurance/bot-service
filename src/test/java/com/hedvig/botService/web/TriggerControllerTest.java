@@ -74,7 +74,7 @@ public class TriggerControllerTest {
         .andExpect(status().is2xxSuccessful())
         .andExpect(
             jsonPath("$.url")
-                .value(triggerURL + "&gui=native&color=%23651EFF&bordercolor=%230F007A"))
+                .value(triggerURL))
         .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
   }
 
