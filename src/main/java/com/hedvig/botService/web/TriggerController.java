@@ -55,7 +55,7 @@ public class TriggerController {
     }
 
     TriggerResponseDTO response =
-        new TriggerResponseDTO(triggerUrl + "&gui=native&color=%23651EFF&bordercolor=%230F007A");
+        new TriggerResponseDTO(triggerUrl);
     return ResponseEntity.ok(response);
   }
 
