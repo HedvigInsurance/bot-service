@@ -940,7 +940,7 @@ constructor(
             "message.kontraktklar.ss",
             MessageBodySingleSelect(
                 "Hurra! 🎉 Välkommen som medlem {NAME}!",
-                SelectLink.toDashboard("Börja utforska appen 💥", "message.noop")
+                SelectLink.toDashboard("Kolla in appen och bjud in dina vänner till Hedvig! 🙌 💕", "message.noop")
             )
         )
 
