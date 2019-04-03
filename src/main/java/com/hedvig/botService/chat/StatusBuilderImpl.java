@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 *Fredag*
 09-18 – Hedvig svarar inom 5 min
+11-11.45 - Hedvig svarar inom {11.45 - current time rounded to 5 minutes and with a 5 minute buffer} min
 18-23 – Hedvig svarar inom 30 min
 23-02 – Hedvig svarar i morgon
 02-09.59 – Hedvig svarar efter kl. 10
@@ -29,6 +30,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class StatusBuilderImpl implements StatusBuilder {
 
+  public String getFridayRetroMeetingTime(int minute) {
+    int currentMinute = minute;
+    int roundedTime = currentMinute;
+    int buffer = 5;
+
+    if(currentMinute % 5 != 0) {
+      int remainder = currentMinute % 5;
+      roundedTime = currentMinute - remainder;
+    }
+
+    int endTime = 45;
+    int timeToAnswer = (endTime + buffer) - roundedTime;
+    return "Hedvig svarar inom " + timeToAnswer + " min";
+  }
+
   @Override
   public String getStatusMessage(Clock c) {
 
@@ -37,6 +53,7 @@ public class StatusBuilderImpl implements StatusBuilder {
 
     final DayOfWeek dayOfWeek = time.getDayOfWeek();
     final int hour = time.getHour();
+    final int minute = time.getMinute();
     switch (dayOfWeek) {
       case MONDAY:
       case TUESDAY:
@@ -64,6 +81,9 @@ public class StatusBuilderImpl implements StatusBuilder {
           }
           if (hour <= 9) {
             return "Hedvig svarar efter kl. 9";
+          }
+          if (hour >= 11 && hour <= 11.45) {
+            getFridayRetroMeetingTime(minute);
           }
           if (hour < 18) {
             return "Hedvig svarar inom 5 min";
