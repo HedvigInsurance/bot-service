@@ -30,18 +30,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class StatusBuilderImpl implements StatusBuilder {
 
-  public String getFridayRetroMeetingTime(int minute) {
-    int currentMinute = minute;
+  public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime) {
     int roundedTime = currentMinute;
-    int buffer = 5;
+    final int buffer = 5;
 
     if(currentMinute % 5 != 0) {
       int remainder = currentMinute % 5;
       roundedTime = currentMinute - remainder;
     }
 
-    int endTime = 45;
-    int timeToAnswer = (endTime + buffer) - roundedTime;
+    int timeToAnswer = (meetingEndTime + buffer) - roundedTime;
     return "Hedvig svarar inom " + timeToAnswer + " min";
   }
 
@@ -83,7 +81,8 @@ public class StatusBuilderImpl implements StatusBuilder {
             return "Hedvig svarar efter kl. 9";
           }
           if (hour >= 11 && hour <= 11.45) {
-            getFridayRetroMeetingTime(minute);
+            int meetingEndTime = 45;
+            return getFridayRetroMeetingTime(minute, meetingEndTime);
           }
           if (hour < 18) {
             return "Hedvig svarar inom 5 min";
