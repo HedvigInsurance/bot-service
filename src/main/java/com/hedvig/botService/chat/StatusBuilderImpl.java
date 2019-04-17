@@ -6,6 +6,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.ArrayList;
+
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Component;
 
@@ -56,9 +60,14 @@ same as regular weekend and redDays
  */
 
 @Component
+@Slf4j
 public class StatusBuilderImpl implements StatusBuilder {
-  private static String[] redDays = { "2019-01-01", "2019-01-06", "2019-04-19", "2019-04-21", "2019-04-22",
-    "2019-05-01", "2019-05-30", "2019-06-06", "2019-06-21", "2019-06-22", "2019-12-25", "2019-12-26" };
+
+  private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(LocalDate.parse("2019-01-01"),
+    LocalDate.parse("2019-01-06"), LocalDate.parse("2019-04-19"), LocalDate.parse("2019-04-21"),
+    LocalDate.parse("2019-04-22"), LocalDate.parse("2019-05-01"), LocalDate.parse("2019-05-30"),
+    LocalDate.parse("2019-06-06"), LocalDate.parse("2019-06-21"), LocalDate.parse("2019-06-22"),
+    LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26")));
 
   public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime) {
     int roundedTime = currentMinute;
@@ -71,16 +80,6 @@ public class StatusBuilderImpl implements StatusBuilder {
 
     int timeToAnswer = (meetingEndTime + buffer) - roundedTime;
     return "Hedvig svarar inom " + timeToAnswer + " min";
-  }
-
-  public Boolean redDay(String time) {
-    int count = 0;
-
-    for (String day : redDays) {
-      if (count == 1) return true;
-      if (day.equals(time)) count += 1;
-    }
-    return count == 1;
   }
 
   public String getRedDayAndWeekendAnswerTimes(int hour) {
@@ -96,16 +95,16 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
   }
 
-  public String getSummerWeekdayAnswerTimes(int hour, String dayOfWeek, int minute) {
-    if(dayOfWeek.equals("FRIDAY") && hour == 11 && minute >= 0 && minute <= 45) {
-      return getFridayRetroMeetingTime(minute, 45);
+  public String getSummerWeekdayAnswerTimes(int hour, DayOfWeek dayOfWeek, int minute) {
+    if(dayOfWeek.equals(DayOfWeek.FRIDAY) && hour == 11 && minute >= 0 && minute <= 45) {
+        return getFridayRetroMeetingTime(minute, 45);
     } else {
       switch (dayOfWeek) {
-        case "MONDAY":
-        case "TUESDAY":
-        case "WEDNESDAY":
-        case "THURSDAY":
-        case "FRIDAY": {
+        case MONDAY:
+        case TUESDAY:
+        case WEDNESDAY:
+        case THURSDAY:
+        case FRIDAY: {
           if (hour <= 2) {
             return "Hedvig svarar imorgon";
           }
@@ -120,17 +119,15 @@ public class StatusBuilderImpl implements StatusBuilder {
             return "Hedvig svarar imorgon";
           }
         }
+        default: {
+          log.error("getSummerWeekdayAnswerTimes method has not returned a hedvig answer time");
+          return "";
+        }
       }
-      return "";
     }
   }
 
-  private String dateToString(ZonedDateTime time) {
-    return time.toString().substring(0, 10);
-  }
-
-  public boolean summerTime(String date) {
-    LocalDate todayDate = LocalDate.parse(date);
+  public boolean isSummerTime(LocalDate todayDate) {
     LocalDate summerStart = LocalDate.parse("2019-06-14");
     LocalDate summerEnd = LocalDate.parse("2019-08-16");
     return todayDate.isAfter(summerStart) && todayDate.isBefore(summerEnd);
@@ -145,13 +142,12 @@ public class StatusBuilderImpl implements StatusBuilder {
     final DayOfWeek dayOfWeek = time.getDayOfWeek();
     final int hour = time.getHour();
     final int minute = time.getMinute();
-    final String dateTodayStringFormat = dateToString(time);
-    final String dayOfWeekStringFormat = dayOfWeek.toString();
+    final LocalDate todayDate = LocalDate.now();
 
-    if (redDay(dateTodayStringFormat)) {
+    if (redDays.contains(todayDate)) {
       return getRedDayAndWeekendAnswerTimes(hour);
-    } else if (summerTime(dateTodayStringFormat) && (!dayOfWeekStringFormat.equals("SATURDAY") && !dayOfWeekStringFormat.equals("SUNDAY"))) {
-      return getSummerWeekdayAnswerTimes(hour, dayOfWeekStringFormat, minute);
+    } else if (isSummerTime(todayDate) && (!dayOfWeek.equals(DayOfWeek.SATURDAY)) && !dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+      return getSummerWeekdayAnswerTimes(hour, dayOfWeek, minute);
     } else {
 
       switch (dayOfWeek) {
@@ -200,11 +196,11 @@ public class StatusBuilderImpl implements StatusBuilder {
         case SUNDAY: {
           return getRedDayAndWeekendAnswerTimes(hour);
         }
-
+        default: {
+          log.error("getstatusmessage method has not returned a hedvig answer time");
+          return "";
+        }
       }
-
-      return "";
-
     }
   }
 }
