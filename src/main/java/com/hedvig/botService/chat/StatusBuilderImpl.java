@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,11 +64,13 @@ same as regular weekend and redDays
 @Slf4j
 public class StatusBuilderImpl implements StatusBuilder {
 
-  private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(LocalDate.parse("2019-01-01"),
-    LocalDate.parse("2019-01-06"), LocalDate.parse("2019-04-19"), LocalDate.parse("2019-04-21"),
-    LocalDate.parse("2019-04-22"), LocalDate.parse("2019-05-01"), LocalDate.parse("2019-05-30"),
-    LocalDate.parse("2019-06-06"), LocalDate.parse("2019-06-21"), LocalDate.parse("2019-06-22"),
-    LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26")));
+  private static int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+  private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(LocalDate.parse(currentYear + "-01-01"),
+    LocalDate.parse(currentYear + "-01-06"), LocalDate.parse(currentYear + "-04-19"), LocalDate.parse(currentYear + "-04-21"),
+    LocalDate.parse(currentYear + "-04-22"), LocalDate.parse(currentYear + "-05-01"), LocalDate.parse(currentYear + "-05-30"),
+    LocalDate.parse(currentYear + "-06-06"), LocalDate.parse(currentYear + "-06-21"), LocalDate.parse(currentYear + "-06-22"),
+    LocalDate.parse(currentYear + "-12-25"), LocalDate.parse(currentYear + "-12-26")));
 
   public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime) {
     int roundedTime = currentMinute;
@@ -128,8 +131,8 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   public boolean isSummerTime(LocalDate todayDate) {
-    LocalDate summerStart = LocalDate.parse("2019-06-14");
-    LocalDate summerEnd = LocalDate.parse("2019-08-16");
+    LocalDate summerStart = LocalDate.parse(currentYear + "-06-14");
+    LocalDate summerEnd = LocalDate.parse(currentYear + "-08-16");
     return todayDate.isAfter(summerStart) && todayDate.isBefore(summerEnd);
   }
 
