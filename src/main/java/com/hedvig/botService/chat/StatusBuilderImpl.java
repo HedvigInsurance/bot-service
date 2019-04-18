@@ -66,11 +66,11 @@ public class StatusBuilderImpl implements StatusBuilder {
 
   private static int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
-  private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(LocalDate.parse(currentYear + "-01-01"),
-    LocalDate.parse(currentYear + "-01-06"), LocalDate.parse(currentYear + "-04-19"), LocalDate.parse(currentYear + "-04-21"),
-    LocalDate.parse(currentYear + "-04-22"), LocalDate.parse(currentYear + "-05-01"), LocalDate.parse(currentYear + "-05-30"),
-    LocalDate.parse(currentYear + "-06-06"), LocalDate.parse(currentYear + "-06-21"), LocalDate.parse(currentYear + "-06-22"),
-    LocalDate.parse(currentYear + "-12-25"), LocalDate.parse(currentYear + "-12-26")));
+  private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(LocalDate.parse("2019-01-01"),
+    LocalDate.parse("2019-01-06"), LocalDate.parse("2019-04-19"), LocalDate.parse("2019-04-21"),
+    LocalDate.parse("2019-04-22"), LocalDate.parse("2019-05-01"), LocalDate.parse("2019-05-30"),
+    LocalDate.parse("2019-06-06"), LocalDate.parse("2019-06-21"), LocalDate.parse("2019-06-22"),
+    LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26")));
 
   public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime) {
     int roundedTime = currentMinute;
@@ -180,7 +180,7 @@ public class StatusBuilderImpl implements StatusBuilder {
           if (hour <= 2) {
             return "Hedvig svarar imorgon";
           }
-          if (hour <= 9) {
+          if (hour < 9) {
             return "Hedvig svarar efter kl. 9";
           }
           if (hour == 11 && minute >= 0 && minute <= 45) {
