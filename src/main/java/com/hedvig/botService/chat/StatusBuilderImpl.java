@@ -88,7 +88,6 @@ public class StatusBuilderImpl implements StatusBuilder {
     return "Hedvig svarar inom " + timeToAnswer + " min";
   }
 
-
   public String getRedDayAndWeekendAnswerTimes(int hour) {
     if (hour <= 2) {
       return "Hedvig svarar imorgon";
