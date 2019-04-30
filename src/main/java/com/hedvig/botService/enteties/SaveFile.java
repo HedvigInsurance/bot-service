@@ -1,6 +1,7 @@
 package com.hedvig.botService.enteties;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class SaveFile {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +25,7 @@ public class SaveFile {
   @NotNull String memberId;
 
   public SaveFile(String fileUploadKey, String memberId, Instant timestamp, String mimeType) {
+    this.id = UUID.randomUUID();
     this.fileUploadKey = fileUploadKey;
     this.memberId = memberId;
     this.timestamp = timestamp;

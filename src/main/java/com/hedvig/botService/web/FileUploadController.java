@@ -23,7 +23,7 @@ public class FileUploadController {
 
     public FileUploadDTO getFile(@PathVariable UUID id) {
       SaveFile saveFile = saveFileRepo.findOne(id);
-      FileUploadDTO fileUploadDTO = new FileUploadDTO(saveFile.getFileUploadKey(), saveFile.getTimestamp(), saveFile.getMimeType(), saveFile.getMemberId());
+      FileUploadDTO fileUploadDTO = new FileUploadDTO(saveFile.getId(), saveFile.getFileUploadKey(), saveFile.getTimestamp(), saveFile.getMimeType(), saveFile.getMemberId());
       return fileUploadDTO;
   }
 
@@ -31,7 +31,7 @@ public class FileUploadController {
   public List<FileUploadDTO> getFilesForMember(@PathVariable String id) {
     List<SaveFile> memberFiles = saveFileRepo.findByMemberId(id);
     return memberFiles.stream()
-      .map(saveFile -> new FileUploadDTO(saveFile.getFileUploadKey(), saveFile.getTimestamp(), saveFile.getMimeType(), saveFile.getMemberId()))
+      .map(saveFile -> new FileUploadDTO(saveFile.getId(), saveFile.getFileUploadKey(), saveFile.getTimestamp(), saveFile.getMimeType(), saveFile.getMemberId()))
       .collect(Collectors.toList());
   }
 }
