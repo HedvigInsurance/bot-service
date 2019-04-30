@@ -72,6 +72,9 @@ public class StatusBuilderImpl implements StatusBuilder {
     LocalDate.parse("2019-06-06"), LocalDate.parse("2019-06-21"), LocalDate.parse("2019-06-22"),
     LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26")));
 
+  final private LocalDate valborgStartDate = LocalDate.parse("2019-04-30");
+  final private LocalDate valborgEndDate = LocalDate.parse("2019-05-01");
+
   public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime) {
     int roundedTime = currentMinute;
     final int buffer = 5;
@@ -84,6 +87,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     int timeToAnswer = (meetingEndTime + buffer) - roundedTime;
     return "Hedvig svarar inom " + timeToAnswer + " min";
   }
+
 
   public String getRedDayAndWeekendAnswerTimes(int hour) {
     if (hour <= 2) {
@@ -147,7 +151,10 @@ public class StatusBuilderImpl implements StatusBuilder {
     final int minute = time.getMinute();
     final LocalDate todayDate = LocalDate.now();
 
-    if (redDays.contains(todayDate)) {
+    if ((todayDate.equals(valborgStartDate) && hour >= 18) || (todayDate.equals(valborgEndDate) && hour <= 23 )) {
+      return "Hedvig svarar den 2a Maj";
+    }
+    else if (redDays.contains(todayDate)) {
       return getRedDayAndWeekendAnswerTimes(hour);
     } else if (isSummerTime(todayDate) && (!dayOfWeek.equals(DayOfWeek.SATURDAY)) && !dayOfWeek.equals(DayOfWeek.SUNDAY)) {
       return getSummerWeekdayAnswerTimes(hour, dayOfWeek, minute);
