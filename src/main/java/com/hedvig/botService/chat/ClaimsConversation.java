@@ -136,7 +136,7 @@ public class ClaimsConversation extends Conversation {
           MICROPHONE_EMOJI + " Var och när hände det?\n" +
           MICROPHONE_EMOJI + " Vad/vem tog skada eller behöver ersättas?"),
       2000);
-    addRelay(MESSAGE_CLAIMS_RECORD_1, "message.claims.audio");
+    addRelay(MESSAGE_CLAIMS_RECORD_2, "message.claims.audio");
 
     createMessage(
       "message.claims.audio",
