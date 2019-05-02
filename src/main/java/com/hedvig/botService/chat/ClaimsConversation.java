@@ -39,7 +39,8 @@ public class ClaimsConversation extends Conversation {
   static final String MESSAGE_CLAIMS_OK = "message.claims.ok";
   static final String MESSAGE_CLAIMS_ASK_PHONE = "message.claims.ask.phone";
   static final String MESSAGE_CLAIMS_ASK_PHONE_END = "message.claims.ask.phone.end";
-  static final String MESSAGE_CLAIMS_RECORD = "message.claims.record";
+  static final String MESSAGE_CLAIMS_RECORD_1 = "message.claims.record.1";
+  static final String MESSAGE_CLAIMS_RECORD_2 = "message.claims.record.2";
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE = "message.claims.ask.existing.phone";
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW = "message.claims.ask.existing.phone.ask.new";
   static final String PHONE_NUMBER = "{PHONE_NUMBER}"; // The phone that we have from the onboarding;
@@ -103,38 +104,17 @@ public class ClaimsConversation extends Conversation {
     createMessage(
       "message.claims.chat",
       new MessageBodyParagraph(
-        "Du ska strax få berätta vad som hänt genom att spela in ett röstmeddelande"),
+        "Du ska få berätta vad som hänt genom att spela in ett röstmeddelande"),
       2000);
-    addRelay("message.claims.chat", "message.claims.chat2");
 
-    createMessage(
-      "message.claims.chat2",
-      new MessageBodyParagraph("Först behöver du bara bekräfta detta"),
-      2000);
-    addRelay("message.claims.chat2", "message.claim.promise");
-
-    createMessage(
-      "message.claim.promise",
-      new MessageBodySingleSelect(
-        "Hedvigs hederslöfte\n\n"
-          + "Jag förstår att Hedvig bygger på tillit. Jag lovar att berätta om händelsen precis som den var, och bara ta ut den ersättning jag har rätt till.\n\n"
-          + "Tar jag ut mer än så inser jag att det drabbar min valda välgörenhetsorganisation",
-        // new MessageBodySingleSelect("HEDVIGS HEDERSLÖFTE\nJag vet att Hedvig bygger på tillit
-        // medlemmar emellan.\nJag lovar att berätta om händelsen precis som den var, och bara
-        // ta ut den ersättning jag har rätt till ur vår gemensamma medlemspott.",
-        new ArrayList<SelectItem>() {
-          {
-            add(new SelectOption("Jag lovar!", MESSAGE_CLAIMS_OK));
-          }
-        }));
 
     createMessage(MESSAGE_CLAIMS_OK, new MessageBodyParagraph("Tusen tack!"), 2000);
 
-    createMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE, new MessageBodySingleSelect("Om jag skulle behöva kontakta dig. Ska vi använda detta nummer {PHONE_NUMBER}?",
-      new ArrayList<SelectItem>() {
+    createMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE, new MessageBodySingleSelect("Om jag skulle behöva kontakta dig över telefon efteråt, ska jag använda detta nummer: {PHONE_NUMBER}?",
+      new ArrayList<>() {
         {
-          add(new SelectOption("Ja", MESSAGE_CLAIMS_ASK_PHONE_END));
-          add(new SelectOption("Nej", MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW));
+          add(new SelectOption("Ja, gör det", MESSAGE_CLAIMS_RECORD_1));
+          add(new SelectOption("Nej, använd ett annat nummer", MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW));
         }
       }));
 
@@ -142,33 +122,21 @@ public class ClaimsConversation extends Conversation {
 
     createMessage(MESSAGE_CLAIMS_ASK_PHONE, new MessageBodyNumber("Om jag skulle behöva nå dig på telefon, vad är ditt nummer?"));
 
-    createMessage(MESSAGE_CLAIMS_ASK_PHONE_END, new MessageBodyParagraph("Toppen!"), 2000);
-
-    addRelay(MESSAGE_CLAIMS_ASK_PHONE_END, MESSAGE_CLAIMS_RECORD);
-
     createMessage(
-      MESSAGE_CLAIMS_RECORD,
-      new MessageBodyParagraph("Berätta vad som har hänt genom att spela in ett röstmeddelande"),
+      MESSAGE_CLAIMS_RECORD_1,
+      new MessageBodyParagraph("Perfekt! Nu ska du få göra röstinspelningen. Försök besvara de här frågorna så utförligt du kan:"),
       2000);
-    addRelay(MESSAGE_CLAIMS_RECORD, "message.claims.record2");
+    addRelay(MESSAGE_CLAIMS_RECORD_1, MESSAGE_CLAIMS_RECORD_2);
 
+    final String MICROPHONE_EMOJI = "\uD83C\uDF99";
     createMessage(
-      "message.claims.record2",
+      MESSAGE_CLAIMS_RECORD_2,
       new MessageBodyParagraph(
-        "Ju mer detaljer du ger, desto snabbare hjälp kan jag ge. Så om du svarar på dessa frågor är vi en god bit på väg: "),
+        MICROPHONE_EMOJI + " Vad har hänt?\n" +
+          MICROPHONE_EMOJI + " Var och när hände det?\n" +
+          MICROPHONE_EMOJI + " Vad/vem tog skada eller behöver ersättas?"),
       2000);
-    addRelay("message.claims.record2", "message.claims.record3");
-
-    createMessage("message.claims.record3", new MessageBodyParagraph("Vad har hänt?"), 2000);
-    addRelay("message.claims.record3", "message.claims.record4");
-
-    createMessage(
-      "message.claims.record4", new MessageBodyParagraph("Var och när hände det?"), 2000);
-    addRelay("message.claims.record4", "message.claims.record5");
-
-    createMessage(
-      "message.claims.record5", new MessageBodyParagraph("Vad eller vem drabbades?"), 2000);
-    addRelay("message.claims.record5", "message.claims.audio");
+    addRelay(MESSAGE_CLAIMS_RECORD_1, "message.claims.audio");
 
     createMessage(
       "message.claims.audio",
@@ -177,22 +145,16 @@ public class ClaimsConversation extends Conversation {
 
     createMessage(
       "message.claims.record.ok",
-      new MessageBodyParagraph("Tack! Det är allt jag behöver just nu"),
+      new MessageBodyParagraph("Tack! Din anmälan kommer nu hanteras"),
       2000);
     addRelay("message.claims.record.ok", "message.claims.record.ok2");
 
+    final String HANDS_EMOJI = "\uD83D\uDE4C";
     createMessage(
       "message.claims.record.ok2",
       new MessageBodyParagraph(
-        "Jag återkommer till dig om jag behöver något mer, eller för att meddela att jag kan betala ut ersättning direkt"),
+        "Jag återkommer här i chatten   om jag behöver något mer eller för att berätta hur det går " + HANDS_EMOJI),
       2000);
-    addRelay("message.claims.record.ok2", "message.claims.record.ok3");
-
-    createMessage(
-      "message.claims.record.ok3",
-      new MessageHeader(MessageHeader.HEDVIG_USER_ID, -1, true),
-      new MessageBodyText(
-        "Tack för att du delat med dig om det som hänt. Ta hand om dig så länge, så hörs vi snart!"));
 
     createMessage("error", new MessageBodyText("Oj nu blev något fel..."));
   }
@@ -244,11 +206,20 @@ public class ClaimsConversation extends Conversation {
         nxtMsg = "message.claims.callme.end";
         break;
 
+      case "message.claims.chat":
+        final String phoneNumber = userContext.getOnBoardingData().getPhoneNumber();
+        if (phoneNumber == null || phoneNumber.isEmpty()) {
+          nxtMsg = MESSAGE_CLAIMS_ASK_PHONE;
+        } else {
+          nxtMsg = MESSAGE_CLAIMS_ASK_EXISTING_PHONE;
+      }
+        break;
+
       case MESSAGE_CLAIMS_ASK_PHONE:
       case MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW:
         assignPhoneNumberToUserContext(userContext, m, false);
         addToChat(m, userContext);
-        nxtMsg = MESSAGE_CLAIMS_ASK_PHONE_END;
+        nxtMsg = MESSAGE_CLAIMS_RECORD_1;
         break;
 
       case MESSAGE_CLAIMS_NOT_ACTIVE:
