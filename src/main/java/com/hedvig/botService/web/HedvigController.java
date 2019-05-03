@@ -1,7 +1,5 @@
 package com.hedvig.botService.web;
 
-import static net.logstash.logback.argument.StructuredArguments.value;
-
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdCollectResponse;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.CollectResponse;
@@ -10,12 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static net.logstash.logback.argument.StructuredArguments.value;
 
 @RestController
 @RequestMapping("/hedvig")
@@ -31,7 +26,7 @@ public class HedvigController {
 
   @PostMapping(path = "/register_campaign")
   public ResponseEntity<Void> campaign(
-      @RequestBody TrackingDTO tracker, @RequestHeader(value = "hedvig.token") String hid) {
+    @RequestBody TrackingDTO tracker, @RequestHeader(value = "hedvig.token") String hid) {
     log.info("Received tracking information for user " + hid);
     sessionManager.saveTrackingInformation(hid, tracker);
     return ResponseEntity.noContent().build();
@@ -39,7 +34,7 @@ public class HedvigController {
 
   @PostMapping("/push-token")
   ResponseEntity<Void> pushToken(
-      @RequestBody String tokenJson, @RequestHeader(value = "hedvig.token") String hid) {
+    @RequestBody String tokenJson, @RequestHeader(value = "hedvig.token") String hid) {
     log.info("Push token for memberId:{}, is: {}", value("memberId", ""), tokenJson);
     sessionManager.saveExpoPushToken(hid, tokenJson);
     return ResponseEntity.noContent().build();
@@ -56,7 +51,9 @@ public class HedvigController {
 
   @PostMapping("collect")
   ResponseEntity<?> collect(
-      @RequestParam String referenceToken, @RequestHeader(value = "hedvig.token") String hid) {
+    @RequestParam String referenceToken,
+    @RequestHeader(value = "hedvig.token") String hid
+  ) {
 
     log.info("Post collect with reference token: {}", value("referenceToken", referenceToken));
     try {
@@ -77,5 +74,17 @@ public class HedvigController {
       log.error("Error collecting: ", e);
       return ResponseEntity.ok(new CollectResponse("ERROR"));
     }
+  }
+
+  @PostMapping("emailSign")
+  ResponseEntity<?> emailSign(@RequestHeader(value = "hedvig.token") String memberId) {
+    log.info("Email login for member: {}", memberId);
+
+    boolean isEmailSignSuccessful = this.sessionManager.emailSign(memberId);
+
+    if (isEmailSignSuccessful) {
+      return ResponseEntity.ok().header("Hedvig.Id", "").build(); // TODO: APPLEUSERID
+    }
+    return ResponseEntity.badRequest().build();
   }
 }
