@@ -143,9 +143,20 @@ public class ClaimsConversationTest {
 
     userContext.getOnBoardingData().setPhoneNumber(null);
 
-    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, ClaimsConversation.MESSAGE_CLAIMS_OK, userContext);
+    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, "message.claims.chat", userContext);
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE);
+  }
+
+  @Test
+  public void givenPhoneNumberIsPresent_WhenStartsClaimsChat_ThenQuestionAboutChangePhoneShouldPopUp() {
+    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
+
+    userContext.getOnBoardingData().setPhoneNumber("0701234567");
+
+    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, "message.claims.chat", userContext);
+
+    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_EXISTING_PHONE);
   }
 
   @Test
@@ -163,17 +174,6 @@ public class ClaimsConversationTest {
   }
 
   @Test
-  public void givenThatMemberCanReportClaim_WhenPhoneNumberIsPresent_ThenQuestionAboutPhoneShouldPopUp(){
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
-
-    userContext.getOnBoardingData().setPhoneNumber(TOLVANSSON_PHONE_NUMBER);
-
-    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, ClaimsConversation.MESSAGE_CLAIMS_OK, userContext);
-
-    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_EXISTING_PHONE);
-  }
-
-  @Test
   public void givenThatMemberCanReportClaim_WhenPhoneNumberIsPresentButMemberWantsToChange__ThenQuestionAboutNewPhoneShouldPopUp(){
     when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
 
@@ -188,25 +188,5 @@ public class ClaimsConversationTest {
 
     assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_RECORD_1);
     assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
-  }
-
-  @Test
-  public void givenPhoneNumberIsNotPresent_WhenStartsClaimsChat_ThenQuestionAboutPhoneShouldPopUp(){
-    userContext.getOnBoardingData().setPhoneNumber("");
-    Message m = testConversation.getMessage("message.claims.chat");
-
-    testConversation.handleMessage(userContext, m);
-
-    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE);
-  }
-
-  @Test
-  public void givenPhoneNumberIsPresent_WhenStartsClaimsChat_ThenQuestionAboutChangePhoneShouldPopUp(){
-    userContext.getOnBoardingData().setPhoneNumber("0701234567");
-    Message m = testConversation.getMessage("message.claims.chat");
-
-    testConversation.handleMessage(userContext, m);
-
-    assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_EXISTING_PHONE);
   }
 }
