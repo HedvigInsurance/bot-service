@@ -153,7 +153,7 @@ public class ClaimsConversation extends Conversation {
     createMessage(
       "message.claims.record.ok2",
       new MessageBodyParagraph(
-        "Jag återkommer här i chatten   om jag behöver något mer eller för att berätta hur det går " + HANDS_EMOJI),
+        "Jag återkommer här i chatten om jag behöver något mer eller för att berätta hur det går " + HANDS_EMOJI),
       2000);
 
     createMessage("error", new MessageBodyText("Oj nu blev något fel..."));
