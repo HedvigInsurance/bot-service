@@ -148,7 +148,6 @@ public class ClaimsConversation extends Conversation {
       "message.claims.record.ok",
       new MessageBodyParagraph("Tack! Din anmälan kommer nu hanteras"),
       2000);
-    addRelay("message.claims.record.ok", "message.claims.record.ok2");
 
     final String HANDS_EMOJI = "\uD83D\uDE4C";
     createMessage(
@@ -298,7 +297,7 @@ public class ClaimsConversation extends Conversation {
       // This is used to let Hedvig say multiple message after another
       case MESSAGE_FETCHED:
         log.info("Message fetched: " + value);
-        if (value.equals("message.claims.record.ok2")) {
+        if (value.equals("message.claims.record.ok")) {
           completeConversation(userContext);
           return;
         }
@@ -324,7 +323,7 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void completeConversation(UserContext uc) {
-    addToChat("message.claims.record.ok3", uc);
+    addToChat("message.claims.record.ok2", uc);
     val conversation = conversationFactory.createConversation(MainConversation.class);
     uc.startConversation(conversation, MainConversation.MESSAGE_HEDVIG_COM_CLAIMS);
   }
