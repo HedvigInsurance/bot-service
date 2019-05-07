@@ -4,29 +4,26 @@ import com.hedvig.botService.enteties.UserContext
 import java.util.*
 
 class ConversationVisitorImpl(
-    private val userContext: UserContext,
-    private val conversation: MutableList<MessageEntry>
+    override val context: UserContext,
+    override val conversationEntries: MutableList<MessageEntry>
 ) : ConversationVisitor {
-    override fun getContext(): UserContext = userContext
-
-    override fun getConversationEntries(): MutableList<MessageEntry> = conversation
 
     override fun visitSerialMessage(message: AbstractSerialMessage) {
-        getConversationEntries().add(
+        conversationEntries.add(
             MessageEntry(
                 UUID.randomUUID(),
-                message.getId(),
-                message.getBody()
+                message.id,
+                message.body
             )
         )
     }
 
     override fun visitFinalMessage(message: AbstractFinalMessage) {
-        getConversationEntries().add(
+        conversationEntries.add(
             MessageEntry(
                 UUID.randomUUID(),
-                message.getId(),
-                message.getBody()
+                message.id,
+                message.body
             )
         )
     }

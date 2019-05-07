@@ -8,17 +8,17 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 internal class ConversationVisitorImplTest {
-  @Test
-  fun performsClaimsConversation() {
-    val userContext = UserContext()
-    val conversationVisitor = ConversationVisitorImpl(userContext, mutableListOf())
+    @Test
+    fun performsClaimsConversation() {
+        val userContext = UserContext()
+        val conversationVisitor = ConversationVisitorImpl(userContext, mutableListOf())
 
-    val startMessage = StartMessage()
-    startMessage.accept(conversationVisitor)
+        val startMessage = StartMessage()
+        startMessage.accept(conversationVisitor)
 
-    assertThat(conversationVisitor.getConversationEntries()).hasSize(3)
-    assertThat(conversationVisitor.getConversationEntries()[0].messageId).isEqualTo(StartMessage().getId())
-    assertThat(conversationVisitor.getConversationEntries()[1].messageId).isEqualTo(ClaimChatMessage().getId())
-    assertThat(conversationVisitor.getConversationEntries()[2].messageId).isEqualTo(FinalClamsConversationMessage().getId())
-  }
+        assertThat(conversationVisitor.conversationEntries).hasSize(3)
+        assertThat(conversationVisitor.conversationEntries[0].messageId).isEqualTo(StartMessage().id)
+        assertThat(conversationVisitor.conversationEntries[1].messageId).isEqualTo(ClaimChatMessage().id)
+        assertThat(conversationVisitor.conversationEntries[2].messageId).isEqualTo(FinalClamsConversationMessage().id)
+    }
 }
