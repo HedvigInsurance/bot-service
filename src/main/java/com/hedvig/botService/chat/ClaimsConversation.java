@@ -303,7 +303,7 @@ public class ClaimsConversation extends Conversation {
           break;
         }
 
-        if (value.equals(ClaimsConversation.MESSAGE_CLAIMS_CHAT)) {
+        if (value.equals(ClaimsConversation.MESSAGE_CLAIMS_START)) {
           val phone = userContext.getOnBoardingData().getPhoneNumber();
           if (phone == null || phone.isEmpty()) {
             completeRequest(MESSAGE_CLAIMS_ASK_PHONE, userContext);
