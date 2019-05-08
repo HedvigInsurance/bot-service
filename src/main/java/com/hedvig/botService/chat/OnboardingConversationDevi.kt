@@ -385,11 +385,14 @@ constructor(
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
                 val obd = uc.onBoardingData
-                if (body.selectedItem.value == "message.bankid.autostart.respond") {
-                    obd.bankIdMessage = "message.bankid.start"
-                    uc.putUserData(LOGIN, "true")
-                } else if (body.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
-                    uc.putUserData(LOGIN, "false")
+                when (body.selectedItem.value) {
+                    "message.bankid.autostart.respond" -> {
+                        obd.bankIdMessage = "message.bankid.start"
+                        uc.putUserData(LOGIN, "true")
+                    }
+                    MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "false")
+                    }
                 }
                 body.selectedItem.value
             })
@@ -412,13 +415,17 @@ constructor(
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
                 val obd = uc.onBoardingData
-                if (body.selectedItem.value == "message.bankid.autostart.respond") {
-                    obd.bankIdMessage = MESSAGE_LOGIN_WITH_MAIL
-                    uc.putUserData(LOGIN, "true")
-                } else if (body.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
-                    uc.putUserData(LOGIN, "false")
-                } else if (body.selectedItem.value == MESSAGE_LOGIN_ASK_EMAIL) {
-                    uc.putUserData(LOGIN, "true")
+                when (body.selectedItem.value) {
+                    "message.bankid.autostart.respond" -> {
+                        obd.bankIdMessage = MESSAGE_LOGIN_WITH_MAIL
+                        uc.putUserData(LOGIN, "true")
+                    }
+                    MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "false")
+                    }
+                    MESSAGE_LOGIN_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "true")
+                    }
                 }
                 body.selectedItem.value
             })
@@ -1502,7 +1509,7 @@ constructor(
                 return
             }
             MESSAGE_LOGIN_ASK_EMAIL -> {
-                val trimEmail = m.body.text.trim { it <= ' ' }
+                val trimEmail = m.body.text.trim()
                 userContext.putUserData("{LOGIN_EMAIL}", trimEmail)
                 m.body.text = trimEmail
                 addToChat(m, userContext)
@@ -1513,13 +1520,12 @@ constructor(
                 }
             }
             MESSAGE_LOGIN_WITH_MAIL_ASK_PASSWORD -> {
-                val trimmedPwd = m.body.text.trim { it <= ' ' }
+                val trimmedPwd = m.body.text.trim()
                 m.body.text = "*****"
                 addToChat(m, userContext)
-                if (trimmedPwd.toLowerCase() == APPLE_USER_PASSWORD.toLowerCase()){
+                if (trimmedPwd.toLowerCase() == APPLE_USER_PASSWORD.toLowerCase()) {
                     nxtMsg = MESSAGE_LOGIN_WITH_MAIL_PASSWORD_SUCCESS
-                }
-                else{
+                } else {
                     nxtMsg = MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN
                 }
             }
@@ -1777,7 +1783,7 @@ constructor(
         }
     }
 
-    fun emailLoginComplete(uc: UserContext){
+    fun emailLoginComplete(uc: UserContext) {
         when {
             uc.onBoardingData.userHasSigned!! -> {
                 uc.completeConversation(this)
