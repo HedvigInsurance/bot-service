@@ -17,23 +17,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("i")
 public class AppleController {
 
-  @Value("${hedvig.appleUser.memberId:12345}")
+  @Value("${hedvig.appleUser.memberId}")
   private String APPLE_USER_MEMBER_ID;
-  @Value("${hedvig.appleUser.personalNumber:19}")
+  @Value("${hedvig.appleUser.personalNumber}")
   private String APPLE_USER_PERSONAL_NUMBER;
-  @Value("${hedvig.appleUser.firstName:F}")
+  @Value("${hedvig.appleUser.firstName}")
   private String APPLE_USER_FIRST_NAME;
-  @Value("${hedvig.appleUser.lastName:L}")
+  @Value("${hedvig.appleUser.lastName}")
   private String APPLE_USER_LAST_NAME;
-  @Value("${hedvig.appleUser.address.street:S}")
+  @Value("${hedvig.appleUser.address.street}")
   private String APPLE_USER_ADDRESS_STREET;
-  @Value("${hedvig.appleUser.address.city:C}")
+  @Value("${hedvig.appleUser.address.city}")
   private String APPLE_USER_ADDRESS_CITY;
-  @Value("${hedvig.appleUser.address.zipCode:Z}")
+  @Value("${hedvig.appleUser.address.zipCode}")
   private String APPLE_USER_ADDRESS_ZIP_CODE;
-  @Value("${hedvig.appleUser.phoneNumber:P}")
+  @Value("${hedvig.appleUser.phoneNumber}")
   private String APPLE_USER_PHONE_NUMBER;
-  @Value("${hedvig.appleUser.email:E}")
+  @Value("${hedvig.appleUser.email}")
   private String APPLE_USER_EMAIL;
 
   private UserContextRepository userContextRepository;
@@ -78,7 +78,7 @@ public class AppleController {
     );
 
     appleUserContext.updateUserContextWebOnboarding(updateUserContextDTO);
-    
+
     return ResponseEntity.noContent().build();
   }
 }
