@@ -143,7 +143,7 @@ public class ClaimsConversationTest {
 
     userContext.getOnBoardingData().setPhoneNumber(null);
 
-    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, "message.claims.chat", userContext);
+    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START, userContext);
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE);
   }
@@ -154,7 +154,7 @@ public class ClaimsConversationTest {
 
     userContext.getOnBoardingData().setPhoneNumber("0701234567");
 
-    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, "message.claims.chat", userContext);
+    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START, userContext);
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_EXISTING_PHONE);
   }

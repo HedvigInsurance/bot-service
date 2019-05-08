@@ -36,7 +36,6 @@ public class ClaimsConversation extends Conversation {
     "message.claims.not_active.call_me";
   private static final String MESSAGE_CLAIMS_NOT_ACTIVE_OK = "message.claims.not_active.ok";
   static final String MESSAGE_CLAIM_CALLME = "message.claim.callme";
-  static final String MESSAGE_CLAIMS_CHAT = "message.claims.chat";
   static final String MESSAGE_CLAIMS_OK = "message.claims.ok";
   static final String MESSAGE_CLAIMS_ASK_PHONE = "message.claims.ask.phone";
   static final String MESSAGE_CLAIMS_ASK_PHONE_END = "message.claims.ask.phone.end";
@@ -68,10 +67,6 @@ public class ClaimsConversation extends Conversation {
     this.conversationFactory = conversationFactory;
     this.memberService = memberService;
 
-    createMessage(
-      MESSAGE_CLAIMS_START, new MessageBodyParagraph("Okej, det här löser vi på nolltid!"), 2000);
-    addRelay(MESSAGE_CLAIMS_START, MESSAGE_CLAIMS_CHAT);
-
     createChatMessage(
       MESSAGE_CLAIMS_NOT_ACTIVE,
       new MessageBodySingleSelect(
@@ -87,7 +82,7 @@ public class ClaimsConversation extends Conversation {
         new ArrayList<SelectItem>() {
           {
             add(new SelectOption("Ring mig!", MESSAGE_CLAIM_CALLME));
-            add(new SelectOption("Jag vill chatta", MESSAGE_CLAIMS_CHAT));
+            add(new SelectOption("Jag vill chatta", MESSAGE_CLAIMS_START));
           }
         }));
 
@@ -103,7 +98,7 @@ public class ClaimsConversation extends Conversation {
         }));
 
     createMessage(
-      MESSAGE_CLAIMS_CHAT,
+      MESSAGE_CLAIMS_START,
       new MessageBodyParagraph(
         "Du ska få berätta vad som hänt genom att spela in ett röstmeddelande"),
       2000);
@@ -279,7 +274,7 @@ public class ClaimsConversation extends Conversation {
     String nxtMsg;
     String audioUrl = ((MessageBodyAudio) m.body).url;
     log.info("Audio recieved with m.body.text: " + m.body.text + " and URL: " + audioUrl);
-    m.body.text = "Inspelning klar";
+    m.body.text = "Skicka in anmälan";
 
     claimsService.createClaimFromAudio(userContext.getMemberId(), audioUrl);
 
@@ -308,7 +303,7 @@ public class ClaimsConversation extends Conversation {
           break;
         }
 
-        if (value.equals(ClaimsConversation.MESSAGE_CLAIMS_CHAT)) {
+        if (value.equals(ClaimsConversation.MESSAGE_CLAIMS_START)) {
           val phone = userContext.getOnBoardingData().getPhoneNumber();
           if (phone == null || phone.isEmpty()) {
             completeRequest(MESSAGE_CLAIMS_ASK_PHONE, userContext);
