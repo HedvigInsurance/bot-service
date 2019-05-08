@@ -80,6 +80,8 @@ public class Message {
     header = new MessageHeader();
   }
 
+
+
   public void render(UserContext userContext) {
     this.body.render(userContext);
   }

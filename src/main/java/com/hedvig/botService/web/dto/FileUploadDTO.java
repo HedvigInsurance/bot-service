@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Data
 public class FileUploadDTO {
-    public UUID id;
+//    public UUID id;
     public String fileUploadKey;
     public Instant timestamp;
     public String mimeType;
