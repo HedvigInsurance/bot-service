@@ -131,7 +131,7 @@ public class SessionManager {
     UserContext uc =
       userContextRepository
         .findByMemberId(memberId)
-        .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
+        .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext for member: "+ memberId));
 
     if (uc.getDataEntry(LOGIN).equalsIgnoreCase("true") && uc.getDataEntry(LOGIN_MAIL).equalsIgnoreCase("apple@hedvig.com")) {
 
