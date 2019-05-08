@@ -24,9 +24,6 @@ public class InternalUserDataController {
   private final SessionManager sessionManager;
   private final UserContextRepository repository;
 
-  @Value("${hedvig.apple.user.memberId:00000}")
-  private String APPLE_MEMBER_ID;
-
   @Autowired
   public InternalUserDataController(
     SessionManager sessions,
@@ -59,34 +56,5 @@ public class InternalUserDataController {
     log.info("Update user context request for member {} with request {}", memberId, req);
     sessionManager.init_web_onboarding(memberId, req);
     return ResponseEntity.noContent().build();
-  }
-
-  @PostMapping("initAppleUser")
-  ResponseEntity<?> initializeAppleUser() {
-    log.info("Initializing Apple User, in memory of Steve Jobs!");
-
-    if (repository.findByMemberId(APPLE_MEMBER_ID).isPresent()) {
-      return ResponseEntity.ok().build();
-    }
-
-    UserContext appleUserContext = new UserContext(APPLE_MEMBER_ID);
-    repository.save(appleUserContext);
-
-    UpdateUserContextDTO updateUserContextDTO = new UpdateUserContextDTO(
-      APPLE_MEMBER_ID,
-      "195590930334",
-      "Tim",
-      "Cook",
-      "0700807012",
-      "apple@hedvig.com",
-      "Palo Alto",
-      "California",
-      "11531",
-      true
-      );
-
-    appleUserContext.updateUserContextWebOnboarding(updateUserContextDTO);
-
-    return ResponseEntity.ok().build();
   }
 }
