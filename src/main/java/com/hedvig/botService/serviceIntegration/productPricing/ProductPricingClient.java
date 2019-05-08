@@ -41,4 +41,7 @@ public interface ProductPricingClient {
   @RequestMapping(value = "/_/insurance/{memberId}/insurance", method = RequestMethod.GET)
   ResponseEntity<com.hedvig.botService.web.dto.InsuranceStatusDTO> getInsuranceStatus(
       @PathVariable("memberId") String memberId);
+
+  @RequestMapping(value = "/i/insurance/initiateAppleProduct")
+  ResponseEntity<Void> initAppleProduct(@RequestBody String appleMemberId);
 }

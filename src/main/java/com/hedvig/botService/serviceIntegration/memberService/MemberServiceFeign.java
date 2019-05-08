@@ -169,6 +169,15 @@ public class MemberServiceFeign implements MemberService {
     }
   }
 
+  @Override
+  public void initAppleUser(String appleMemberId) {
+    try {
+      this.client.initAppleUser(appleMemberId);
+    }catch (FeignException | RestClientResponseException ex){
+      log.error("Cannot init apple member {}", appleMemberId);
+    }
+  }
+
   private void send(Runnable supplier) {
     try {
       supplier.run();
