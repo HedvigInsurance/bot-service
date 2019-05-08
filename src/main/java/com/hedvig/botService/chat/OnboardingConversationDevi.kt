@@ -462,13 +462,17 @@ constructor(
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
                 val obd = uc.onBoardingData
-                 (body.selectedItem.value == "message.bankid.autostart.respond") {
-                    obd.bankIdMessage = MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN
-                    uc.putUserData(LOGIN, "true")
-                } else if (body.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
-                    uc.putUserData(LOGIN, "false")
-                } else if (body.selectedItem.value == MESSAGE_LOGIN_ASK_EMAIL) {
-                    uc.putUserData(LOGIN, "true")
+                when (body.selectedItem.value) {
+                    "message.bankid.autostart.respond" -> {
+                        obd.bankIdMessage = MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN
+                        uc.putUserData(LOGIN, "true")
+                    }
+                    MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "false")
+                    }
+                    MESSAGE_LOGIN_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "true")
+                    }
                 }
                 body.selectedItem.value
             })
