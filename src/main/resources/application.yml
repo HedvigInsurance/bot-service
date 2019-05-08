@@ -35,6 +35,7 @@ hedvig:
   appleUser:
     phoneNumber: 0000000000
     email: apple@hedvig.com
+    password: plainText
     address:
       zipCode: 12345
       city: California
@@ -43,3 +44,4 @@ hedvig:
     lastName: Jobs
     personalNumber: 12345
     memberId: 12345
+

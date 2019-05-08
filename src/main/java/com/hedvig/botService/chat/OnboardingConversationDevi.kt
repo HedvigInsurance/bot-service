@@ -8,13 +8,12 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData
 import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusType
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.events.*
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import java.nio.charset.Charset
@@ -43,6 +42,11 @@ constructor(
         STUDENT_RENT,
         LODGER
     }
+
+    @Value("\${hedvig.appleUser.email}")
+    lateinit var APPLE_USER_EMAIL: String
+    @Value("\${hedvig.appleUser.password}")
+    lateinit var APPLE_USER_PASSWORD: String
 
     init {
 
@@ -458,7 +462,7 @@ constructor(
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
                 val obd = uc.onBoardingData
-                if (body.selectedItem.value == "message.bankid.autostart.respond") {
+                 (body.selectedItem.value == "message.bankid.autostart.respond") {
                     obd.bankIdMessage = MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN
                     uc.putUserData(LOGIN, "true")
                 } else if (body.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
@@ -1494,21 +1498,21 @@ constructor(
                 return
             }
             MESSAGE_LOGIN_ASK_EMAIL -> {
-                val trim = m.body.text.trim { it <= ' ' }
-                userContext.putUserData("{LOGIN_EMAIL}", trim)
-                m.body.text = trim
+                val trimEmail = m.body.text.trim { it <= ' ' }
+                userContext.putUserData("{LOGIN_EMAIL}", trimEmail)
+                m.body.text = trimEmail
                 addToChat(m, userContext)
-                nxtMsg = if (trim == "apple@hedvig.com") {
+                nxtMsg = if (trimEmail.toLowerCase() == APPLE_USER_EMAIL.toLowerCase()) {
                     MESSAGE_LOGIN_WITH_MAIL_ASK_PASSWORD
                 } else {
                     MESSAGE_LOGIN_FAILED_WITH_MAIL
                 }
             }
             MESSAGE_LOGIN_WITH_MAIL_ASK_PASSWORD -> {
-                val trim = m.body.text.trim { it <= ' ' }
+                val trimmedPwd = m.body.text.trim { it <= ' ' }
                 m.body.text = "*****"
                 addToChat(m, userContext)
-                if (trim.toLowerCase() == "test"){
+                if (trimmedPwd.toLowerCase() == APPLE_USER_PASSWORD.toLowerCase()){
                     nxtMsg = MESSAGE_LOGIN_WITH_MAIL_PASSWORD_SUCCESS
                 }
                 else{
@@ -1878,7 +1882,6 @@ constructor(
     }
 
     companion object {
-
 
         const val MESSAGE_HUS = "message.hus"
         const val MESSAGE_NYHETSBREV = "message.nyhetsbrev"
