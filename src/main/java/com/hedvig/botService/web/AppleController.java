@@ -1,7 +1,6 @@
 package com.hedvig.botService.web;
 
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.enteties.UserContextRepository;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.UserContextService;
