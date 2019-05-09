@@ -123,7 +123,7 @@ public class ProductPricingService {
 
   public void initAppleProduct(String appleMemberId){
     try {
-      this.productPricingClient.initAppleProduct(appleMemberId);
+      this.productPricingClient.initAppleProduct(new AppleInitializationRequest(appleMemberId));
     }catch (FeignException | RestClientException ex){
       log.error("Cannot init apple product with memberId: {}", appleMemberId);
     }

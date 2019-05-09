@@ -53,5 +53,5 @@ public interface MemberServiceClient {
   void updatePhoneNumber(@PathVariable("memberId") String memberId, @RequestBody UpdatePhoneNumberRequest request);
 
   @PostMapping("/i/member/initAppleUser")
-  ResponseEntity<Void> initAppleUser(@RequestBody String appleMemberId);
+  ResponseEntity<Void> initAppleUser(@RequestBody AppleInitializationRequest request);
 }

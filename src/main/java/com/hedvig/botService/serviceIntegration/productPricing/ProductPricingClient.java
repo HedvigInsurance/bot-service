@@ -1,5 +1,6 @@
 package com.hedvig.botService.serviceIntegration.productPricing;
 
+import com.hedvig.botService.serviceIntegration.productPricing.dto.AppleInitializationRequest;
 import com.hedvig.botService.serviceIntegration.productPricing.dto.CalculateQuoteRequest;
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ContractSignedRequest;
 import com.hedvig.botService.serviceIntegration.productPricing.dto.Created;
@@ -43,5 +44,5 @@ public interface ProductPricingClient {
       @PathVariable("memberId") String memberId);
 
   @RequestMapping(value = "/i/insurance/initiateAppleProduct")
-  ResponseEntity<Void> initAppleProduct(@RequestBody String appleMemberId);
+  ResponseEntity<Void> initAppleProduct(@RequestBody AppleInitializationRequest request);
 }

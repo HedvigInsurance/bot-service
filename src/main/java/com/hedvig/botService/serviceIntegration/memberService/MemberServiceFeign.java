@@ -1,18 +1,7 @@
 package com.hedvig.botService.serviceIntegration.memberService;
 
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
-import com.hedvig.botService.serviceIntegration.memberService.dto.Address;
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthRequest;
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse;
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdCollectResponse;
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignRequest;
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse;
-import com.hedvig.botService.serviceIntegration.memberService.dto.FinalizeOnBoardingRequest;
-import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse;
-import com.hedvig.botService.serviceIntegration.memberService.dto.StartOnboardingWithSSNRequest;
-import com.hedvig.botService.serviceIntegration.memberService.dto.SweAddressRequest;
-import com.hedvig.botService.serviceIntegration.memberService.dto.UpdateEmailRequest;
-import com.hedvig.botService.serviceIntegration.memberService.dto.UpdatePhoneNumberRequest;
+import com.hedvig.botService.serviceIntegration.memberService.dto.*;
 import com.hedvig.botService.web.dto.Member;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -172,7 +161,7 @@ public class MemberServiceFeign implements MemberService {
   @Override
   public void initAppleUser(String appleMemberId) {
     try {
-      this.client.initAppleUser(appleMemberId);
+      this.client.initAppleUser(new AppleInitializationRequest(appleMemberId));
     }catch (FeignException | RestClientResponseException ex){
       log.error("Cannot init apple member {}", appleMemberId);
     }
