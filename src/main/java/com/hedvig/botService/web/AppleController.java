@@ -4,13 +4,17 @@ import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.UserContextRepository;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.UserContextService;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -36,24 +40,26 @@ public class AppleController {
   @Value("${hedvig.appleUser.email}")
   private String APPLE_USER_EMAIL;
 
-  private UserContextRepository userContextRepository;
-  private MemberService memberService;
-  private ProductPricingService productPricingService;
+  private final MemberService memberService;
+  private final ProductPricingService productPricingService;
+  private final UserContextService userContextService;
 
+  @Autowired
   public AppleController(
-    UserContextRepository userContextRepository,
     MemberService memberService,
-    ProductPricingService productPricingService) {
-    this.userContextRepository = userContextRepository;
+    ProductPricingService productPricingService, UserContextService userContextService) {
     this.memberService = memberService;
     this.productPricingService = productPricingService;
+    this.userContextService = userContextService;
   }
 
   @PostMapping("initAppleUser")
   ResponseEntity<?> initializeAppleUser() {
     log.info("Initializing Apple User, in memory of Steve Jobs!");
 
-    if (userContextRepository.findByMemberId(APPLE_USER_MEMBER_ID).isPresent()) {
+    Optional<UserContext> userContextMaybe = userContextService.findByMemberId(APPLE_USER_MEMBER_ID);
+
+    if (userContextMaybe.isPresent()) {
       return ResponseEntity.badRequest().build();
     }
 
@@ -62,7 +68,7 @@ public class AppleController {
     productPricingService.initAppleProduct(APPLE_USER_MEMBER_ID);
 
     UserContext appleUserContext = new UserContext(APPLE_USER_MEMBER_ID);
-    userContextRepository.save(appleUserContext);
+    userContextService.save(appleUserContext);
 
     UpdateUserContextDTO updateUserContextDTO = new UpdateUserContextDTO(
       APPLE_USER_MEMBER_ID,
