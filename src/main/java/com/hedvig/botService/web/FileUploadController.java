@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.hedvig.botService.web.dto.FileUploadDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -51,13 +52,14 @@ public class FileUploadController {
   @GetMapping("memberId/{id}")
   public List<FileUploadDTO> getFilesForMember(@PathVariable String id) {
 
+    List<FileUploadDTO> fileUploadDTO = new ArrayList<>();
+
     Optional<MemberChat> memberChat = memberChatRepository.findByMemberId(id);
     if(!memberChat.isPresent())
-      return null;
+      return fileUploadDTO;
 
     List<Message> messages = memberChat.get().chatHistory;
     List<Message> fileUploadMessages;
-    List<FileUploadDTO> fileUploadDTO;
 
     fileUploadMessages = messages.stream()
       .filter(message -> message.body.getClass().equals(MessageBodyFileUpload.class))

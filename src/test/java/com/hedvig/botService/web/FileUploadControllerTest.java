@@ -91,16 +91,16 @@ public class FileUploadControllerTest {
   }
 
   @Test
-  public void testShouldReturnNullIfNoMemberChatFound() {
+  public void testShouldReturnEmptyListIfNoMemberChatFound() {
 
     Mockito.when(memberChatRepository.findByMemberId(Mockito.anyString())).thenReturn(Optional.empty());
     val testfiles = fileUploadController.getFilesForMember("12345");
 
-    assertEquals(null, testfiles);
+    assertEquals(Collections.emptyList(), testfiles);
   }
 
   @Test
-  public void testShouldReturnNullIfNoFileUploadsFound() {
+  public void testShouldReturnAnEmptyListIfNoFileUploadsFound() {
     MessageBody messageBody1 = new MessageBody("other message body");
     MessageBody messageBody2 = new MessageBody("not file upload");
 
