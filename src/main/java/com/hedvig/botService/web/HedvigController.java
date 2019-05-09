@@ -4,9 +4,11 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdCollectR
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.CollectResponse;
 import com.hedvig.botService.web.dto.TrackingDTO;
+import org.checkerframework.common.value.qual.UnknownVal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,9 @@ public class HedvigController {
 
   private final Logger log = LoggerFactory.getLogger(HedvigController.class);
   private final SessionManager sessionManager;
+
+  @Value("${hedvig.appleUser.memberId}")
+  private String APPLE_USER_MEMBER_ID;
 
   @Autowired
   public HedvigController(SessionManager sessions) {
@@ -83,7 +88,7 @@ public class HedvigController {
     boolean isEmailSignSuccessful = this.sessionManager.emailSign(memberId);
 
     if (isEmailSignSuccessful) {
-      return ResponseEntity.ok().header("Hedvig.Id", "").build(); // TODO: APPLEUSERID
+      return ResponseEntity.ok().header("Hedvig.Id", APPLE_USER_MEMBER_ID).build();
     }
     return ResponseEntity.badRequest().build();
   }
