@@ -22,14 +22,12 @@ public class InternalUserDataController {
 
   private static Logger log = LoggerFactory.getLogger(InternalUserDataController.class);
   private final SessionManager sessionManager;
-  private final UserContextRepository repository;
 
   @Autowired
   public InternalUserDataController(
     SessionManager sessions,
     UserContextRepository repository) {
     this.sessionManager = sessions;
-    this.repository = repository;
   }
 
   @GetMapping(value = "{memberId}/push-token", produces = "application/json")
