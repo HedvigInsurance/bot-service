@@ -26,12 +26,8 @@ public class FileUploadController {
   private final MemberChatRepository memberChatRepository;
 
   @Autowired
-  public FileUploadController(
-//    SaveFileRepository saveFile,
-    MemberChatRepository memberChatRepository
-  )
-//  { this.saveFileRepo = saveFile;
-  {this.memberChatRepository = memberChatRepository;
+  public FileUploadController(MemberChatRepository memberChatRepository) {
+    this.memberChatRepository = memberChatRepository;
   }
 
 //  @GetMapping("id/{id}")
@@ -71,12 +67,12 @@ public class FileUploadController {
           message.getTimestamp(),
           ((MessageBodyFileUpload)message.getBody()).mimeType,
           message.getChat().getMemberId()
-        )).collect(Collectors.toList());
+        ))
+        .collect(Collectors.toList());
 
       return fileUploadDTO;
   }
 
-//
 //  @GetMapping("memberId/{id}")
 //  public List<FileUploadDTO> getFilesForMember(@PathVariable String id) {
 //    List<SaveFile> memberFiles = saveFileRepo.findByMemberId(id);
