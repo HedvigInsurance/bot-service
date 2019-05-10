@@ -316,7 +316,7 @@ constructor(
         this.createMessage(
             MESSAGE_START_LOGIN, MessageBodyParagraph("Välkommen tillbaka! $emoji_hug"), 1500
         )
-        this.addRelay(MESSAGE_START_LOGIN, MESSAGE_LOGIN_WITH_MAIL)
+        this.addRelay(MESSAGE_START_LOGIN, MESSAGE_LOGIN_WITH_EMAIL)
 
         this.createChatMessage(
             "message.bankid.start",
@@ -369,7 +369,7 @@ constructor(
         )
 
         this.createChatMessage(
-            MESSAGE_LOGIN_FAILED_WITH_MAIL,
+            MESSAGE_LOGIN_FAILED_WITH_EMAIL,
             WrappedMessage(
                 MessageBodySingleSelect(
                     "Ojdå, det ser ut som att du måste logga in med BankID!",
@@ -384,10 +384,9 @@ constructor(
             ) { body, uc, message ->
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
-                val obd = uc.onBoardingData
                 when (body.selectedItem.value) {
                     "message.bankid.autostart.respond" -> {
-                        obd.bankIdMessage = "message.bankid.start"
+                        uc.onBoardingData.bankIdMessage = "message.bankid.start"
                         uc.putUserData(LOGIN, "true")
                     }
                     MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
@@ -396,9 +395,9 @@ constructor(
                 }
                 body.selectedItem.value
             })
-        setupBankidErrorHandlers(MESSAGE_LOGIN_FAILED_WITH_MAIL)
+        setupBankidErrorHandlers(MESSAGE_LOGIN_FAILED_WITH_EMAIL)
 
-        this.createChatMessage(MESSAGE_LOGIN_WITH_MAIL,
+        this.createChatMessage(MESSAGE_LOGIN_WITH_EMAIL,
             WrappedMessage(
                 MessageBodySingleSelect(
                     "Bara att logga in så ser du din försäkring",
@@ -414,10 +413,9 @@ constructor(
             ) { body, uc, message ->
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
-                val obd = uc.onBoardingData
                 when (body.selectedItem.value) {
                     "message.bankid.autostart.respond" -> {
-                        obd.bankIdMessage = MESSAGE_LOGIN_WITH_MAIL
+                        uc.onBoardingData.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL
                         uc.putUserData(LOGIN, "true")
                     }
                     MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
@@ -429,10 +427,10 @@ constructor(
                 }
                 body.selectedItem.value
             })
-        setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_MAIL)
+        setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL)
 
         this.createMessage(
-            MESSAGE_LOGIN_WITH_MAIL_ASK_PASSWORD,
+            MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD,
             MessageBodyText(
                 "Tack! Och vad är ditt lösenord?",
                 TextContentType.PASSWORD,
@@ -440,7 +438,7 @@ constructor(
             )
         )
 
-        this.createMessage(MESSAGE_LOGIN_WITH_MAIL_PASSWORD_SUCCESS, MessageBodyText("Välkommen, Apple!"))
+        this.createMessage(MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS, MessageBodyText("Välkommen, Apple!"))
 
         this.createMessage(
             MESSAGE_LOGIN_ASK_EMAIL,
@@ -452,7 +450,7 @@ constructor(
         )
         this.setExpectedReturnType(MESSAGE_LOGIN_ASK_EMAIL, EmailAdress())
 
-        this.createChatMessage(MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN,
+        this.createChatMessage(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN,
             WrappedMessage(
                 MessageBodySingleSelect(
                     "Ojdå, du skrev in fel lösenord. Testa att logga in på nytt \uD83D\uDD10",
@@ -471,7 +469,7 @@ constructor(
                 val obd = uc.onBoardingData
                 when (body.selectedItem.value) {
                     "message.bankid.autostart.respond" -> {
-                        obd.bankIdMessage = MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN
+                        obd.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
                         uc.putUserData(LOGIN, "true")
                     }
                     MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
@@ -483,7 +481,7 @@ constructor(
                 }
                 body.selectedItem.value
             })
-        setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN)
+        setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN)
 
 
         this.createChatMessage(
@@ -1509,28 +1507,28 @@ constructor(
                 return
             }
             MESSAGE_LOGIN_ASK_EMAIL -> {
-                val trimEmail = m.body.text.trim()
+                val trimEmail = m.body.text.trim().toLowerCase()
                 userContext.putUserData("{LOGIN_EMAIL}", trimEmail)
                 m.body.text = trimEmail
                 addToChat(m, userContext)
-                nxtMsg = if (trimEmail.toLowerCase() == APPLE_USER_EMAIL.toLowerCase()) {
-                    MESSAGE_LOGIN_WITH_MAIL_ASK_PASSWORD
+                nxtMsg = if (trimEmail == APPLE_USER_EMAIL.toLowerCase()) {
+                    MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD
                 } else {
-                    MESSAGE_LOGIN_FAILED_WITH_MAIL
+                    MESSAGE_LOGIN_FAILED_WITH_EMAIL
                 }
             }
-            MESSAGE_LOGIN_WITH_MAIL_ASK_PASSWORD -> {
+            MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD -> {
                 val trimmedPwd = m.body.text.trim()
                 m.body.text = "*****"
                 addToChat(m, userContext)
                 if (trimmedPwd.toLowerCase() == APPLE_USER_PASSWORD.toLowerCase()) {
-                    nxtMsg = MESSAGE_LOGIN_WITH_MAIL_PASSWORD_SUCCESS
+                    nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS
                 } else {
-                    nxtMsg = MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN
+                    nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
                 }
             }
 
-            MESSAGE_LOGIN_WITH_MAIL_PASSWORD_SUCCESS -> {
+            MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS -> {
                 endConversation(userContext);
                 return;
             }
@@ -1938,12 +1936,11 @@ constructor(
         const val MESSAGE_STUDENT_25K_LIMIT = "message.student.25klimit"
         const val MESSAGE_STUDENT_25K_LIMIT_YES = "message.student.25klimit.yes"
 
-        const val MESSAGE_LOGIN_WITH_MAIL_ASK_PASSWORD = "message.login.with.mail.ask.password"
-        const val MESSAGE_LOGIN_WITH_MAIL = "message.login.with.mail"
-        const val MESSAGE_LOGIN_WITH_MAIL_TRY_AGAIN = "message.login.with.mail.try.again"
-        const val MESSAGE_LOGIN_WITH_MAIL_PASSWORD_SUCCESS = "message.login.with.mail.passwrod.success"
-        const val MESSAGE_LOGIN_WITH_MAIL_PASSWORD_FAIL = "message.login.with.mail.password.fail"
-        const val MESSAGE_LOGIN_FAILED_WITH_MAIL = "message.login.failed.with.mail"
+        const val MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD = "message.login.with.mail.ask.password"
+        const val MESSAGE_LOGIN_WITH_EMAIL = "message.login.with.mail"
+        const val MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN = "message.login.with.mail.try.again"
+        const val MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS = "message.login.with.mail.passwrod.success"
+        const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"
