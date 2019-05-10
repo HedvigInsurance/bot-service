@@ -1783,7 +1783,7 @@ constructor(
 
     fun emailLoginComplete(uc: UserContext) {
         when {
-            uc.onBoardingData.userHasSigned!! -> {
+            uc.onBoardingData.userHasSigned ?: false -> {
                 uc.completeConversation(this)
                 val mc = conversationFactory.createConversation(MainConversation::class.java)
                 uc.startConversation(mc)

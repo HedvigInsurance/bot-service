@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,9 @@ public class SessionManager {
 
   private static final String LOGIN = "{LOGIN}";
   private static final String LOGIN_MAIL = "{LOGIN_EMAIL}";
-  private static final String LOGIN_MAIL_MEMBER_ID = "12345"; //TODO: Change this
+
+  @Value("${hedvig.appleUser.memberId}")
+  private String APPLE_USER_MEMBER_ID;
 
   @Autowired
   public SessionManager(
@@ -137,7 +140,7 @@ public class SessionManager {
 
       UserContext newUc =
         userContextRepository
-          .findByMemberId("APPLE")
+          .findByMemberId(APPLE_USER_MEMBER_ID)
           .orElseThrow(() -> new ResourceNotFoundException("Could not fina userContext."));
 
      OnboardingConversationDevi conversationDevi = (OnboardingConversationDevi) conversationFactory.createConversation(OnboardingConversationDevi.class);
