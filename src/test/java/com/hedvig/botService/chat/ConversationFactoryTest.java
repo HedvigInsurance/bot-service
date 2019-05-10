@@ -66,7 +66,9 @@ public class ConversationFactoryTest {
             applicationEventPublisher,
             claimsService,
             statusBuilder,
-            0);
+            0,
+          "Test",
+          "Test");
 
     Conversation conversation = factory.createConversation(conversationClass);
 
