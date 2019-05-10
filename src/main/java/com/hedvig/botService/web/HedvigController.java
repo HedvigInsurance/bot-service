@@ -88,6 +88,7 @@ public class HedvigController {
     boolean isEmailSignSuccessful = this.sessionManager.emailSign(memberId);
 
     if (isEmailSignSuccessful) {
+      log.info("APPLE USER: {}", APPLE_USER_MEMBER_ID);
       return ResponseEntity.ok().header("Hedvig.Id", APPLE_USER_MEMBER_ID).build();
     }
     return ResponseEntity.badRequest().build();
