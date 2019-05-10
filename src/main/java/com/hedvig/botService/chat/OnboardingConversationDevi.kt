@@ -1518,10 +1518,10 @@ constructor(
                 }
             }
             MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD -> {
-                val trimmedPwd = m.body.text.trim()
+                val pwd = m.body.text
                 m.body.text = "*****"
                 addToChat(m, userContext)
-                if (trimmedPwd.toLowerCase() == APPLE_USER_PASSWORD.toLowerCase()) {
+                if (pwd == APPLE_USER_PASSWORD) {
                     nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS
                 } else {
                     nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
