@@ -452,7 +452,7 @@ constructor(
         this.createChatMessage(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN,
             WrappedMessage(
                 MessageBodySingleSelect(
-                    "Ojdå, du skrev in fel lösenord. Testa att logga in på nytt \uD83D\uDD10",
+                    "Om du är medlem hos Hedvig med denna email måste du logga in med BankID!",
                     SelectLink(
                         "Logga in med BankID",
                         "message.bankid.autostart.respond", null,
