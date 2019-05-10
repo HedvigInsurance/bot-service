@@ -35,4 +35,6 @@ public interface MemberService {
   LookupResponse lookupAddressSWE(String ssn, String memberId);
 
   void updatePhoneNumber(String memberId, String phoneNumber);
+
+  void initAppleUser(String appleMemberId);
 }

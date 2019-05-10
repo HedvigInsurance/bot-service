@@ -31,3 +31,17 @@ http.connection.timeout: 3000
 http.socket.timeout: 3000
 http.connection-manager.timeout: 3000
 
+hedvig:
+  appleUser:
+    phoneNumber: 0000000000
+    email: apple@hedvig.com
+    password: plainText
+    address:
+      zipCode: 12345
+      city: California
+      street: Palo Alto
+    firstName: Steve
+    lastName: Jobs
+    personalNumber: 195590930334
+    memberId: 111111111
+

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,5 +119,13 @@ public class ProductPricingService {
       log.error(ex.getMessage());
     }
     return isActive;
+  }
+
+  public void initAppleProduct(String appleMemberId){
+    try {
+      this.productPricingClient.initAppleProduct(new AppleInitializationRequest(appleMemberId));
+    }catch (FeignException | RestClientException ex){
+      log.error("Cannot init apple product with memberId: {}", appleMemberId);
+    }
   }
 }

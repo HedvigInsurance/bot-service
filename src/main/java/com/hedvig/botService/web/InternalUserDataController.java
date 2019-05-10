@@ -1,21 +1,20 @@
 package com.hedvig.botService.web;
 
-import static net.logstash.logback.argument.StructuredArguments.value;
-
+import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.botService.enteties.UserContextRepository;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
-import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+
+import static net.logstash.logback.argument.StructuredArguments.value;
 
 @RestController
 @RequestMapping("/_/member/")
@@ -25,7 +24,9 @@ public class InternalUserDataController {
   private final SessionManager sessionManager;
 
   @Autowired
-  public InternalUserDataController(SessionManager sessions) {
+  public InternalUserDataController(
+    SessionManager sessions,
+    UserContextRepository repository) {
     this.sessionManager = sessions;
   }
 
@@ -48,8 +49,8 @@ public class InternalUserDataController {
 
   @PostMapping(value = "{memberId}/initSessionWebOnBoarding", consumes = "application/json")
   ResponseEntity<?> updateMemberContext(@PathVariable(name = "memberId") String memberId,
-    @RequestBody @Valid
-      UpdateUserContextDTO req) {
+                                        @RequestBody @Valid
+                                          UpdateUserContextDTO req) {
     log.info("Update user context request for member {} with request {}", memberId, req);
     sessionManager.init_web_onboarding(memberId, req);
     return ResponseEntity.noContent().build();

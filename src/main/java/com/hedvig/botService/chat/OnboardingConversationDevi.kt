@@ -13,6 +13,7 @@ import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.events.*
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 import java.nio.charset.Charset
@@ -41,6 +42,11 @@ constructor(
         STUDENT_RENT,
         LODGER
     }
+
+    @Value("\${hedvig.appleUser.email}")
+    lateinit var APPLE_USER_EMAIL: String
+    @Value("\${hedvig.appleUser.password}")
+    lateinit var APPLE_USER_PASSWORD: String
 
     init {
 
@@ -77,7 +83,8 @@ constructor(
                 )
             )
             { body, u, message ->
-                val name = body.text.trim().replace(Regex("[!.,]"), "").replace(Regex("Hej jag heter", RegexOption.IGNORE_CASE), "").trim().capitalizeAll()
+                val name = body.text.trim().replace(Regex("[!.,]"), "")
+                    .replace(Regex("Hej jag heter", RegexOption.IGNORE_CASE), "").trim().capitalizeAll()
 
                 u.onBoardingData.firstName = name
                 addToChat(message, u)
@@ -257,10 +264,10 @@ constructor(
 
                 val familyName = b.text.trim().capitalizeAll()
                 val firstName = uc.onBoardingData.firstName
-                if(firstName != null){
-                    if(firstName.split(" ").size > 1 && firstName.endsWith(familyName, true) == true){
+                if (firstName != null) {
+                    if (firstName.split(" ").size > 1 && firstName.endsWith(familyName, true) == true) {
                         val lastNameIndex = firstName.length - (familyName.length + 1)
-                        if(lastNameIndex > 0) {
+                        if (lastNameIndex > 0) {
                             uc.onBoardingData.firstName = firstName.substring(0, lastNameIndex)
                         }
                     }
@@ -309,7 +316,7 @@ constructor(
         this.createMessage(
             MESSAGE_START_LOGIN, MessageBodyParagraph("Välkommen tillbaka! $emoji_hug"), 1500
         )
-        this.addRelay(MESSAGE_START_LOGIN, "message.bankid.start")
+        this.addRelay(MESSAGE_START_LOGIN, MESSAGE_LOGIN_WITH_EMAIL)
 
         this.createChatMessage(
             "message.bankid.start",
@@ -334,7 +341,6 @@ constructor(
                 } else if (body.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL) {
                     uc.putUserData(LOGIN, "false")
                 }
-
                 body.selectedItem.value
             })
         setupBankidErrorHandlers("message.bankid.start")
@@ -363,14 +369,131 @@ constructor(
         )
 
         this.createChatMessage(
-            MESSAGE_HUS,
-            WrappedMessage(MessageBodySingleSelect(
-                "Åh, typiskt! Just nu försäkrar jag bara lägenheter\u000C" + "Om du vill så kan jag höra av mig när jag försäkrar hus och villor också?",
-                SelectOption("Okej!", MESSAGE_NAGOTMER),
-                SelectOption("Tack, men nej tack", MESSAGE_AVSLUTOK)
+            MESSAGE_LOGIN_FAILED_WITH_EMAIL,
+            WrappedMessage(
+                MessageBodySingleSelect(
+                    "Ojdå, det ser ut som att du måste logga in med BankID!",
+                    SelectLink(
+                        "Logga in med BankID",
+                        "message.bankid.autostart.respond", null,
+                        "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
+                        false
+                    ),
+                    SelectOption("Jag är inte medlem", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
+                )
+            ) { body, uc, message ->
+                body.text = body.selectedItem.text
+                addToChat(message, uc)
+                when (body.selectedItem.value) {
+                    "message.bankid.autostart.respond" -> {
+                        uc.onBoardingData.bankIdMessage = "message.bankid.start"
+                        uc.putUserData(LOGIN, "true")
+                    }
+                    MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "false")
+                    }
+                }
+                body.selectedItem.value
+            })
+        setupBankidErrorHandlers(MESSAGE_LOGIN_FAILED_WITH_EMAIL)
+
+        this.createChatMessage(MESSAGE_LOGIN_WITH_EMAIL,
+            WrappedMessage(
+                MessageBodySingleSelect(
+                    "Bara att logga in så ser du din försäkring",
+                    SelectLink(
+                        "Logga in med BankID",
+                        "message.bankid.autostart.respond", null,
+                        "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
+                        false
+                    ),
+                    SelectOption("Logga in med email och lösenord", MESSAGE_LOGIN_ASK_EMAIL),
+                    SelectOption("Jag är inte medlem", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
+                )
+            ) { body, uc, message ->
+                body.text = body.selectedItem.text
+                addToChat(message, uc)
+                when (body.selectedItem.value) {
+                    "message.bankid.autostart.respond" -> {
+                        uc.onBoardingData.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL
+                        uc.putUserData(LOGIN, "true")
+                    }
+                    MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "false")
+                    }
+                    MESSAGE_LOGIN_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "true")
+                    }
+                }
+                body.selectedItem.value
+            })
+        setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL)
+
+        this.createMessage(
+            MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD,
+            MessageBodyText(
+                "Tack! Och vad är ditt lösenord?",
+                TextContentType.PASSWORD,
+                KeyboardType.DEFAULT
             )
-            ){ body, uc, message ->
-                if (body.selectedItem.value.equals(MESSAGE_NAGOTMER)){
+        )
+
+        this.createMessage(MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS, MessageBodyText("Välkommen, Apple!"))
+
+        this.createMessage(
+            MESSAGE_LOGIN_ASK_EMAIL,
+            MessageBodyText(
+                "Vad är din email address?",
+                TextContentType.EMAIL_ADDRESS,
+                KeyboardType.EMAIL_ADDRESS
+            )
+        )
+        this.setExpectedReturnType(MESSAGE_LOGIN_ASK_EMAIL, EmailAdress())
+
+        this.createChatMessage(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN,
+            WrappedMessage(
+                MessageBodySingleSelect(
+                    "Ojdå, du skrev in fel lösenord. Testa att logga in på nytt \uD83D\uDD10",
+                    SelectLink(
+                        "Logga in med BankID",
+                        "message.bankid.autostart.respond", null,
+                        "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
+                        false
+                    ),
+                    SelectOption("Logga in med email och lösenord", MESSAGE_LOGIN_ASK_EMAIL),
+                    SelectOption("Jag är inte medlem", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
+                )
+            ) { body, uc, message ->
+                body.text = body.selectedItem.text
+                addToChat(message, uc)
+                val obd = uc.onBoardingData
+                when (body.selectedItem.value) {
+                    "message.bankid.autostart.respond" -> {
+                        obd.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
+                        uc.putUserData(LOGIN, "true")
+                    }
+                    MESSAGE_ONBOARDINGSTART_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "false")
+                    }
+                    MESSAGE_LOGIN_ASK_EMAIL -> {
+                        uc.putUserData(LOGIN, "true")
+                    }
+                }
+                body.selectedItem.value
+            })
+        setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN)
+
+
+        this.createChatMessage(
+            MESSAGE_HUS,
+            WrappedMessage(
+                MessageBodySingleSelect(
+                    "Åh, typiskt! Just nu försäkrar jag bara lägenheter\u000C" + "Om du vill så kan jag höra av mig när jag försäkrar hus och villor också?",
+                    SelectOption("Okej!", MESSAGE_NAGOTMER),
+                    SelectOption("Tack, men nej tack", MESSAGE_AVSLUTOK)
+                )
+            ) { body, uc, message ->
+                if (body.selectedItem.value.equals(MESSAGE_NAGOTMER)) {
                     uc.onBoardingData.newsLetterEmail = uc.onBoardingData.email
                 }
                 addToChat(message, uc)
@@ -433,8 +556,6 @@ constructor(
                 }
             }
         )
-
-
 
         this.createMessage(
             "message.bankidja.noaddress",
@@ -1151,7 +1272,7 @@ constructor(
 
     override fun init(userContext: UserContext) {
         log.info("Starting onboarding conversation")
-            startConversation(userContext, MESSAGE_ONBOARDINGSTART_ASK_NAME) // Id of first message
+        startConversation(userContext, MESSAGE_ONBOARDINGSTART_ASK_NAME) // Id of first message
     }
 
     override fun init(userContext: UserContext, startMessage: String) {
@@ -1221,6 +1342,7 @@ constructor(
         val onBoardingData = userContext.onBoardingData
 
         // ... and then the incoming message id
+
         when (m.baseMessageId) {
             MESSAGE_STUDENT_LIMIT_LIVING_SPACE_HOUSE_TYPE, "message.lghtyp" -> {
                 val item = (m.body as MessageBodySingleSelect).selectedItem
@@ -1263,7 +1385,7 @@ constructor(
             }
 
             "message.uwlimit.housingsize", "message.uwlimit.householdsize" -> nxtMsg =
-                    handleUnderwritingLimitResponse(userContext, m, m.baseMessageId)
+                handleUnderwritingLimitResponse(userContext, m, m.baseMessageId)
             MESSAGE_TIPSA -> {
                 onBoardingData.setRecommendFriendEmail(m.body.text)
                 nxtMsg = MESSAGE_NAGOTMER
@@ -1384,6 +1506,33 @@ constructor(
                 endConversation(userContext)
                 return
             }
+            MESSAGE_LOGIN_ASK_EMAIL -> {
+                val trimEmail = m.body.text.trim().toLowerCase()
+                userContext.putUserData("{LOGIN_EMAIL}", trimEmail)
+                m.body.text = trimEmail
+                addToChat(m, userContext)
+                nxtMsg = if (trimEmail == APPLE_USER_EMAIL.toLowerCase()) {
+                    MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD
+                } else {
+                    MESSAGE_LOGIN_FAILED_WITH_EMAIL
+                }
+            }
+            MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD -> {
+                val pwd = m.body.text
+                m.body.text = "*****"
+                addToChat(m, userContext)
+                if (pwd == APPLE_USER_PASSWORD) {
+                    nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS
+                } else {
+                    nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
+                }
+            }
+
+            MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS -> {
+                endConversation(userContext);
+                return;
+            }
+
             // nxtMsg = MESSAGE_FORSAKRINGIDAG;
 
             // case "message.bytesinfo":
@@ -1632,6 +1781,16 @@ constructor(
         }
     }
 
+    fun emailLoginComplete(uc: UserContext) {
+        when {
+            uc.onBoardingData.userHasSigned ?: false -> {
+                uc.completeConversation(this)
+                val mc = conversationFactory.createConversation(MainConversation::class.java)
+                uc.startConversation(mc)
+            }
+        }
+    }
+
     override fun bankIdAuthCompleteNoAddress(uc: UserContext) {
         addToChat(getMessage("message.bankidja.noaddress"), uc)
     }
@@ -1726,12 +1885,11 @@ constructor(
         addToChat(getMessage(messageID), uc)
     }
 
-    private fun String.capitalizeAll():String{
+    private fun String.capitalizeAll(): String {
         return this.split(regex = Regex("\\s")).map { it.toLowerCase().capitalize() }.joinToString(" ")
     }
 
     companion object {
-
 
         const val MESSAGE_HUS = "message.hus"
         const val MESSAGE_NYHETSBREV = "message.nyhetsbrev"
@@ -1745,6 +1903,7 @@ constructor(
         const val MESSAGE_ONBOARDINGSTART_ASK_NAME = "message.onboardingstart.ask.name"
         const val MESSAGE_ONBOARDINGSTART_REPLY_NAME = "message.onboardingstart.reply.name"
         const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL = "message.onboardingstart.ask.email"
+        const val MESSAGE_LOGIN_ASK_EMAIL = "message.login.ask.email"
         const val MESSAGE_FORSLAG = "message.forslag"
         const val MESSAGE_FORSLAG2 = "message.forslag2"
         const val MESSAGE_50K_LIMIT = "message.50k.limit"
@@ -1776,6 +1935,12 @@ constructor(
         const val MESSAGE_STUDENT_ELIGIBLE_RENT = "message.student.eligible.rent"
         const val MESSAGE_STUDENT_25K_LIMIT = "message.student.25klimit"
         const val MESSAGE_STUDENT_25K_LIMIT_YES = "message.student.25klimit.yes"
+
+        const val MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD = "message.login.with.mail.ask.password"
+        const val MESSAGE_LOGIN_WITH_EMAIL = "message.login.with.mail"
+        const val MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN = "message.login.with.mail.try.again"
+        const val MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS = "message.login.with.mail.passwrod.success"
+        const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"
