@@ -162,7 +162,7 @@ public class SessionManagerTest {
   }
 
   private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory);
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, "test", "test") ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

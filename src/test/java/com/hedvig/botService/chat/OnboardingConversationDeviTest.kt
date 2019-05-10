@@ -56,7 +56,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, publisher, conversationFactory
+            memberService, productPricingService, publisher, conversationFactory, "test", "test"
         )
     }
 

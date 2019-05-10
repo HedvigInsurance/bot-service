@@ -27,7 +27,11 @@ constructor(
     private val memberService: MemberService,
     private val productPricingService: ProductPricingService,
     private val eventPublisher: ApplicationEventPublisher,
-    private val conversationFactory: ConversationFactory
+    private val conversationFactory: ConversationFactory,
+    @Value("\${hedvig.appleUser.email}")
+    private val appleUserEmail: String,
+    @Value("\${hedvig.appleUser.password}")
+    private val appleUserPassword: String
 ) : Conversation(), BankIdChat {
 
     var queuePos: Int? = null
@@ -42,11 +46,6 @@ constructor(
         STUDENT_RENT,
         LODGER
     }
-
-    @Value("\${hedvig.appleUser.email}")
-    lateinit var APPLE_USER_EMAIL: String
-    @Value("\${hedvig.appleUser.password}")
-    lateinit var APPLE_USER_PASSWORD: String
 
     init {
 
@@ -1511,7 +1510,7 @@ constructor(
                 userContext.putUserData("{LOGIN_EMAIL}", trimEmail)
                 m.body.text = trimEmail
                 addToChat(m, userContext)
-                nxtMsg = if (trimEmail == APPLE_USER_EMAIL.toLowerCase()) {
+                nxtMsg = if (trimEmail == appleUserEmail.toLowerCase()) {
                     MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD
                 } else {
                     MESSAGE_LOGIN_FAILED_WITH_EMAIL
@@ -1521,7 +1520,7 @@ constructor(
                 val pwd = m.body.text
                 m.body.text = "*****"
                 addToChat(m, userContext)
-                if (pwd == APPLE_USER_PASSWORD) {
+                if (pwd == appleUserPassword) {
                     nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS
                 } else {
                     nxtMsg = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
