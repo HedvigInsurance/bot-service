@@ -1719,7 +1719,7 @@ constructor(
     public override fun completeRequest(nxtMsg: String, userContext: UserContext) {
         var nxtMsg = nxtMsg
         when (nxtMsg) {
-            "message.medlem", "message.bankid.start", MESSAGE_LAGENHET -> {
+            "message.medlem", "message.bankid.start", MESSAGE_LAGENHET, MESSAGE_LOGIN_WITH_EMAIL, MESSAGE_LOGIN_FAILED_WITH_EMAIL -> {
                 val authResponse = memberService.auth(userContext.memberId)
 
                 if (!authResponse.isPresent) {
