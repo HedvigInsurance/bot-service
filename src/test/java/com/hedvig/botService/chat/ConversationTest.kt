@@ -23,7 +23,7 @@ class ConversationTest {
   internal lateinit var sut: Conversation
 
   @Mock
-  private lateinit var applicationEventPublisher: ApplicationEventPublisher
+  private val eventPublisher: ApplicationEventPublisher? = null
 
   private lateinit var uc: UserContext
 
@@ -137,7 +137,7 @@ class ConversationTest {
 
 
   fun makeConversation(constructor: Conversation.(Unit) -> Unit): Conversation {
-    return object : Conversation(applicationEventPublisher) {
+    return object : Conversation(eventPublisher!!) {
       override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
         return listOf()
       }
