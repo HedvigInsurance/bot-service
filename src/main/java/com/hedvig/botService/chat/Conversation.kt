@@ -92,7 +92,9 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
     m!!.render(userContext)
     log.info("Putting message: " + m.id + " content: " + m.body.text)
     userContext.addToHistory(m)
-    eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, m))
+    if (eventPublisher != null) {
+      eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, m))
+    }
   }
 
   fun createMessage(id:String, header: MessageHeader, body: MessageBody){
