@@ -50,7 +50,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
   public Conversation createConversation(Class<?> conversationClass) {
 
     if (conversationClass.equals(CharityConversation.class)) {
-      return new CharityConversation(this, memberService, productPricingService);
+      return new CharityConversation(this, memberService, productPricingService, eventPublisher);
     }
 
     if (conversationClass.equals(ClaimsConversation.class)) {
@@ -70,7 +70,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
     }
 
     if (conversationClass.equals(TrustlyConversation.class)) {
-      return new TrustlyConversation(triggerService, memberService);
+      return new TrustlyConversation(triggerService, memberService, eventPublisher);
     }
 
     if (conversationClass.equals(FreeChatConversation.class)) {
@@ -82,7 +82,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
     }
 
     if(conversationClass.equals(MemberSourceConversation.class)) {
-      return new MemberSourceConversation();
+      return new MemberSourceConversation(eventPublisher);
     }
 
     return null;

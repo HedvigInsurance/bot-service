@@ -31,6 +31,7 @@ public class FreeChatConversation extends Conversation {
     StatusBuilder statusBuilder,
     ApplicationEventPublisher eventPublisher,
     ProductPricingService productPricingService) {
+    super(eventPublisher);
     this.statusBuilder = statusBuilder;
     this.eventPublisher = eventPublisher;
     this.productPricingService = productPricingService;

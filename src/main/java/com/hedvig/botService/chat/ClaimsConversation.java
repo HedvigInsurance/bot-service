@@ -60,7 +60,7 @@ public class ClaimsConversation extends Conversation {
     ProductPricingService productPricingService,
     ConversationFactory conversationFactory,
     MemberService memberService) {
-    super();
+    super(eventPublisher);
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.productPricingService = productPricingService;

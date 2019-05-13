@@ -12,12 +12,19 @@ import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.BDDMockito.then
 import org.mockito.runners.MockitoJUnitRunner
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.boot.test.mock.mockito.MockBean
+
+
 
 @RunWith(MockitoJUnitRunner::class)
 class ConversationTest {
 
   @Mock(answer = Answers.CALLS_REAL_METHODS)
   internal lateinit var sut: Conversation
+
+  @MockBean
+  private lateinit var applicationEventPublisher: ApplicationEventPublisher
 
   private lateinit var uc: UserContext
 
@@ -131,7 +138,7 @@ class ConversationTest {
 
 
   fun makeConversation(constructor: Conversation.(Unit) -> Unit): Conversation {
-    return object : Conversation() {
+    return object : Conversation(applicationEventPublisher) {
       override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
         return listOf()
       }

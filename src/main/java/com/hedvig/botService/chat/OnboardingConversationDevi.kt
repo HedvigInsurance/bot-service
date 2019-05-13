@@ -26,13 +26,13 @@ class OnboardingConversationDevi
 constructor(
     private val memberService: MemberService,
     private val productPricingService: ProductPricingService,
-    private val eventPublisher: ApplicationEventPublisher,
+    override var eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
     private val appleUserPassword: String
-) : Conversation(), BankIdChat {
+) : Conversation(eventPublisher), BankIdChat {
 
     var queuePos: Int? = null
 
