@@ -34,7 +34,7 @@ class ConversationTest {
 
   @Before
   fun setup() {
-    uc = UserContext()
+    uc = UserContext("111111")
     uc.memberChat = mc
   }
 
