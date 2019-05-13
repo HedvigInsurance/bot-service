@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TrustlyConversationTest {
@@ -39,7 +38,7 @@ public class TrustlyConversationTest {
   private UserContext userContext;
   private TrustlyConversation testConversation;
 
-  @MockBean
+  @Mock
   private ApplicationEventPublisher applicationEventPublisher;
 
   @Before

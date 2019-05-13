@@ -13,7 +13,6 @@ import org.mockito.*
 import org.mockito.BDDMockito.then
 import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.boot.test.mock.mockito.MockBean
 
 
 
@@ -23,7 +22,7 @@ class ConversationTest {
   @Mock(answer = Answers.CALLS_REAL_METHODS)
   internal lateinit var sut: Conversation
 
-  @MockBean
+  @Mock
   private lateinit var applicationEventPublisher: ApplicationEventPublisher
 
   private lateinit var uc: UserContext
