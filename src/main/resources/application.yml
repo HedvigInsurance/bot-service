@@ -19,6 +19,11 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
+  data:
+    redis:
+      repositories:
+        enabled: false
+
 feign:
   client:
     config:
