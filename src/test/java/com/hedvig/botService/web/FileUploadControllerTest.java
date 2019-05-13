@@ -31,13 +31,6 @@ public class FileUploadControllerTest {
     fileUploadController = new FileUploadController(memberChatRepository);
   }
 
-  //  create two message bodies - one of MessageBodyFileUpload
-//    assign to 2 messages
-//    two messages - one is a file upload
-//    in message body add a file upload
-//    pass to member chat and return member chat
-//    put breakpoint by fileUploadMessages - check for getting one message
-
   @Test
   public void testFileUploadMessageShouldContainKeyTimeStampMimeTypeAndMemberIDAsExpected() {
     MessageBody messageBody1 = new MessageBodyFileUpload("test", "image/png", "423");
