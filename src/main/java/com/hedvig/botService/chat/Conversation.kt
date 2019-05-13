@@ -294,6 +294,11 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
     msg.author = getUserId(userId)
 
     uc.memberChat.addToHistory(msg)
+
+    if (eventPublisher != null) {
+      eventPublisher.publishEvent(MessageSentEvent(uc.memberId, msg))
+    }
+
     return true
   }
 
