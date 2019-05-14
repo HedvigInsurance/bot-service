@@ -80,6 +80,10 @@ public class Message {
     header = new MessageHeader();
   }
 
+  public void markAsRead() {
+    header.markedAsRead = true;
+  }
+
   public void render(UserContext userContext) {
     this.body.render(userContext);
   }

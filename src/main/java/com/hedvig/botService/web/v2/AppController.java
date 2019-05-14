@@ -3,7 +3,9 @@ package com.hedvig.botService.web.v2;
 import com.hedvig.botService.serviceIntegration.notificationService.NotificationService;
 import com.hedvig.botService.services.MessagesService;
 import com.hedvig.botService.services.SessionManager;
+import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.web.v2.dto.FABAction;
+import com.hedvig.botService.web.v2.dto.MarkAsReadRequest;
 import com.hedvig.botService.web.v2.dto.MessagesDTO;
 import com.hedvig.botService.web.v2.dto.RegisterPushTokenRequest;
 import java.util.Objects;
@@ -55,5 +57,14 @@ public class AppController {
       @RequestHeader(value = "hedvig.token") String memberId) {
     notificationService.setFirebaseToken(memberId, dto.getToken());
     return ResponseEntity.noContent().build();
+  }
+
+  @PostMapping("/markAsRead")
+  public ResponseEntity<Message> markAsRead(
+    @RequestBody MarkAsReadRequest dto,
+    @RequestHeader(value = "hedvig.token") String hid
+  ) {
+    Message message = messagesService.markAsRead(hid, dto.getGlobalId());
+    return ResponseEntity.ok(message);
   }
 }

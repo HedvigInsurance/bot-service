@@ -6,9 +6,11 @@ import com.hedvig.botService.chat.ClaimsConversation;
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.FreeChatConversation;
 import com.hedvig.botService.chat.TrustlyConversation;
+import com.hedvig.botService.enteties.MemberChat;
 import com.hedvig.botService.enteties.ResourceNotFoundException;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.UserContextRepository;
+import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.web.v2.dto.FABAction;
 import com.hedvig.botService.web.v2.dto.MessagesDTO;
@@ -16,6 +18,7 @@ import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Component
 @Transactional
@@ -65,6 +68,39 @@ public class MessagesService {
         new MessagesDTO.State(hasClaim, uc.inOfferState(), uc.hasCompletedOnboarding()),
         messages,
         options);
+  }
+
+  public Message getMessage(UserContext uc, Integer globalId) {
+    List<Message> messages = uc.getMemberChat().chatHistory;
+
+    messages.removeIf(s -> s.globalId != globalId);
+
+    if (messages.size() == 0) {
+      throw new ResourceNotFoundException("Coud not find message.");
+    }
+
+    return messages.get(messages.size() - 1);
+  }
+
+  public Message markAsRead(String hid, Integer globalId) {
+    UserContext uc =
+      userContextRepository
+        .findByMemberId(hid)
+        .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
+
+    Message message = getMessage(uc, globalId);
+    MemberChat chat = uc.getMemberChat();
+
+    List<Message> messages = chat.chatHistory;
+    Integer index = messages.indexOf(message);
+
+    message.markAsRead();
+    messages.set(index, message);
+
+    uc.setMemberChat(chat);
+    userContextRepository.saveAndFlush(uc);
+
+    return message;
   }
 
   public ResponseEntity<?> fabTrigger(String hid, FABAction actionId) {

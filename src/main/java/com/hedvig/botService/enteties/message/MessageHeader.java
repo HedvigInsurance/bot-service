@@ -25,6 +25,8 @@ public class MessageHeader {
   public Long pollingInterval; // Frequency of next request
   public String statusMessage = null;
 
+  public Boolean markedAsRead; // if client has marked this message as read i.e displayed on screen
+
   @Nullable
   public Boolean richTextChatCompatible = false;
 
@@ -40,6 +42,7 @@ public class MessageHeader {
     this.pollingInterval = 1000L; // Default value = 1s
     this.loadingIndicator = "loader"; // Default value
     this.shouldRequestPushNotifications = false;
+    this.markedAsRead = false;
   }
 
   public MessageHeader(long hedvigUserId, long timeStamp, boolean shouldRequestPushNotifications) {
@@ -48,6 +51,7 @@ public class MessageHeader {
     this.pollingInterval = 1000L;
     this.loadingIndicator = "loader";
     this.shouldRequestPushNotifications = shouldRequestPushNotifications;
+    this.markedAsRead = false;
   }
 
   public static MessageHeader createRichTextHeader(){
