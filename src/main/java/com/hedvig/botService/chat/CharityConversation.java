@@ -7,6 +7,7 @@ import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingSer
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +40,11 @@ public class CharityConversation extends Conversation {
   private final ProductPricingService productPricingService;
 
   CharityConversation(
-      ConversationFactory factory,
-      MemberService memberService,
-      ProductPricingService productPricingService) {
-    super();
+    ConversationFactory factory,
+    MemberService memberService,
+    ProductPricingService productPricingService,
+    ApplicationEventPublisher eventPublisher) {
+    super(eventPublisher);
     this.conversationFactory = factory;
     this.memberService = memberService;
     this.productPricingService = productPricingService;

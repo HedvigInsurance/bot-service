@@ -6,8 +6,12 @@ import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.services.events.MessageSentEvent
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
 import org.springframework.security.jwt.JwtHelper
+import org.springframework.stereotype.Component
 import java.io.IOException
 import java.lang.Long.valueOf
 import java.util.*
@@ -16,7 +20,8 @@ import java.util.*
 typealias SelectItemMessageCallback = (MessageBodySingleSelect, UserContext) -> String
 typealias GenericMessageCallback = (Message, UserContext) -> String
 
-abstract class Conversation internal constructor() {
+@Component
+abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
 
   private val callbacks = TreeMap<String, SelectItemMessageCallback>()
   val genericCallbacks = TreeMap<String, GenericMessageCallback>()
@@ -87,6 +92,9 @@ abstract class Conversation internal constructor() {
     m!!.render(userContext)
     log.info("Putting message: " + m.id + " content: " + m.body.text)
     userContext.addToHistory(m)
+    if (eventPublisher != null) {
+      eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, m))
+    }
   }
 
   fun createMessage(id:String, header: MessageHeader, body: MessageBody){
@@ -219,7 +227,7 @@ abstract class Conversation internal constructor() {
 
   // ----------------------------------------------------------------------------------------------------------------- //
 
-  inline fun <reified T:MessageBody>createChatMessage(id:String, message:WrappedMessage<T>){
+  final inline fun <reified T:MessageBody>createChatMessage(id:String, message:WrappedMessage<T>){
     this.createChatMessage(id, avatar = null, body = message.message)
     this.genericCallbacks[id] = {m,u -> message.callback(m.body as T, u, m)}
   }
@@ -286,6 +294,11 @@ abstract class Conversation internal constructor() {
     msg.author = getUserId(userId)
 
     uc.memberChat.addToHistory(msg)
+
+    if (eventPublisher != null) {
+      eventPublisher.publishEvent(MessageSentEvent(uc.memberId, msg))
+    }
+
     return true
   }
 

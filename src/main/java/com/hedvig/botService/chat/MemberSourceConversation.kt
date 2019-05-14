@@ -2,9 +2,10 @@ package com.hedvig.botService.chat
 
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import org.springframework.context.ApplicationEventPublisher
 
 
-class MemberSourceConversation() : Conversation() {
+class MemberSourceConversation(eventPublisher: ApplicationEventPublisher) : Conversation(eventPublisher) {
     override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
         return listOf()
     }

@@ -45,7 +45,7 @@ public class MainConversation extends Conversation {
   @Autowired
   public MainConversation(
       ConversationFactory conversationFactory, ApplicationEventPublisher eventPublisher) {
-    super();
+    super(eventPublisher);
     this.conversationFactory = conversationFactory;
     this.eventPublisher = eventPublisher;
 

@@ -27,7 +27,7 @@ public class CallMeConversation extends Conversation {
   private final ApplicationEventPublisher eventPublisher;
 
   public CallMeConversation(ApplicationEventPublisher eventPublisher) {
-
+    super(eventPublisher);
     this.eventPublisher = eventPublisher;
     createMessage(
       CALLME_CHAT_START,
