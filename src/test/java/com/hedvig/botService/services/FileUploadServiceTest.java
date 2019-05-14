@@ -58,7 +58,7 @@ public class FileUploadServiceTest {
   }
 
   @Test
-  public void ExpectedNumberOfFileUploadDTOS() {
+  public void returnsExpectedNumberOfFileDtos() {
     MessageBody messageBody1 = new MessageBodyFileUpload("test", "image/png", "423");
     MessageBody messageBody2 = new MessageBodyFileUpload("other message body", "image2/png", "6435");
     MessageBody messageBody3 = new MessageBody("not file upload");
@@ -84,7 +84,7 @@ public class FileUploadServiceTest {
   }
 
   @Test
-  public void ReturnEmptyListIfNoMemberChatFound() {
+  public void returnsEmptyListIfNoMemberChatFound() {
     Mockito.when(memberChatRepository.findByMemberId(Mockito.anyString())).thenReturn(Optional.empty());
     val testfiles = fileUploadService.getFileUploadDTOs("12345");
 
@@ -92,7 +92,7 @@ public class FileUploadServiceTest {
   }
 
   @Test
-  public void ReturnAnEmptyListIfNoFileUploadsFound() {
+  public void returnsEmptyListIfNoFileUploadsFound() {
     MessageBody messageBody1 = new MessageBody("other message body");
     MessageBody messageBody2 = new MessageBody("not file upload");
 
