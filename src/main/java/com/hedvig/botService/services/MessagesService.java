@@ -72,7 +72,7 @@ public class MessagesService {
     Optional<Message> messageMaybe = messageRepository.findByGlobalId(globalId);
 
     if (!messageMaybe.isPresent()) {
-      throw new ResourceNotFoundException(String.format("Coud not find message with globalId: %s", globalId);
+      throw new ResourceNotFoundException(String.format("Coud not find message with globalId: %s", globalId));
     }
 
     return messageMaybe.get();
