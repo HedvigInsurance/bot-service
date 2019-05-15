@@ -20,9 +20,6 @@ public class TriggerService {
   @Value("${hedvig.trustly.notification.successUrl}")
   public String NOTIFICATION_SUCCESS_URL;
 
-  @Value("${hedvig.trustly.notification.failUrl}")
-  public String NOTIFICATON_FAILED_URL;
-
   @Value("${hedvig.trustly.notification.errorUrl}")
   public String NOTIFICATION_ERROR_URL;
 
@@ -113,10 +110,6 @@ public class TriggerService {
 
     if (status == DirectDebitMandateTrigger.TriggerStatus.SUCCESS) {
       return NOTIFICATION_SUCCESS_URL;
-    }
-
-    if (status == DirectDebitMandateTrigger.TriggerStatus.FAILED) {
-      return NOTIFICATON_FAILED_URL;
     }
 
     return NOTIFICATION_ERROR_URL;
