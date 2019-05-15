@@ -78,7 +78,14 @@ public class MessagesService {
     return messageMaybe.get();
   }
 
-  public Message markAsRead(Integer globalId) {
+  public Message markAsRead(String memberId, Integer globalId) {
+
+    Optional<UserContext> userContextMaybe = userContextRepository.findByMemberId(memberId);
+
+    if (!userContextMaybe.isPresent()){
+      throw new ResourceNotFoundException(String.format("Coud not find user context with memberId: %s", memberId));
+    }
+
     Message message = getMessage(globalId);
 
     message.markAsRead();
