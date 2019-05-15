@@ -113,7 +113,7 @@ public class MemberChat {
       return;
     }
 
-    var backOfficeReplied = false;
+    boolean backOfficeReplied = false;
     for (Message m : chatHistory) {
       backOfficeReplied = backOfficeReplied
         || m.id.equals(BackOfficeAnswerDTO.MESSAGE_ID)
