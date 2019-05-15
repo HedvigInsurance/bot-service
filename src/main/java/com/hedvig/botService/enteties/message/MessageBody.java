@@ -48,7 +48,7 @@ public class MessageBody {
   public Integer imageWidth;
   public Integer imageHeight;
 
-  MessageBody(String text) {
+  public MessageBody(String text) {
     this.text = text;
   }
 
