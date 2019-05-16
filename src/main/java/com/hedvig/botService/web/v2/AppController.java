@@ -73,14 +73,6 @@ public class AppController {
     @RequestBody MarkAsReadRequest dto,
     @RequestHeader(value = "hedvig.token") String memberId
   ) {
-
-    Optional<UserContext> userContextMaybe = userContextRepository.findByMemberId(memberId);
-
-    if (!userContextMaybe.isPresent()){
-      return ResponseEntity.badRequest().build();
-    }
-
-    Message message = messagesService.markAsRead(dto.getGlobalId());
-    return ResponseEntity.ok(message);
+    return ResponseEntity.ok(messagesService.markAsRead(memberId,dto.getGlobalId()));
   }
 }
