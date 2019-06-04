@@ -167,7 +167,7 @@ public class StatusBuilderImpl implements StatusBuilder {
           if (hour <= 2) {
             return "Hedvig svarar imorgon";
           }
-          if (hour <= 9) {
+          if (hour < 9) {
             return "Hedvig svarar efter kl. 9";
           }
           if (hour < 18) {
