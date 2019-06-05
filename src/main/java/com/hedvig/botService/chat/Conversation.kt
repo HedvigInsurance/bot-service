@@ -7,9 +7,8 @@ import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.events.MessageSentEvent
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.jwt.JwtHelper
 import org.springframework.stereotype.Component
 import java.io.IOException
@@ -21,7 +20,7 @@ typealias SelectItemMessageCallback = (MessageBodySingleSelect, UserContext) -> 
 typealias GenericMessageCallback = (Message, UserContext) -> String
 
 @Component
-abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
+abstract class Conversation(var eventPublisher: ApplicationEventPublisher?) {
 
   private val callbacks = TreeMap<String, SelectItemMessageCallback>()
   val genericCallbacks = TreeMap<String, GenericMessageCallback>()
@@ -59,7 +58,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
     relayList[s1] = s2
   }
 
-  public fun findLastChatMessageId(messageId: String): String {
+  fun findLastChatMessageId(messageId: String): String {
     var i = 0
     while (messageList.containsKey(String.format(CHAT_ID_FORMAT, messageId, i))) {
       i++
@@ -88,13 +87,11 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
 
   abstract fun canAcceptAnswerToQuestion(uc: UserContext): Boolean
 
-  public open fun addToChat(m: Message?, userContext: UserContext) {
+  fun addToChat(m: Message?, userContext: UserContext) {
     m!!.render(userContext)
     log.info("Putting message: " + m.id + " content: " + m.body.text)
     userContext.addToHistory(m)
-    if (eventPublisher != null) {
-      eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, m))
-    }
+    eventPublisher?.publishEvent(MessageSentEvent(userContext.memberId, m))
   }
 
   fun createMessage(id:String, header: MessageHeader, body: MessageBody){
@@ -127,10 +124,6 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
       m.header.avatarName = avatarName
     }
     messageList[m.id] = m
-  }
-
-  protected fun setMessageCallback(id: String, callback: SelectItemMessageCallback) {
-    this.callbacks[id] = callback
   }
 
   internal fun hasSelectItemCallback(messageId: String): Boolean {
@@ -213,13 +206,13 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
 
   abstract fun handleMessage(userContext: UserContext, m: Message)
 
-  protected open fun completeRequest(nxtMsg: String, userContext: UserContext) {
+  protected fun completeRequest(nxtMsg: String, userContext: UserContext) {
     if (getMessage(nxtMsg) != null) {
       addToChat(getMessage(nxtMsg), userContext)
     }
   }
 
-  open fun receiveEvent(e: EventTypes, value: String, userContext: UserContext) {}
+  fun receiveEvent(e: EventTypes, value: String, userContext: UserContext) {}
 
   abstract fun init(userContext: UserContext)
 
@@ -242,7 +235,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
   fun createChatMessage(id: String, body: MessageBody, avatar: String?) {
     val paragraphs = body.text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
-    val delayFactor = 25 // Milliseconds per character TODO: Externalize this!
+    val delayFactor = 25 // Milliseconds per character
 
     val msgs = ArrayList<String>()
 
@@ -250,17 +243,11 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
       val s = paragraphs[i]
       val s1 = if (i == 0) id else String.format(CHAT_ID_FORMAT, id, pId++)
       val s2 = String.format(CHAT_ID_FORMAT, id, pId++)
-      // log.info("Create message of size "+(s.length())+" with load time:" +
-      // (s.length()*delayFactor));
-      // createMessage(s1, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
-      // createMessage(s1, new MessageBodyParagraph(""),(s.length()*delayFactor));
+
       createMessage(s2, body = MessageBodyParagraph(s))
 
-      // if(i==0){
-      //	createMessage(s1, new MessageBodyParagraph(""),"h_symbol",(s.length()*delayFactor));
-      // }else{
+
       createMessage(s1, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
-      // }
       msgs.add(s1)
       msgs.add(s2)
     }
@@ -270,7 +257,6 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
     val sFinal = String.format(CHAT_ID_FORMAT, id, pId++)
     val s = paragraphs[paragraphs.size - 1] // Last paragraph is put on actual message
     body.text = s
-    // createMessage(sWrite, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
     createMessage(sWrite, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
     if (avatar != null) {
       createMessage(sFinal, body = body, avatarName = avatar)
@@ -295,15 +281,13 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
 
     uc.memberChat.addToHistory(msg)
 
-    if (eventPublisher != null) {
-      eventPublisher.publishEvent(MessageSentEvent(uc.memberId, msg))
-    }
+    eventPublisher?.publishEvent(MessageSentEvent(uc.memberId, msg))
 
     return true
   }
 
 
-  open fun createBackOfficeMessage(uc: UserContext, message: String, id: String): Message {
+  protected fun createBackOfficeMessage(uc: UserContext, message: String, id: String): Message {
     val msg = Message()
     val selectionItems = getSelectItemsForAnswer(uc)
     msg.body = MessageBodySingleSelect(message, selectionItems)

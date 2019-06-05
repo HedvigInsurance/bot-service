@@ -1,11 +1,5 @@
 package com.hedvig.botService.web;
 
-import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hedvig.botService.BotServiceApplicationTests;
 import com.hedvig.botService.enteties.MessageRepository;
@@ -23,6 +17,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -52,7 +52,7 @@ public class InternalMessagesControllerTest {
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .content(
                     objectMapper.writeValueAsBytes(
-                        new AddMessageRequestDTO(TOLVANSSON_MEMBERID, "Hejsan!"))));
+                        new AddMessageRequestDTO(TOLVANSSON_MEMBERID, "Hejsan!", false))));
 
     perform.andExpect(status().isNoContent());
   }
@@ -71,7 +71,7 @@ public class InternalMessagesControllerTest {
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .content(
                     objectMapper.writeValueAsBytes(
-                        new AddMessageRequestDTO(TOLVANSSON_MEMBERID, "Hejsan!"))));
+                        new AddMessageRequestDTO(TOLVANSSON_MEMBERID, "Hejsan!", false))));
 
     perform.andExpect(status().isForbidden());
   }

@@ -26,7 +26,7 @@ class OnboardingConversationDevi
 constructor(
     private val memberService: MemberService,
     private val productPricingService: ProductPricingService,
-    override var eventPublisher: ApplicationEventPublisher,
+    eventPublisher: ApplicationEventPublisher?,
     private val conversationFactory: ConversationFactory,
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
@@ -1679,7 +1679,7 @@ constructor(
         userContext.putUserData(
             "{ONBOARDING_QUESTION_" + LocalDateTime.now().toString() + "}", m.body.text
         )
-        eventPublisher.publishEvent(
+        eventPublisher?.publishEvent(
             OnboardingQuestionAskedEvent(userContext.memberId, m.body.text)
         )
         addToChat(m, userContext)
@@ -1695,7 +1695,7 @@ constructor(
             UnderwritingLimitExcededEvent.UnderwritingType.HouseingSize
 
         val onBoardingData = userContext.onBoardingData
-        eventPublisher.publishEvent(
+        eventPublisher?.publishEvent(
             UnderwritingLimitExcededEvent(
                 userContext.memberId,
                 m.body.text,
@@ -1833,14 +1833,14 @@ constructor(
             val fiftyKLimit = userContext.getDataEntry("{50K_LIMIT}")
             val twentyFiveKLimit = userContext.getDataEntry(UserData.TWENTYFIVE_THOUSAND_LIMIT)
             when {
-                fiftyKLimit == "true" -> eventPublisher.publishEvent(RequestObjectInsuranceEvent(memberId, productType))
-                twentyFiveKLimit == "true" -> eventPublisher.publishEvent(
+                fiftyKLimit == "true" -> eventPublisher?.publishEvent(RequestObjectInsuranceEvent(memberId, productType))
+                twentyFiveKLimit == "true" -> eventPublisher?.publishEvent(
                     RequestStudentObjectInsuranceEvent(
                         memberId,
                         productType
                     )
                 )
-                else -> eventPublisher.publishEvent(MemberSignedEvent(memberId, productType))
+                else -> eventPublisher?.publishEvent(MemberSignedEvent(memberId, productType))
             }
         }
     }

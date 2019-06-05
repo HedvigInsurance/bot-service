@@ -3,6 +3,7 @@ package com.hedvig.botService.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.hedvig.botService.chat.ClaimsConversation;
 import com.hedvig.botService.chat.Conversation;
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
@@ -35,6 +36,7 @@ import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBE
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -93,7 +95,7 @@ public class SessionManagerTest {
     when(mockConversation.getSelectItemsForAnswer(tolvanssonUserContext))
         .thenReturn(Lists.newArrayList(SELECT_LINK));
 
-    AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE);
+    AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, false);
 
     val messageCouldBeAdded = sessionManager.addMessageFromHedvig(requestDTO);
 
@@ -108,7 +110,7 @@ public class SessionManagerTest {
 
   // FIXME
   @Test
-  public void givenConversationThatCanAcceptMessage_WhenAddMessageFromHedvig_ThenReturnFalse() {
+  public void givenConversationThatCanNotAcceptMessage_WhenAddMessageFromHedvig_ThenReturnFalse() {
 
     val tolvanssonUserContext = makeTolvanssonUserContext();
     startMockConversation(tolvanssonUserContext);
@@ -118,8 +120,31 @@ public class SessionManagerTest {
     when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(false);
     when(conversationFactory.createConversation(anyString())).thenReturn(mockConversation);
 
-    AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE);
+    AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, false);
 
+    val messageCouldBeAdded = sessionManager.addMessageFromHedvig(requestDTO);
+
+    assertThat(messageCouldBeAdded).isFalse();
+  }
+
+  @Test
+  public void givenForceSendMessageANDClaimsConversationThatCanNotAcceptMessage_WhenAddMessageFromHedvig_ThenAddMessageReturnFalse() {
+
+    //Conversationfactory should return mocked conversation
+    when(conversationFactory.createConversation(anyString())).thenReturn(mockConversation);
+
+    //During test replace mockConversation with ClaimsConversation, this will force a call to conversation factory
+    mockConversation = mock(ClaimsConversation.class);//, withSettings().defaultAnswer(CALLS_REAL_METHODS));
+
+    val tolvanssonUserContext = makeTolvanssonUserContext();
+    startMockConversation(tolvanssonUserContext);
+
+    when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
+      .thenReturn(Optional.of(tolvanssonUserContext));
+    when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(false);
+
+
+    AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, true);
     val messageCouldBeAdded = sessionManager.addMessageFromHedvig(requestDTO);
 
     assertThat(messageCouldBeAdded).isFalse();
