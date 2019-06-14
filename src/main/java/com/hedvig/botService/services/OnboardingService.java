@@ -16,7 +16,10 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdProgress
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.BankIdError;
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType;
 import com.hedvig.botService.web.dto.BankidStartResponse;
+
 import java.time.Instant;
+import java.util.List;
+
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,12 +105,15 @@ public class OnboardingService {
 
   private String createUserSignText(UserData ud) {
     String signText;
-    if (ud.getCurrentInsurer() != null) {
+
+    List<String> switchableInsurers = List.of("Folksam", "Trygg-Hansa", "ICA", "Tre Kronor");
+
+    if (switchableInsurers.contains(ud.getCurrentInsurer())) {
       signText =
           "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också  Hedvig fullmakt att byta försäkringen åt mig.";
     } else {
       signText =
-          "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag skaffar en försäkring hos Hedvig.";
+          "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut.";
     }
     return signText;
   }
