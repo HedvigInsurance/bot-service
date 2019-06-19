@@ -25,19 +25,20 @@ import org.springframework.stereotype.Component;
 *Måndag-Torsday*
 09-18 - Hedvig svarar inom 15 minuter
 18-02 - Hedvig svarar imorgon
-02-09.59 - Hedvig svarar efter kl. 9
+02-08.59 - Hedvig svarar efter kl. 9
 
 *Fredag*
 09-18 - Hedvig svarar inom 15 minuter
 11-11.45 - Hedvig svarar inom {11.45 - current time rounded to 5 minutes and with a 5 minute buffer} min
 18-02 - Hedvig svarar imorgon
-02-8.59 - Hedvig svarar efter kl. 10
+02-9.59 - Hedvig svarar efter kl. 10
 
 *Helg och helgdag*
-same as regular weekend and redDays
+10-18 – Hedvig svarar inom en timme **
+18-02 – Hedvig svarar i morgon
+02-09.59 – Hedvig svarar efter kl. 10
 
 *Weekends with no cover during summer*
-22nd - 23rd June
 13th - 14th July
 20th - 21st July
 27th - 28th July
@@ -47,7 +48,7 @@ Day before these weekends i.e. 12th June, 19th June cover will stop from 6pm
 21st is an exception see Midsummer note below
 
 *Ad hoc*
-No cover for Midsummer from 23:00 on 20th to 24th June
+No cover for Midsummer from 23:00 on 20th to 22th June
 Summer party no cover after 3pm
 
 *Regular Working Hours*
@@ -87,10 +88,10 @@ public class StatusBuilderImpl implements StatusBuilder {
   );
 
   private static ArrayList<LocalDate> summerWeekendsWithNoChatCover = new ArrayList<>(Arrays.asList(
-      LocalDate.parse("2019-06-22"), LocalDate.parse("2019-06-23"), LocalDate.parse("2019-07-13"),
-      LocalDate.parse("2019-07-14"), LocalDate.parse("2019-07-20"), LocalDate.parse("2019-07-21"),
-      LocalDate.parse("2019-07-27"), LocalDate.parse("2019-07-28"), LocalDate.parse("2019-08-03"),
-      LocalDate.parse("2019-08-04"), LocalDate.parse("2019-08-10"), LocalDate.parse("2019-08-11")
+      LocalDate.parse("2019-07-13"), LocalDate.parse("2019-07-14"), LocalDate.parse("2019-07-20"),
+      LocalDate.parse("2019-07-21"), LocalDate.parse("2019-07-27"), LocalDate.parse("2019-07-28"),
+      LocalDate.parse("2019-08-03"), LocalDate.parse("2019-08-04"), LocalDate.parse("2019-08-10"),
+      LocalDate.parse("2019-08-11")
     )
   );
 
@@ -110,10 +111,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     return "Hedvig svarar inom " + timeToAnswer + " min";
   }
 
-  public String getRedDayAndWeekendAnswerTimes(int hour, LocalDate todayDate) {
-    if (summerWeekendsWithNoChatCover.contains(todayDate)) {
-      return hedvigWillAnswerOnMonday();
-    }
+  public String getRedDayAndWeekendAnswerTimes(int hour) {
 
     if (hour <= 2) {
       return "Hedvig svarar imorgon";
@@ -134,7 +132,7 @@ public class StatusBuilderImpl implements StatusBuilder {
   public String getSummerWeekdayAnswerTimes(int hour, int minute, LocalDate todayDate) {
     final DayOfWeek dayOfWeek = todayDate.getDayOfWeek();
     final LocalDate tomorrowDate = todayDate.plusDays(1);
-    final LocalDate summerParty = LocalDate.parse(("2019-06-28"));
+    final LocalDate summerParty = LocalDate.parse("2019-06-28");
 
     if(dayOfWeek.equals(DayOfWeek.FRIDAY) && hour == 11 && minute >= 0 && minute <= 45) {
         return getFridayRetroMeetingTime(minute, 45);
@@ -171,9 +169,29 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
   }
 
+  public String getSummerWeekendTimes(int hour, LocalDate todayDate) {
+
+    if (summerWeekendsWithNoChatCover.contains(todayDate)) {
+      return hedvigWillAnswerOnMonday();
+    }
+
+    if (hour <= 2) {
+      return "Hedvig svarar imorgon";
+    }
+    if (hour < 10) {
+      return "Hedvig svarar efter kl. 10";
+    }
+    if (hour < 18) {
+      return "Hedvig svarar inom en timme";
+    }
+    else {
+      return "Hedvig svarar imorgon";
+    }
+  }
+
   public boolean isSummerTime(LocalDate todayDate) {
-    LocalDate summerStart = LocalDate.parse(currentYear + "-06-20");
-    LocalDate summerEnd = LocalDate.parse(currentYear + "-08-12");
+    LocalDate summerStart = LocalDate.of(currentYear,6,20);
+    LocalDate summerEnd = LocalDate.of(currentYear,8,12);
     return todayDate.isAfter(summerStart) && todayDate.isBefore(summerEnd);
   }
 
@@ -189,15 +207,21 @@ public class StatusBuilderImpl implements StatusBuilder {
     final LocalDate todayDate = LocalDate.now();
 
     if ((todayDate.equals(midsommarStartDate) && hour >= 23) || (todayDate.equals(midsommarEndDate))) {
-      return hedvigWillAnswerOnMonday();
+      return "Hedvig svarar den 22e juni";
+    }
+
+    if (isSummerTime(todayDate) && (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY))) {
+      return getSummerWeekendTimes(hour, todayDate);
+    }
+
+    if (isSummerTime(todayDate) && (!dayOfWeek.equals(DayOfWeek.SATURDAY)) && !dayOfWeek.equals(DayOfWeek.SUNDAY)) {
+      return getSummerWeekdayAnswerTimes(hour, minute, todayDate);
     }
 
     if (redDays.contains(todayDate)) {
-      return getRedDayAndWeekendAnswerTimes(hour, todayDate);
-    } else if (isSummerTime(todayDate) && (!dayOfWeek.equals(DayOfWeek.SATURDAY)) && !dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-      return getSummerWeekdayAnswerTimes(hour, minute, todayDate);
-    } else {
-
+      return getRedDayAndWeekendAnswerTimes(hour);
+    }
+    else {
       switch (dayOfWeek) {
         case MONDAY:
         case TUESDAY:
@@ -242,7 +266,7 @@ public class StatusBuilderImpl implements StatusBuilder {
         }
         case SATURDAY:
         case SUNDAY: {
-          return getRedDayAndWeekendAnswerTimes(hour, todayDate);
+          return getRedDayAndWeekendAnswerTimes(hour);
         }
         default: {
           log.error("getstatusmessage method has not returned a hedvig answer time");
