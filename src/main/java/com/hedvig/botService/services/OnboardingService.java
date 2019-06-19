@@ -5,6 +5,7 @@ import static com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDI
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.FreeChatConversation;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
+import com.hedvig.botService.config.SwitchableInsurers;
 import com.hedvig.botService.enteties.BankIdSessionImpl;
 import com.hedvig.botService.enteties.ResourceNotFoundException;
 import com.hedvig.botService.enteties.UserContext;
@@ -35,14 +36,17 @@ public class OnboardingService {
   private final MemberService memberService;
   private final UserContextRepository userContextRepository;
   private final ConversationFactory conversationFactory;
+  private final SwitchableInsurers switchableInsurers;
 
   public OnboardingService(
       MemberService memberService,
       UserContextRepository userContextRepository,
-      ConversationFactory conversationFactory) {
+      ConversationFactory conversationFactory,
+      SwitchableInsurers switchableInsurers) {
     this.memberService = memberService;
     this.userContextRepository = userContextRepository;
     this.conversationFactory = conversationFactory;
+    this.switchableInsurers = switchableInsurers;
   }
 
   public BankidStartResponse sign(String hid) {
@@ -106,9 +110,7 @@ public class OnboardingService {
   private String createUserSignText(UserData ud) {
     String signText;
 
-    List<String> switchableInsurers = List.of("Folksam", "Trygg-Hansa", "ICA", "Tre Kronor");
-
-    if (switchableInsurers.contains(ud.getCurrentInsurer())) {
+    if (switchableInsurers.SWITCHABLE_INSURERS.contains(ud.getCurrentInsurer())) {
       signText =
           "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också  Hedvig fullmakt att byta försäkringen åt mig.";
     } else {

@@ -7,6 +7,8 @@ import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_B
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_NAGOTMER
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_ONBOARDINGSTART_REPLY_NAME
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_VARBORDUFELADRESS
+import com.hedvig.botService.config.SwitchableInsurers
+import com.hedvig.botService.config.SwitchableInsurers.SWITCHABLE_INSURERS
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.enteties.userContextHelpers.UserData
@@ -47,6 +49,9 @@ class OnboardingConversationDeviTest {
     @Mock
     private lateinit var conversationFactory: ConversationFactory
 
+    @Mock
+    private lateinit var switchableInsurers: SwitchableInsurers
+
     private lateinit var userContext: UserContext
     private lateinit var testConversation: OnboardingConversationDevi
 
@@ -56,7 +61,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, publisher, conversationFactory, "test", "test"
+            memberService, productPricingService, publisher, conversationFactory, switchableInsurers, "test","test"
         )
     }
 

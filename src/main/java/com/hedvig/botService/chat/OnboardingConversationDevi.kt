@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
+import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
@@ -28,6 +29,7 @@ constructor(
     private val productPricingService: ProductPricingService,
     override var eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
+    private val switchableInsurers: SwitchableInsurers,
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
@@ -1024,7 +1026,7 @@ constructor(
                     val signData: Optional<BankIdSignResponse>
 
                     val signText: String
-                    signText = if(SWITCHABLE_INSURERS.contains(ud.currentInsurer)) {
+                    signText = if(SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.currentInsurer)) {
                         "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också Hedvig fullmakt att byta försäkringen åt mig."
                     } else {
                         "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut"
@@ -1597,7 +1599,7 @@ constructor(
                     userContext.onBoardingData.currentInsurer = comp
                     m.body.text = comp
 
-                    if(SWITCHABLE_INSURERS.contains(comp)) {
+                    if(SwitchableInsurers.SWITCHABLE_INSURERS.contains(comp)) {
                         nxtMsg = MESSAGE_BYTESINFO
                     } else {
                         nxtMsg = MESSAGE_INSURER_NOT_SWITCHABLE
@@ -1971,7 +1973,6 @@ constructor(
         const val MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN = "message.login.with.mail.try.again"
         const val MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS = "message.login.with.mail.passwrod.success"
         const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
-        val SWITCHABLE_INSURERS: Array<String> = arrayOf("Folksam", "Trygg-Hansa", "ICA", "Tre Kronor")
         const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
 
         @JvmField

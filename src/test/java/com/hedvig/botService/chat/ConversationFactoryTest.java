@@ -1,9 +1,11 @@
 package com.hedvig.botService.chat;
 
+import com.hedvig.botService.config.SwitchableInsurers;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.triggerService.TriggerService;
+import org.checkerframework.checker.fenum.qual.SwingTextOrientation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +33,7 @@ public class ConversationFactoryTest {
   @Mock private MemberService memberService;
   @Mock private ProductPricingService productPricingService;
   @Mock private TriggerService triggerService;
+  @Mock private SwitchableInsurers switchableInsurers;
 
   public ConversationFactoryTest(Class<?> conversationClass) {
     this.conversationClass = conversationClass;
@@ -64,6 +67,7 @@ public class ConversationFactoryTest {
             productPricingService,
             triggerService,
             applicationEventPublisher,
+            switchableInsurers,
             claimsService,
             statusBuilder,
             0,
