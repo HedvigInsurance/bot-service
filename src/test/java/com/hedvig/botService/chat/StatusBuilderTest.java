@@ -1,12 +1,10 @@
 package com.hedvig.botService.chat;
 
-import org.apache.tomcat.jni.Local;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.junit.Before;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import static junit.framework.TestCase.*;
