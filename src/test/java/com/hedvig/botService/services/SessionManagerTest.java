@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.hedvig.botService.chat.Conversation;
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
-import com.hedvig.botService.config.SwitchableInsurers;
 import com.hedvig.botService.enteties.TrackingDataRespository;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.UserContextRepository;

@@ -1,13 +1,11 @@
 package com.hedvig.botService.chat;
 
-import com.hedvig.botService.config.SwitchableInsurers;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -26,7 +24,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
   private String appleUserEmail;
   private String appleUserPwd;
 
-  @Autowired
   public ConversationFactoryImpl(
       MemberService memberService,
       ProductPricingService productPricingService,

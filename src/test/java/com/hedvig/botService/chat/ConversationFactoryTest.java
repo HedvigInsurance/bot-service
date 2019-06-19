@@ -1,11 +1,9 @@
 package com.hedvig.botService.chat;
 
-import com.hedvig.botService.config.SwitchableInsurers;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.triggerService.TriggerService;
-import org.checkerframework.checker.fenum.qual.SwingTextOrientation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

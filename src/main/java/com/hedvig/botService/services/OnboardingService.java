@@ -17,9 +17,7 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdProgress
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.BankIdError;
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType;
 import com.hedvig.botService.web.dto.BankidStartResponse;
-
 import java.time.Instant;
-
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
