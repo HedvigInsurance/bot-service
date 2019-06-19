@@ -20,7 +20,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
   private final TriggerService triggerService;
   private final ApplicationEventPublisher eventPublisher;
   private final ClaimsService claimsService;
-  public final SwitchableInsurers switchableInsurers;
 
   private final StatusBuilder statusBuilder;
   private Integer queuePos;
@@ -33,7 +32,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
       ProductPricingService productPricingService,
       TriggerService triggerService,
       ApplicationEventPublisher eventPublisher,
-      SwitchableInsurers switchableInsurers,
       ClaimsService claimsService,
       StatusBuilder statusBuilder,
       @Value("${hedvig.waitlist.length}") Integer queuePos,
@@ -44,7 +42,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
     this.triggerService = triggerService;
 
     this.eventPublisher = eventPublisher;
-    this.switchableInsurers = switchableInsurers;
     this.claimsService = claimsService;
     this.statusBuilder = statusBuilder;
     this.queuePos = queuePos;
@@ -70,7 +67,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
     if (conversationClass.equals(OnboardingConversationDevi.class)) {
       final OnboardingConversationDevi onboardingConversationDevi =
           new OnboardingConversationDevi(
-              memberService, productPricingService, eventPublisher, this, switchableInsurers, appleUserEmail,appleUserPwd);
+              memberService, productPricingService, eventPublisher, this, appleUserEmail,appleUserPwd);
       onboardingConversationDevi.setQueuePos(queuePos);
       return onboardingConversationDevi;
     }

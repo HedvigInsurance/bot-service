@@ -19,7 +19,6 @@ import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorTy
 import com.hedvig.botService.web.dto.BankidStartResponse;
 
 import java.time.Instant;
-import java.util.List;
 
 import lombok.val;
 import org.slf4j.Logger;
@@ -36,17 +35,14 @@ public class OnboardingService {
   private final MemberService memberService;
   private final UserContextRepository userContextRepository;
   private final ConversationFactory conversationFactory;
-  private final SwitchableInsurers switchableInsurers;
 
   public OnboardingService(
       MemberService memberService,
       UserContextRepository userContextRepository,
-      ConversationFactory conversationFactory,
-      SwitchableInsurers switchableInsurers) {
+      ConversationFactory conversationFactory) {
     this.memberService = memberService;
     this.userContextRepository = userContextRepository;
     this.conversationFactory = conversationFactory;
-    this.switchableInsurers = switchableInsurers;
   }
 
   public BankidStartResponse sign(String hid) {
@@ -110,7 +106,7 @@ public class OnboardingService {
   private String createUserSignText(UserData ud) {
     String signText;
 
-    if (switchableInsurers.SWITCHABLE_INSURERS.contains(ud.getCurrentInsurer())) {
+    if (SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.getCurrentInsurer())) {
       signText =
           "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också  Hedvig fullmakt att byta försäkringen åt mig.";
     } else {

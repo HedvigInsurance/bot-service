@@ -62,9 +62,6 @@ public class SessionManagerTest {
   @Mock ClaimsService claimsService;
 
   @Mock
-  SwitchableInsurers switchableInsurers;
-
-  @Mock
   ApplicationEventPublisher applicationEventPublisher;
 
   SessionManager sessionManager;
@@ -166,7 +163,7 @@ public class SessionManagerTest {
   }
 
   private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, switchableInsurers, "test", "test") ;
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, "test", "test") ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

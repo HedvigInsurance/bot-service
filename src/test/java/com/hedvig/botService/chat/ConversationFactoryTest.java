@@ -33,7 +33,6 @@ public class ConversationFactoryTest {
   @Mock private MemberService memberService;
   @Mock private ProductPricingService productPricingService;
   @Mock private TriggerService triggerService;
-  @Mock private SwitchableInsurers switchableInsurers;
 
   public ConversationFactoryTest(Class<?> conversationClass) {
     this.conversationClass = conversationClass;
@@ -67,7 +66,6 @@ public class ConversationFactoryTest {
             productPricingService,
             triggerService,
             applicationEventPublisher,
-            switchableInsurers,
             claimsService,
             statusBuilder,
             0,

@@ -49,9 +49,6 @@ class OnboardingConversationDeviTest {
     @Mock
     private lateinit var conversationFactory: ConversationFactory
 
-    @Mock
-    private lateinit var switchableInsurers: SwitchableInsurers
-
     private lateinit var userContext: UserContext
     private lateinit var testConversation: OnboardingConversationDevi
 
@@ -61,7 +58,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, publisher, conversationFactory, switchableInsurers, "test","test"
+            memberService, productPricingService, publisher, conversationFactory, "test","test"
         )
     }
 

@@ -29,7 +29,6 @@ constructor(
     private val productPricingService: ProductPricingService,
     override var eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
-    private val switchableInsurers: SwitchableInsurers,
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
