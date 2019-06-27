@@ -722,7 +722,7 @@ constructor(
                 + "Du kommer behöva ringa ditt försäkringbolag och säga upp din försäkring. Men jag hjälper dig med det så gott jag kan 😊",
                 listOf(
                     SelectOption("Jag förstår", MESSAGE_FORSLAG2), // Create product
-                    SelectOption("Förklara mer", "message.förklara.mer.bolag.not.switchable")
+                    SelectOption("Förklara mer", "message.forklara.mer.bolag.not.switchable")
                 )
             )
         )
@@ -756,7 +756,7 @@ constructor(
         )
 
         this.createChatMessage(
-            "message.förklara.mer.bolag.not.switchable",
+            "message.forklara.mer.bolag.not.switchable",
             MessageBodySingleSelect(
                 "Självklart! De flesta försäkringsbolagen har som policy att man måste säga upp sin försäkring över telefon, kanske för att göra det extra krångligt för dig att säga upp din försäkring 🙄 Jag kommer maila dig vilket nummer du behöver ringa och vad du behöver säga, det brukar gå rätt fort",
                 object : ArrayList<SelectItem>() {
