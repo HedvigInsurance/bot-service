@@ -12,8 +12,6 @@ import com.hedvig.botService.enteties.message.SelectLink;
 import com.hedvig.botService.enteties.message.SelectOption;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
-import java.util.List;
-import java.util.Objects;
 import lombok.val;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -22,11 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Objects;
+
 @Component
 public class MainConversation extends Conversation {
 
   public static final String MESSAGE_HEDVIG_COM = "hedvig.com";
   public static final String MESSAGE_HEDVIG_COM_CLAIMS = "hedvig.com.claims";
+  public static final String MESSAGE_HEDVIG_COM_POST_LOGIN = "hedvig.com.post.login";
   public static final String MESSAGE_QUESTION_RECIEVED = "message.question.recieved";
   public static final String MESSAGE_MAIN_END = "message.main.end";
   public static final String MESSAGE_MAIN_CALLME = "message.main.callme";
@@ -57,6 +59,13 @@ public class MainConversation extends Conversation {
                 new SelectOption("Rapportera en skada", MESSAGE_MAIN_REPORT),
                 new SelectOption("Ring mig!", MESSAGE_MAIN_CALLME),
                 new SelectOption("Jag har en fråga", MESSAGE_MAIN_QUESTION))));
+
+    createMessage(
+      MESSAGE_HEDVIG_COM_POST_LOGIN,
+      new MessageBodySingleSelect(
+        "Välkommen tillbaka {NAME}!",
+        Lists.newArrayList(
+          SelectLink.toDashboard("Ta mig till till hemskärmen", "postlogindash"))));
 
     createMessage(
         MESSAGE_HEDVIG_COM_CLAIMS,
@@ -222,6 +231,6 @@ public class MainConversation extends Conversation {
   public void init(UserContext userContext, String startMessage) {
     log.info("Starting main conversation with message: " + startMessage);
     addTrustlyButton(userContext);
-    startConversation(userContext, MESSAGE_HEDVIG_COM); // Id of first message
+    startConversation(userContext, startMessage); // Id of first message
   }
 }

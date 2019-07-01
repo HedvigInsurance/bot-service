@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
+import com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
@@ -1770,7 +1771,7 @@ constructor(
             userContext.onBoardingData.userHasSigned!! -> {
                 userContext.completeConversation(this)
                 val mc = conversationFactory.createConversation(MainConversation::class.java)
-                userContext.startConversation(mc)
+                userContext.startConversation(mc, MESSAGE_HEDVIG_COM_POST_LOGIN)
             }
             userContext.getDataEntry(LOGIN) != null -> {
                 userContext.removeDataEntry(LOGIN)
