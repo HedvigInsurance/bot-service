@@ -1,6 +1,8 @@
 package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
+
+import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
@@ -685,6 +687,7 @@ constructor(
             MessageBodySingleSelect(
                 "Okej! Vilket försäkringsbolag har du?",
                 SelectOption("If", "if"),
+                SelectOption("ICA", "ICA"),
                 SelectOption("Folksam", "Folksam"),
                 SelectOption("Trygg-Hansa", "Trygg-Hansa"),
                 SelectOption("Länsförsäkringar", "Länsförsäkringar"),
@@ -698,9 +701,9 @@ constructor(
             MessageBodySingleSelect(
                 "Okej! Är det något av dessa kanske?",
                 SelectOption("Moderna", "Moderna"),
-                SelectOption("ICA", "ICA"),
-                SelectOption("Gjensidige", "Gjensidige"),
+                SelectOption("Tre Kronor", "Tre Kronor"),
                 SelectOption("Vardia", "Vardia"),
+                SelectOption("Gjensidige", "Gjensidige"),
                 SelectOption("Annat bolag", MESSAGE_ANNATBOLAG)
             )
         )
@@ -712,6 +715,18 @@ constructor(
 
         this.createMessage(
             MESSAGE_ANNATBOLAG, MessageBodyText("Okej, vilket försäkringsbolag har du?"), 2000
+        )
+
+        this.createMessage(
+            "message.bolag.not.switchable",
+            MessageBodySingleSelect("👀\u000C"
+                + "Okej! Om du blir medlem hos mig så aktiveras din försäkring här först när din nuvarande försäkring gått ut\u000C"
+                + "Du kommer behöva ringa ditt försäkringbolag och säga upp din försäkring. Men jag hjälper dig med det så gott jag kan 😊",
+                listOf(
+                    SelectOption("Jag förstår", MESSAGE_FORSLAG2), // Create product
+                    SelectOption("Förklara mer", "message.forklara.mer.bolag.not.switchable")
+                )
+            )
         )
 
         this.createChatMessage(
@@ -735,6 +750,17 @@ constructor(
                         + "Till det behöver jag en fullmakt från dig som du skriver under med mobilt BankID \u000C"
                         + "Sen börjar din nya försäkring gälla direkt när den gamla går ut\u000C"
                         + "Så du behöver aldrig vara orolig att gå utan försäkring efter att du skrivit på med mig",
+                object : ArrayList<SelectItem>() {
+                    init {
+                        add(SelectOption("Okej!", MESSAGE_FORSLAG2)) // Create product
+                    }
+                })
+        )
+
+        this.createChatMessage(
+            "message.forklara.mer.bolag.not.switchable",
+            MessageBodySingleSelect(
+                "Självklart! De flesta försäkringsbolagen har som policy att man måste säga upp sin försäkring över telefon, kanske för att göra det extra krångligt för dig att säga upp din försäkring 🙄 Jag kommer maila dig vilket nummer du behöver ringa och vad du behöver säga, det brukar gå rätt fort",
                 object : ArrayList<SelectItem>() {
                     init {
                         add(SelectOption("Okej!", MESSAGE_FORSLAG2)) // Create product
@@ -1001,10 +1027,10 @@ constructor(
                     val signData: Optional<BankIdSignResponse>
 
                     val signText: String
-                    signText = if (ud.currentInsurer != null) {
+                    signText = if(SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.currentInsurer)) {
                         "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också Hedvig fullmakt att byta försäkringen åt mig."
                     } else {
-                        "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag skaffar en försäkring hos Hedvig."
+                        "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut"
                     }
 
                     signData = memberService.sign(ud.ssn, signText, userContext.memberId)
@@ -1564,15 +1590,22 @@ constructor(
                 val comp = m.body.text
                 userContext.onBoardingData.currentInsurer = comp
                 m.body.text = comp
-                nxtMsg = MESSAGE_BYTESINFO
+                nxtMsg = MESSAGE_INSURER_NOT_SWITCHABLE
                 addToChat(m, userContext)
             }
+
             MESSAGE_FORSAKRINGIDAGJA, "message.bolag.annat.expand" -> {
                 val comp = (m.body as MessageBodySingleSelect).selectedItem.value
                 if (!comp.startsWith("message.")) {
                     userContext.onBoardingData.currentInsurer = comp
                     m.body.text = comp
-                    nxtMsg = MESSAGE_BYTESINFO
+
+                    if(SwitchableInsurers.SWITCHABLE_INSURERS.contains(comp)) {
+                        nxtMsg = MESSAGE_BYTESINFO
+                    } else {
+                        nxtMsg = MESSAGE_INSURER_NOT_SWITCHABLE
+                    }
+
                     addToChat(m, userContext)
                 }
             }
@@ -1941,6 +1974,7 @@ constructor(
         const val MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN = "message.login.with.mail.try.again"
         const val MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS = "message.login.with.mail.passwrod.success"
         const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
+        const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"

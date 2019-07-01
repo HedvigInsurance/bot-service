@@ -5,6 +5,7 @@ import static com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDI
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.FreeChatConversation;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
+import com.hedvig.botService.config.SwitchableInsurers;
 import com.hedvig.botService.enteties.BankIdSessionImpl;
 import com.hedvig.botService.enteties.ResourceNotFoundException;
 import com.hedvig.botService.enteties.UserContext;
@@ -102,12 +103,13 @@ public class OnboardingService {
 
   private String createUserSignText(UserData ud) {
     String signText;
-    if (ud.getCurrentInsurer() != null) {
+
+    if (SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.getCurrentInsurer())) {
       signText =
           "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också  Hedvig fullmakt att byta försäkringen åt mig.";
     } else {
       signText =
-          "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag skaffar en försäkring hos Hedvig.";
+          "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut.";
     }
     return signText;
   }
