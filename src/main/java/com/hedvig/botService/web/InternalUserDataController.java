@@ -3,6 +3,8 @@ package com.hedvig.botService.web;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.UserContextRepository;
 import com.hedvig.botService.services.SessionManager;
+import com.hedvig.botService.services.UserContextService;
+import com.hedvig.botService.web.dto.EditMemberNameRequestDTO;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +24,15 @@ public class InternalUserDataController {
 
   private static Logger log = LoggerFactory.getLogger(InternalUserDataController.class);
   private final SessionManager sessionManager;
+  private final UserContextService userContextService;
 
   @Autowired
   public InternalUserDataController(
     SessionManager sessions,
-    UserContextRepository repository) {
+    UserContextRepository repository,
+    UserContextService userContextService) {
     this.sessionManager = sessions;
+    this.userContextService = userContextService;
   }
 
   @GetMapping(value = "{memberId}/push-token", produces = "application/json")
@@ -55,4 +60,13 @@ public class InternalUserDataController {
     sessionManager.init_web_onboarding(memberId, req);
     return ResponseEntity.noContent().build();
   }
+
+  @PostMapping(value = "{memberId}/editMemberName")
+  ResponseEntity<?> editMemberName(
+    @PathVariable("memberId") String memberId,
+    @RequestBody @Valid EditMemberNameRequestDTO dto) {
+
+      userContextService.editMemberName(memberId, dto);
+      return ResponseEntity.ok().build();
+    }
 }
