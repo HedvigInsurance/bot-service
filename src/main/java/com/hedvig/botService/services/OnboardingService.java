@@ -108,8 +108,7 @@ public class OnboardingService {
 
     if (ud.getCurrentInsurer() == null) {
       signText = "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag skaffar en försäkring hos Hedvig.";
-    }
-      else if (SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.getCurrentInsurer())) {
+    } else if (SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.getCurrentInsurer())) {
       signText =
         "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också  Hedvig fullmakt att byta försäkringen åt mig.";
     } else {

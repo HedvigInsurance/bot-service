@@ -1027,14 +1027,10 @@ constructor(
 
                     val signData: Optional<BankIdSignResponse>
 
-                    val signText: String
-                    signText = if (ud.currentInsurer == null) {
-                        "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag skaffar en försäkring hos Hedvig."
-                    }
-                    else if (SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.currentInsurer)) {
-                        "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också Hedvig fullmakt att byta försäkringen åt mig."
-                    } else {
-                        "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut."
+                    val signText: String = when {
+                        ud.currentInsurer == null -> "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag skaffar en försäkring hos Hedvig."
+                        ud.currentInsurer in SwitchableInsurers.SWITCHABLE_INSURERS -> "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också Hedvig fullmakt att byta försäkringen åt mig."
+                        else -> "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut."
                     }
 
                     signData = memberService.sign(ud.ssn, signText, userContext.memberId)
