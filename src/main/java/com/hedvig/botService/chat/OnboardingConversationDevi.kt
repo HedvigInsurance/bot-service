@@ -719,9 +719,10 @@ constructor(
 
         this.createChatMessage(
             "message.bolag.not.switchable",
-            MessageBodySingleSelect("👀\u000C" +
-                    "Okej! Om du blir medlem hos mig så aktiveras din försäkring här först när din nuvarande försäkring gått ut\u000C" +
-                    "Du kommer behöva ringa ditt försäkringbolag och säga upp din försäkring. Men jag hjälper dig med det så gott jag kan 😊",
+            MessageBodySingleSelect(
+                "👀\u000C" +
+                        "Okej! Om du blir medlem hos mig så aktiveras din försäkring här först när din nuvarande försäkring gått ut\u000C" +
+                        "Du kommer behöva ringa ditt försäkringbolag och säga upp din försäkring. Men jag hjälper dig med det så gott jag kan 😊",
                 listOf(
                     SelectOption("Jag förstår", MESSAGE_FORSLAG2), // Create product
                     SelectOption("Förklara mer", "message.forklara.mer.bolag.not.switchable")
@@ -1027,7 +1028,7 @@ constructor(
                     val signData: Optional<BankIdSignResponse>
 
                     val signText: String
-                    signText = if(SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.currentInsurer)) {
+                    signText = if (SwitchableInsurers.SWITCHABLE_INSURERS.contains(ud.currentInsurer)) {
                         "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också Hedvig fullmakt att byta försäkringen åt mig."
                     } else {
                         "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut"
@@ -1600,7 +1601,7 @@ constructor(
                     userContext.onBoardingData.currentInsurer = comp
                     m.body.text = comp
 
-                    if(SwitchableInsurers.SWITCHABLE_INSURERS.contains(comp)) {
+                    if (comp != null && SwitchableInsurers.SWITCHABLE_INSURERS.contains(comp)) {
                         nxtMsg = MESSAGE_BYTESINFO
                     } else {
                         nxtMsg = MESSAGE_INSURER_NOT_SWITCHABLE
