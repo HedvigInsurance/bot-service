@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import javax.transaction.Transactional
 
 @RestController
 @RequestMapping("/v2/app")
@@ -69,6 +70,7 @@ class AppController(
     }
 
     @GetMapping("/onboarding-data")
+    @Transactional
     fun onboardingData(@RequestHeader("hedvig.token") memberId: String): ResponseEntity<OnboardingData> {
         val userContext = userContextRepository
             .findByMemberId(memberId)
