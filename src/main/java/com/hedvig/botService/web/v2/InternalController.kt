@@ -9,10 +9,8 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/_/v2/")
 class InternalController(
-    private val notificationService: NotificationService,
-    private val userContextRepository: UserContextRepository
+    private val notificationService: NotificationService
 ) {
-
     @GetMapping("{memberId}/push-token")
     fun pushToken(@PathVariable memberId: String): ResponseEntity<String> {
         val possibleToken = notificationService.getFirebaseToken(memberId)
@@ -20,17 +18,5 @@ class InternalController(
         return possibleToken
             .map { ResponseEntity.ok(it) }
             .orElseGet { ResponseEntity.notFound().build() }
-    }
-
-    @GetMapping("{memberId}/onboarding-data")
-    fun onboardingData(memberId: String): ResponseEntity<OnboardingData> {
-        val userContext = userContextRepository
-            .findByMemberId(memberId)
-
-        if (userContext.isEmpty) {
-            return ResponseEntity.notFound().build()
-        }
-
-        return ResponseEntity.ok(OnboardingData.from(userContext.get()))
     }
 }
