@@ -75,7 +75,7 @@ class AppController(
         val userContext = userContextRepository
             .findByMemberId(memberId)
 
-        if (userContext.isEmpty) {
+        if (!userContext.isPresent) {
             return ResponseEntity.notFound().build()
         }
 
