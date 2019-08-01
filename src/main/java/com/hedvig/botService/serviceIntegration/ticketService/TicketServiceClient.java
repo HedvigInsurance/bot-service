@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "ticketServiceClient", url = "${hedvig.ticket-service.url:ticket-service}")
+@FeignClient(name = "ticket-service", url = "${hedvig.ticket-service.url:ticket-service}")
 public interface TicketServiceClient {
 
   @PostMapping( value="/_/tickets/new/")
