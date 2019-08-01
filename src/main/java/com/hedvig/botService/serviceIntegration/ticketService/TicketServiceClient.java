@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface TicketServiceClient {
 
   @PostMapping( value="/_/tickets/new/")
-  ResponseEntity<String> createNewTicket (@RequestBody TicketDto ticket ) ;
+  void createNewTicket (@RequestBody TicketDto ticket ) ;
 
 }
