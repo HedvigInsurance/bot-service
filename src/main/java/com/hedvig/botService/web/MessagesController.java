@@ -3,6 +3,10 @@ package com.hedvig.botService.web;
 import static java.lang.Long.valueOf;
 
 import com.hedvig.botService.enteties.message.Message;
+import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
+import com.hedvig.botService.serviceIntegration.ticketService.TicketStatus;
+import com.hedvig.botService.serviceIntegration.ticketService.TicketType;
+import com.hedvig.botService.serviceIntegration.ticketService.dto.TicketDto;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.AvatarDTO;
 import com.hedvig.botService.web.dto.EventDTO;
@@ -33,9 +37,11 @@ public class MessagesController {
 
   private static Logger log = LoggerFactory.getLogger(MessagesController.class);
   private final SessionManager sessionManager;
+  private final TicketService ticketService;
 
   @Autowired
-  public MessagesController(SessionManager sessions) {
+  public MessagesController(SessionManager sessions, TicketService ticketService) {
+    this.ticketService = ticketService;
     this.sessionManager = sessions;
   }
 
@@ -104,7 +110,23 @@ public class MessagesController {
       msg.body.text = msg.body.text.trim();
     }
 
+    ticketService.createNewTicket( new TicketDto(
+      hid,
+      "bot-service@hedvig.com",
+      "",
+      hid,
+      0.0f, //The priority is automatically handled in Ticket-Service
+      TicketType.MESSAGE,
+      null,
+      null,
+      null,
+      "Received a message from a member: " + msg.body.text.trim(),
+      TicketStatus.WAITING
+    ));
+
     sessionManager.receiveMessage(msg, hid);
+
+
 
     return ResponseEntity.noContent().build();
   }
