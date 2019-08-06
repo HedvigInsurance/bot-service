@@ -14,13 +14,9 @@ import org.mockito.BDDMockito.then
 import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
 
-
-
 @RunWith(MockitoJUnitRunner::class)
 class ConversationTest {
-
-  @Mock(answer = Answers.CALLS_REAL_METHODS)
-  internal lateinit var sut: Conversation
+  private lateinit var sut: Conversation
 
   @Mock
   private val eventPublisher: ApplicationEventPublisher? = null
@@ -36,6 +32,24 @@ class ConversationTest {
   fun setup() {
     uc = UserContext("111111")
     uc.memberChat = mc
+
+    sut = makeConversation {  }
+  }
+
+  @Test
+  fun addToChat_withAddToChatCallback_executesCallback(){
+
+    var executed = false;
+
+    sut = makeConversation {
+      val wrappedMessage = WrappedMessage(MessageBodyText("Test"), { _ -> executed = true; }, { _, _, _ -> "true" })
+      this.createChatMessage("test.message", wrappedMessage)
+    }
+
+    sut.addToChat("test.message", uc)
+
+    assertThat(executed).isTrue()
+
   }
 
   @Test
@@ -94,7 +108,7 @@ class ConversationTest {
         MessageBodySingleSelect(
           "hej", listOf(
           SelectItem(false, "Text", "value")))
-      ) { body, usercontext, _ ->
+      ) { _, _, _ ->
         called = true
         ""
       })
@@ -115,7 +129,7 @@ class ConversationTest {
       this.createChatMessage(
         "message.id", WrappedMessage(
         MessageBodyText("hej"),
-        callback = { _, _, _ ->
+        receiveMessageCallback = { _, _, _ ->
           called = true
           ""
         }))

@@ -1,9 +1,8 @@
 package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
-
-import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_POST_LOGIN
+import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
@@ -11,7 +10,6 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData
 import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.events.*
@@ -839,14 +837,16 @@ constructor(
             2000
         )
 
-        this.createMessage(
+        this.createChatMessage(
             MESSAGE_FORSLAG2,
-            MessageBodySingleSelect(
+            WrappedMessage(MessageBodySingleSelect(
                 "Sådärja, tack {NAME}! Det var alla frågor jag hade!",
                 Lists.newArrayList<SelectItem>(
                     SelectLink.toOffer("Gå vidare för att se ditt förslag 👏", "message.forslag.dashboard")
                 )
-            )
+            ),
+                addMessageCallback = { uc -> this.completeOnboarding(uc) },
+                receiveMessageCallback = { _, _, _ -> MESSAGE_FORSLAG2 })
         )
         this.addRelay(MESSAGE_FORSLAG, MESSAGE_FORSLAG2)
 
@@ -1227,12 +1227,10 @@ constructor(
                 if (relay != null) {
                     completeRequest(relay, userContext)
                 }
-                if (value == MESSAGE_FORSLAG2) {
-                    completeOnboarding(userContext)
-                } else //Deprecated 2018-12-17
-                    if (value == "message.kontraktklar") {
-                        endConversation(userContext)
-                    }
+
+                if (value == "message.kontraktklar") {
+                    endConversation(userContext)
+                }
             }
         }
     }
