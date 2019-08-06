@@ -36,10 +36,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
   }
 
   enum class EventTypes {
-    ANIMATION_COMPLETE,
-    MODAL_CLOSED,
-    MESSAGE_FETCHED,
-    MISSING_DATA
+    MESSAGE_FETCHED
   }
 
   fun getMessage(key: String): Message? {
@@ -59,7 +56,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
     relayList[s1] = s2
   }
 
-  public fun findLastChatMessageId(messageId: String): String {
+  fun findLastChatMessageId(messageId: String): String {
     var i = 0
     while (messageList.containsKey(String.format(CHAT_ID_FORMAT, messageId, i))) {
       i++
@@ -127,10 +124,6 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
       m.header.avatarName = avatarName
     }
     messageList[m.id] = m
-  }
-
-  protected fun setMessageCallback(id: String, callback: SelectItemMessageCallback) {
-    this.callbacks[id] = callback
   }
 
   internal fun hasSelectItemCallback(messageId: String): Boolean {
