@@ -12,6 +12,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
+import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.events.*
@@ -244,6 +245,13 @@ constructor(
                     }
                 }
 
+                val ssn = uc.onBoardingData.ssn
+
+//                @TODO: change to != using == for testing purposes as don't know a personnummer with a red flag
+                if (checkSSN(ssn) == (Flag.GREEN)) {
+                    return@WrappedMessage("message.vad.ar.din.telefonnummer")
+                }
+
                 if (response?.address != null) {
                     MESSAGE_BANKIDJA
                 } else {
@@ -279,6 +287,38 @@ constructor(
 
                 "message.varborduadress"
             })
+
+        this.createChatMessage(
+            "message.vad.ar.din.telefonnummer",
+            WrappedMessage(
+                MessageBodyText(
+                    "Tack! Vilket telefonnummer kan jag nå dig på?",
+                    TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
+                )
+            )
+             { b, uc, m ->
+                 val onBoardingData = uc.onBoardingData
+                // @TODO: phoneNumber Validation
+                 onBoardingData.phoneNumber = b.text
+
+                 eventPublisher.publishEvent(
+                     OnboardingCallForQuoteEvent(
+                         uc.memberId,
+                         onBoardingData.firstName,
+                         onBoardingData.familyName,
+                         onBoardingData.phoneNumber
+                     )
+                 )
+                addToChat(m, uc)
+                 "message.hedvig.ska.ringer.dig"
+             })
+
+        this.createChatMessage(
+            "message.hedvig.ska.ringer.dig",
+            MessageBodyParagraph(
+                "Tack så mycket. Jag hör av mig inom kort med ett förslag"
+            )
+        )
 
         this.createChatMessage(
             MESSAGE_LAGENHET,
@@ -1920,6 +1960,17 @@ constructor(
 
     private fun String.capitalizeAll(): String {
         return this.split(regex = Regex("\\s")).map { it.toLowerCase().capitalize() }.joinToString(" ")
+    }
+
+//    @TODO: this will return Flag.GREEN so that we will skip past this part of the onboarding flow if we cannot find the member in syna or the service is down - just using RED for testing purposes
+    private fun checkSSN(ssn: String): Flag {
+        try {
+            memberService.checkPersonDebt(ssn)
+            return memberService.getDebtFlag(ssn)
+        } catch(ex: Exception) {
+            log.error("Error getting debt status from member-service", ex)
+            return Flag.RED
+        }
     }
 
     companion object {

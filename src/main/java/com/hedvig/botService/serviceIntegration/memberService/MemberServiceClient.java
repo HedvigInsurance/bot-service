@@ -54,4 +54,10 @@ public interface MemberServiceClient {
 
   @PostMapping("/i/member/initAppleUser")
   ResponseEntity<Void> initAppleUser(@RequestBody AppleInitializationRequest request);
+
+  @RequestMapping(value = "/_/debt/flag/{ssn}", method = RequestMethod.GET)
+  ResponseEntity<Flag> flag(@PathVariable("ssn") String ssn);
+
+  @PostMapping("/_/debt/check/{ssn}")
+  ResponseEntity<Void> checkPersonDebt(@PathVariable("ssn") String SSN);
 }

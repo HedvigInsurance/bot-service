@@ -167,6 +167,21 @@ public class MemberServiceFeign implements MemberService {
     }
   }
 
+  @Override
+  public void checkPersonDebt(String ssn) {
+    try {
+      this.client.checkPersonDebt(ssn);
+    } catch (RestClientResponseException | FeignException e) {
+        log.error("Cannot check debt for the following personnummer {}", ssn);
+    }
+  }
+
+  @Override
+  public Flag getDebtFlag(String ssn) {
+    ResponseEntity<Flag> flag = this.client.flag(ssn);
+    return flag.getBody();
+  }
+
   private void send(Runnable supplier) {
     try {
       supplier.run();
