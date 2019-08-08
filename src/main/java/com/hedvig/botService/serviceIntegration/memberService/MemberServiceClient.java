@@ -59,5 +59,5 @@ public interface MemberServiceClient {
   ResponseEntity<Flag> flag(@PathVariable("ssn") String ssn);
 
   @PostMapping("/_/debt/check/{ssn}")
-  ResponseEntity<Void> checkPersonDebt(@PathVariable("ssn") String SSN);
+  ResponseEntity<Void> checkPersonDebt(@PathVariable("ssn") String ssn);
 }

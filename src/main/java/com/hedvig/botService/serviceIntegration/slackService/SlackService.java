@@ -24,7 +24,7 @@ public class SlackService {
 
     final String message = String.format(
       "Potential member %s - %s %s tried to sign-up, give them a call on %s",
-      event.getMemberId(), event.getFirstName(), event.getLastName(), event.getPhoneNumber());
+      event.getMemberId(), event.getFirstName(), event.getLastName() != null ? event.getLastName() : "", event.getPhoneNumber());
 
     try {
       SlackData slackData = new SlackData();

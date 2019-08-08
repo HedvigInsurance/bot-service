@@ -246,10 +246,8 @@ constructor(
                 }
 
                 val ssn = uc.onBoardingData.ssn
-
-//                @TODO: change to != using == for testing purposes as don't know a personnummer with a red flag
-                if (checkSSN(ssn) == (Flag.GREEN)) {
-                    return@WrappedMessage("message.vad.ar.din.telefonnummer")
+                if (checkSSN(ssn) == (Flag.RED)) {
+                    return@WrappedMessage("message.vad.ar.ditt.telefonnummer")
                 }
 
                 if (response?.address != null) {
@@ -289,7 +287,7 @@ constructor(
             })
 
         this.createChatMessage(
-            "message.vad.ar.din.telefonnummer",
+            "message.vad.ar.ditt.telefonnummer",
             WrappedMessage(
                 MessageBodyText(
                     "Tack! Vilket telefonnummer kan jag nå dig på?",
@@ -298,8 +296,8 @@ constructor(
             )
              { b, uc, m ->
                  val onBoardingData = uc.onBoardingData
-                // @TODO: phoneNumber Validation
-                 onBoardingData.phoneNumber = b.text
+                 val regex = Regex("[^0-9]")
+                 onBoardingData.phoneNumber = regex.replace(b.text, "")
 
                  eventPublisher.publishEvent(
                      OnboardingCallForQuoteEvent(
@@ -310,11 +308,12 @@ constructor(
                      )
                  )
                 addToChat(m, uc)
-                 "message.hedvig.ska.ringer.dig"
+                 "message.hedvig.ska.ringa.dig"
              })
+        this.setExpectedReturnType("message.vad.ar.ditt.telefonnummer", PhoneNumber())
 
         this.createChatMessage(
-            "message.hedvig.ska.ringer.dig",
+            "message.hedvig.ska.ringa.dig",
             MessageBodyParagraph(
                 "Tack så mycket. Jag hör av mig inom kort med ett förslag"
             )
@@ -1962,14 +1961,13 @@ constructor(
         return this.split(regex = Regex("\\s")).map { it.toLowerCase().capitalize() }.joinToString(" ")
     }
 
-//    @TODO: this will return Flag.GREEN so that we will skip past this part of the onboarding flow if we cannot find the member in syna or the service is down - just using RED for testing purposes
     private fun checkSSN(ssn: String): Flag {
         try {
             memberService.checkPersonDebt(ssn)
             return memberService.getDebtFlag(ssn)
         } catch(ex: Exception) {
             log.error("Error getting debt status from member-service", ex)
-            return Flag.RED
+            return Flag.GREEN
         }
     }
 
