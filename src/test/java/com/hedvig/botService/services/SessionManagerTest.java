@@ -3,6 +3,7 @@ package com.hedvig.botService.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.hedvig.botService.chat.Conversation;
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
@@ -59,6 +60,8 @@ public class SessionManagerTest {
   @Mock MessagesService messagesService;
 
   @Mock ClaimsService claimsService;
+
+  @Mock PhoneNumberUtil phoneNumberUtil;
 
   @Mock
   ApplicationEventPublisher applicationEventPublisher;
@@ -162,7 +165,7 @@ public class SessionManagerTest {
   }
 
   private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, "test", "test") ;
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, "test", "test", phoneNumberUtil) ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

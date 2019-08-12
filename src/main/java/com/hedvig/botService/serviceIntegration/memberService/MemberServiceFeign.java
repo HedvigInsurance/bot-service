@@ -178,8 +178,8 @@ public class MemberServiceFeign implements MemberService {
 
   @Override
   public Flag getDebtFlag(String ssn) {
-    ResponseEntity<Flag> flag = this.client.flag(ssn);
-    return flag.getBody();
+    ResponseEntity<Flag> response = this.client.flag(ssn);
+    return response.getBody();
   }
 
   private void send(Runnable supplier) {

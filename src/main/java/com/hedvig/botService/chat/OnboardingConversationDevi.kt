@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_POST_LOGIN
@@ -35,7 +36,8 @@ constructor(
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
-    private val appleUserPassword: String
+    private val appleUserPassword: String,
+    private val phoneNumberUtil: PhoneNumberUtil
 ) : Conversation(eventPublisher), BankIdChat {
 
     var queuePos: Int? = null
@@ -287,30 +289,39 @@ constructor(
             })
 
         this.createChatMessage(
+            "fel.telefonnummer.format",
+            WrappedMessage(
+                MessageBodyText(
+                    "Det låter inte som ett korrekt svenskt telefonnummer... Prova igen tack!",
+                    TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
+                )
+
+            ) { b, uc, m ->
+                if(phoneNumberIsCorrectSwedishFormat(b, uc, m)) {
+                    "message.hedvig.ska.ringa.dig"
+                } else {
+                    "fel.telefonnummer.format"
+                }
+            }
+        )
+
+        this.createChatMessage(
             "message.vad.ar.ditt.telefonnummer",
             WrappedMessage(
                 MessageBodyText(
                     "Tack! Vilket telefonnummer kan jag nå dig på?",
                     TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
                 )
-            )
-             { b, uc, m ->
-                 val onBoardingData = uc.onBoardingData
-                 val regex = Regex("[^0-9]")
-                 onBoardingData.phoneNumber = regex.replace(b.text, "")
 
-                 eventPublisher.publishEvent(
-                     OnboardingCallForQuoteEvent(
-                         uc.memberId,
-                         onBoardingData.firstName,
-                         onBoardingData.familyName,
-                         onBoardingData.phoneNumber
-                     )
-                 )
-                addToChat(m, uc)
-                 "message.hedvig.ska.ringa.dig"
-             })
-        this.setExpectedReturnType("message.vad.ar.ditt.telefonnummer", PhoneNumber())
+            ) { b, uc, m ->
+                if(phoneNumberIsCorrectSwedishFormat(b, uc, m)) {
+                    "message.hedvig.ska.ringa.dig"
+                } else {
+                    "fel.telefonnummer.format"
+                }
+            }
+
+        )
 
         this.createChatMessage(
             "message.hedvig.ska.ringa.dig",
@@ -1387,6 +1398,32 @@ constructor(
         userContext.onBoardingData.productId = productId
         this.memberService.finalizeOnBoarding(
             userContext.memberId, userContext.onBoardingData
+        )
+    }
+
+    private fun phoneNumberIsCorrectSwedishFormat(b: MessageBody, uc: UserContext, m: Message): Boolean {
+        val regex = Regex("[^0-9]")
+        uc.onBoardingData.phoneNumber = regex.replace(b.text, "")
+
+        val swedishNumber = phoneNumberUtil.parse(uc.onBoardingData.phoneNumber, "SE")
+        if (phoneNumberUtil.isValidNumberForRegion(swedishNumber, "SE")) {
+            sendPhoneNumberMessage(uc)
+            addToChat(m, uc)
+            return true
+        } else {
+            addToChat(m, uc)
+            return false
+        }
+    }
+
+    private fun sendPhoneNumberMessage(uc: UserContext) {
+        eventPublisher.publishEvent(
+            OnboardingCallForQuoteEvent(
+                uc.memberId,
+                uc.onBoardingData.firstName,
+                uc.onBoardingData.familyName,
+                uc.onBoardingData.phoneNumber
+            )
         )
     }
 
