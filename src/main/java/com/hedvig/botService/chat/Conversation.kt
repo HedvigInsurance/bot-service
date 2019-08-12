@@ -7,7 +7,6 @@ import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.events.MessageSentEvent
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
 import org.springframework.security.jwt.JwtHelper
@@ -19,12 +18,14 @@ import java.util.*
 
 typealias SelectItemMessageCallback = (MessageBodySingleSelect, UserContext) -> String
 typealias GenericMessageCallback = (Message, UserContext) -> String
+typealias AddMessageCallback = (UserContext) -> Unit
 
 @Component
 abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
 
   private val callbacks = TreeMap<String, SelectItemMessageCallback>()
   val genericCallbacks = TreeMap<String, GenericMessageCallback>()
+  val addMessageCallbacks = TreeMap<String, AddMessageCallback>()
 
   private val messageList = TreeMap<String, Message>()
   private val relayList = TreeMap<String, String>()
@@ -36,10 +37,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
   }
 
   enum class EventTypes {
-    ANIMATION_COMPLETE,
-    MODAL_CLOSED,
-    MESSAGE_FETCHED,
-    MISSING_DATA
+    MESSAGE_FETCHED
   }
 
   fun getMessage(key: String): Message? {
@@ -59,7 +57,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
     relayList[s1] = s2
   }
 
-  public fun findLastChatMessageId(messageId: String): String {
+  fun findLastChatMessageId(messageId: String): String {
     var i = 0
     while (messageList.containsKey(String.format(CHAT_ID_FORMAT, messageId, i))) {
       i++
@@ -92,6 +90,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
     m!!.render(userContext)
     log.info("Putting message: " + m.id + " content: " + m.body.text)
     userContext.addToHistory(m)
+    addMessageCallbacks[m.id]?.invoke(userContext)
     if (eventPublisher != null) {
       eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, m))
     }
@@ -127,10 +126,6 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
       m.header.avatarName = avatarName
     }
     messageList[m.id] = m
-  }
-
-  protected fun setMessageCallback(id: String, callback: SelectItemMessageCallback) {
-    this.callbacks[id] = callback
   }
 
   internal fun hasSelectItemCallback(messageId: String): Boolean {
@@ -229,7 +224,11 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
 
   final inline fun <reified T:MessageBody>createChatMessage(id:String, message:WrappedMessage<T>){
     this.createChatMessage(id, avatar = null, body = message.message)
-    this.genericCallbacks[id] = {m,u -> message.callback(m.body as T, u, m)}
+    this.genericCallbacks[id] = {m,u -> message.receiveMessageCallback(m.body as T, u, m)}
+    if(message.addMessageCallback != null) {
+      this.addMessageCallbacks[id] = message.addMessageCallback
+    }
+
   }
 
   fun createChatMessage(id: String, body: MessageBody) {
