@@ -4,6 +4,7 @@ import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 
 import com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_POST_LOGIN
+import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
@@ -848,7 +849,7 @@ constructor(
             )
         )
 
-        //This message is used as the last message to the 25K LIMIT flow as well as to 50K LIMIT flow 
+        //This message is used as the last message to the 25K LIMIT flow as well as to 50K LIMIT flow
         this.createMessage(
             MESSAGE_50K_LIMIT_YES_YES,
             MessageBodyParagraph("Toppen, så hör bara av dig i chatten så fixar jag det!"),
@@ -887,14 +888,16 @@ constructor(
             2000
         )
 
-        this.createMessage(
+        this.createChatMessage(
             MESSAGE_FORSLAG2,
-            MessageBodySingleSelect(
+            WrappedMessage(MessageBodySingleSelect(
                 "Sådärja, tack {NAME}! Det var alla frågor jag hade!",
                 Lists.newArrayList<SelectItem>(
                     SelectLink.toOffer("Gå vidare för att se ditt förslag 👏", "message.forslag.dashboard")
                 )
-            )
+            ),
+                addMessageCallback = { uc -> this.completeOnboarding(uc) },
+                receiveMessageCallback = { _, _, _ -> MESSAGE_FORSLAG2 })
         )
         this.addRelay(MESSAGE_FORSLAG, MESSAGE_FORSLAG2)
 
@@ -1005,17 +1008,6 @@ constructor(
         )
 
         this.createMessage(
-            "message.mail",
-            MessageBodyText(
-                "Tackar.\nOch din mailadress så jag kan skicka en bekräftelse när vi skrivit på?",
-                TextContentType.EMAIL_ADDRESS, KeyboardType.EMAIL_ADDRESS
-            )
-        )
-
-        // (FUNKTION: FYLL I MAILADRESS) = FÄLT
-        this.setExpectedReturnType("message.mail", EmailAdress())
-
-        this.createMessage(
             "message.bankid.error.expiredTransaction",
             MessageBodyParagraph(BankIDStrings.expiredTransactionError),
             1500
@@ -1042,88 +1034,6 @@ constructor(
             MessageBodyParagraph(BankIDStrings.startFailed),
             1500
         )
-
-        this.createMessage("message.kontrakt.great", MessageBodyParagraph("Härligt!"), 1000)
-        this.addRelay("message.kontrakt.great", "message.kontrakt")
-
-        this.createMessage(
-            "message.kontrakt.signError",
-            MessageBodyParagraph("Hmm nu blev något fel! Vi försöker igen $emoji_flushed_face"),
-            1000
-        )
-        this.addRelay("message.kontrakt.signError", "message.kontrakt")
-
-        this.createMessage(
-            "message.kontrakt.signProcessError",
-            MessageBodyParagraph("Vi försöker igen $emoji_flushed_face"),
-            1000
-        )
-        this.addRelay("message.kontrakt.signProcessError", "message.kontrakt")
-
-        this.createChatMessage(
-            "message.kontrakt",
-            WrappedMessage(
-                MessageBodySingleSelect(
-                    "Då är det bara att signera, sen är vi klara",
-                    listOf(SelectOption("Okej!", "message.kontraktpop.startBankId"))
-                )
-            ) { m, userContext, _ ->
-                if (m.selectedItem.value == "message.kontrakt") {
-                    m.text = m.selectedItem.text
-                } else {
-                    val ud = userContext.onBoardingData
-
-                    val signData: Optional<BankIdSignResponse>
-
-                    val signText: String = when {
-                        ud.currentInsurer == null -> "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag skaffar en försäkring hos Hedvig."
-                        ud.currentInsurer in SwitchableInsurers.SWITCHABLE_INSURERS -> "Jag har tagit del av förköpsinformation och villkor och bekräftar genom att signera att jag vill byta till Hedvig när min gamla försäkring går ut. Jag ger också Hedvig fullmakt att byta försäkringen åt mig."
-                        else -> "Jag har tagit del av förköpsinformation samt villkor och bekräftar att jag vill byta till Hedvig när min nuvarande hemförsäkring går ut."
-                    }
-
-                    signData = memberService.sign(ud.ssn, signText, userContext.memberId)
-
-                    if (signData.isPresent) {
-                        userContext.startBankIdSign(signData.get())
-                    } else {
-                        log.error("Could not start signing process.")
-                        return@WrappedMessage "message.kontrakt.signError"
-                    }
-
-                }
-                m.selectedItem.value
-            }
-        )
-
-        this.createMessage(
-            "message.kontraktpop.bankid.collect", MessageBodyBankIdCollect("{REFERENCE_TOKEN}")
-        )
-
-        this.createChatMessage(
-            "message.kontraktpop.startBankId",
-            WrappedMessage(
-                MessageBodySingleSelect(
-                    "För signeringen använder vi BankID",
-                    listOf(
-                        SelectLink(
-                            "Öppna BankID",
-                            "message.kontraktpop.bankid.collect", null,
-                            "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
-                            false
-                        )
-                    )
-                )
-            ) { m, uc, _ ->
-                val obd = uc.onBoardingData
-                if (m.selectedItem.value == "message.kontraktpop.bankid.collect") {
-                    obd.bankIdMessage = "message.kontraktpop.startBankId"
-                }
-
-                m.selectedItem.value
-            }
-        )
-
-        setupBankidErrorHandlers("message.kontraktpop.startBankId", "message.kontrakt")
 
         //Deperecated 2018-12-17
         this.createMessage(
@@ -1191,8 +1101,6 @@ constructor(
                     }
                 })
         )
-
-        this.createMessage("message.bikedone", MessageBodyText("Nu har du sett hur det funkar..."))
 
         this.createMessage("error", MessageBodyText("Oj nu blev något fel..."))
 
@@ -1370,21 +1278,10 @@ constructor(
                 if (relay != null) {
                     completeRequest(relay, userContext)
                 }
-                if (value == MESSAGE_FORSLAG2) {
-                    completeOnboarding(userContext)
-                } else //Deprecated 2018-12-17
-                    if (value == "message.kontraktklar") {
-                        endConversation(userContext)
-                    }
-            }
-            Conversation.EventTypes.ANIMATION_COMPLETE -> when (value) {
-                "animation.bike" -> completeRequest("message.bikedone", userContext)
-            }
-            Conversation.EventTypes.MODAL_CLOSED -> when (value) {
-                "quote" -> completeRequest("message.quote.close", userContext)
-            }
-            Conversation.EventTypes.MISSING_DATA -> when (value) {
-                "bisnode" -> completeRequest("message.missing.bisnode.data", userContext)
+
+                if (value == "message.kontraktklar") {
+                    endConversation(userContext)
+                }
             }
         }
     }
@@ -1570,11 +1467,6 @@ constructor(
                 addToChat(m, userContext)
                 nxtMsg = MESSAGE_KVADRAT
             }
-            "message.mail" -> {
-                onBoardingData.email = m.body.text
-                addToChat(m, userContext)
-                nxtMsg = "message.kontrakt"
-            }
             MESSAGE_SAKERHET -> {
                 val body = m.body as MessageBodyMultipleSelect
 
@@ -1708,8 +1600,6 @@ constructor(
 
                 addToChat(m, userContext)
             }
-
-            "message.kontrakt" -> completeOnboarding(userContext)
         }
 
         /*
