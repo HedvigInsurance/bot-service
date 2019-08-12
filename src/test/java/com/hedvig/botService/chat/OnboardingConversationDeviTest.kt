@@ -48,9 +48,12 @@ class OnboardingConversationDeviTest {
     @Mock
     private lateinit var conversationFactory: ConversationFactory
 
+    @Mock
+    private lateinit var phoneNumberUtil: PhoneNumberUtil
+
     private lateinit var userContext: UserContext
     private lateinit var testConversation: OnboardingConversationDevi
-    private lateinit var phoneNumberUtil: PhoneNumberUtil
+
 
     @Before
     fun setup() {

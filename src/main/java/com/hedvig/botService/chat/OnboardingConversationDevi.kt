@@ -320,7 +320,6 @@ constructor(
                     "fel.telefonnummer.format"
                 }
             }
-
         )
 
         this.createChatMessage(
@@ -1405,15 +1404,20 @@ constructor(
         val regex = Regex("[^0-9]")
         uc.onBoardingData.phoneNumber = regex.replace(b.text, "")
 
-        val swedishNumber = phoneNumberUtil.parse(uc.onBoardingData.phoneNumber, "SE")
-        if (phoneNumberUtil.isValidNumberForRegion(swedishNumber, "SE")) {
-            sendPhoneNumberMessage(uc)
-            addToChat(m, uc)
-            return true
-        } else {
-            addToChat(m, uc)
-            return false
+        try {
+            val swedishNumber = phoneNumberUtil.parse(uc.onBoardingData.phoneNumber, "SE")
+            if (phoneNumberUtil.isValidNumberForRegion(swedishNumber, "SE")) {
+                sendPhoneNumberMessage(uc)
+                addToChat(m, uc)
+                return true
+            } else {
+                addToChat(m, uc)
+                return false
+            }
+        } catch(error: Exception) {
+            "Error thrown when trying to validate phone number" + error.toString()
         }
+        return false
     }
 
     private fun sendPhoneNumberMessage(uc: UserContext) {
