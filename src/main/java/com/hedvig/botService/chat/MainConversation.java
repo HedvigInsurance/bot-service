@@ -38,6 +38,7 @@ public class MainConversation extends Conversation {
   public static final String MESSAGE_MAIN_REPORT = "message.main.report";
   public static final String MESSAGE_MAIN_ONBOARDING_DONE = "onboarding.done";
   public static final String CONVERSATION_DONE = "conversation.done";
+  public static final String MESSAGE_CLAIM_DONE = "claim.done";
   public static final String MESSAGE_MAIN_START_CHAT = "message.main.start.chat";
 
   private static Logger log = LoggerFactory.getLogger(MainConversation.class);
@@ -67,13 +68,13 @@ public class MainConversation extends Conversation {
         Lists.newArrayList(
           SelectLink.toDashboard("Ta mig till till hemskärmen", "postlogindash"))));
 
+    final String HANDS_EMOJI = "\uD83D\uDE4C";
     createMessage(
         MESSAGE_HEDVIG_COM_CLAIMS,
         new MessageBodySingleSelect(
-            "Är det något mer du vill ha hjälp med?",
+            "Jag återkommer här i chatten om jag behöver något mer eller för att berätta hur det går " + HANDS_EMOJI,
             Lists.newArrayList(
-                new SelectOption("Rapportera en skada", MESSAGE_MAIN_REPORT),
-                new SelectOption("Ring mig!", MESSAGE_MAIN_CALLME),
+                new SelectOption("Okej!", MESSAGE_CLAIM_DONE),
                 new SelectOption("Jag har en fråga", MESSAGE_MAIN_QUESTION))));
 
     createMessage(

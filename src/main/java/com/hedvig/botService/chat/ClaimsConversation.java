@@ -26,6 +26,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_CLAIMS;
+
 @Slf4j
 @Component
 public class ClaimsConversation extends Conversation {
@@ -142,13 +144,6 @@ public class ClaimsConversation extends Conversation {
     createMessage(
       "message.claims.record.ok",
       new MessageBodyParagraph("Tack! Din anmälan kommer nu hanteras"),
-      2000);
-
-    final String HANDS_EMOJI = "\uD83D\uDE4C";
-    createMessage(
-      "message.claims.record.ok2",
-      new MessageBodyParagraph(
-        "Jag återkommer här i chatten om jag behöver något mer eller för att berätta hur det går " + HANDS_EMOJI),
       2000);
 
     createMessage("error", new MessageBodyText("Oj nu blev något fel..."));
@@ -318,8 +313,7 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void completeConversation(UserContext uc) {
-    addToChat("message.claims.record.ok2", uc);
     val conversation = conversationFactory.createConversation(MainConversation.class);
-    uc.startConversation(conversation, MainConversation.MESSAGE_HEDVIG_COM_CLAIMS);
+    uc.startConversation(conversation, MESSAGE_HEDVIG_COM_CLAIMS);
   }
 }
