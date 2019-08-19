@@ -27,7 +27,6 @@ import java.util.Objects;
 public class MainConversation extends Conversation {
 
   public static final String MESSAGE_HEDVIG_COM = "hedvig.com";
-  public static final String MESSAGE_HEDVIG_COM_CLAIMS = "hedvig.com.claims";
   public static final String MESSAGE_HEDVIG_COM_POST_LOGIN = "hedvig.com.post.login";
   public static final String MESSAGE_QUESTION_RECIEVED = "message.question.recieved";
   public static final String MESSAGE_MAIN_END = "message.main.end";
@@ -38,6 +37,7 @@ public class MainConversation extends Conversation {
   public static final String MESSAGE_MAIN_REPORT = "message.main.report";
   public static final String MESSAGE_MAIN_ONBOARDING_DONE = "onboarding.done";
   public static final String CONVERSATION_DONE = "conversation.done";
+  public static final String MESSAGE_COMPLETE_CLAIM = "hedvig.complete.claim";
   public static final String MESSAGE_CLAIM_DONE = "claim.done";
   public static final String MESSAGE_MAIN_START_CHAT = "message.main.start.chat";
 
@@ -70,7 +70,7 @@ public class MainConversation extends Conversation {
 
     final String HANDS_EMOJI = "\uD83D\uDE4C";
     createMessage(
-        MESSAGE_HEDVIG_COM_CLAIMS,
+      MESSAGE_COMPLETE_CLAIM,
         new MessageBodySingleSelect(
             "Jag återkommer här i chatten om jag behöver något mer eller för att berätta hur det går " + HANDS_EMOJI,
             Lists.newArrayList(
@@ -111,7 +111,7 @@ public class MainConversation extends Conversation {
     }
 
     switch (m.id) {
-      case MESSAGE_HEDVIG_COM_CLAIMS:
+      case MESSAGE_COMPLETE_CLAIM:
       case MESSAGE_HEDVIG_COM:
         {
           SelectItem item = ((MessageBodySingleSelect) m.body).getSelectedItem();

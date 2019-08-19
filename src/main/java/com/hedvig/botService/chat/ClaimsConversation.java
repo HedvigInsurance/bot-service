@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_CLAIMS;
+import static com.hedvig.botService.chat.MainConversation.MESSAGE_COMPLETE_CLAIM;
 
 @Slf4j
 @Component
@@ -314,6 +314,6 @@ public class ClaimsConversation extends Conversation {
 
   private void completeConversation(UserContext uc) {
     val conversation = conversationFactory.createConversation(MainConversation.class);
-    uc.startConversation(conversation, MESSAGE_HEDVIG_COM_CLAIMS);
+    uc.startConversation(conversation, MESSAGE_COMPLETE_CLAIM);
   }
 }
