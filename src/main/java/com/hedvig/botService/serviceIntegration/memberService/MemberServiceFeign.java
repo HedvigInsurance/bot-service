@@ -4,6 +4,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.dto.*;
 import com.hedvig.botService.web.dto.Member;
 import feign.FeignException;
+import feign.Response;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.jetbrains.annotations.Nullable;
@@ -135,6 +136,11 @@ public class MemberServiceFeign implements MemberService {
     send(() -> this.client.updateEmail(memberId, new UpdateEmailRequest(email)));
   }
 
+  @Override
+  public void updateSSN(String memberId, String ssn) {
+    send(() -> this.client.updateSSN(memberId, new UpdateSSNRequest(ssn)));
+  }
+
   @Nullable
   @Override
   public LookupResponse lookupAddressSWE(String trimmedSSN, String memberId) {
@@ -177,8 +183,8 @@ public class MemberServiceFeign implements MemberService {
   }
 
   @Override
-  public Flag getDebtFlag(String ssn) {
-    ResponseEntity<Flag> response = this.client.flag(ssn);
+  public PersonStatusDto getPersonStatus(String ssn) {
+    ResponseEntity<PersonStatusDto> response = this.client.personStatus(ssn);
     return response.getBody();
   }
 

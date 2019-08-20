@@ -35,7 +35,13 @@ public interface MemberService {
 
   void initAppleUser(String appleMemberId);
 
+  void updateSSN(String memberId, String ssn);
+
   void checkPersonDebt(String ssn);
 
-  Flag getDebtFlag(String ssn);
+  PersonStatusDto getPersonStatus(String ssn);
+
+
+
+
 }

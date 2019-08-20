@@ -14,6 +14,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
 import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
+import com.hedvig.botService.serviceIntegration.memberService.dto.PersonStatusDto
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.events.*
@@ -271,7 +272,7 @@ constructor(
                     , TextContentType.FAMILY_NAME, KeyboardType.DEFAULT
                 )
             ) { b, uc, m ->
-
+                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 val familyName = b.text.trim().capitalizeAll()
                 val firstName = uc.onBoardingData.firstName
                 if (firstName != null) {
@@ -314,6 +315,7 @@ constructor(
                 )
 
             ) { b, uc, m ->
+                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 if(phoneNumberIsCorrectSwedishFormat(b, uc, m)) {
                     "message.hedvig.ska.ringa.dig"
                 } else {
@@ -593,6 +595,7 @@ constructor(
                     SelectOption("Nix", MESSAGE_VARBORDUFELADRESS)
                 )
             ) { body, uc, m ->
+                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 val item = body.selectedItem
                 body.text = if (item.value == MESSAGE_KVADRAT) "Yes, stämmer bra!" else "Nix"
                 addToChat(m, uc)
@@ -1894,7 +1897,12 @@ constructor(
     private fun checkSSN(ssn: String): Flag {
         try {
             memberService.checkPersonDebt(ssn)
-            return memberService.getDebtFlag(ssn)
+            val personStatus = memberService.getPersonStatus(ssn)
+            if (personStatus.whitelisted) {
+                return Flag.GREEN
+            }
+            return personStatus.flag
+
         } catch(ex: Exception) {
             log.error("Error getting debt status from member-service", ex)
             return Flag.GREEN
