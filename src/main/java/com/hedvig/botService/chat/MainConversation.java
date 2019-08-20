@@ -68,7 +68,7 @@ public class MainConversation extends Conversation {
         Lists.newArrayList(
           SelectLink.toDashboard("Ta mig till till hemskärmen", "postlogindash"))));
 
-    final String HANDS_EMOJI = "\uD83D\uDE4C";
+    final String HANDS_EMOJI = "🙌";
     createMessage(
       MESSAGE_COMPLETE_CLAIM,
         new MessageBodySingleSelect(
