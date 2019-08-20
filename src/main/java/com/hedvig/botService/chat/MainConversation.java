@@ -23,6 +23,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Objects;
 
+import static com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_CLAIM;
+
 @Component
 public class MainConversation extends Conversation {
 
@@ -40,6 +42,7 @@ public class MainConversation extends Conversation {
   public static final String MESSAGE_COMPLETE_CLAIM = "hedvig.complete.claim";
   public static final String MESSAGE_CLAIM_DONE = "claim.done";
   public static final String MESSAGE_MAIN_START_CHAT = "message.main.start.chat";
+  public static final String MESSAGE_MAIN_START_FREE_TEXT_CHAT = "message.main.start.free.text.chat";
 
   private static Logger log = LoggerFactory.getLogger(MainConversation.class);
   private final ConversationFactory conversationFactory;
@@ -75,7 +78,7 @@ public class MainConversation extends Conversation {
             "Jag återkommer här i chatten om jag behöver något mer eller för att berätta hur det går " + HANDS_EMOJI,
             Lists.newArrayList(
                 new SelectOption("Okej!", MESSAGE_CLAIM_DONE),
-                new SelectOption("Jag har en fråga", MESSAGE_MAIN_QUESTION))));
+                new SelectOption("Jag har en fråga", MESSAGE_MAIN_START_FREE_TEXT_CHAT))));
 
     createMessage(
         MESSAGE_QUESTION_RECIEVED,
@@ -145,7 +148,11 @@ public class MainConversation extends Conversation {
       case MESSAGE_MAIN_QUESTION:
         nxtMsg = handleQuestion(userContext, m);
         break;
+      case MESSAGE_MAIN_START_FREE_TEXT_CHAT:
+        startFreeTextChatConversation(userContext);
+        break;
     }
+
 
     /*
      * In a Single select, there is only one trigger event. Set default here to be a link to a new message
@@ -163,6 +170,11 @@ public class MainConversation extends Conversation {
     }
 
     completeRequest(nxtMsg, userContext);
+  }
+
+  private void startFreeTextChatConversation(UserContext uc) {
+    val conversation = conversationFactory.createConversation(FreeChatConversation.class);
+    uc.startConversation(conversation, FREE_CHAT_FROM_CLAIM);
   }
 
   public String handleQuestion(UserContext userContext, Message m) {
