@@ -249,7 +249,7 @@ constructor(
                 }
 
                 val ssn = uc.onBoardingData.ssn
-                if (checkSSN(ssn) == (Flag.RED)) {
+                if (checkSSN(ssn) == Flag.RED) {
                     return@WrappedMessage("message.vad.ar.ditt.telefonnummer")
                 }
 
@@ -293,7 +293,7 @@ constructor(
             "fel.telefonnummer.format",
             WrappedMessage(
                 MessageBodyText(
-                    "Det låter inte som ett korrekt svenskt telefonnummer... Prova igen tack!",
+                    "Det ser inte ut som ett korrekt svenskt telefonnummer... Prova igen tack!",
                     TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
                 )
 
@@ -310,7 +310,7 @@ constructor(
             "message.vad.ar.ditt.telefonnummer",
             WrappedMessage(
                 MessageBodyText(
-                    "Tack! Vilket telefonnummer kan jag nå dig på?",
+                    "Tack! Innan du kan få ditt förslag behöver jag höra av mig på telefon. Vilket telefonnummer kan jag nå dig på?",
                     TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
                 )
 
