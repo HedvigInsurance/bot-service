@@ -50,25 +50,21 @@ constructor(
             )
         )
 
-        val HANDS_EMOJI = "\uD83D\uDE4C🙌"
+        val HANDS_EMOJI = "🙌"
         this.createChatMessage(
             MESSAGE_COMPLETE_CLAIM,
             WrappedMessage(
                 MessageBodySingleSelect(
                     "Jag återkommer här i chatten om jag behöver något mer eller för att berätta hur det går $HANDS_EMOJI",
-                    Lists.newArrayList<SelectItem>(
-                        SelectOption("Okej!", MESSAGE_CLAIM_DONE),
-                        SelectOption("Jag har en fråga", MESSAGE_MAIN_START_FREE_TEXT_CHAT)
-                    )
-                ),
-                { x -> Unit },
-                { m: MessageBodySingleSelect, uc: UserContext, message: Message ->
-                    if (m.selectedItem.value == MESSAGE_MAIN_START_FREE_TEXT_CHAT) {
-                        startFreeTextChatConversation(uc)
-                    }
-                    m.selectedItem.value
-                }
-            )
+                    SelectOption("Okej!", MESSAGE_CLAIM_DONE),
+                    SelectOption("Jag har en fråga", MESSAGE_MAIN_START_FREE_TEXT_CHAT)
+                )
+            ) { body, uc, _ ->
+              if (body.selectedItem.value == MESSAGE_MAIN_START_FREE_TEXT_CHAT) {
+                startFreeTextChatConversation(uc)
+              }
+              body.selectedItem.value
+            }
         )
 
         this.createMessage(
@@ -99,6 +95,21 @@ constructor(
         )
 
         this.createMessage(MESSAGE_ERROR, MessageBodyText("Oj nu blev något fel..."))
+    }
+
+    override fun receiveEvent(e: Conversation.EventTypes, value: String, userContext: UserContext) {
+        when (e) {
+            // This is used to let Hedvig say multiple message after another
+            Conversation.EventTypes.MESSAGE_FETCHED -> {
+                // OnboardingConversationDevi.log.info("Message fetched: $value")
+
+                // New way of handeling relay messages
+                val relay = getRelay(value)
+                if (relay != null) {
+                    completeRequest(relay, userContext)
+                }
+            }
+        }
     }
 
     override fun handleMessage(userContext: UserContext, m: Message) {
