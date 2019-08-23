@@ -36,7 +36,7 @@ public class SlackService {
 
       slackServiceClient.sendNotification(slackData);
     } catch(Exception e) {
-      logger.error("Cannot send notification to slack channel %s with message %s", SLACK_CHANNEL, message);
+      logger.error("Cannot send notification to slack channel {} with message {}", SLACK_CHANNEL, message);
     }
   }
 }
