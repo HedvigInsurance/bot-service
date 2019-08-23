@@ -1,6 +1,8 @@
 package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
+import com.google.i18n.phonenumbers.PhoneNumberUtil
+
 import com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
@@ -10,6 +12,9 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData
 import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
+import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
+import com.hedvig.botService.serviceIntegration.memberService.dto.PersonStatusDto
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.events.*
@@ -32,7 +37,8 @@ constructor(
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
-    private val appleUserPassword: String
+    private val appleUserPassword: String,
+    private val phoneNumberUtil: PhoneNumberUtil
 ) : Conversation(eventPublisher), BankIdChat {
 
     var queuePos: Int? = null
@@ -242,6 +248,11 @@ constructor(
                     }
                 }
 
+                val ssn = uc.onBoardingData.ssn
+                if (checkSSN(ssn) == Flag.RED) {
+                    return@WrappedMessage("message.vad.ar.ditt.telefonnummer")
+                }
+
                 if (response?.address != null) {
                     MESSAGE_BANKIDJA
                 } else {
@@ -261,7 +272,7 @@ constructor(
                     , TextContentType.FAMILY_NAME, KeyboardType.DEFAULT
                 )
             ) { b, uc, m ->
-
+                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 val familyName = b.text.trim().capitalizeAll()
                 val firstName = uc.onBoardingData.firstName
                 if (firstName != null) {
@@ -277,6 +288,48 @@ constructor(
 
                 "message.varborduadress"
             })
+
+        this.createChatMessage(
+            "fel.telefonnummer.format",
+            WrappedMessage(
+                MessageBodyText(
+                    "Det ser inte ut som ett korrekt svenskt telefonnummer... Prova igen tack!",
+                    TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
+                )
+
+            ) { b, uc, m ->
+                if(phoneNumberIsCorrectSwedishFormat(b, uc, m)) {
+                    "message.hedvig.ska.ringa.dig"
+                } else {
+                    "fel.telefonnummer.format"
+                }
+            }
+        )
+
+        this.createChatMessage(
+            "message.vad.ar.ditt.telefonnummer",
+            WrappedMessage(
+                MessageBodyText(
+                    "Tack! Innan du kan få ditt förslag behöver jag höra av mig på telefon. Vilket telefonnummer kan jag nå dig på?",
+                    TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
+                )
+
+            ) { b, uc, m ->
+                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
+                if(phoneNumberIsCorrectSwedishFormat(b, uc, m)) {
+                    "message.hedvig.ska.ringa.dig"
+                } else {
+                    "fel.telefonnummer.format"
+                }
+            }
+        )
+
+        this.createChatMessage(
+            "message.hedvig.ska.ringa.dig",
+            MessageBodyParagraph(
+                "Tack så mycket. Jag hör av mig inom kort med ett förslag"
+            )
+        )
 
         this.createChatMessage(
             MESSAGE_LAGENHET,
@@ -542,6 +595,7 @@ constructor(
                     SelectOption("Nix", MESSAGE_VARBORDUFELADRESS)
                 )
             ) { body, uc, m ->
+                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 val item = body.selectedItem
                 body.text = if (item.value == MESSAGE_KVADRAT) "Yes, stämmer bra!" else "Nix"
                 addToChat(m, uc)
@@ -1245,6 +1299,37 @@ constructor(
         )
     }
 
+    private fun phoneNumberIsCorrectSwedishFormat(b: MessageBody, uc: UserContext, m: Message): Boolean {
+        val regex = Regex("[^0-9]")
+        uc.onBoardingData.phoneNumber = regex.replace(b.text, "")
+
+        try {
+            val swedishNumber = phoneNumberUtil.parse(uc.onBoardingData.phoneNumber, "SE")
+            if (phoneNumberUtil.isValidNumberForRegion(swedishNumber, "SE")) {
+                sendPhoneNumberMessage(uc)
+                addToChat(m, uc)
+                return true
+            } else {
+                addToChat(m, uc)
+                return false
+            }
+        } catch(error: Exception) {
+            "Error thrown when trying to validate phone number" + error.toString()
+        }
+        return false
+    }
+
+    private fun sendPhoneNumberMessage(uc: UserContext) {
+        eventPublisher.publishEvent(
+            OnboardingCallForQuoteEvent(
+                uc.memberId,
+                uc.onBoardingData.firstName,
+                uc.onBoardingData.familyName,
+                uc.onBoardingData.phoneNumber
+            )
+        )
+    }
+
     override fun handleMessage(userContext: UserContext, m: Message) {
         var nxtMsg = ""
 
@@ -1807,6 +1892,21 @@ constructor(
 
     private fun String.capitalizeAll(): String {
         return this.split(regex = Regex("\\s")).map { it.toLowerCase().capitalize() }.joinToString(" ")
+    }
+
+    private fun checkSSN(ssn: String): Flag {
+        try {
+            memberService.checkPersonDebt(ssn)
+            val personStatus = memberService.getPersonStatus(ssn)
+            if (personStatus.whitelisted) {
+                return Flag.GREEN
+            }
+            return personStatus.flag
+
+        } catch(ex: Exception) {
+            log.error("Error getting debt status from member-service", ex)
+            return Flag.GREEN
+        }
     }
 
     companion object {
