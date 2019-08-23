@@ -20,6 +20,7 @@ public class FreeChatConversation extends Conversation {
   public static final String FREE_CHAT_START = "free.chat.start";
   private static final String FREE_CHAT_MESSAGE = "free.chat.message";
   public static final String FREE_CHAT_FROM_BO = "free.chat.from.bo";
+  public static final String FREE_CHAT_FROM_CLAIM = "free.chat.from.claim";
   public static final String FREE_CHAT_ONBOARDING_START = "free.chat.onboarding.start";
   public static final String FILE_QUESTION_MESSAGE = "file with mime type: %s is uploaded";
 
@@ -51,6 +52,10 @@ public class FreeChatConversation extends Conversation {
       MessageHeader.createRichTextHeader(),
       new MessageBodyText(""));
 
+    createMessage(
+      FREE_CHAT_FROM_CLAIM,
+      MessageHeader.createRichTextHeader(),
+      new MessageBodyText("Självklart, vad kan jag hjälpa dig med?"));
 
   }
 
@@ -71,6 +76,7 @@ public class FreeChatConversation extends Conversation {
       case FREE_CHAT_START:
       case FREE_CHAT_ONBOARDING_START:
       case FREE_CHAT_FROM_BO:
+      case FREE_CHAT_FROM_CLAIM:
       case FREE_CHAT_MESSAGE: {
         m.header.statusMessage = statusBuilder.getStatusMessage(Clock.systemUTC());
 

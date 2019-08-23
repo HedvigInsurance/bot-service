@@ -2,8 +2,7 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
-
-import com.hedvig.botService.chat.MainConversation.MESSAGE_HEDVIG_COM_POST_LOGIN
+import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
