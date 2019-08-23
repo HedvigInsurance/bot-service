@@ -85,6 +85,6 @@ public class Message {
   }
 
   public void render(UserContext userContext) {
-    this.body.render(userContext);
+    this.body.render(id, userContext);
   }
 }

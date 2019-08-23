@@ -33,7 +33,7 @@ public class SelectItem implements Serializable {
     this.value = value;
   }
 
-  public void render(UserContext userContext) {
+  public void render(String id, UserContext userContext) {
     // this.text = userContext.replaceWithContext(this.text);
   }
 }

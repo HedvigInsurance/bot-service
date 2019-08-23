@@ -19,8 +19,8 @@ public class MessageBodyBankIdCollect extends MessageBody {
   }
 
   @Override
-  public void render(UserContext userContext) {
+  public void render(String globalId, UserContext userContext) {
     this.referenceId = userContext.replaceWithContext(this.referenceId);
-    super.render(userContext);
+    super.render(globalId, userContext);
   }
 }

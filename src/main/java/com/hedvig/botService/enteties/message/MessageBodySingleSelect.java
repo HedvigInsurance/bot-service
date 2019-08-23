@@ -45,10 +45,10 @@ public class MessageBodySingleSelect extends MessageBody {
   }
 
   @Override
-  public void render(UserContext userContext) {
-    choices.forEach(x -> x.render(userContext));
+  public void render(String id, UserContext userContext) {
+    choices.forEach(x -> x.render(id, userContext));
 
-    super.render(userContext);
+    super.render(id, userContext);
   }
 
   public boolean removeItemIf(Predicate<? super SelectItem> predicate) {
