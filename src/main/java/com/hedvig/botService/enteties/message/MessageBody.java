@@ -63,7 +63,7 @@ public class MessageBody {
   MessageBody() {}
 
   public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    String localText = localizationService.getText("en", id);
+    String localText = localizationService.getText(userContext.getLocale(), id);
     this.text = userContext.replaceWithContext(localText != null ? localText : this.text);
   }
 }
