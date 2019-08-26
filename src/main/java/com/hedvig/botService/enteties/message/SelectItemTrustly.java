@@ -22,8 +22,8 @@ public class SelectItemTrustly extends SelectItem {
   public SelectItemTrustly() {}
 
   @Override
-  public void render(UserContext userContext) {
-    super.render(userContext);
+  public void render(String id, UserContext userContext) {
+    super.render(id, userContext);
 
     this.id = userContext.replaceWithContext(UserContext.TRUSTLY_TRIGGER_ID);
   }

@@ -3,6 +3,7 @@ package com.hedvig.botService.chat;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class ConversationFactoryImpl implements ConversationFactory {
   private final Logger log = LoggerFactory.getLogger(ConversationFactoryImpl.class);
   private final MemberService memberService;
+  private final LocalizationService localizationService;
   private final ProductPricingService productPricingService;
   private final TriggerService triggerService;
   private final ApplicationEventPublisher eventPublisher;
@@ -25,15 +27,16 @@ public class ConversationFactoryImpl implements ConversationFactory {
   private String appleUserPwd;
 
   public ConversationFactoryImpl(
-      MemberService memberService,
-      ProductPricingService productPricingService,
-      TriggerService triggerService,
-      ApplicationEventPublisher eventPublisher,
-      ClaimsService claimsService,
-      StatusBuilder statusBuilder,
-      @Value("${hedvig.waitlist.length}") Integer queuePos,
-      @Value("${hedvig.appleUser.email}") String appleUserEmail,
-      @Value("${hedvig.appleUser.password}") String appleUserPwd) {
+    MemberService memberService,
+    ProductPricingService productPricingService,
+    TriggerService triggerService,
+    ApplicationEventPublisher eventPublisher,
+    ClaimsService claimsService,
+    StatusBuilder statusBuilder,
+    LocalizationService localizationService,
+    @Value("${hedvig.waitlist.length}") Integer queuePos,
+    @Value("${hedvig.appleUser.email}") String appleUserEmail,
+    @Value("${hedvig.appleUser.password}") String appleUserPwd) {
     this.memberService = memberService;
     this.productPricingService = productPricingService;
     this.triggerService = triggerService;
@@ -41,6 +44,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.statusBuilder = statusBuilder;
+    this.localizationService = localizationService;
     this.queuePos = queuePos;
     this.appleUserEmail = appleUserEmail;
     this.appleUserPwd = appleUserPwd;
@@ -50,39 +54,39 @@ public class ConversationFactoryImpl implements ConversationFactory {
   public Conversation createConversation(Class<?> conversationClass) {
 
     if (conversationClass.equals(CharityConversation.class)) {
-      return new CharityConversation(this, memberService, productPricingService, eventPublisher);
+      return new CharityConversation(this, memberService, productPricingService, eventPublisher, localizationService);
     }
 
     if (conversationClass.equals(ClaimsConversation.class)) {
-      return new ClaimsConversation(eventPublisher, claimsService, productPricingService, this, memberService);
+      return new ClaimsConversation(eventPublisher, claimsService, productPricingService, this, memberService, localizationService);
     }
 
     if (conversationClass.equals(MainConversation.class)) {
-      return new MainConversation(this, eventPublisher);
+      return new MainConversation(this, eventPublisher, localizationService);
     }
 
     if (conversationClass.equals(OnboardingConversationDevi.class)) {
       final OnboardingConversationDevi onboardingConversationDevi =
           new OnboardingConversationDevi(
-              memberService, productPricingService, eventPublisher, this, appleUserEmail,appleUserPwd);
+              memberService, productPricingService, eventPublisher, this, localizationService, appleUserEmail,appleUserPwd);
       onboardingConversationDevi.setQueuePos(queuePos);
       return onboardingConversationDevi;
     }
 
     if (conversationClass.equals(TrustlyConversation.class)) {
-      return new TrustlyConversation(triggerService, memberService, eventPublisher);
+      return new TrustlyConversation(triggerService, memberService, eventPublisher, localizationService);
     }
 
     if (conversationClass.equals(FreeChatConversation.class)) {
-      return new FreeChatConversation(statusBuilder, eventPublisher, productPricingService);
+      return new FreeChatConversation(statusBuilder, eventPublisher, productPricingService, localizationService);
     }
 
     if (conversationClass.equals(CallMeConversation.class)) {
-      return new CallMeConversation(eventPublisher);
+      return new CallMeConversation(eventPublisher, localizationService);
     }
 
     if(conversationClass.equals(MemberSourceConversation.class)) {
-      return new MemberSourceConversation(eventPublisher);
+      return new MemberSourceConversation(eventPublisher, localizationService);
     }
 
     return null;

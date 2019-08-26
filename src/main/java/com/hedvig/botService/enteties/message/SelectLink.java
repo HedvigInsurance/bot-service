@@ -33,7 +33,7 @@ public class SelectLink extends SelectItem {
   public String webUrl;
 
   @Override
-  public void render(final UserContext context) {
+  public void render(String id, final UserContext context) {
     if (this.appUrl != null) {
       this.appUrl = context.replaceWithContext(this.appUrl);
     }

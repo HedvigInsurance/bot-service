@@ -2,6 +2,7 @@ package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -45,10 +46,10 @@ public class MessageBodySingleSelect extends MessageBody {
   }
 
   @Override
-  public void render(String id, UserContext userContext) {
+  public void render(String id, UserContext userContext, LocalizationService localizationService) {
     choices.forEach(x -> x.render(id, userContext));
 
-    super.render(id, userContext);
+    super.render(id, userContext, localizationService);
   }
 
   public boolean removeItemIf(Predicate<? super SelectItem> predicate) {

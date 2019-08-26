@@ -60,6 +60,8 @@ public class SessionManagerTest {
 
   @Mock ClaimsService claimsService;
 
+  @Mock LocalizationService localizationService;
+
   @Mock
   ApplicationEventPublisher applicationEventPublisher;
 
@@ -162,7 +164,7 @@ public class SessionManagerTest {
   }
 
   private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, "test", "test") ;
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, localizationService, "test", "test") ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

@@ -3,6 +3,7 @@ package com.hedvig.botService.enteties.message;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.hedvig.botService.enteties.UserContext;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -11,7 +12,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+
+import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -54,7 +62,8 @@ public class MessageBody {
 
   MessageBody() {}
 
-  public void render(String id, UserContext userContext) {
-    this.text = userContext.replaceWithContext(this.text);
+  public void render(String id, UserContext userContext, LocalizationService localizationService) {
+    String localText = localizationService.getText("en", id);
+    this.text = userContext.replaceWithContext(localText != null ? localText : this.text);
   }
 }

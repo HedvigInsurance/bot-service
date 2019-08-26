@@ -18,6 +18,6 @@ public class SelectLinkTest {
 
     SelectLink link = new SelectLink("text", null, null, null, null, false);
 
-    link.render(userContext);
+    link.render("", userContext);
   }
 }

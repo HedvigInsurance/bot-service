@@ -12,6 +12,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
+import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -29,11 +30,12 @@ constructor(
     private val productPricingService: ProductPricingService,
     override var eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
+    localizationService: LocalizationService,
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
     private val appleUserPassword: String
-) : Conversation(eventPublisher), BankIdChat {
+) : Conversation(eventPublisher, localizationService), BankIdChat {
 
     var queuePos: Int? = null
 
