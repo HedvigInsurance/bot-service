@@ -48,7 +48,7 @@ public class CallMeConversation extends Conversation {
       new MessageHeader(MessageHeader.HEDVIG_USER_ID, -1, true),
       new MessageBodySingleSelect(
         "Ok då ser jag till att någon ringer dig?",
-        Lists.newArrayList(SelectLink.toDashboard("Ok", "callme.phone.dashboard"))));
+        Lists.newArrayList(SelectLink.closeChat("Ok", "callme.phone.dashboard"))));
 
     createMessage(
       CALLME_PHONE_CHANGE,

@@ -28,6 +28,10 @@ public class SelectLink extends SelectItem {
     return new SelectLink(text, value, "Offer", null, null, false);
   }
 
+  public static SelectLink closeChat(String text, String value) {
+    return new SelectLink(text, value, "CloseChat", null, null, false);
+  }
+
   public String view;
   public String appUrl;
   public String webUrl;
