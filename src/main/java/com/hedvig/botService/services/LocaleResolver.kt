@@ -17,7 +17,7 @@ class LocaleResolver {
     }
 
     companion object {
-        var LOCALES = Arrays.asList(
+        private val LOCALES = listOf(
             Locale("en"),
             Locale("sv")
         )
