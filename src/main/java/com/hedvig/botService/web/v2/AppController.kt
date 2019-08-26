@@ -5,6 +5,7 @@ import com.hedvig.botService.serviceIntegration.notificationService.Notification
 import com.hedvig.botService.services.MessagesService
 import com.hedvig.botService.services.SessionManager
 import com.hedvig.botService.enteties.message.Message
+import com.hedvig.botService.services.LocaleResolver
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.web.v2.dto.*
 
@@ -25,12 +26,14 @@ class AppController(
     private val messagesService: MessagesService,
     private val notificationService: NotificationService,
     private val userContextRepository: UserContextRepository,
-    private val localizationService: LocalizationService
+    private val localizationService: LocalizationService,
+    private val localeResolver: LocaleResolver
 ) {
 
     @GetMapping("/")
     fun getMessages(
         @RequestHeader("hedvig.token") hid: String,
+        @RequestHeader("Accept-Language") acceptLanguage: String,
         @RequestParam(name = "intent", required = false, defaultValue = "onboarding")
         intentParameter: String
     ): MessagesDTO {
@@ -39,7 +42,10 @@ class AppController(
             SessionManager.Intent.LOGIN
         else
             SessionManager.Intent.ONBOARDING
-        return this.messagesService.getMessagesAndStatus(hid, intent)
+
+        val locale = localeResolver.resolveLocale(acceptLanguage)
+
+        return this.messagesService.getMessagesAndStatus(hid, locale, intent)
     }
 
     @PostMapping("fabTrigger/{actionId}")
@@ -82,7 +88,7 @@ class AppController(
 
     @PostMapping("/refreshLocalization")
     fun refreshLocalization(): ResponseEntity<String> {
-        val s = localizationService.refreshLocalizations()
-        return ResponseEntity.ok("yay!")
+        localizationService.refreshLocalizations()
+        return ResponseEntity.ok("Localizations refreshed")
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Component
@@ -36,11 +37,13 @@ public class MessagesService {
     this.messageRepository = messageRepository;
   }
 
-  public MessagesDTO getMessagesAndStatus(String hid, SessionManager.Intent intent) {
+  public MessagesDTO getMessagesAndStatus(String hid, Locale local, SessionManager.Intent intent) {
     UserContext uc =
       userContextRepository
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
+
+    uc.setLocale(local);
 
     val messages = uc.getMessages(intent, conversationFactory);
 

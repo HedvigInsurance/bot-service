@@ -6,6 +6,7 @@ import okhttp3.*
 import org.springframework.stereotype.Component
 import javax.transaction.Transactional
 
+
 @Component
 @Transactional
 class LocalizationService {

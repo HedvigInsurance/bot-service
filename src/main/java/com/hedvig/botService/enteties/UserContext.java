@@ -13,11 +13,7 @@ import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.CascadeType;
@@ -35,6 +31,8 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
+
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
@@ -106,6 +104,10 @@ public class UserContext implements Serializable {
   @OneToMany(mappedBy = "userContext", cascade = CascadeType.ALL)
   @MapKey(name = "referenceToken")
   private Map<String, BankIdSessionImpl> bankIdStatus = new HashMap<>();
+
+  @Getter
+  @Setter
+  private Locale locale;
 
   /*
    * Lookup if there is a value for the key in the user context
