@@ -48,7 +48,7 @@ public class SessionManager {
   private final ConversationFactory conversationFactory;
   private final TrackingDataRespository trackerRepo;
   private final ObjectMapper objectMapper;
-  private final GraphCMSLocaleResolver graphCMSLocaleResolver;
+  private final TextKeysLocaleResolver graphCMSLocaleResolver;
 
   private static final String LINK_URI_KEY = "{{LINK_URI}";
   private static final String LINK_URI_VALUE = "hedvig://+";
@@ -66,7 +66,7 @@ public class SessionManager {
     ConversationFactory conversationFactory,
     TrackingDataRespository trackerRepo,
     ObjectMapper objectMapper,
-    GraphCMSLocaleResolver graphCMSLocaleResolver) {
+    TextKeysLocaleResolver graphCMSLocaleResolver) {
     this.userContextRepository = userContextRepository;
     this.memberService = memberService;
     this.conversationFactory = conversationFactory;

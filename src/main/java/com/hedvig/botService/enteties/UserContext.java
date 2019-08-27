@@ -9,6 +9,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberProfile;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse;
+import com.hedvig.botService.services.TextKeysLocaleResolver;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
 import java.io.Serializable;
@@ -32,7 +33,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
-import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
@@ -369,6 +369,8 @@ public class UserContext implements Serializable {
 
   public Locale getLocale() {
     String languageCode = getDataEntry(LANGUAGE_KEY);
-    return new Locale(languageCode);
+    return languageCode != null ?
+      new Locale(languageCode) :
+      TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE();
   }
 }

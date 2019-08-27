@@ -5,7 +5,7 @@ import com.hedvig.botService.serviceIntegration.notificationService.Notification
 import com.hedvig.botService.services.MessagesService
 import com.hedvig.botService.services.SessionManager
 import com.hedvig.botService.enteties.message.Message
-import com.hedvig.botService.services.GraphCMSLocaleResolver
+import com.hedvig.botService.services.TextKeysLocaleResolver
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.web.v2.dto.*
 
@@ -27,7 +27,7 @@ class AppController(
     private val notificationService: NotificationService,
     private val userContextRepository: UserContextRepository,
     private val localizationService: LocalizationService,
-    private val graphCMSLocaleResolver: GraphCMSLocaleResolver
+    private val textKeysLocaleResolver: TextKeysLocaleResolver
 ) {
 
     @GetMapping("/")

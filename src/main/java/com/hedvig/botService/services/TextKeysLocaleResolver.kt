@@ -6,7 +6,7 @@ import javax.transaction.Transactional
 
 @Component
 @Transactional
-class GraphCMSLocaleResolver {
+class TextKeysLocaleResolver {
     fun resolveLocale(acceptLanguage: String?): Locale {
         if (acceptLanguage.isNullOrBlank()) {
             return Locale("sv")
@@ -21,5 +21,7 @@ class GraphCMSLocaleResolver {
             Locale("en"),
             Locale("sv")
         )
+
+        val DEFAULT_LOCALE = Locale("sv")
     }
 }

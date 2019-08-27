@@ -62,7 +62,8 @@ public class SessionManagerTest {
 
   @Mock LocalizationService localizationService;
 
-  @Mock GraphCMSLocaleResolver localeResolver;
+  @Mock
+  TextKeysLocaleResolver localeResolver;
 
   @Mock
   ApplicationEventPublisher applicationEventPublisher;
