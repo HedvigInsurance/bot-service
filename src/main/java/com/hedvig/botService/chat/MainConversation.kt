@@ -56,7 +56,7 @@ constructor(
             WrappedMessage(
                 MessageBodySingleSelect(
                     "Jag återkommer här i chatten om jag behöver något mer eller för att berätta hur det går $HANDS_EMOJI",
-                    SelectLink.closeChat("Okej!", MESSAGE_CLAIM_DONE),
+//                    SelectLink.closeChat("Okej!", MESSAGE_CLAIM_DONE), // TODO: add this option when iOS can handle closeChat "link"
                     SelectOption("Jag har en fråga", MESSAGE_MAIN_START_FREE_TEXT_CHAT)
                 )
             ) { body, uc, _ ->
