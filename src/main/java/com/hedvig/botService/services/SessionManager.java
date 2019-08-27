@@ -48,6 +48,7 @@ public class SessionManager {
   private final ConversationFactory conversationFactory;
   private final TrackingDataRespository trackerRepo;
   private final ObjectMapper objectMapper;
+  private final GraphCMSLocaleResolver graphCMSLocaleResolver;
 
   private static final String LINK_URI_KEY = "{{LINK_URI}";
   private static final String LINK_URI_VALUE = "hedvig://+";
@@ -64,12 +65,14 @@ public class SessionManager {
     MemberService memberService,
     ConversationFactory conversationFactory,
     TrackingDataRespository trackerRepo,
-    ObjectMapper objectMapper) {
+    ObjectMapper objectMapper,
+    GraphCMSLocaleResolver graphCMSLocaleResolver) {
     this.userContextRepository = userContextRepository;
     this.memberService = memberService;
     this.conversationFactory = conversationFactory;
     this.trackerRepo = trackerRepo;
     this.objectMapper = objectMapper;
+    this.graphCMSLocaleResolver = graphCMSLocaleResolver;
   }
 
   public List<Message> getMessages(int i, String hid) {
@@ -155,7 +158,7 @@ public class SessionManager {
   /*
    * Create a new users chat and context
    */
-  public void init(String hid, String linkUri) {
+  public void init(String hid, String acceptLanguage, String linkUri) {
 
     UserContext uc =
       userContextRepository
@@ -169,6 +172,9 @@ public class SessionManager {
 
     uc.putUserData("{LINK_URI}", linkUri);
     uc.putUserData(UserContext.ONBOARDING_COMPLETE, "false");
+
+    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    uc.putUserData("{LANGUAGE_ISO_639}", locale.getLanguage());
 
     userContextRepository.saveAndFlush(uc);
   }

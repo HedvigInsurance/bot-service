@@ -31,12 +31,15 @@ class LocalizationService @Autowired constructor(val localizationClient: Localiz
     }
 
     private fun parseLanguage(locale: Locale?): String {
-        return when (locale?.isO3Language) {
-            "en" -> "en_SE"
-            "sv" -> "sv_SE"
+        return when {
+            locale.isLanguage("en") -> "en_SE"
+            locale.isLanguage("sv") -> "sv_SE"
             else -> "sv_SE"
         }
     }
+
+    private fun Locale?.isLanguage(language: String) =
+        this?.language.equals(Locale(language).language)
 
     private fun fetchLocalizations(): LocalizationData? {
         val response = localizationClient.fetchLocalization(

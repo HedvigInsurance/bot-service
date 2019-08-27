@@ -62,6 +62,8 @@ public class SessionManagerTest {
 
   @Mock LocalizationService localizationService;
 
+  @Mock GraphCMSLocaleResolver localeResolver;
+
   @Mock
   ApplicationEventPublisher applicationEventPublisher;
 
@@ -76,7 +78,8 @@ public class SessionManagerTest {
             memberService,
           conversationFactory,
             campaignCodeRepository,
-            objectMapper);
+            objectMapper,
+            localeResolver);
   }
 
   // FIXME

@@ -52,6 +52,8 @@ public class UserContext implements Serializable {
   public static final String FORCE_TRUSTLY_CHOICE = "{FORCE_TRUSTLY_CHOICE}";
   public static final String TRUSTLY_FORCED_START = "{TRUSTLY_FORCED_START}";
 
+  private static final String LANGUAGE_KEY = "{LANGUAGE_ISO_639}";
+
   private static Logger log = LoggerFactory.getLogger(UserContext.class);
   private static Map<String, String> requiredData =
       new ImmutableMap.Builder<String, String>()
@@ -104,10 +106,6 @@ public class UserContext implements Serializable {
   @OneToMany(mappedBy = "userContext", cascade = CascadeType.ALL)
   @MapKey(name = "referenceToken")
   private Map<String, BankIdSessionImpl> bankIdStatus = new HashMap<>();
-
-  @Getter
-  @Setter
-  private Locale locale;
 
   /*
    * Lookup if there is a value for the key in the user context
@@ -367,5 +365,10 @@ public class UserContext implements Serializable {
 
   public Map<String, BankIdSessionImpl> getBankIdStatus() {
     return this.bankIdStatus;
+  }
+
+  public Locale getLocale() {
+    String languageCode = getDataEntry(LANGUAGE_KEY);
+    return new Locale(languageCode);
   }
 }

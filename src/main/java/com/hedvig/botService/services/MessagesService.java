@@ -37,13 +37,11 @@ public class MessagesService {
     this.messageRepository = messageRepository;
   }
 
-  public MessagesDTO getMessagesAndStatus(String hid, Locale local, SessionManager.Intent intent) {
+  public MessagesDTO getMessagesAndStatus(String hid, SessionManager.Intent intent) {
     UserContext uc =
       userContextRepository
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
-
-    uc.setLocale(local);
 
     val messages = uc.getMessages(intent, conversationFactory);
 

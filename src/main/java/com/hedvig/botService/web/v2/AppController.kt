@@ -33,7 +33,6 @@ class AppController(
     @GetMapping("/")
     fun getMessages(
         @RequestHeader("hedvig.token") hid: String,
-        @RequestHeader("Accept-Language") acceptLanguage: String,
         @RequestParam(name = "intent", required = false, defaultValue = "onboarding")
         intentParameter: String
     ): MessagesDTO {
@@ -43,9 +42,7 @@ class AppController(
         else
             SessionManager.Intent.ONBOARDING
 
-        val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage)
-
-        return this.messagesService.getMessagesAndStatus(hid, locale, intent)
+        return this.messagesService.getMessagesAndStatus(hid, intent)
     }
 
     @PostMapping("fabTrigger/{actionId}")
