@@ -15,6 +15,10 @@ class LocalizationService @Autowired constructor(val localizationClient: Localiz
 
     private var localizationData: LocalizationData? = null
 
+    init {
+        this.refreshLocalizations()
+    }
+
     fun refreshLocalizations() {
         localizationData = fetchLocalizations()
     }
