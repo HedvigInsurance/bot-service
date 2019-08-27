@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.hedvig.botService.enteties.UserContext;
 import java.io.Serializable;
+
+import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
 
 /*
@@ -33,7 +35,10 @@ public class SelectItem implements Serializable {
     this.value = value;
   }
 
-  public void render(String id, UserContext userContext) {
-    // this.text = userContext.replaceWithContext(this.text);
+  public void render(String id, UserContext userContext, LocalizationService localizationService) {
+    String localizedText = localizationService.getText(userContext.getLocale(), id);
+    if (localizedText != null){
+      text = localizedText;
+    }
   }
 }

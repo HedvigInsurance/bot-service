@@ -43,6 +43,8 @@ import org.springframework.stereotype.Component;
 @ToString
 public class MessageBody {
 
+  protected final String ID_PLACEHOLDER_POST_FIX = ".placeholder";
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
@@ -63,7 +65,7 @@ public class MessageBody {
   MessageBody() {}
 
   public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    String localText = localizationService.getText(userContext.getLocale(), id);
-    this.text = userContext.replaceWithContext(localText != null ? localText : this.text);
+    String localizedText = localizationService.getText(userContext.getLocale(), id);
+    this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
   }
 }

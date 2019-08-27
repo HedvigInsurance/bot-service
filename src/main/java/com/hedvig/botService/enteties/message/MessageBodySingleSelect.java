@@ -47,7 +47,7 @@ public class MessageBodySingleSelect extends MessageBody {
 
   @Override
   public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    choices.forEach(x -> x.render(id, userContext));
+    choices.forEach(x -> x.render(id, userContext, localizationService));
 
     super.render(id, userContext, localizationService);
   }

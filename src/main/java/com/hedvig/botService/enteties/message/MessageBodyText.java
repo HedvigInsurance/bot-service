@@ -1,5 +1,7 @@
 package com.hedvig.botService.enteties.message;
 
+import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -48,4 +50,13 @@ public class MessageBodyText extends MessageBody {
 
   @Enumerated(EnumType.STRING)
   public TextContentType textContentType;
+
+  @Override
+  public void render(String id, UserContext userContext, LocalizationService localizationService) {
+    super.render(id, userContext, localizationService);
+    String localizedText = localizationService.getText(userContext.getLocale(), id + ID_PLACEHOLDER_POST_FIX);
+    if (localizedText != null){
+      placeholder = localizedText;
+    }
+  }
 }
