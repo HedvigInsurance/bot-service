@@ -86,6 +86,10 @@ public class Message {
   }
 
   public void render(UserContext userContext, LocalizationService localizationService) {
-    this.body.render(id, userContext, localizationService);
+    this.body.render(id, isFromUser(), userContext, localizationService);
+  }
+
+  protected Boolean isFromUser() {
+    return header.fromId != 1;
   }
 }

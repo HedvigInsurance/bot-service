@@ -22,6 +22,7 @@ import lombok.ToString;
 public class SelectItem implements Serializable {
 
   static final long serialVersionUID = 1L;
+  private static final String SELECT_POST_FIX = ".select";
 
   public boolean selected;
   public String text;
@@ -36,7 +37,7 @@ public class SelectItem implements Serializable {
   }
 
   public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    String localizedText = localizationService.getText(userContext.getLocale(), id);
+    String localizedText = localizationService.getText(userContext.getLocale(), id + SELECT_POST_FIX);
     if (localizedText != null){
       text = localizedText;
     }

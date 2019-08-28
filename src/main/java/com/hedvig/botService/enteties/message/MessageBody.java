@@ -15,6 +15,7 @@ import javax.persistence.InheritanceType;
 
 import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -64,7 +65,8 @@ public class MessageBody {
 
   MessageBody() {}
 
-  public void render(String id, UserContext userContext, LocalizationService localizationService) {
+  public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
+    if (fromUser) id += ".from.user";
     String localizedText = localizationService.getText(userContext.getLocale(), id);
     this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
   }

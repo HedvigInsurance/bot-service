@@ -52,8 +52,8 @@ public class MessageBodyText extends MessageBody {
   public TextContentType textContentType;
 
   @Override
-  public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    super.render(id, userContext, localizationService);
+  public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
+    super.render(id, fromUser, userContext, localizationService);
     String localizedText = localizationService.getText(userContext.getLocale(), id + ID_PLACEHOLDER_POST_FIX);
     if (localizedText != null){
       placeholder = localizedText;
