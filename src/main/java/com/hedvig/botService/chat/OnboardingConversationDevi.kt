@@ -309,7 +309,7 @@ constructor(
             "message.vad.ar.ditt.telefonnummer",
             WrappedMessage(
                 MessageBodyText(
-                    "Tack! Innan du kan få ditt förslag behöver jag höra av mig på telefon. Vilket telefonnummer kan jag nå dig på?",
+                    "Tack! Jag behöver därför ställa några frågor på telefon till dig, innan jag kan ge dig ditt förslag 🙂",
                     TextContentType.PHONE_NUMBER, KeyboardType.NUMBER_PAD
                 )
 
@@ -326,7 +326,7 @@ constructor(
         this.createChatMessage(
             "message.hedvig.ska.ringa.dig",
             MessageBodyParagraph(
-                "Tack så mycket. Jag hör av mig inom kort med ett förslag"
+                "Tack så mycket. Jag hör av mig inom kort med ett förslag!"
             )
         )
 
