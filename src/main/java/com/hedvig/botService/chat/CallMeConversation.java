@@ -76,7 +76,7 @@ public class CallMeConversation extends Conversation {
       case CALLME_CHAT_START_WITHOUT_PHONE: {
         String trimmedText = m.body.text.trim();
         userContext.putUserData("{PHONE_NUMBER}", trimmedText);
-        m.body.text = "Ni kan nå mig på telefonnummer " + trimmedText;
+        m.body.text = "Ni kan nå mig på telefonnummer {PHONE_NUMBER}";
         addToChat(m, userContext);
 
         endConversation(userContext, m);
