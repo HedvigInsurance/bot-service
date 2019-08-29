@@ -1,6 +1,17 @@
 package com.hedvig.botService.services;
 
-import com.hedvig.botService.services.events.*;
+import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
+import com.hedvig.botService.services.events.ClaimCallMeEvent;
+import com.hedvig.botService.services.events.FileUploadedEvent;
+import com.hedvig.botService.services.events.MemberSignedEvent;
+import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
+import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent;
+import com.hedvig.botService.services.events.QuestionAskedEvent;
+import com.hedvig.botService.services.events.RequestObjectInsuranceEvent;
+import com.hedvig.botService.services.events.RequestPhoneCallEvent;
+import com.hedvig.botService.services.events.RequestStudentObjectInsuranceEvent;
+import com.hedvig.botService.services.events.SignedOnWaitlistEvent;
+import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,14 +119,6 @@ public class NotificationService {
         event.getMemberId(), event.getFirstName(), event.getFamilyName(),
         event.isInsuranceActive() ? "AKTIV" : "INAKTIV", event.getPhoneNumber());
     sendNewClaimNotification(message, "CallMe");
-  }
-
-  @EventListener
-  public void on(OnboardingCallForQuoteEvent event) {
-    final String message = String.format(
-      "Potential member %s - %s %s tried to sign-up, give them a call on %s",
-      event.getMemberId(), event.getFirstName(), event.getLastName(), event.getPhoneNumber());
-    sendMessageFromMemberNotification(message, "CallMe");
   }
 
   private void sendNewMemberNotification(String message, String subject) {

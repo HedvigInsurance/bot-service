@@ -1,6 +1,5 @@
 package com.hedvig.botService.chat;
 
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
@@ -24,7 +23,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
   private Integer queuePos;
   private String appleUserEmail;
   private String appleUserPwd;
-  private PhoneNumberUtil phoneNumberUtil;
 
   public ConversationFactoryImpl(
       MemberService memberService,
@@ -35,8 +33,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
       StatusBuilder statusBuilder,
       @Value("${hedvig.waitlist.length}") Integer queuePos,
       @Value("${hedvig.appleUser.email}") String appleUserEmail,
-      @Value("${hedvig.appleUser.password}") String appleUserPwd,
-      PhoneNumberUtil phoneNumberUtil) {
+      @Value("${hedvig.appleUser.password}") String appleUserPwd) {
     this.memberService = memberService;
     this.productPricingService = productPricingService;
     this.triggerService = triggerService;
@@ -47,7 +44,6 @@ public class ConversationFactoryImpl implements ConversationFactory {
     this.queuePos = queuePos;
     this.appleUserEmail = appleUserEmail;
     this.appleUserPwd = appleUserPwd;
-    this.phoneNumberUtil = phoneNumberUtil;
   }
 
   @Override
@@ -68,7 +64,7 @@ public class ConversationFactoryImpl implements ConversationFactory {
     if (conversationClass.equals(OnboardingConversationDevi.class)) {
       final OnboardingConversationDevi onboardingConversationDevi =
           new OnboardingConversationDevi(
-              memberService, productPricingService, eventPublisher, this, appleUserEmail,appleUserPwd, phoneNumberUtil);
+              memberService, productPricingService, eventPublisher, this, appleUserEmail,appleUserPwd);
       onboardingConversationDevi.setQueuePos(queuePos);
       return onboardingConversationDevi;
     }
