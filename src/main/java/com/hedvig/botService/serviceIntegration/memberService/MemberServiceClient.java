@@ -54,14 +54,4 @@ public interface MemberServiceClient {
 
   @PostMapping("/i/member/initAppleUser")
   ResponseEntity<Void> initAppleUser(@RequestBody AppleInitializationRequest request);
-
-  @PostMapping("/i/member/{memberId}/updateSSN")
-  ResponseEntity<String> updateSSN(
-    @PathVariable("memberId") String memberId, @RequestBody UpdateSSNRequest request);
-
-  @GetMapping("/_/person/status/{ssn}")
-  ResponseEntity<PersonStatusDto> personStatus(@PathVariable("ssn") String ssn);
-
-  @PostMapping("/_/debt/check/{ssn}")
-  ResponseEntity<Void> checkPersonDebt(@PathVariable("ssn") String ssn);
 }

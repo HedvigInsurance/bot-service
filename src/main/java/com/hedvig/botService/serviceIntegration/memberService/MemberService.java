@@ -1,7 +1,10 @@
 package com.hedvig.botService.serviceIntegration.memberService;
 
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
-import com.hedvig.botService.serviceIntegration.memberService.dto.*;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdCollectResponse;
+import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse;
+import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -34,14 +37,4 @@ public interface MemberService {
   void updatePhoneNumber(String memberId, String phoneNumber);
 
   void initAppleUser(String appleMemberId);
-
-  void updateSSN(String memberId, String ssn);
-
-  void checkPersonDebt(String ssn);
-
-  PersonStatusDto getPersonStatus(String ssn);
-
-
-
-
 }

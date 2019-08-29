@@ -54,7 +54,5 @@ enum class TextContentType {
     @JsonProperty("username")
     USERNAME,
     @JsonProperty("password")
-    PASSWORD,
-    @JsonProperty("phoneNumber")
-    PHONE_NUMBER
+    PASSWORD
 }
