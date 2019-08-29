@@ -325,7 +325,7 @@ constructor(
 
         this.createChatMessage(
             "message.hedvig.ska.ringa.dig",
-            MessageBodyParagraph(
+            MessageBodyText(
                 "Tack så mycket. Jag hör av mig inom kort med ett förslag!"
             )
         )
