@@ -24,6 +24,8 @@ import org.springframework.stereotype.Component
 import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.chrono.ChronoLocalDate
+import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 @Component
@@ -223,15 +225,23 @@ constructor(
                 body.text = "${trimmedSSN.dropLast(4)}-****"
                 addToChat(m, uc)
 
+                val birthDate = LocalDate.parse(
+                    "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
+                        4,
+                        6
+                    )}-${trimmedSSN.substring(6, 8)}"
+                )
+
+
                 uc.onBoardingData.apply {
                     ssn = trimmedSSN
-                    birthDate = LocalDate.parse(
-                        "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
-                            4,
-                            6
-                        )}-${trimmedSSN.substring(6, 8)}"
-                    )
+                    birthDate
                 }
+
+                if(memberIsYoungerThan18(birthDate)) {
+                    return@WrappedMessage(MESSAGE_MEMBER_UNDER_EIGHTEEN)
+                }
+
                 val response = memberService.lookupAddressSWE(trimmedSSN, uc.memberId)
 
                 if (response != null) {
@@ -331,6 +341,19 @@ constructor(
             MessageBodyText(
                 "Tack så mycket. Jag hör av mig inom kort med ett förslag!"
             )
+        )
+
+
+        this.createChatMessage(
+            "message.member.under.eighteen",
+            WrappedMessage(
+                MessageBodyParagraph(
+                    "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år \uD83D\uDC76"
+                )
+            ) { b,uc, m ->
+                MESSAGE_LAGENHET_NO_PERSONNUMMER
+            }
+
         )
 
         this.createChatMessage(
@@ -1721,6 +1744,14 @@ constructor(
         userContext.completeConversation(this)
     }
 
+    private fun memberIsYoungerThan18(birthDate: LocalDate): Boolean {
+            val dateToday = LocalDate.now()
+
+            val chronoBirthDate = ChronoLocalDate.from(birthDate)
+            val date18YearsAgo = dateToday.minusYears(18)
+            return chronoBirthDate.isAfter(date18YearsAgo)
+    }
+
     /*
    * Generate next chat message or ends conversation
    */
@@ -1949,6 +1980,7 @@ constructor(
         const val MESSAGE_LAGENHET_PRE = "message.lagenhet.pre"
         const val MESSAGE_LAGENHET = "message.lagenhet"
         const val MESSAGE_LAGENHET_NO_PERSONNUMMER = "message.lagenhet.no.personnummer"
+        const val MESSAGE_LAGENHET_ADDRESSNOTFOUND = "message.lagenhet.addressnotfound"
 
         const val MESSAGE_STUDENT_LIMIT_PERSONS = "message.student.limit.persons"
         const val MESSAGE_STUDENT_LIMIT_LIVING_SPACE = "message.student.limit.livingspace"
@@ -1964,6 +1996,7 @@ constructor(
         const val MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS = "message.login.with.mail.passwrod.success"
         const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
         const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
+        const val MESSAGE_MEMBER_UNDER_EIGHTEEN = "message.member.under.eighteen"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"
