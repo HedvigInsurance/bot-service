@@ -19,6 +19,7 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
 import lombok.val;
+import org.apache.tomcat.util.descriptor.LocalResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -140,8 +141,9 @@ public class SessionManagerTest {
         .thenReturn(Optional.of(tolvanssonUserContext));
     when(conversationFactory.createConversation(any(Class.class)))
         .thenReturn(makeOnboardingConversation());
+    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE());
 
-    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, null);
+    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID,  null, null);
 
     assertThat(Iterables.getLast(messages))
         .hasFieldOrPropertyWithValue(
@@ -160,8 +162,9 @@ public class SessionManagerTest {
     when(conversationFactory.createConversation(any(Class.class)))
         .thenReturn(makeOnboardingConversation());
     when(memberService.auth(TOLVANSSON_MEMBERID)).thenReturn(Optional.of(makeBankIdResponse()));
+    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE());
 
-    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, SessionManager.Intent.LOGIN);
+    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, null, SessionManager.Intent.LOGIN);
 
     assertThat(Iterables.getLast(messages))
         .hasFieldOrPropertyWithValue("id", "message.start.login");

@@ -1892,7 +1892,7 @@ constructor(
         val MESSAGE_START_LOGIN = "message.start.login"
         const val MESSAGE_LAGENHET_PRE = "message.lagenhet.pre"
         const val MESSAGE_LAGENHET = "message.lagenhet"
-        const val MESSAGE_LAGENHET_NO_PERSONNUMMER = "message.lagenhet.addressnotfound"
+        const val MESSAGE_LAGENHET_NO_PERSONNUMMER = "message.lagenhet.no.personnummer"
 
         const val MESSAGE_STUDENT_LIMIT_PERSONS = "message.student.limit.persons"
         const val MESSAGE_STUDENT_LIMIT_LIVING_SPACE = "message.student.limit.livingspace"

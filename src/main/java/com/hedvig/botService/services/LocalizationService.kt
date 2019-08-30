@@ -45,14 +45,8 @@ class LocalizationService @Autowired constructor(val localizationClient: Localiz
     private fun Locale?.isLanguage(language: String) =
         this?.language.equals(Locale(language).language)
 
-    private fun fetchLocalizations(): LocalizationData? {
-        val response = localizationClient.fetchLocalization(
-            GraphQLQueryWrapper(
-                "{languages {translations(where: { project: BotService }) {text key {value}} code}}"
-            )
-        )
-        return response.data
-    }
+    private fun fetchLocalizations(): LocalizationData? =
+        localizationClient.fetchLocalization(GRAPHCMS_TEXT_KEYS_QUERY).data
 
     private fun LocalizationData.getText(language: String, key: String) =
         languages
@@ -60,5 +54,11 @@ class LocalizationService @Autowired constructor(val localizationClient: Localiz
             ?.translations
             ?.firstOrNull { it.key.value == key }
             ?.text
+
+    companion object {
+        val GRAPHCMS_TEXT_KEYS_QUERY = GraphQLQueryWrapper(
+            "{languages {translations(where: { project: BotService }) {text key {value}} code}}"
+        )
+    }
 }
 
