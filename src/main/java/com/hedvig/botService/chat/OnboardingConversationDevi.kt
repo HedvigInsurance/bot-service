@@ -128,7 +128,7 @@ constructor(
             "message.membernotfound",
             MessageBodySingleSelect(
                 "Hmm, det verkar som att du inte är medlem här hos mig ännu" + "\u000CMen jag tar gärna fram ett försäkringsförslag till dig, det är precis som allt annat med mig superenkelt",
-                Lists.newArrayList<SelectItem>(SelectOption("Låter bra!", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT_2))
+                Lists.newArrayList<SelectItem>(SelectOption("Låter bra!", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT))
             )
         )
 
@@ -147,7 +147,7 @@ constructor(
             )
         )
         this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
-        this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT_2)
+        this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT)
         this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER)
 
         this.createMessage(
@@ -589,9 +589,9 @@ constructor(
         this.setExpectedReturnType("message.varbordufelpostnr", ZipCodeSweden())
 
         this.createMessage(MESSAGE_KVADRAT, MessageBodyNumber("Hur många kvadratmeter är lägenheten?"))
-        this.createMessage(MESSAGE_KVADRAT_ALT_2, MessageBodyNumber("Hur många kvadratmeter är lägenheten?"))
+        this.createMessage(MESSAGE_KVADRAT_ALT, MessageBodyNumber("Hur många kvadratmeter är lägenheten?"))
         this.setExpectedReturnType(MESSAGE_KVADRAT, LivingSpaceSquareMeters())
-        this.setExpectedReturnType(MESSAGE_KVADRAT_ALT_2, LivingSpaceSquareMeters())
+        this.setExpectedReturnType(MESSAGE_KVADRAT_ALT, LivingSpaceSquareMeters())
 
         this.createChatMessage(
             "message.manuellnamn",
@@ -1112,7 +1112,7 @@ constructor(
                 "Vad kul! Då har jag ett erbjudande som är skräddarsytt för studenter som bor max två personer på max 50 kvm",
                 object : ArrayList<SelectItem>() {
                     init {
-                        add(SelectOption("Okej, toppen!", MESSAGE_KVADRAT_ALT_2))
+                        add(SelectOption("Okej, toppen!", MESSAGE_KVADRAT_ALT))
                     }
                 })
         )
@@ -1376,7 +1376,7 @@ constructor(
                     handleStudentPolicyPersonLimit(MESSAGE_50K_LIMIT, userContext)
                 }
             }
-            MESSAGE_KVADRAT, MESSAGE_KVADRAT_ALT_2 -> {
+            MESSAGE_KVADRAT, MESSAGE_KVADRAT_ALT -> {
                 val kvm = m.body.text
                 onBoardingData.livingSpace = java.lang.Float.parseFloat(kvm)
                 m.body.text = "{KVM} kvm"
@@ -1865,7 +1865,7 @@ constructor(
         const val MESSAGE_ONBOARDINGSTART_ASK_NAME = "message.onboardingstart.ask.name"
         const val MESSAGE_ONBOARDINGSTART_REPLY_NAME = "message.onboardingstart.reply.name"
         const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL = "message.onboardingstart.ask.email"
-        const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT_2 = "message.onboardingstart.ask.email.2"
+        const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT = "message.onboardingstart.ask.email.2"
         const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER = "message.onboardingstart.ask.email.not.member"
         const val MESSAGE_LOGIN_ASK_EMAIL = "message.login.ask.email"
         const val MESSAGE_FORSLAG = "message.forslag"
@@ -1914,7 +1914,7 @@ constructor(
         @JvmField
         val MESSAGE_BANKIDJA = "message.bankidja"
         private const val MESSAGE_KVADRAT = "message.kvadrat"
-        private const val MESSAGE_KVADRAT_ALT_2 = "message.kvadrat.1"
+        private const val MESSAGE_KVADRAT_ALT = "message.kvadrat.1"
         @JvmField
         val MESSAGE_VARBORDUFELADRESS = "message.varbordufeladress"
         private const val MESSAGE_NOTMEMBER = "message.notmember"
