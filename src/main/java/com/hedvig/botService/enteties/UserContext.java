@@ -52,7 +52,7 @@ public class UserContext implements Serializable {
   public static final String FORCE_TRUSTLY_CHOICE = "{FORCE_TRUSTLY_CHOICE}";
   public static final String TRUSTLY_FORCED_START = "{TRUSTLY_FORCED_START}";
 
-  private static final String LANGUAGE_KEY = "{LANGUAGE_ISO_639}";
+  public static final String LANGUAGE_KEY = "{LANGUAGE_ISO_639}";
 
   private static Logger log = LoggerFactory.getLogger(UserContext.class);
   private static Map<String, String> requiredData =

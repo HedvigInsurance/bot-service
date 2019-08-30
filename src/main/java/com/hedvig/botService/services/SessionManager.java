@@ -75,9 +75,9 @@ public class SessionManager {
     this.graphCMSLocaleResolver = graphCMSLocaleResolver;
   }
 
-  public List<Message> getMessages(int i, String hid) {
+  public List<Message> getMessages(int i, String hid, String acceptLanguage) {
     log.info("Getting " + i + " messages for user: " + hid);
-    List<Message> messages = getAllMessages(hid, null);
+    List<Message> messages = getAllMessages(hid, acceptLanguage, null);
 
     return messages.subList(Math.max(messages.size() - i, 0), messages.size());
   }
@@ -174,7 +174,7 @@ public class SessionManager {
     uc.putUserData(UserContext.ONBOARDING_COMPLETE, "false");
 
     val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
-    uc.putUserData("{LANGUAGE_ISO_639}", locale.getLanguage());
+    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
 
     userContextRepository.saveAndFlush(uc);
   }
@@ -281,7 +281,7 @@ public class SessionManager {
     }
   }
 
-  public List<Message> getAllMessages(String hid, Intent intent) {
+  public List<Message> getAllMessages(String hid, String acceptLanguage, Intent intent) {
 
     /*
      * Find users chat and context. First time it is created
@@ -291,6 +291,9 @@ public class SessionManager {
       userContextRepository
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
+
+    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
 
     val messages = uc.getMessages(intent, conversationFactory);
     return messages;

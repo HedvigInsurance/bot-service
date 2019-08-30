@@ -1,19 +1,22 @@
 package com.hedvig.botService.services
 
 import org.springframework.stereotype.Component
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
 import java.util.*
+import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @Component
 @Transactional
 class TextKeysLocaleResolver {
+
     fun resolveLocale(acceptLanguage: String?): Locale {
         if (acceptLanguage.isNullOrBlank()) {
-            return Locale("sv")
+            return DEFAULT_LOCALE
         }
 
         val list = Locale.LanguageRange.parse(acceptLanguage)
-        return Locale.lookup(list, LOCALES)
+        return Locale.lookup(list, LOCALES) ?: DEFAULT_LOCALE
     }
 
     companion object {
