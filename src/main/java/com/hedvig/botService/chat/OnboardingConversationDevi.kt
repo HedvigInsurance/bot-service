@@ -225,7 +225,7 @@ constructor(
                 body.text = "${trimmedSSN.dropLast(4)}-****"
                 addToChat(m, uc)
 
-                val birthDate = LocalDate.parse(
+                val birthDateFromSsn = LocalDate.parse(
                     "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
                         4,
                         6
@@ -235,10 +235,10 @@ constructor(
 
                 uc.onBoardingData.apply {
                     ssn = trimmedSSN
-                    birthDate
+                    birthDate = birthDateFromSsn
                 }
 
-                if(memberIsYoungerThan18(birthDate)) {
+                if(memberIsYoungerThan18(birthDateFromSsn)) {
                     return@WrappedMessage(MESSAGE_MEMBER_UNDER_EIGHTEEN)
                 }
 
