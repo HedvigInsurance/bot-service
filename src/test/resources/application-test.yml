@@ -7,6 +7,8 @@ hedvig:
   trustly.notification.failUrl: http://hedvig.com/fail
   trustly.notification.successUrl: http://hedvig.com/success
   trustly.notification.errorUrl: http://hedvig.com/success
+  slack:
+    url: ""
 
 cloud:
   aws:
