@@ -1,5 +1,6 @@
 package com.hedvig.botService.chat;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
@@ -31,6 +32,7 @@ public class ConversationFactoryTest {
   @Mock private MemberService memberService;
   @Mock private ProductPricingService productPricingService;
   @Mock private TriggerService triggerService;
+  @Mock private PhoneNumberUtil phoneNumberUtil;
 
   public ConversationFactoryTest(Class<?> conversationClass) {
     this.conversationClass = conversationClass;
@@ -68,7 +70,8 @@ public class ConversationFactoryTest {
             statusBuilder,
             0,
           "Test",
-          "Test");
+          "Test",
+          phoneNumberUtil);
 
     Conversation conversation = factory.createConversation(conversationClass);
 
