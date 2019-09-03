@@ -6,7 +6,6 @@ import com.hedvig.botService.chat.Conversation.EventTypes
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_50K_LIMIT_YES_YES
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_BANKIDJA
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_LAGENHET_ADDRESSNOTFOUND
-import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_LAGENHET_NO_PERSONNUMMER
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_MEMBER_UNDER_EIGHTEEN
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_NAGOTMER
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_ONBOARDINGSTART_REPLY_NAME
@@ -35,7 +34,6 @@ import org.mockito.Mockito.times
 import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalDate
-import java.time.chrono.ChronoLocalDate
 
 @RunWith(MockitoJUnitRunner::class)
 class OnboardingConversationDeviTest {

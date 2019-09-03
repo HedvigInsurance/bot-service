@@ -2,6 +2,7 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.hedvig.botService.Utils.BirthDateFromSSNUtil
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
@@ -11,9 +12,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData
 import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
 import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
-import com.hedvig.botService.serviceIntegration.memberService.dto.PersonStatusDto
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.events.*
@@ -25,7 +24,6 @@ import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.chrono.ChronoLocalDate
-import java.time.chrono.ChronoLocalDateTime
 import java.util.*
 
 @Component
@@ -225,20 +223,16 @@ constructor(
                 body.text = "${trimmedSSN.dropLast(4)}-****"
                 addToChat(m, uc)
 
-                val birthDateFromSsn = LocalDate.parse(
-                    "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
-                        4,
-                        6
-                    )}-${trimmedSSN.substring(6, 8)}"
-                )
+                val birthDateFromSSNUtil = BirthDateFromSSNUtil()
 
+                val memberBirthDate = birthDateFromSSNUtil.birthDateFromSSN(trimmedSSN)
 
                 uc.onBoardingData.apply {
                     ssn = trimmedSSN
-                    birthDate = birthDateFromSsn
+                    birthDate = memberBirthDate
                 }
 
-                if(memberIsYoungerThan18(birthDateFromSsn)) {
+                if(memberIsYoungerThan18(memberBirthDate)) {
                     return@WrappedMessage(MESSAGE_MEMBER_UNDER_EIGHTEEN)
                 }
 

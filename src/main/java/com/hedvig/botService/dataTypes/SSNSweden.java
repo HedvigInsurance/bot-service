@@ -1,6 +1,8 @@
 package com.hedvig.botService.dataTypes;
 
-import java.time.LocalDate;
+import com.hedvig.botService.Utils.BirthDateFromSSNUtil;
+
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,11 +39,10 @@ public class SSNSweden extends HedvigDataType {
     }
 
     try {
-      LocalDate.parse(
-        trimmedInput.substring(0, 4) + "-" + trimmedInput.substring(4, 6) + "-" + trimmedInput.substring(6, 8)
-      );
+      BirthDateFromSSNUtil birthDateFromSSNUtil = new BirthDateFromSSNUtil();
+      birthDateFromSSNUtil.birthDateFromSSN(trimmedInput);
     }
-    catch(Exception exception) {
+    catch(DateTimeParseException exception) {
       this.errorMessage = input + " ser ut som ett konstigt personnummer. Ange gärna igen tack!";
       return false;
     }
