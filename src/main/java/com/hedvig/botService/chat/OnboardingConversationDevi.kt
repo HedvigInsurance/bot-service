@@ -305,7 +305,7 @@ constructor(
             "message.vad.ar.ditt.telefonnummer",
             WrappedMessage(
                 MessageBodyText(
-                    "Tack! Jag behöver därför ställa några frågor på telefon till dig, innan jag kan ge dig ditt förslag 🙂\u000C"
+                    "Tack! Jag behöver ställa några frågor på telefon till dig, innan jag kan ge dig ditt förslag 🙂\u000C"
                             + "Vilket telefonnummer kan jag nå dig på?",
                     TextContentType.TELEPHONE_NUMBER,
                     KeyboardType.PHONE_PAD
