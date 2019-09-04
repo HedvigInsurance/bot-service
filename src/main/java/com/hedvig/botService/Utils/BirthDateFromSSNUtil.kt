@@ -1,11 +1,7 @@
 package com.hedvig.botService.Utils
 
-import org.springframework.stereotype.Component
-
-
 import java.time.LocalDate
 
-@Component
 class BirthDateFromSSNUtil {
 
     fun birthDateFromSSN(ssn: String): LocalDate {
