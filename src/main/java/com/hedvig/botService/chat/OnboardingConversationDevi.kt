@@ -247,11 +247,6 @@ constructor(
                     }
                 }
 
-                val ssn = uc.onBoardingData.ssn
-                if (checkSSN(ssn) == Flag.RED) {
-                    return@WrappedMessage("message.vad.ar.ditt.telefonnummer")
-                }
-
                 if (response?.address != null) {
                     MESSAGE_BANKIDJA
                 } else {
@@ -832,6 +827,12 @@ constructor(
                     SelectOption("Nej, gå vidare utan", MESSAGE_50K_LIMIT_NO)
                 )
             ) { body, userContext, m ->
+                val ssn = userContext.onBoardingData.ssn
+                if (checkSSN(ssn) == Flag.RED) {
+                    completeOnboarding(userContext)
+                    return@WrappedMessage("message.vad.ar.ditt.telefonnummer")
+                }
+
                 for (o in body.choices) {
                     if (o.selected) {
                         m.body.text = o.text
