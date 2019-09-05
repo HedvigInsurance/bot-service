@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat
 
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.hedvig.botService.chat.Conversation.EventTypes
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_50K_LIMIT_YES_YES
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_BANKIDJA
@@ -50,8 +51,12 @@ class OnboardingConversationDeviTest {
     @Mock
     private lateinit var conversationFactory: ConversationFactory
 
+    @Mock
+    private lateinit var phoneNumberUtil: PhoneNumberUtil
+
     private lateinit var userContext: UserContext
     private lateinit var testConversation: OnboardingConversationDevi
+
 
     @Before
     fun setup() {
@@ -59,7 +64,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, publisher, conversationFactory, localizationService, "test", "test"
+            memberService, productPricingService, publisher, conversationFactory,localizationService, "test", "test", phoneNumberUtil
         )
     }
 
@@ -599,7 +604,6 @@ class OnboardingConversationDeviTest {
         assertThat(userContext.onBoardingData.newsLetterEmail).isEqualTo(remarkableEmail)
 
     }
-
 
     fun getMessage(id: String): Message {
         return testConversation.getMessage(testConversation.findLastChatMessageId(id))!!
