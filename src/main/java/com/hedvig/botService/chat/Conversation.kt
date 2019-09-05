@@ -172,7 +172,13 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
       // Input with explicit validation
       if (mCorr.expectedType != null) {
         ok = mCorr.expectedType.validate(m.body.text)
-        if (!ok) mCorr.body.text = mCorr.expectedType.getErrorMessage()
+        if (!ok) {
+          val localizedErrorMessage =
+            localizationService.getText(userContext.locale, mCorr.expectedType.errorMessageId)
+              ?: mCorr.expectedType.getErrorMessage()
+
+          mCorr.body.text = localizedErrorMessage.replace("{INPUT}", m.body.text)
+        }
       }
       if (m.body.text == null) {
         m.body.text = ""
