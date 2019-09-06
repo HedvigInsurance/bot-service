@@ -9,6 +9,7 @@ import static org.mockito.BDDMockito.then;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
 import org.junit.Before;
@@ -29,6 +30,8 @@ public class MainConversationTest {
 
   @Mock ProductPricingService productPricingService;
 
+  @Mock LocalizationService localizationService;
+
   @Mock Environment springEnvironment;
 
   MainConversation testConversation;
@@ -36,7 +39,7 @@ public class MainConversationTest {
 
   @Before
   public void setup() {
-    testConversation = new MainConversation(conversationFactory, eventPublisher);
+    testConversation = new MainConversation(conversationFactory, eventPublisher, localizationService);
 
     uc = new UserContext(TOLVANSSON_MEMBER_ID);
   }
