@@ -1,13 +1,15 @@
 package com.hedvig.botService.web.v2
 
+import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.UserContextRepository
 import com.hedvig.botService.serviceIntegration.notificationService.NotificationService
 import com.hedvig.botService.services.MessagesService
 import com.hedvig.botService.services.SessionManager
 import com.hedvig.botService.enteties.message.Message
-import com.hedvig.botService.services.TextKeysLocaleResolver
-import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.web.v2.dto.*
+
+import java.util.Objects
+import java.util.Optional
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,9 +27,7 @@ import javax.transaction.Transactional
 class AppController(
     private val messagesService: MessagesService,
     private val notificationService: NotificationService,
-    private val userContextRepository: UserContextRepository,
-    private val localizationService: LocalizationService,
-    private val textKeysLocaleResolver: TextKeysLocaleResolver
+    private val userContextRepository: UserContextRepository
 ) {
 
     @GetMapping("/")
@@ -41,7 +41,6 @@ class AppController(
             SessionManager.Intent.LOGIN
         else
             SessionManager.Intent.ONBOARDING
-
         return this.messagesService.getMessagesAndStatus(hid, intent)
     }
 
@@ -81,11 +80,5 @@ class AppController(
         }
 
         return ResponseEntity.ok(OnboardingData.from(userContext.get()))
-    }
-
-    @PostMapping("/refreshLocalization")
-    fun refreshLocalization(): ResponseEntity<String> {
-        localizationService.refreshLocalizations()
-        return ResponseEntity.ok("Localizations refreshed")
     }
 }
