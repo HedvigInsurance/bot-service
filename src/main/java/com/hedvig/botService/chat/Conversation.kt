@@ -6,6 +6,7 @@ import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.MessageSentEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
@@ -21,7 +22,7 @@ typealias GenericMessageCallback = (Message, UserContext) -> String
 typealias AddMessageCallback = (UserContext) -> Unit
 
 @Component
-abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
+abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val localizationService: LocalizationService) {
 
   private val callbacks = TreeMap<String, SelectItemMessageCallback>()
   val genericCallbacks = TreeMap<String, GenericMessageCallback>()
@@ -87,7 +88,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
   abstract fun canAcceptAnswerToQuestion(uc: UserContext): Boolean
 
   public open fun addToChat(m: Message?, userContext: UserContext) {
-    m!!.render(userContext)
+    m!!.render(userContext, localizationService)
     log.info("Putting message: " + m.id + " content: " + m.body.text)
     userContext.addToHistory(m)
     addMessageCallbacks[m.id]?.invoke(userContext)
@@ -171,7 +172,13 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher) {
       // Input with explicit validation
       if (mCorr.expectedType != null) {
         ok = mCorr.expectedType.validate(m.body.text)
-        if (!ok) mCorr.body.text = mCorr.expectedType.getErrorMessage()
+        if (!ok) {
+          val localizedErrorMessage =
+            localizationService.getText(userContext.locale, mCorr.expectedType.errorMessageId)
+              ?: mCorr.expectedType.getErrorMessage()
+
+          mCorr.body.text = localizedErrorMessage.replace("{INPUT}", m.body.text)
+        }
       }
       if (m.body.text == null) {
         m.body.text = ""

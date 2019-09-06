@@ -3,6 +3,8 @@ package com.hedvig.botService.enteties.message;
 import com.hedvig.botService.enteties.UserContext;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+
+import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
 
 @Entity
@@ -19,8 +21,8 @@ public class MessageBodyBankIdCollect extends MessageBody {
   }
 
   @Override
-  public void render(UserContext userContext) {
+  public void render(String globalId, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
     this.referenceId = userContext.replaceWithContext(this.referenceId);
-    super.render(userContext);
+    super.render(globalId, fromUser, userContext, localizationService);
   }
 }
