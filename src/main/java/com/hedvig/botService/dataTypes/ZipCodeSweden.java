@@ -9,8 +9,6 @@ public class ZipCodeSweden extends HedvigDataType {
   private Pattern pattern;
   private Matcher matcher;
 
-  private String input;
-
   public ZipCodeSweden() {
     pattern = Pattern.compile(ZIPCODE_PATTERN);
   }
@@ -25,20 +23,11 @@ public class ZipCodeSweden extends HedvigDataType {
 
   @Override
   public boolean validate(String input) {
-    this.input = input;
     if (input == null) {
       this.errorMessage = "Nu blev något fel tror jag... Försök igen";
     }
     matcher = pattern.matcher(input.trim());
-    this.errorMessage = "{INPUT} är inte ett postnummer jag känner till. Ange gärna igen tack!";
+    this.errorMessage = input + " är inte ett postnummer jag känner till. Ange gärna igen tack!";
     return matcher.matches();
-  }
-
-  @Override
-  public String getErrorMessageId() {
-    if (input == null) {
-      return "hedvig.data.type.zip.code.sweden.no.input";
-    }
-    return "hedvig.data.type.zip.code.sweden.no.match";
   }
 }

@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
-import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent;
@@ -32,9 +31,8 @@ public class FreeChatConversation extends Conversation {
   public FreeChatConversation(
     StatusBuilder statusBuilder,
     ApplicationEventPublisher eventPublisher,
-    ProductPricingService productPricingService,
-    LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+    ProductPricingService productPricingService) {
+    super(eventPublisher);
     this.statusBuilder = statusBuilder;
     this.eventPublisher = eventPublisher;
     this.productPricingService = productPricingService;

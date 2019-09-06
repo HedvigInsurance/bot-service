@@ -13,7 +13,6 @@ import com.hedvig.botService.enteties.message.SelectItemTrustly;
 import com.hedvig.botService.enteties.message.SelectLink;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
-import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -30,8 +29,8 @@ public class TrustlyConversation extends Conversation {
   private final TriggerService triggerService;
   private final MemberService memberService;
 
-  public TrustlyConversation(TriggerService triggerService, MemberService memberService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+  public TrustlyConversation(TriggerService triggerService, MemberService memberService, ApplicationEventPublisher eventPublisher) {
+    super(eventPublisher);
     this.triggerService = triggerService;
     this.memberService = memberService;
 

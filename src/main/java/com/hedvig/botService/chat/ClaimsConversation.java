@@ -15,7 +15,6 @@ import com.hedvig.botService.enteties.message.SelectOption;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
-import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
 import lombok.extern.slf4j.Slf4j;
@@ -62,9 +61,8 @@ public class ClaimsConversation extends Conversation {
     ClaimsService claimsService,
     ProductPricingService productPricingService,
     ConversationFactory conversationFactory,
-    MemberService memberService,
-    LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+    MemberService memberService) {
+    super(eventPublisher);
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.productPricingService = productPricingService;

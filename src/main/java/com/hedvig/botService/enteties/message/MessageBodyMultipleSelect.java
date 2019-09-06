@@ -5,9 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
-import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
 
 @Entity
@@ -63,12 +60,5 @@ public class MessageBodyMultipleSelect extends MessageBody {
 
   public long getNoSelectedOptions() {
     return this.choices.stream().filter(x -> x.selected).count();
-  }
-
-  @Override
-  public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
-    choices.forEach(x -> x.render(id, userContext, localizationService));
-
-    super.render(id, fromUser, userContext, localizationService);
   }
 }
