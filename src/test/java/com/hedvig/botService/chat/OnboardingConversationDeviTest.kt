@@ -15,7 +15,6 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Address
 import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
-import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent
 import com.hedvig.botService.services.events.RequestObjectInsuranceEvent
 import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
@@ -39,8 +38,6 @@ class OnboardingConversationDeviTest {
 
     @Mock
     private lateinit var memberService: MemberService
-    @Mock
-    private lateinit var localizationService: LocalizationService
 
     @Mock
     private lateinit var productPricingService: ProductPricingService
@@ -64,7 +61,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, publisher, conversationFactory,localizationService, "test", "test", phoneNumberUtil
+            memberService, productPricingService, publisher, conversationFactory, "test", "test", phoneNumberUtil
         )
     }
 

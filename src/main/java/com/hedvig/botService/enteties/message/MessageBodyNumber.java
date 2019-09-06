@@ -1,8 +1,6 @@
 package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -38,12 +36,5 @@ public class MessageBodyNumber extends MessageBodyText {
     return Integer.parseInt(text);
   }
 
-  @Override
-  public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
-    super.render(id, fromUser, userContext, localizationService);
-    String localizedText = localizationService.getText(userContext.getLocale(), id + ID_PLACEHOLDER_POST_FIX);
-    if (localizedText != null){
-      placeholder = localizedText;
-    }
-  }
+
 }
