@@ -1575,7 +1575,7 @@ constructor(
             // nxtMsg = MESSAGE_FORSAKRINGIDAG;
 
             // case "message.bytesinfo":
-            "message.bytesinfo2", MESSAGE_FORSAKRINGIDAG, "message.missingvalue", MESSAGE_FORSLAG2 -> {
+            "message.bytesinfo2", MESSAGE_FORSAKRINGIDAG, "message.missingvalue", MESSAGE_FORSLAG2, MESSAGE_FORSLAG2_ALT_1, MESSAGE_FORSLAG2_ALT_2 -> {
                 val item = (m.body as MessageBodySingleSelect).selectedItem
 
                 /*
@@ -1595,7 +1595,9 @@ constructor(
                     nxtMsg = "message.missingvalue"
                     addToChat(m, userContext)
                     addToChat(getMessage("message.missingvalue"), userContext)
-                } else if (m.id == "message.missingvalue" || item.value == MESSAGE_FORSLAG2) {
+                } else if (m.id == "message.missingvalue" || item.value == MESSAGE_FORSLAG2 ||
+                    item.value == MESSAGE_FORSLAG2_ALT_1 ||
+                    item.value == MESSAGE_FORSLAG2_ALT_2) {
                     completeOnboarding(userContext)
                 }
             }
