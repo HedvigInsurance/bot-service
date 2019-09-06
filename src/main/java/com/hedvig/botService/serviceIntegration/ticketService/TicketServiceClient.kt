@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody
 
 @FeignClient(name = "ticketServiceClient", url = "\${hedvig.ticket-service.url:ticket-service}")
 interface TicketServiceClient {
-    @PostMapping
+    @PostMapping("/_/tickets/callme")
     fun createCallMeTicket(@RequestBody createCallMeTicketRequest: CreateCallMeTicketDto)
 }
