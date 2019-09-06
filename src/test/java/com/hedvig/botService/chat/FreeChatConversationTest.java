@@ -9,7 +9,6 @@ import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.message.MessageBodyFileUpload;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
-import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
 import org.junit.Before;
@@ -33,10 +32,6 @@ public class FreeChatConversationTest {
   @Mock
   private ProductPricingService productPricingService;
 
-  @Mock
-  private LocalizationService localizationService;
-
-
   private FreeChatConversation testFreeChatConversation;
   private UserContext userContext;
 
@@ -45,7 +40,7 @@ public class FreeChatConversationTest {
   @Before
   public void SetUp() {
     testFreeChatConversation = new FreeChatConversation(statusBuilder, eventPublisher,
-      productPricingService, localizationService);
+      productPricingService);
     userContext = new UserContext(MEMBER_ID);
   }
 
