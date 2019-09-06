@@ -10,7 +10,6 @@ import javax.transaction.Transactional
 
 
 @Component
-@Transactional
 class LocalizationService @Autowired constructor(val localizationClient: LocalizationClient) {
 
     private var localizationData: LocalizationData? = null

@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @Component
-@Transactional
 class TextKeysLocaleResolver {
 
     fun resolveLocale(acceptLanguage: String?): Locale {

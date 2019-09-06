@@ -152,8 +152,6 @@ constructor(
             )
         )
         this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
-        this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT)
-        this.addRelay("message.notmember.start", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER)
 
         this.createMessage(
             "message.uwlimit.tack",
@@ -773,8 +771,6 @@ constructor(
             "message.bolag.vetej", MessageBodyParagraph("Inga problem, det kan vi ta senare")
         )
         this.addRelay("message.bolag.vetej", MESSAGE_FORSLAG2)
-        this.addRelay("message.bolag.vetej", MESSAGE_FORSLAG2_ALT_1)
-        this.addRelay("message.bolag.vetej", MESSAGE_FORSLAG2_ALT_2)
 
         this.createMessage(
             MESSAGE_ANNATBOLAG, MessageBodyText("Okej, vilket försäkringsbolag har du?"), 2000
@@ -944,8 +940,6 @@ constructor(
                 receiveMessageCallback = { _, _, _ -> MESSAGE_FORSLAG2 })
         )
         this.addRelay(MESSAGE_FORSLAG, MESSAGE_FORSLAG2)
-        this.addRelay(MESSAGE_FORSLAG, MESSAGE_FORSLAG2_ALT_1)
-        this.addRelay(MESSAGE_FORSLAG, MESSAGE_FORSLAG2_ALT_2)
 
         this.createChatMessage(
             "message.tryggt",
