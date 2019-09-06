@@ -643,4 +643,21 @@ class OnboardingConversationDeviTest {
 
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
     }
+
+    @Test
+    fun recieveNormalFlowIfMemberIs18() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        val dateToday = LocalDate.now()
+
+        val date18YearsAgo = dateToday.minusYears(18).toString().replace("-", "")
+        val testPersonnummerAsString = date18YearsAgo + "2125"
+
+        message.body.text = testPersonnummerAsString
+
+        testConversation.receiveMessage(userContext, message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
+    }
 }
