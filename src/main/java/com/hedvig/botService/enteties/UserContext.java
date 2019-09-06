@@ -9,15 +9,12 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberProfile;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse;
+import com.hedvig.botService.services.TextKeysLocaleResolver;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.CascadeType;
@@ -35,6 +32,7 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
+
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
@@ -53,6 +51,8 @@ public class UserContext implements Serializable {
   public static final String ONBOARDING_COMPLETE = "{ONBOARDING_COMPLETE}";
   public static final String FORCE_TRUSTLY_CHOICE = "{FORCE_TRUSTLY_CHOICE}";
   public static final String TRUSTLY_FORCED_START = "{TRUSTLY_FORCED_START}";
+
+  public static final String LANGUAGE_KEY = "{LANGUAGE_ISO_639}";
 
   private static Logger log = LoggerFactory.getLogger(UserContext.class);
   private static Map<String, String> requiredData =
@@ -365,5 +365,12 @@ public class UserContext implements Serializable {
 
   public Map<String, BankIdSessionImpl> getBankIdStatus() {
     return this.bankIdStatus;
+  }
+
+  public Locale getLocale() {
+    String languageCode = getDataEntry(LANGUAGE_KEY);
+    return languageCode != null ?
+      new Locale(languageCode) :
+      TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE();
   }
 }

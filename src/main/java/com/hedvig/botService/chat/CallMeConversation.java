@@ -9,6 +9,7 @@ import com.hedvig.botService.enteties.message.MessageHeader;
 import com.hedvig.botService.enteties.message.SelectItem;
 import com.hedvig.botService.enteties.message.SelectLink;
 import com.hedvig.botService.enteties.message.SelectOption;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
 import java.util.List;
 import java.util.Objects;
@@ -26,8 +27,8 @@ public class CallMeConversation extends Conversation {
 
   private final ApplicationEventPublisher eventPublisher;
 
-  public CallMeConversation(ApplicationEventPublisher eventPublisher) {
-    super(eventPublisher);
+  public CallMeConversation(ApplicationEventPublisher eventPublisher, LocalizationService localizationService) {
+    super(eventPublisher, localizationService);
     this.eventPublisher = eventPublisher;
     createMessage(
       CALLME_CHAT_START,
@@ -75,7 +76,7 @@ public class CallMeConversation extends Conversation {
       case CALLME_CHAT_START_WITHOUT_PHONE: {
         String trimmedText = m.body.text.trim();
         userContext.putUserData("{PHONE_NUMBER}", trimmedText);
-        m.body.text = "Ni kan nå mig på telefonnummer " + trimmedText;
+        m.body.text = "Ni kan nå mig på telefonnummer {PHONE_NUMBER}";
         addToChat(m, userContext);
 
         endConversation(userContext, m);

@@ -4,6 +4,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,7 @@ public class ConversationFactoryTest {
   @Mock private MemberService memberService;
   @Mock private ProductPricingService productPricingService;
   @Mock private TriggerService triggerService;
+  @Mock private LocalizationService localizationService;
   @Mock private PhoneNumberUtil phoneNumberUtil;
 
   public ConversationFactoryTest(Class<?> conversationClass) {
@@ -68,6 +70,7 @@ public class ConversationFactoryTest {
             applicationEventPublisher,
             claimsService,
             statusBuilder,
+            localizationService,
             0,
           "Test",
           "Test",
