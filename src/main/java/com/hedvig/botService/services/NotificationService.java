@@ -116,6 +116,7 @@ public class NotificationService {
         event.getMemberId(), event.getFirstName(), event.getFamilyName(),
         event.isInsuranceActive() ? "AKTIV" : "INAKTIV", event.getPhoneNumber());
     sendNewClaimNotification(message, "CallMe");
+    ticketService.createCallMeTicket(event.getMemberId(), event.getPhoneNumber(), event.getFirstName(), event.getFamilyName());
   }
 
   @EventListener
