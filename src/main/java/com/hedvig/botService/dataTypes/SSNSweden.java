@@ -9,6 +9,8 @@ public class SSNSweden extends HedvigDataType {
   private Pattern pattern;
   private Matcher matcher;
 
+  private String trimmedInput;
+
   public SSNSweden() {
     pattern = Pattern.compile(ZIPCODE_PATTERN);
   }
@@ -28,7 +30,7 @@ public class SSNSweden extends HedvigDataType {
       return false;
     }
 
-    String trimmedInput = input.trim().replace(" ", "");
+    trimmedInput = input.trim().replace(" ", "");
 
     if (trimmedInput.length() != 12) {
       this.errorMessage = "Personnummret måste skrivas med 12 siffor.";
@@ -38,10 +40,21 @@ public class SSNSweden extends HedvigDataType {
 
     boolean ok = matcher.matches();
     if (!ok) {
-      this.errorMessage = input + " ser ut som ett konstigt personnummer. Ange gärna igen tack!";
+      this.errorMessage = "{INPUT} ser ut som ett konstigt personnummer. Ange gärna igen tack!";
       return false;
     }
 
     return true;
+  }
+
+  @Override
+  public String getErrorMessageId() {
+    if (trimmedInput == null) {
+      return "hedvig.data.type.ssn.no.input";
+    }
+    if (trimmedInput.length() != 12) {
+      return "hedvig.data.type.ssn.not.twelve.digits";
+    }
+    return "hedvig.data.type.ssn.did.not.match";
   }
 }

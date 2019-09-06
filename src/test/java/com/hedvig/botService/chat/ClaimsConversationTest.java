@@ -8,6 +8,7 @@ import com.hedvig.botService.enteties.message.MessageBodyParagraph;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
 import lombok.val;
@@ -41,6 +42,9 @@ public class ClaimsConversationTest {
 
   @Mock private MemberService memberService;
 
+  @Mock
+  private LocalizationService localizationService;
+
   private ClaimsConversation testConversation;
   private UserContext userContext;
 
@@ -49,7 +53,7 @@ public class ClaimsConversationTest {
 
     testConversation =
         new ClaimsConversation(
-            eventPublisher, claimsService, productPricingService, conversationFactory, memberService);
+            eventPublisher, claimsService, productPricingService, conversationFactory, memberService, localizationService);
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
   }
 
