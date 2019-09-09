@@ -4,22 +4,40 @@ public class HouseholdMemberNumber extends HedvigDataType {
 
   public HouseholdMemberNumber() {}
 
+  private Integer householdMemberNumber;
+
   @Override
   public boolean validate(String input) {
     try {
-      Integer m = Integer.parseInt(input);
-      if (m < 1) {
-        this.errorMessage = input + " låter som väldigt få personer. Prova att ange igen tack";
+      householdMemberNumber = Integer.parseInt(input);
+      if (householdMemberNumber < 1) {
+        this.errorMessage = "{INPUT} låter som väldigt få personer. Prova att ange igen tack";
         return false;
       }
-      if (m > 20) {
-        this.errorMessage = input + "? I ett och samma hushåll?. Hmm... Prova att ange igen tack";
+      if (householdMemberNumber > 20) {
+        this.errorMessage = "{INPUT}? I ett och samma hushåll?. Hmm... Prova att ange igen tack";
         return false;
       }
     } catch (NumberFormatException e) {
-      this.errorMessage = input + " verkar vara ett kontigt antal personer. Prova igen tack";
+      householdMemberNumber = null;
+      this.errorMessage = "{INPUT} verkar vara ett kontigt antal personer. Prova igen tack";
       return false;
     }
     return true;
+  }
+
+  @Override
+  public String getErrorMessageId() {
+    if (householdMemberNumber == null) {
+      return "hedvig.data.type.household.member.number.not.a.number";
+    }
+    if (householdMemberNumber < 1) {
+      return "hedvig.data.type.household.member.number.less.than.one";
+    }
+    if (householdMemberNumber > 20) {
+      return "hedvig.data.type.household.member.number.more.than.20";
+    }
+
+    return null;
   }
 }

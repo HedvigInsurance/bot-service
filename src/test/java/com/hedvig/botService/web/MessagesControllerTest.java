@@ -38,7 +38,7 @@ public class MessagesControllerTest {
 
   @Test
   public void allMessages() throws Exception {
-    when(sessionManager.getAllMessages(contains(TOLVANSSON_MEMBERID), any()))
+    when(sessionManager.getAllMessages(contains(TOLVANSSON_MEMBERID), any(), any()))
         .thenReturn(Lists.newArrayList());
 
     ResultActions resultActions =

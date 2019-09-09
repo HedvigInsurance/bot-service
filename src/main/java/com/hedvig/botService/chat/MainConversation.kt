@@ -19,12 +19,13 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_CLAIM
+import com.hedvig.botService.services.LocalizationService
 
 @Component
 class MainConversation @Autowired
 constructor(
-    private val conversationFactory: ConversationFactory, eventPublisher: ApplicationEventPublisher
-) : Conversation(eventPublisher) {
+    private val conversationFactory: ConversationFactory, eventPublisher: ApplicationEventPublisher, localizationService: LocalizationService
+) : Conversation(eventPublisher, localizationService) {
 
     init {
 

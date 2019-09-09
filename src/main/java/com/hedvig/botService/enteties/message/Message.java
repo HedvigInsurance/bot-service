@@ -22,6 +22,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import com.hedvig.botService.services.LocalizationService;
 import lombok.Data;
 import lombok.ToString;
 
@@ -84,7 +85,11 @@ public class Message {
     header.markedAsRead = true;
   }
 
-  public void render(UserContext userContext) {
-    this.body.render(userContext);
+  public void render(UserContext userContext, LocalizationService localizationService) {
+    this.body.render(id, isFromUser(), userContext, localizationService);
+  }
+
+  protected Boolean isFromUser() {
+    return header.fromId != 1;
   }
 }

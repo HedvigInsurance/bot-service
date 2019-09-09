@@ -11,6 +11,8 @@ public abstract class HedvigDataType {
     return errorMessage;
   }
 
+  public abstract String getErrorMessageId();
+
   public void setErrorMessage(String errorMessage) {
     this.errorMessage = errorMessage;
   }
