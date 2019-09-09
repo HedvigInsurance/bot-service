@@ -37,7 +37,7 @@ public class SelectItem implements Serializable {
   }
 
   public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    String localizedText = localizationService.getText(userContext.getLocale(), id + SELECT_POST_FIX);
+    String localizedText = localizationService.getText(userContext.getLocale(), value + SELECT_POST_FIX);
     if (localizedText != null){
       text = localizedText;
     }
