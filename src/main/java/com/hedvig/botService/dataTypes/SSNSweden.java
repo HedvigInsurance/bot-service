@@ -1,5 +1,7 @@
 package com.hedvig.botService.dataTypes;
 
+import com.hedvig.botService.Utils.BirthDateFromSSNUtil;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +36,16 @@ public class SSNSweden extends HedvigDataType {
       this.errorMessage = "Personnummret måste skrivas med 12 siffor.";
       return false;
     }
+
+    try {
+      BirthDateFromSSNUtil birthDateFromSSNUtil = new BirthDateFromSSNUtil();
+      birthDateFromSSNUtil.birthDateFromSSN(trimmedInput);
+    }
+    catch(DateTimeParseException exception) {
+      this.errorMessage = input + " ser ut som ett konstigt personnummer. Ange gärna igen tack!";
+      return false;
+    }
+
     matcher = pattern.matcher(trimmedInput);
 
     boolean ok = matcher.matches();
