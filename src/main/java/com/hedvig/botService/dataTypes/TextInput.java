@@ -13,9 +13,4 @@ public class TextInput extends HedvigDataType {
     }
     return true;
   }
-
-  @Override
-  public String getErrorMessageId() {
-    return "hedvig.data.type.text.input";
-  }
 }
