@@ -4,6 +4,7 @@ import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,8 +44,9 @@ public class CharityConversation extends Conversation {
     ConversationFactory factory,
     MemberService memberService,
     ProductPricingService productPricingService,
-    ApplicationEventPublisher eventPublisher) {
-    super(eventPublisher);
+    ApplicationEventPublisher eventPublisher,
+    LocalizationService localizationService) {
+    super(eventPublisher, localizationService);
     this.conversationFactory = factory;
     this.memberService = memberService;
     this.productPricingService = productPricingService;

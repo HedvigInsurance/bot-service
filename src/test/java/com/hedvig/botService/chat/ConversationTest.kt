@@ -3,6 +3,7 @@ package com.hedvig.botService.chat
 import com.hedvig.botService.enteties.MemberChat
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.testHelpers.MessageHelpers.createSingleSelectMessage
 import com.hedvig.botService.testHelpers.MessageHelpers.createTextMessage
 import org.assertj.core.api.Assertions.assertThat
@@ -20,6 +21,9 @@ class ConversationTest {
 
   @Mock
   private val eventPublisher: ApplicationEventPublisher? = null
+
+  @Mock
+  private val localizationService: LocalizationService? = null
 
   private lateinit var uc: UserContext
 
@@ -151,7 +155,7 @@ class ConversationTest {
 
 
   fun makeConversation(constructor: Conversation.(Unit) -> Unit): Conversation {
-    return object : Conversation(eventPublisher!!) {
+    return object : Conversation(eventPublisher!!, localizationService!!) {
       override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
         return listOf()
       }
