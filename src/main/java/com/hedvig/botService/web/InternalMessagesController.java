@@ -81,7 +81,6 @@ public class InternalMessagesController {
   @RequestMapping(path = {"/_/messages/init", "/init"}, method = RequestMethod.POST)
   public ResponseEntity<?> create(
       @RequestHeader(value = "hedvig.token", required = false) String hid,
-      @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
       @RequestBody(required = false) ExpoDeviceInfoDTO json) {
     log.info("Init recieved from api-gateway: {}", hid);
 
@@ -94,7 +93,7 @@ public class InternalMessagesController {
         linkUri = clientLinkingUri;
       }
     }
-    sessionManager.init(hid, acceptLanguage, linkUri);
+    sessionManager.init(hid, linkUri);
 
     return ResponseEntity.noContent().build();
   }
