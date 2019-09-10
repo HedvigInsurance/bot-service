@@ -136,6 +136,24 @@ constructor(
                 Lists.newArrayList<SelectItem>(SelectOption("Låter bra!", MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT))
             )
         )
+        this.createChatMessage(
+            MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT,
+            WrappedMessage(
+                MessageBodyText(
+                    "Först, vad är din mailadress?",
+                    TextContentType.EMAIL_ADDRESS,
+                    KeyboardType.EMAIL_ADDRESS
+                )
+            ) { body, userContext, message ->
+                val trimmedEmail = body.text.trim()
+                userContext.onBoardingData.email = trimmedEmail
+                memberService.updateEmail(userContext.memberId, trimmedEmail)
+                body.text = "Min email är {EMAIL}"
+                addToChat(message, userContext)
+                MESSAGE_FORSLAGSTART
+            }
+        )
+        this.setExpectedReturnType(MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT, EmailAdress())
 
         this.createMessage(
             MESSAGE_NOTMEMBER,
@@ -2006,20 +2024,20 @@ constructor(
         const val MESSAGE_ONBOARDINGSTART_ASK_NAME = "message.onboardingstart.ask.name"
         const val MESSAGE_ONBOARDINGSTART_REPLY_NAME = "message.onboardingstart.reply.name"
         const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL = "message.onboardingstart.ask.email"
-        const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT = "message.onboardingstart.ask.email.2"
+        const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL_ALT = "message.onboardingstart.ask.email.two"
         const val MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER = "message.onboardingstart.ask.email.not.member"
         const val MESSAGE_LOGIN_ASK_EMAIL = "message.login.ask.email"
         const val MESSAGE_FORSLAG = "message.forslag"
         const val MESSAGE_FORSLAG2 = "message.forslag2"
-        const val MESSAGE_FORSLAG2_ALT_1 = "message.forslag2.1"
-        const val MESSAGE_FORSLAG2_ALT_2 = "message.forslag2.2"
-        const val MESSAGE_50K_LIMIT = "message.50k.limit"
-        const val MESSAGE_50K_LIMIT_YES_NO = "message.50k.limit.yes.no"
+        const val MESSAGE_FORSLAG2_ALT_1 = "message.forslag2.one"
+        const val MESSAGE_FORSLAG2_ALT_2 = "message.forslag2.two"
+        const val MESSAGE_50K_LIMIT = "message.fifty.k.limit"
+        const val MESSAGE_50K_LIMIT_YES_NO = "message.fifty.k.limit.yes.no"
         @JvmField
-        val MESSAGE_50K_LIMIT_YES_YES = "message.50k.limit.yes.yes"
-        const val MESSAGE_50K_LIMIT_YES = "message.50k.limit.yes"
-        const val MESSAGE_50K_LIMIT_NO = "message.50k.limit.no"
-        const val MESSAGE_50K_LIMIT_NO_1 = "message.50k.limit.no.1"
+        val MESSAGE_50K_LIMIT_YES_YES = "message.fifty.k.limit.yes.yes"
+        const val MESSAGE_50K_LIMIT_YES = "message.fifty.k.limit.yes"
+        const val MESSAGE_50K_LIMIT_NO = "message.fifty.k.limit.no"
+        const val MESSAGE_50K_LIMIT_NO_1 = "message.fifty.k.limit.no.one"
         const val MESSAGE_PHONENUMBER = "message.phonenumber"
         const val MESSAGE_FORSAKRINGIDAG = "message.forsakringidag"
         const val MESSAGE_SAKERHET = "message.sakerhet"
@@ -2041,8 +2059,8 @@ constructor(
         const val MESSAGE_STUDENT_LIMIT_LIVING_SPACE_HOUSE_TYPE = "message.student.limit.livingspace.lghtyp"
         const val MESSAGE_STUDENT_ELIGIBLE_BRF = "message.student.eligible.brf"
         const val MESSAGE_STUDENT_ELIGIBLE_RENT = "message.student.eligible.rent"
-        const val MESSAGE_STUDENT_25K_LIMIT = "message.student.25klimit"
-        const val MESSAGE_STUDENT_25K_LIMIT_YES = "message.student.25klimit.yes"
+        const val MESSAGE_STUDENT_25K_LIMIT = "message.student.twentyfive.k.limit"
+        const val MESSAGE_STUDENT_25K_LIMIT_YES = "message.student.twentyfive.k.limit.yes"
 
         const val MESSAGE_LOGIN_WITH_EMAIL_ASK_PASSWORD = "message.login.with.mail.ask.password"
         const val MESSAGE_LOGIN_WITH_EMAIL = "message.login.with.mail"
@@ -2057,7 +2075,7 @@ constructor(
         @JvmField
         val MESSAGE_BANKIDJA = "message.bankidja"
         private const val MESSAGE_KVADRAT = "message.kvadrat"
-        private const val MESSAGE_KVADRAT_ALT = "message.kvadrat.1"
+        private const val MESSAGE_KVADRAT_ALT = "message.kvadrat.one"
         @JvmField
         val MESSAGE_VARBORDUFELADRESS = "message.varbordufeladress"
         private const val MESSAGE_NOTMEMBER = "message.notmember"

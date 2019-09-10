@@ -42,8 +42,8 @@ public class ClaimsConversation extends Conversation {
   static final String MESSAGE_CLAIMS_OK = "message.claims.ok";
   static final String MESSAGE_CLAIMS_ASK_PHONE = "message.claims.ask.phone";
   static final String MESSAGE_CLAIMS_ASK_PHONE_END = "message.claims.ask.phone.end";
-  static final String MESSAGE_CLAIMS_RECORD_1 = "message.claims.record.1";
-  static final String MESSAGE_CLAIMS_RECORD_2 = "message.claims.record.2";
+  static final String MESSAGE_CLAIMS_RECORD_1 = "message.claims.record.one";
+  static final String MESSAGE_CLAIMS_RECORD_2 = "message.claims.record.two";
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE = "message.claims.ask.existing.phone";
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW = "message.claims.ask.existing.phone.ask.new";
   static final String PHONE_NUMBER = "{PHONE_NUMBER}"; // The phone that we have from the onboarding;

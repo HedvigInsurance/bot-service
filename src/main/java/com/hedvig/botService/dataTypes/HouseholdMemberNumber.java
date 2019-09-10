@@ -35,7 +35,7 @@ public class HouseholdMemberNumber extends HedvigDataType {
       return "hedvig.data.type.household.member.number.less.than.one";
     }
     if (householdMemberNumber > 20) {
-      return "hedvig.data.type.household.member.number.more.than.20";
+      return "hedvig.data.type.household.member.number.more.than.twenty";
     }
 
     return null;
