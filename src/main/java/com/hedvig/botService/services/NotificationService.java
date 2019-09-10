@@ -1,9 +1,11 @@
 package com.hedvig.botService.services;
 
+import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
 import com.hedvig.botService.services.events.*;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
@@ -14,11 +16,16 @@ import org.springframework.stereotype.Component;
 public class NotificationService {
 
   private final NotificationMessagingTemplate template;
+  private final TicketService ticketService;
   private final Logger log = LoggerFactory.getLogger(NotificationService.class);
 
-  public NotificationService(NotificationMessagingTemplate template) {
-
+  @Autowired
+  public NotificationService(
+    NotificationMessagingTemplate template,
+    TicketService ticketService
+  ) {
     this.template = template;
+    this.ticketService = ticketService;
   }
 
   @EventListener
@@ -32,6 +39,7 @@ public class NotificationService {
     final String message = String.format("Medlem %s(%s %s) vill bli kontaktad på %s",
         evt.getMemberId(), evt.getFirstName(), evt.getLastName(), evt.getPhoneNumber());
     sendMessageFromMemberNotification(message, "CallMe");
+    ticketService.createCallMeTicket(evt.getMemberId(), evt.getPhoneNumber(), evt.getFirstName(), evt.getLastName());
   }
 
   @EventListener
@@ -108,6 +116,7 @@ public class NotificationService {
         event.getMemberId(), event.getFirstName(), event.getFamilyName(),
         event.isInsuranceActive() ? "AKTIV" : "INAKTIV", event.getPhoneNumber());
     sendNewClaimNotification(message, "CallMe");
+    ticketService.createCallMeTicket(event.getMemberId(), event.getPhoneNumber(), event.getFirstName(), event.getFamilyName());
   }
 
   @EventListener
