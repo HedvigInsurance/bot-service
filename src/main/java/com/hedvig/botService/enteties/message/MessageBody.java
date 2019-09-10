@@ -3,7 +3,6 @@ package com.hedvig.botService.enteties.message;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.hedvig.botService.enteties.UserContext;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -12,15 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-
-import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
-import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -44,8 +35,6 @@ import org.springframework.stereotype.Component;
 @ToString
 public class MessageBody {
 
-  protected final String ID_PLACEHOLDER_POST_FIX = ".placeholder";
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   public Integer id;
@@ -65,9 +54,7 @@ public class MessageBody {
 
   MessageBody() {}
 
-  public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
-    if (fromUser) id += ".from.user";
-    String localizedText = localizationService.getText(userContext.getLocale(), id);
-    this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
+  public void render(UserContext userContext) {
+    this.text = userContext.replaceWithContext(this.text);
   }
 }
