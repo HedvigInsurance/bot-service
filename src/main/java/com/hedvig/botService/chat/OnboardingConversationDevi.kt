@@ -1419,7 +1419,7 @@ constructor(
 
         // ... and then the incoming message id
 
-        when (m.baseMessageId) {
+        when (m.strippedBaseMessageId) {
             MESSAGE_STUDENT_LIMIT_LIVING_SPACE_HOUSE_TYPE, "message.lghtyp" -> {
                 val item = (m.body as MessageBodySingleSelect).selectedItem
 

@@ -188,7 +188,7 @@ public class ClaimsConversation extends Conversation {
       return;
     }
 
-    switch (m.getBaseMessageId()) {
+    switch (m.getStrippedBaseMessageId()) {
       case "message.claims.audio":
         nxtMsg = handleAudioReceived(userContext, m);
         break;

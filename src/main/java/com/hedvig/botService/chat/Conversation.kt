@@ -173,14 +173,14 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
       if (mCorr.expectedType != null) {
         ok = mCorr.expectedType.validate(m.body.text)
         if (!ok) {
-          m.id = mCorr.expectedType.errorMessageId + ".input.not.valid"
-
-          mCorr.id = mCorr.expectedType.errorMessageId + ".response.not.valid"
+          mCorr.id += NOT_VALID_POST_FIX
           val localizedErrorMessage =
             localizationService.getText(userContext.locale, mCorr.expectedType.errorMessageId)
               ?: mCorr.expectedType.getErrorMessage()
 
           mCorr.body.text = localizedErrorMessage.replace("{INPUT}", m.body.text)
+
+          m.id = mCorr.expectedType.errorMessageId + ".input" + NOT_VALID_POST_FIX
         }
       }
       if (m.body.text == null) {
@@ -204,7 +204,7 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
 
     if(validateReturnType(m, userContext)) {
       //Generic Lambda
-      if (this.hasGenericCallback(m.baseMessageId)) {
+      if (this.hasGenericCallback(m.strippedBaseMessageId)) {
         nxtMsg = this.execGenericCallback(m, userContext)
       }
 
@@ -346,13 +346,14 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
   }
 
   fun execGenericCallback(m: Message, userContext: UserContext): String {
-    return this.genericCallbacks[m.baseMessageId]!!.invoke(m, userContext)
+    return this.genericCallbacks[m.strippedBaseMessageId]!!.invoke(m, userContext)
   }
 
   companion object {
     private val CHAT_ID_FORMAT = "%s.%s"
 
+    const val NOT_VALID_POST_FIX = ".not.valid"
+
     private val log = LoggerFactory.getLogger(Conversation::class.java)
   }
-
 }
