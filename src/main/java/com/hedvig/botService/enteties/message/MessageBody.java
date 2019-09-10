@@ -45,6 +45,7 @@ import org.springframework.stereotype.Component;
 public class MessageBody {
 
   protected final String ID_PLACEHOLDER_POST_FIX = ".placeholder";
+  protected final String ID_FROM_USER_POST_FIX = ".from.user";
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,8 +67,17 @@ public class MessageBody {
   MessageBody() {}
 
   public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
-    if (fromUser) id += ".from.user";
-    String localizedText = localizationService.getText(userContext.getLocale(), id);
+    String localizationKey;
+    if (fromUser) {
+      if (this instanceof MessageBodySingleSelect) {
+        localizationKey = ((MessageBodySingleSelect) this).getSelectedItem().value + ID_FROM_USER_POST_FIX;
+      } else {
+        localizationKey = id + ID_FROM_USER_POST_FIX;
+      }
+    } else {
+      localizationKey = id;
+    }
+    String localizedText = localizationService.getText(userContext.getLocale(), localizationKey);
     this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
   }
 }

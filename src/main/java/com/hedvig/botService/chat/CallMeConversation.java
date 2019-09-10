@@ -71,7 +71,7 @@ public class CallMeConversation extends Conversation {
   public void handleMessage(UserContext userContext, Message m) {
     String nxtMsg = "";
 
-    switch (m.getBaseMessageId()) {
+    switch (m.getStrippedBaseMessageId()) {
       case CALLME_PHONE_CHANGE:
       case CALLME_CHAT_START_WITHOUT_PHONE: {
         String trimmedText = m.body.text.trim();

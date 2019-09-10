@@ -121,7 +121,7 @@ public class MemberChat {
         || m.id.equals(FREE_CHAT_FROM_BO);
 
       if (!(m.header.fromId == MessageHeader.HEDVIG_USER_ID)) {
-        if (!backOfficeReplied && !m.getBaseMessageId().equals(MESSAGE_FORSLAG2)) {
+        if (!backOfficeReplied && !m.getStrippedBaseMessageId().equals(MESSAGE_FORSLAG2)) {
           m.header.editAllowed = true;
         }
         break;
