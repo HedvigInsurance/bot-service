@@ -407,10 +407,13 @@ constructor(
                 if (body.selectedItem.value == "message.bankid.autostart.respond.2") {
                     obd.bankIdMessage = "message.bankid.start"
                     uc.putUserData(LOGIN, "true")
+                    body.selectedItem.value
                 } else if (body.selectedItem.value == MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER) {
                     uc.putUserData(LOGIN, "false")
+                    MESSAGE_ONBOARDINGSTART_ASK_EMAIL
+                } else {
+                    body.selectedItem.value
                 }
-                body.selectedItem.value
             })
         setupBankidErrorHandlers("message.bankid.start")
 
@@ -463,12 +466,16 @@ constructor(
                     "message.bankid.autostart.respond.2" -> {
                         uc.onBoardingData.bankIdMessage = "message.bankid.start"
                         uc.putUserData(LOGIN, "true")
+                        body.selectedItem.value
                     }
                     MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER -> {
                         uc.putUserData(LOGIN, "false")
+                        MESSAGE_ONBOARDINGSTART_ASK_EMAIL
+                    }
+                    else -> {
+                        body.selectedItem.value
                     }
                 }
-                body.selectedItem.value
             })
         setupBankidErrorHandlers(MESSAGE_LOGIN_FAILED_WITH_EMAIL)
 
@@ -492,15 +499,20 @@ constructor(
                     "message.bankid.autostart.respond.2" -> {
                         uc.onBoardingData.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL
                         uc.putUserData(LOGIN, "true")
+                        body.selectedItem.value
                     }
                     MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER -> {
                         uc.putUserData(LOGIN, "false")
+                        MESSAGE_ONBOARDINGSTART_ASK_EMAIL
                     }
                     MESSAGE_LOGIN_ASK_EMAIL -> {
                         uc.putUserData(LOGIN, "true")
+                        body.selectedItem.value
+                    }
+                    else -> {
+                        body.selectedItem.value
                     }
                 }
-                body.selectedItem.value
             })
         setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL)
 
@@ -546,15 +558,20 @@ constructor(
                     "message.bankid.autostart.respond.2" -> {
                         obd.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
                         uc.putUserData(LOGIN, "true")
+                        body.selectedItem.value
                     }
                     MESSAGE_ONBOARDINGSTART_ASK_EMAIL_NOT_MEMBER -> {
                         uc.putUserData(LOGIN, "false")
+                        MESSAGE_ONBOARDINGSTART_ASK_EMAIL
                     }
                     MESSAGE_LOGIN_ASK_EMAIL -> {
                         uc.putUserData(LOGIN, "true")
+                        body.selectedItem.value
+                    }
+                    else -> {
+                        body.selectedItem.value
                     }
                 }
-                body.selectedItem.value
             })
         setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN)
 
