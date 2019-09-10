@@ -223,6 +223,8 @@ constructor(
                 body.text = "${trimmedSSN.dropLast(4)}-****"
                 addToChat(m, uc)
 
+                memberService.updateSSN(uc.memberId, trimmedSSN)
+
                 uc.onBoardingData.apply {
                     ssn = trimmedSSN
                     birthDate = LocalDate.parse(
@@ -232,6 +234,7 @@ constructor(
                         )}-${trimmedSSN.substring(6, 8)}"
                     )
                 }
+
                 val response = memberService.lookupAddressSWE(trimmedSSN, uc.memberId)
 
                 if (response != null) {
@@ -266,7 +269,6 @@ constructor(
                     , TextContentType.FAMILY_NAME, KeyboardType.DEFAULT
                 )
             ) { b, uc, m ->
-                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 val familyName = b.text.trim().capitalizeAll()
                 val firstName = uc.onBoardingData.firstName
                 if (firstName != null) {
@@ -312,7 +314,6 @@ constructor(
                 )
 
             ) { b, uc, m ->
-                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 if(phoneNumberIsCorrectSwedishFormat(b, uc, m)) {
                     "message.hedvig.ska.ringa.dig"
                 } else {
@@ -592,7 +593,6 @@ constructor(
                     SelectOption("Nix", MESSAGE_VARBORDUFELADRESS)
                 )
             ) { body, uc, m ->
-                memberService.updateSSN(uc.memberId, uc.onBoardingData.ssn)
                 val item = body.selectedItem
                 body.text = if (item.value == MESSAGE_KVADRAT) "Yes, stämmer bra!" else "Nix"
                 addToChat(m, uc)
