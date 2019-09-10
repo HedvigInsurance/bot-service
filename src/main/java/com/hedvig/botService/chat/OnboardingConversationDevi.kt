@@ -1876,7 +1876,7 @@ constructor(
         when {
             userContext.onBoardingData.userHasSigned!! -> {
                 userContext.completeConversation(this)
-                val mc = conversationFactory.createConversation(MainConversation::class.java)
+                val mc = conversationFactory.createConversation(MainConversation::class.java, userContext.locale)
                 userContext.startConversation(mc, MESSAGE_HEDVIG_COM_POST_LOGIN)
             }
             userContext.getDataEntry(LOGIN) != null -> {
@@ -1891,7 +1891,7 @@ constructor(
         when {
             uc.onBoardingData.userHasSigned ?: false -> {
                 uc.completeConversation(this)
-                val mc = conversationFactory.createConversation(MainConversation::class.java)
+                val mc = conversationFactory.createConversation(MainConversation::class.java, uc.locale)
                 uc.startConversation(mc)
             }
         }

@@ -131,7 +131,7 @@ constructor(
                     addToChat(m, userContext)
                     userContext.completeConversation(this) // TODO: End conversation in better way
                     userContext.startConversation(
-                        conversationFactory.createConversation(TrustlyConversation::class.java)
+                        conversationFactory.createConversation(TrustlyConversation::class.java, userContext.locale)
                     )
                     userContext.putUserData(UserContext.FORCE_TRUSTLY_CHOICE, "false")
                     return
@@ -176,7 +176,7 @@ constructor(
     }
 
     private fun startFreeTextChatConversation(uc: UserContext) {
-        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java)
+        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, uc.locale)
         uc.startConversation(conversation, FREE_CHAT_FROM_CLAIM)
     }
 
@@ -199,7 +199,7 @@ constructor(
                 log.info("conversation complete")
                 userContext.completeConversation(this)
                 userContext.startConversation(
-                    conversationFactory.createConversation(ClaimsConversation::class.java)
+                    conversationFactory.createConversation(ClaimsConversation::class.java, userContext.locale)
                 )
 
                 return

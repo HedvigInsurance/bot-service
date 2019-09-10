@@ -76,7 +76,7 @@ public class ConversationFactoryTest {
           "Test",
           phoneNumberUtil);
 
-    Conversation conversation = factory.createConversation(conversationClass);
+    Conversation conversation = factory.createConversation(conversationClass, null);
 
     assertThat(conversation).isNotNull();
     assertThat(conversation).isInstanceOf(conversationClass);

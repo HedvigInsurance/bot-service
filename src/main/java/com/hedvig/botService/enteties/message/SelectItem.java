@@ -22,7 +22,7 @@ import lombok.ToString;
 public class SelectItem implements Serializable {
 
   static final long serialVersionUID = 1L;
-  private static final String SELECT_POST_FIX = ".select";
+  public static final String SELECT_POST_FIX = ".select";
 
   public boolean selected;
   public String text;

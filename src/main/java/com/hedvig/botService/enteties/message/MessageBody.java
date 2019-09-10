@@ -2,6 +2,7 @@ package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.hedvig.botService.Utils.MessageUtil;
 import com.hedvig.botService.enteties.UserContext;
 
 import javax.persistence.Column;
@@ -15,12 +16,6 @@ import javax.persistence.InheritanceType;
 
 import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
-import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -72,11 +67,12 @@ public class MessageBody {
       if (this instanceof MessageBodySingleSelect) {
         localizationKey = ((MessageBodySingleSelect) this).getSelectedItem().value + ID_FROM_USER_POST_FIX;
       } else {
-        localizationKey = id + ID_FROM_USER_POST_FIX;
+        localizationKey = MessageUtil.INSTANCE.getBaseMessageId(id) + ID_FROM_USER_POST_FIX;
       }
     } else {
-      localizationKey = id;
+      localizationKey = MessageUtil.INSTANCE.getBaseMessageId(id);
     }
+
     String localizedText = localizationService.getText(userContext.getLocale(), localizationKey);
     this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
   }

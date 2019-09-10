@@ -31,6 +31,8 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
   private val messageList = TreeMap<String, Message>()
   private val relayList = TreeMap<String, String>()
 
+  var userLocale: Locale? = null
+
   enum class conversationStatus {
     INITIATED,
     ONGOING,
@@ -249,7 +251,8 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
  * Splits the message text into separate messages based on \f and adds 'Hedvig is thinking' messages in between
  * */
   fun createChatMessage(id: String, body: MessageBody, avatar: String?) {
-    val paragraphs = body.text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    val text = localizationService.getText(userLocale, id) ?: body.text
+    val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
     val delayFactor = 25 // Milliseconds per character TODO: Externalize this!
 

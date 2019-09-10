@@ -5,7 +5,7 @@ package com.hedvig.botService.enteties.message;
  * */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hedvig.botService.chat.Conversation;
+import com.hedvig.botService.Utils.MessageUtil;
 import com.hedvig.botService.dataTypes.HedvigDataType;
 import com.hedvig.botService.enteties.MemberChat;
 import com.hedvig.botService.enteties.UserContext;
@@ -67,20 +67,13 @@ public class Message {
   /** @return Message id without trailing numbers and not valid post fix" */
   public String getStrippedBaseMessageId() {
     String strippedId = id.replace(NOT_VALID_POST_FIX, "");
-    return getBaseMessageId(strippedId);
+    return MessageUtil.INSTANCE.getBaseMessageId(strippedId);
   }
 
   /** @return Message id without trailing numbers" */
   @JsonIgnore
   public String getBaseMessageId() {
-    return getBaseMessageId(id);
-  }
-
-  private String getBaseMessageId(String id){
-    if (id.matches("^.+?\\d$")) {
-      return id.substring(0, id.lastIndexOf("."));
-    }
-    return id;
+    return MessageUtil.INSTANCE.getBaseMessageId(id);
   }
 
   public Integer getGlobalId() {

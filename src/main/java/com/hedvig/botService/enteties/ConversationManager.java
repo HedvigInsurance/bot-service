@@ -143,7 +143,7 @@ public class ConversationManager {
 
       try {
         final Class<?> conversationClass = Class.forName(c.getClassName());
-        final Conversation conversation = conversationFactory.createConversation(conversationClass);
+        final Conversation conversation = conversationFactory.createConversation(conversationClass, userContext.getLocale());
         conversation.receiveEvent(type, value, userContext);
 
       } catch (ClassNotFoundException e) {
@@ -163,7 +163,7 @@ public class ConversationManager {
 
       try {
         final Class<?> conversationClass = Class.forName(c.getClassName());
-        final Conversation conversation = conversationFactory.createConversation(conversationClass);
+        final Conversation conversation = conversationFactory.createConversation(conversationClass, userContext.getLocale());
         conversation.receiveMessage(userContext, m);
 
       } catch (ClassNotFoundException e) {

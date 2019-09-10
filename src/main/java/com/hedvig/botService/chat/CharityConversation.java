@@ -151,7 +151,7 @@ public class CharityConversation extends Conversation {
               nxtMsg = MESSAGE_KONTRAKT_CHARITY_TACK;
               addToChat(nxtMsg, userContext);
               userContext.startConversation(
-                  conversationFactory.createConversation(MemberSourceConversation.class));
+                  conversationFactory.createConversation(MemberSourceConversation.class, userContext.getLocale()));
             return;
           }
 

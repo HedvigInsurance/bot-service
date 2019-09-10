@@ -263,7 +263,7 @@ public class ClaimsConversation extends Conversation {
     }
 
     userContext.completeConversation(this);
-    userContext.startConversation(conversationFactory.createConversation(MainConversation.class));
+    userContext.startConversation(conversationFactory.createConversation(MainConversation.class, userContext.getLocale()));
     return null;
   }
 
@@ -315,7 +315,7 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void completeConversation(UserContext uc) {
-    val conversation = conversationFactory.createConversation(MainConversation.class);
+    val conversation = conversationFactory.createConversation(MainConversation.class, uc.getLocale());
     uc.startConversation(conversation, MESSAGE_COMPLETE_CLAIM);
   }
 }
