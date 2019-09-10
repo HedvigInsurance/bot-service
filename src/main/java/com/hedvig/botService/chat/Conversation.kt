@@ -173,6 +173,9 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
       if (mCorr.expectedType != null) {
         ok = mCorr.expectedType.validate(m.body.text)
         if (!ok) {
+          m.id = mCorr.expectedType.errorMessageId + ".input.not.valid"
+
+          mCorr.id = mCorr.expectedType.errorMessageId + ".response.not.valid"
           val localizedErrorMessage =
             localizationService.getText(userContext.locale, mCorr.expectedType.errorMessageId)
               ?: mCorr.expectedType.getErrorMessage()
