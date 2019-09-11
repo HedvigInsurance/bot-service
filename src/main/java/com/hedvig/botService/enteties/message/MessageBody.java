@@ -65,6 +65,10 @@ public class MessageBody {
   MessageBody() {}
 
   public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
+    if (text.isEmpty()) {
+      return;
+    }
+
     String localizationKey;
     if (fromUser) {
       if (this instanceof MessageBodySingleSelect) {
@@ -78,8 +82,10 @@ public class MessageBody {
 
     String localizedText = localizationService.getText(userContext.getLocale(), localizationKey);
 
-    Integer index = ConversationUtils.INSTANCE.getSplitIndexFromText(id);
-    localizedText = ConversationUtils.INSTANCE.getSplitFromIndex(localizedText, index);
+    if (localizedText != null) {
+      Integer index = ConversationUtils.INSTANCE.getSplitIndexFromText(id);
+      localizedText = ConversationUtils.INSTANCE.getSplitFromIndex(localizedText, index);
+    }
 
     this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
   }
