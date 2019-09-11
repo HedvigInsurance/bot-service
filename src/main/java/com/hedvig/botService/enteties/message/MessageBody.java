@@ -20,6 +20,8 @@ import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
 import lombok.val;
 
+import static com.hedvig.botService.enteties.message.SelectItem.SELECT_POST_FIX;
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "body_type")
@@ -72,7 +74,7 @@ public class MessageBody {
     String localizationKey;
     if (fromUser) {
       if (this instanceof MessageBodySingleSelect) {
-        localizationKey = ((MessageBodySingleSelect) this).getSelectedItem().value + ID_FROM_USER_POST_FIX;
+        localizationKey = ((MessageBodySingleSelect) this).getSelectedItem().value + SELECT_POST_FIX + ID_FROM_USER_POST_FIX;
       } else {
         localizationKey = MessageUtil.INSTANCE.getBaseMessageId(id) + ID_FROM_USER_POST_FIX;
       }
