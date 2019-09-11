@@ -2,7 +2,9 @@ package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.hedvig.botService.Utils.ConversationUtils;
 import com.hedvig.botService.Utils.MessageUtil;
+import com.hedvig.botService.chat.Conversation;
 import com.hedvig.botService.enteties.UserContext;
 
 import javax.persistence.Column;
@@ -16,6 +18,7 @@ import javax.persistence.InheritanceType;
 
 import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
+import lombok.val;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -74,6 +77,10 @@ public class MessageBody {
     }
 
     String localizedText = localizationService.getText(userContext.getLocale(), localizationKey);
+
+    Integer index = ConversationUtils.INSTANCE.getSplitIndexFromText(id);
+    localizedText = ConversationUtils.INSTANCE.getSplitFromIndex(localizedText, index);
+
     this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
   }
 }

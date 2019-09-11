@@ -2,13 +2,14 @@ package com.hedvig.botService.Utils
 
 object ConversationUtils {
 
-    fun getSplitFromIndex(text: String, index: Int?): String {
-        val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    fun getSplitFromIndex(text: String?, index: Int?): String? {
+        val paragraphs = text?.split("\u000C".toRegex())?.dropLastWhile { it.isEmpty() }?.toTypedArray()
+        val numberOFParagaphs = paragraphs?.size ?: 0
 
         return when {
-            paragraphs.size <= 1 -> text
+            numberOFParagaphs <= 1 -> text
             index == null -> ""
-            index % 2 == 0 -> paragraphs[index/2]
+            index % 2 == 0 -> paragraphs?.get(index/2)
             index % 2 == 1 -> ""
             else -> text
         }
