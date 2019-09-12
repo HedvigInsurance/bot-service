@@ -274,7 +274,7 @@ constructor(
                 if (response?.address != null) {
                     MESSAGE_BANKIDJA
                 } else {
-                    "message.lagenhet.addressnotfound"
+                    MESSAGE_LAGENHET_ADDRESSNOTFOUND
                 }
             }
         )
@@ -282,7 +282,7 @@ constructor(
 
 
         this.createChatMessage(
-            "message.lagenhet.addressnotfound",
+            MESSAGE_LAGENHET_ADDRESSNOTFOUND,
             WrappedMessage(
                 MessageBodyText(
                     "Konstigt, just nu kan jag inte hitta din adress. Så jag behöver ställa några extra frågor 😊\u000C"
@@ -373,7 +373,7 @@ constructor(
                     listOf(
                         SelectLink(
                             "Fortsätt med BankID",
-                            "message.bankid.autostart.respond.1", null,
+                            "message.bankid.autostart.respond.one", null,
                             "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
                             false
                         ),
@@ -383,7 +383,7 @@ constructor(
             )
             { m, uc, _ ->
                 val obd = uc.onBoardingData
-                if (m.selectedItem.value == "message.bankid.autostart.respond.1") {
+                if (m.selectedItem.value == "message.bankid.autostart.respond.one") {
                     obd.bankIdMessage = MESSAGE_LAGENHET
                 }
                 m.selectedItem.value
@@ -412,7 +412,7 @@ constructor(
                     "Bara att logga in så ser du din försäkring",
                     SelectLink(
                         "Logga in med BankID",
-                        "message.bankid.autostart.respond.2", null,
+                        "message.bankid.autostart.respond.two", null,
                         "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
                         false
                     ),
@@ -422,7 +422,7 @@ constructor(
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
                 val obd = uc.onBoardingData
-                if (body.selectedItem.value == "message.bankid.autostart.respond.2") {
+                if (body.selectedItem.value == "message.bankid.autostart.respond.two") {
                     obd.bankIdMessage = "message.bankid.start"
                     uc.putUserData(LOGIN, "true")
                     body.selectedItem.value
@@ -458,10 +458,10 @@ constructor(
             "message.bankid.autostart.respond", MessageBodyBankIdCollect("{REFERENCE_TOKEN}")
         )
         this.createMessage(
-            "message.bankid.autostart.respond.1", MessageBodyBankIdCollect("{REFERENCE_TOKEN}")
+            "message.bankid.autostart.respond.one", MessageBodyBankIdCollect("{REFERENCE_TOKEN}")
         )
         this.createMessage(
-            "message.bankid.autostart.respond.2", MessageBodyBankIdCollect("{REFERENCE_TOKEN}")
+            "message.bankid.autostart.respond.two", MessageBodyBankIdCollect("{REFERENCE_TOKEN}")
         )
 
         this.createChatMessage(
@@ -471,7 +471,7 @@ constructor(
                     "Ojdå, det ser ut som att du måste logga in med BankID!",
                     SelectLink(
                         "Logga in med BankID",
-                        "message.bankid.autostart.respond.2", null,
+                        "message.bankid.autostart.respond.two", null,
                         "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
                         false
                     ),
@@ -481,7 +481,7 @@ constructor(
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
                 when (body.selectedItem.value) {
-                    "message.bankid.autostart.respond.2" -> {
+                    "message.bankid.autostart.respond.two" -> {
                         uc.onBoardingData.bankIdMessage = "message.bankid.start"
                         uc.putUserData(LOGIN, "true")
                         body.selectedItem.value
@@ -503,7 +503,7 @@ constructor(
                     "Bara att logga in så ser du din försäkring",
                     SelectLink(
                         "Logga in med BankID",
-                        "message.bankid.autostart.respond.2", null,
+                        "message.bankid.autostart.respond.two", null,
                         "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
                         false
                     ),
@@ -514,7 +514,7 @@ constructor(
                 body.text = body.selectedItem.text
                 addToChat(message, uc)
                 when (body.selectedItem.value) {
-                    "message.bankid.autostart.respond.2" -> {
+                    "message.bankid.autostart.respond.two" -> {
                         uc.onBoardingData.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL
                         uc.putUserData(LOGIN, "true")
                         body.selectedItem.value
@@ -561,7 +561,7 @@ constructor(
                     "Om du är medlem hos Hedvig med denna email måste du logga in med BankID!",
                     SelectLink(
                         "Logga in med BankID",
-                        "message.bankid.autostart.respond.2", null,
+                        "message.bankid.autostart.respond.two", null,
                         "bankid:///?autostarttoken={AUTOSTART_TOKEN}&redirect={LINK_URI}", null,
                         false
                     ),
@@ -573,7 +573,7 @@ constructor(
                 addToChat(message, uc)
                 val obd = uc.onBoardingData
                 when (body.selectedItem.value) {
-                    "message.bankid.autostart.respond.2" -> {
+                    "message.bankid.autostart.respond.two" -> {
                         obd.bankIdMessage = MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN
                         uc.putUserData(LOGIN, "true")
                         body.selectedItem.value
