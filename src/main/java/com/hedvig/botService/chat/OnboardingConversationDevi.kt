@@ -2045,6 +2045,8 @@ constructor(
         const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
         const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
 
+        const val MESSAGE_LAGENHET_ADDRESSNOTFOUND = "message.lagenhet.addressnotfound"
+
         @JvmField
         val IN_OFFER = "{IN_OFFER}"
         @JvmField
