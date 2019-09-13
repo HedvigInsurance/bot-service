@@ -3,6 +3,7 @@ package com.hedvig.botService.chat
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hedvig.botService.Utils.ConversationUtils
+import com.hedvig.botService.Utils.MessageUtil
 import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
@@ -171,7 +172,7 @@ abstract class Conversation(
   // If the message has a preferred return type it is validated otherwise not
   fun validateReturnType(m: Message, userContext: UserContext): Boolean {
 
-    val mCorr = getMessage(m.strippedBaseMessageId)
+    val mCorr = getMessage(MessageUtil.removeNotValidFromId(m.id))
 
     if (mCorr != null) {
       var ok = true

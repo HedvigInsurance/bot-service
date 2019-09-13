@@ -27,8 +27,6 @@ import com.hedvig.botService.services.LocalizationService;
 import lombok.Data;
 import lombok.ToString;
 
-import static com.hedvig.botService.chat.Conversation.NOT_VALID_POST_FIX;
-
 @Entity
 @ToString(exclude = "chat")
 @Data
@@ -66,7 +64,7 @@ public class Message {
 
   /** @return Message id without trailing numbers and not valid post fix" */
   public String getStrippedBaseMessageId() {
-    String strippedId = id.replace(NOT_VALID_POST_FIX, "");
+    String strippedId = MessageUtil.INSTANCE.removeNotValidFromId(id);
     return MessageUtil.INSTANCE.getBaseMessageId(strippedId);
   }
 
