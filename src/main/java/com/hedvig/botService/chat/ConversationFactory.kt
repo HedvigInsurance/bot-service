@@ -1,10 +1,8 @@
 package com.hedvig.botService.chat
 
-import java.util.*
-
 
 interface ConversationFactory {
-    fun createConversation(conversationClass: Class<*>, userLocale: Locale?): Conversation
+    fun createConversation(conversationClass: Class<*>, userLanguage: String?): Conversation
 
-    fun createConversation(conversationClassName: String, userLocale: Locale?): Conversation
+    fun createConversation(conversationClassName: String, userLanguage: String?): Conversation
 }

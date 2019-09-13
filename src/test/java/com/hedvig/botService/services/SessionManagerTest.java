@@ -97,7 +97,7 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    when(conversationFactory.createConversation(anyString(), any())).thenReturn(mockConversation);
+    when(conversationFactory.createConversation(anyString(), anyString())).thenReturn(mockConversation);
 
     when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(true);
     when(mockConversation.getSelectItemsForAnswer(tolvanssonUserContext))
@@ -126,7 +126,7 @@ public class SessionManagerTest {
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
     when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(false);
-    when(conversationFactory.createConversation(anyString(), any())).thenReturn(mockConversation);
+    when(conversationFactory.createConversation(anyString(), anyString())).thenReturn(mockConversation);
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE);
 
@@ -176,7 +176,7 @@ public class SessionManagerTest {
   }
 
   private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil) ;
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, null) ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

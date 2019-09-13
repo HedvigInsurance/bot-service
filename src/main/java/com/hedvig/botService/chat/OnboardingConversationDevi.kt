@@ -39,8 +39,10 @@ constructor(
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
     private val appleUserPassword: String,
-    private val phoneNumberUtil: PhoneNumberUtil
-) : Conversation(eventPublisher, localizationService), BankIdChat {
+    private val phoneNumberUtil: PhoneNumberUtil,
+    @Value("\${user.language:sv}")
+    private val userLanguage: String?
+) : Conversation(eventPublisher, localizationService, userLanguage), BankIdChat {
 
     var queuePos: Int? = null
 
@@ -1876,7 +1878,7 @@ constructor(
         when {
             userContext.onBoardingData.userHasSigned!! -> {
                 userContext.completeConversation(this)
-                val mc = conversationFactory.createConversation(MainConversation::class.java, userContext.locale)
+                val mc = conversationFactory.createConversation(MainConversation::class.java, userContext.locale.language)
                 userContext.startConversation(mc, MESSAGE_HEDVIG_COM_POST_LOGIN)
             }
             userContext.getDataEntry(LOGIN) != null -> {
@@ -1891,7 +1893,7 @@ constructor(
         when {
             uc.onBoardingData.userHasSigned ?: false -> {
                 uc.completeConversation(this)
-                val mc = conversationFactory.createConversation(MainConversation::class.java, uc.locale)
+                val mc = conversationFactory.createConversation(MainConversation::class.java, uc.locale.language)
                 uc.startConversation(mc)
             }
         }

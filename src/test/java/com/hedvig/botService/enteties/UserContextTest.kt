@@ -28,7 +28,7 @@ class UserContextTest {
     @Test
     fun getMessages_withIntentOnboarding_callsInitWithCorrectStartMessage() {
 
-        given(conversationFactory!!.createConversation(OnboardingConversationDevi::class.java, TextKeysLocaleResolver.DEFAULT_LOCALE))
+        given(conversationFactory!!.createConversation(OnboardingConversationDevi::class.java, TextKeysLocaleResolver.DEFAULT_LOCALE.language))
             .willReturn(mockConversation)
 
         val uc = UserContext(TOLVANSSON_MEMBER_ID)

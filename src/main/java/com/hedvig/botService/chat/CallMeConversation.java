@@ -12,8 +12,10 @@ import com.hedvig.botService.enteties.message.SelectOption;
 import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class CallMeConversation extends Conversation {
@@ -27,8 +29,8 @@ public class CallMeConversation extends Conversation {
 
   private final ApplicationEventPublisher eventPublisher;
 
-  public CallMeConversation(ApplicationEventPublisher eventPublisher, LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+  public CallMeConversation(ApplicationEventPublisher eventPublisher, LocalizationService localizationService, @Value("${user.language:sv}") String userLanguage) {
+    super(eventPublisher, localizationService, userLanguage);
     this.eventPublisher = eventPublisher;
     createMessage(
       CALLME_CHAT_START,

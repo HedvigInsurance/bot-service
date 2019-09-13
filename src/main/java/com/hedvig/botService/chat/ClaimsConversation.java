@@ -21,11 +21,13 @@ import com.hedvig.botService.services.events.ClaimCallMeEvent;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.hedvig.botService.chat.MainConversation.MESSAGE_COMPLETE_CLAIM;
 
@@ -63,8 +65,9 @@ public class ClaimsConversation extends Conversation {
     ProductPricingService productPricingService,
     ConversationFactory conversationFactory,
     MemberService memberService,
-    LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+    LocalizationService localizationService,
+    @Value("${user.language:sv}") String userLanguage) {
+    super(eventPublisher, localizationService, userLanguage);
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.productPricingService = productPricingService;
@@ -263,7 +266,7 @@ public class ClaimsConversation extends Conversation {
     }
 
     userContext.completeConversation(this);
-    userContext.startConversation(conversationFactory.createConversation(MainConversation.class, userContext.getLocale()));
+    userContext.startConversation(conversationFactory.createConversation(MainConversation.class, userContext.getLocale().getLanguage()));
     return null;
   }
 
@@ -315,7 +318,7 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void completeConversation(UserContext uc) {
-    val conversation = conversationFactory.createConversation(MainConversation.class, uc.getLocale());
+    val conversation = conversationFactory.createConversation(MainConversation.class, uc.getLocale().getLanguage());
     uc.startConversation(conversation, MESSAGE_COMPLETE_CLAIM);
   }
 }

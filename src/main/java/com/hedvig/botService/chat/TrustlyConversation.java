@@ -15,9 +15,11 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class TrustlyConversation extends Conversation {
@@ -30,8 +32,8 @@ public class TrustlyConversation extends Conversation {
   private final TriggerService triggerService;
   private final MemberService memberService;
 
-  public TrustlyConversation(TriggerService triggerService, MemberService memberService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+  public TrustlyConversation(TriggerService triggerService, MemberService memberService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService, @Value("${user.language:sv}") String userLanguage) {
+    super(eventPublisher, localizationService, userLanguage);
     this.triggerService = triggerService;
     this.memberService = memberService;
 

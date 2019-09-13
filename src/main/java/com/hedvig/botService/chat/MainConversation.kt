@@ -20,12 +20,18 @@ import org.springframework.stereotype.Component
 
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_CLAIM
 import com.hedvig.botService.services.LocalizationService
+import org.springframework.beans.factory.annotation.Value
+import java.util.*
 
 @Component
 class MainConversation @Autowired
 constructor(
-    private val conversationFactory: ConversationFactory, eventPublisher: ApplicationEventPublisher, localizationService: LocalizationService
-) : Conversation(eventPublisher, localizationService) {
+    private val conversationFactory: ConversationFactory,
+    eventPublisher: ApplicationEventPublisher,
+    localizationService: LocalizationService,
+    @Value("\${user.language:sv}")
+    private val userLanguage: String?
+) : Conversation(eventPublisher, localizationService, userLanguage) {
 
     init {
 
@@ -131,7 +137,7 @@ constructor(
                     addToChat(m, userContext)
                     userContext.completeConversation(this) // TODO: End conversation in better way
                     userContext.startConversation(
-                        conversationFactory.createConversation(TrustlyConversation::class.java, userContext.locale)
+                        conversationFactory.createConversation(TrustlyConversation::class.java, userContext.locale.language)
                     )
                     userContext.putUserData(UserContext.FORCE_TRUSTLY_CHOICE, "false")
                     return
@@ -176,7 +182,7 @@ constructor(
     }
 
     private fun startFreeTextChatConversation(uc: UserContext) {
-        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, uc.locale)
+        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, uc.locale.language)
         uc.startConversation(conversation, FREE_CHAT_FROM_CLAIM)
     }
 
@@ -199,7 +205,7 @@ constructor(
                 log.info("conversation complete")
                 userContext.completeConversation(this)
                 userContext.startConversation(
-                    conversationFactory.createConversation(ClaimsConversation::class.java, userContext.locale)
+                    conversationFactory.createConversation(ClaimsConversation::class.java, userContext.locale.language)
                 )
 
                 return

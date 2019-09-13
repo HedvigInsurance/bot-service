@@ -39,7 +39,7 @@ public class MainConversationTest {
 
   @Before
   public void setup() {
-    testConversation = new MainConversation(conversationFactory, eventPublisher, localizationService);
+    testConversation = new MainConversation(conversationFactory, eventPublisher, localizationService, null);
 
     uc = new UserContext(TOLVANSSON_MEMBER_ID);
   }

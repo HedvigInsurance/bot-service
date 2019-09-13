@@ -28,11 +28,10 @@ class ConversationFactoryImpl(
 ) : ConversationFactory {
     private val log = LoggerFactory.getLogger(ConversationFactoryImpl::class.java)
 
-    override fun createConversation(conversationClass: Class<*>, userLocale: Locale?): Conversation {
+    override fun createConversation(conversationClass: Class<*>, userLanguage: String?): Conversation {
 
         if (conversationClass == CharityConversation::class.java) {
-            return CharityConversation(this, memberService, productPricingService, eventPublisher, localizationService)
-              .also { it.userLocale = userLocale }
+            return CharityConversation(this, memberService, productPricingService, eventPublisher, localizationService, userLanguage)
         }
 
         if (conversationClass == ClaimsConversation::class.java) {
@@ -42,13 +41,13 @@ class ConversationFactoryImpl(
                 productPricingService,
                 this,
                 memberService,
-                localizationService
-            ).also { it.userLocale = userLocale }
+                localizationService,
+                userLanguage
+            )
         }
 
         if (conversationClass == MainConversation::class.java) {
-            return MainConversation(this, eventPublisher, localizationService)
-              .also { it.userLocale = userLocale }
+            return MainConversation(this, eventPublisher, localizationService, userLanguage)
         }
 
         if (conversationClass == OnboardingConversationDevi::class.java) {
@@ -60,38 +59,35 @@ class ConversationFactoryImpl(
                 localizationService,
                 appleUserEmail,
                 appleUserPwd,
-                phoneNumberUtil
-            ).also { it.userLocale = userLocale }
+                phoneNumberUtil,
+                userLanguage
+            )
             onboardingConversationDevi.queuePos = queuePos
             return onboardingConversationDevi
         }
 
         if (conversationClass == TrustlyConversation::class.java) {
-            return TrustlyConversation(triggerService, memberService, eventPublisher, localizationService)
-              .also { it.userLocale = userLocale }
+            return TrustlyConversation(triggerService, memberService, eventPublisher, localizationService, userLanguage)
         }
 
         if (conversationClass == FreeChatConversation::class.java) {
-            return FreeChatConversation(statusBuilder, eventPublisher, productPricingService, localizationService)
-              .also { it.userLocale = userLocale }
+            return FreeChatConversation(statusBuilder, eventPublisher, productPricingService, localizationService, userLanguage)
         }
 
         if (conversationClass == CallMeConversation::class.java) {
-            return CallMeConversation(eventPublisher, localizationService)
-              .also { it.userLocale = userLocale }
+            return CallMeConversation(eventPublisher, localizationService, userLanguage)
         }
 
         return if (conversationClass == MemberSourceConversation::class.java) {
-            MemberSourceConversation(eventPublisher, localizationService)
-              .also { it.userLocale = userLocale }
+            MemberSourceConversation(eventPublisher, localizationService, userLanguage)
         } else throw RuntimeException("Failed to create conversation")
 
     }
 
-    override fun createConversation(conversationClassName: String, userLocale: Locale?): Conversation {
+    override fun createConversation(conversationClassName: String, userLanguage: String?): Conversation {
         try {
             val concreteClass = Class.forName(conversationClassName)
-            return createConversation(concreteClass, userLocale)
+            return createConversation(concreteClass, userLanguage)
         } catch (ex: ClassNotFoundException) {
             log.error("Could not create conversation for classname: {}", conversationClassName, ex)
         }

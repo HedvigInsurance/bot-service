@@ -8,12 +8,10 @@ import com.hedvig.botService.services.LocalizationService;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class CharityConversation extends Conversation {
 
@@ -45,8 +43,9 @@ public class CharityConversation extends Conversation {
     MemberService memberService,
     ProductPricingService productPricingService,
     ApplicationEventPublisher eventPublisher,
-    LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+    LocalizationService localizationService,
+    @Value("${user.language:sv}") String userLanguage) {
+    super(eventPublisher, localizationService, userLanguage);
     this.conversationFactory = factory;
     this.memberService = memberService;
     this.productPricingService = productPricingService;
@@ -151,7 +150,7 @@ public class CharityConversation extends Conversation {
               nxtMsg = MESSAGE_KONTRAKT_CHARITY_TACK;
               addToChat(nxtMsg, userContext);
               userContext.startConversation(
-                  conversationFactory.createConversation(MemberSourceConversation.class, userContext.getLocale()));
+                  conversationFactory.createConversation(MemberSourceConversation.class, userContext.getLocale().getLanguage()));
             return;
           }
 

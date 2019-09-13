@@ -10,11 +10,13 @@ import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.validation.constraints.NotNull;
 import java.time.Clock;
 import java.util.List;
+import java.util.Locale;
 
 public class FreeChatConversation extends Conversation {
 
@@ -33,8 +35,9 @@ public class FreeChatConversation extends Conversation {
     StatusBuilder statusBuilder,
     ApplicationEventPublisher eventPublisher,
     ProductPricingService productPricingService,
-    LocalizationService localizationService) {
-    super(eventPublisher, localizationService);
+    LocalizationService localizationService,
+    @Value("${user.language:sv}") String userLanguage) {
+    super(eventPublisher, localizationService, userLanguage);
     this.statusBuilder = statusBuilder;
     this.eventPublisher = eventPublisher;
     this.productPricingService = productPricingService;

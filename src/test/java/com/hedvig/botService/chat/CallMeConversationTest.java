@@ -32,7 +32,7 @@ public class CallMeConversationTest {
 
   @Before
   public void SetUp() {
-    testCallMeConversation = new CallMeConversation(eventPublisher, localizationService);
+    testCallMeConversation = new CallMeConversation(eventPublisher, localizationService, null);
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
   }
 

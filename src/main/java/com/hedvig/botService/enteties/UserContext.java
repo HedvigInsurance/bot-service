@@ -304,7 +304,7 @@ public class UserContext implements Serializable {
     putUserData("{WEB_USER}", "FALSE");
 
     Conversation onboardingConversation =
-        conversationFactory.createConversation(OnboardingConversationDevi.class, this.getLocale());
+        conversationFactory.createConversation(OnboardingConversationDevi.class, this.getLocale().getLanguage());
     startConversation(onboardingConversation, startMsg);
   }
 

@@ -3,10 +3,17 @@ package com.hedvig.botService.chat
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.LocalizationService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
+import java.util.*
 
 
-class MemberSourceConversation(eventPublisher: ApplicationEventPublisher, localizationService: LocalizationService) : Conversation(eventPublisher, localizationService) {
+class MemberSourceConversation(
+    eventPublisher: ApplicationEventPublisher,
+    localizationService: LocalizationService,
+    @Value("\${user.language:sv}")
+    private val userLanguage: String?
+) : Conversation(eventPublisher, localizationService, userLanguage) {
     override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
         return listOf()
     }

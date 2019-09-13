@@ -2,14 +2,17 @@ package com.hedvig.botService.chat
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.hedvig.botService.Utils.ConversationUtils
 import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.LocalizationService
+import com.hedvig.botService.services.TextKeysLocaleResolver
 import com.hedvig.botService.services.events.MessageSentEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.jwt.JwtHelper
 import org.springframework.stereotype.Component
 import java.io.IOException
@@ -22,7 +25,12 @@ typealias GenericMessageCallback = (Message, UserContext) -> String
 typealias AddMessageCallback = (UserContext) -> Unit
 
 @Component
-abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val localizationService: LocalizationService) {
+abstract class Conversation(
+  var eventPublisher: ApplicationEventPublisher,
+  val localizationService: LocalizationService,
+  @Value("\${user.language:sv}")
+  private val userLanguage: String?
+) {
 
   private val callbacks = TreeMap<String, SelectItemMessageCallback>()
   val genericCallbacks = TreeMap<String, GenericMessageCallback>()
@@ -31,7 +39,9 @@ abstract class Conversation(var eventPublisher: ApplicationEventPublisher, val l
   private val messageList = TreeMap<String, Message>()
   private val relayList = TreeMap<String, String>()
 
-  var userLocale: Locale? = null
+  private val userLocale: Locale? = userLanguage?.let {
+    Locale(it)
+  }
 
   enum class conversationStatus {
     INITIATED,

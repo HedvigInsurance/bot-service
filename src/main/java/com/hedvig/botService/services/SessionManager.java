@@ -142,7 +142,7 @@ public class SessionManager {
     return service.collect(
       hid,
       referenceToken,
-      (BankIdChat) conversationFactory.createConversation(OnboardingConversationDevi.class, locale));
+      (BankIdChat) conversationFactory.createConversation(OnboardingConversationDevi.class, locale.getLanguage()));
   }
 
   public boolean emailSign(String memberId){
@@ -158,7 +158,7 @@ public class SessionManager {
           .findByMemberId(APPLE_USER_MEMBER_ID)
           .orElseThrow(() -> new ResourceNotFoundException("Could not fina userContext."));
 
-     OnboardingConversationDevi conversationDevi = (OnboardingConversationDevi) conversationFactory.createConversation(OnboardingConversationDevi.class, uc.getLocale());
+     OnboardingConversationDevi conversationDevi = (OnboardingConversationDevi) conversationFactory.createConversation(OnboardingConversationDevi.class, uc.getLocale().getLanguage());
 
      conversationDevi.emailLoginComplete(newUc);
 
@@ -250,10 +250,10 @@ public class SessionManager {
   private Conversation getActiveConversationOrStart(
     UserContext uc, Class<MainConversation> conversationToStart) {
     return uc.getActiveConversation()
-      .map(x -> conversationFactory.createConversation(x.getClassName(), uc.getLocale()))
+      .map(x -> conversationFactory.createConversation(x.getClassName(), uc.getLocale().getLanguage()))
       .orElseGet(
         () -> {
-          val newConversation = conversationFactory.createConversation(conversationToStart, uc.getLocale());
+          val newConversation = conversationFactory.createConversation(conversationToStart, uc.getLocale().getLanguage());
           uc.startConversation(newConversation);
           return newConversation;
         });
@@ -282,7 +282,7 @@ public class SessionManager {
       uc.getOnBoardingData().setEmail(email);
 
       Conversation onboardingConversation =
-        conversationFactory.createConversation(OnboardingConversationDevi.class, uc.getLocale());
+        conversationFactory.createConversation(OnboardingConversationDevi.class, uc.getLocale().getLanguage());
       if (Objects.equals("true", uc.getDataEntry(LOGIN))) {
         uc.startConversation(onboardingConversation, MESSAGE_START_LOGIN);
       } else {
@@ -322,7 +322,7 @@ public class SessionManager {
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
 
-    Conversation mainConversation = conversationFactory.createConversation(MainConversation.class, uc.getLocale());
+    Conversation mainConversation = conversationFactory.createConversation(MainConversation.class, uc.getLocale().getLanguage());
     uc.startConversation(mainConversation);
 
     userContextRepository.saveAndFlush(uc);
@@ -336,7 +336,7 @@ public class SessionManager {
           () -> new ResourceNotFoundException("Could not find usercontext for user: " + hid));
 
     TrustlyConversation tr =
-      (TrustlyConversation) conversationFactory.createConversation(TrustlyConversation.class, uc.getLocale());
+      (TrustlyConversation) conversationFactory.createConversation(TrustlyConversation.class, uc.getLocale().getLanguage());
     tr.windowClosed(uc);
 
     userContextRepository.save(uc);
