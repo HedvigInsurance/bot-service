@@ -127,7 +127,7 @@ constructor(
             return
         }
 
-        when (m.id) {
+        when (m.strippedBaseMessageId) {
             MESSAGE_COMPLETE_CLAIM, MESSAGE_HEDVIG_COM -> {
                 val item = (m.body as MessageBodySingleSelect).selectedItem
                 m.body.text = item.text

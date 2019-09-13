@@ -77,7 +77,7 @@ public class FreeChatConversation extends Conversation {
   @Override
   public void handleMessage(UserContext userContext, Message m) {
     String nxtMsg = "";
-    switch (m.id) {
+    switch (m.getStrippedBaseMessageId()) {
       case FREE_CHAT_START:
       case FREE_CHAT_ONBOARDING_START:
       case FREE_CHAT_FROM_BO:

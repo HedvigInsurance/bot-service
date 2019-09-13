@@ -171,7 +171,7 @@ abstract class Conversation(
   // If the message has a preferred return type it is validated otherwise not
   fun validateReturnType(m: Message, userContext: UserContext): Boolean {
 
-    val mCorr = getMessage(m.id)
+    val mCorr = getMessage(m.strippedBaseMessageId)
 
     if (mCorr != null) {
       var ok = true
