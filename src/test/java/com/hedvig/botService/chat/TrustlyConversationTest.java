@@ -49,7 +49,7 @@ public class TrustlyConversationTest {
   @Before
   public void setup() {
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
-    testConversation = new TrustlyConversation(triggerService, memberService, applicationEventPublisher, localizationService, null);
+    testConversation = new TrustlyConversation(triggerService, memberService, applicationEventPublisher, localizationService, userContext);
   }
 
   public void addTolvansonToUserContext() {

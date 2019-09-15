@@ -51,10 +51,10 @@ public class ClaimsConversationTest {
   @Before
   public void setUp() {
 
+    userContext = new UserContext(TOLVANSSON_MEMBER_ID);
     testConversation =
         new ClaimsConversation(
-            eventPublisher, claimsService, productPricingService, conversationFactory, memberService, localizationService, null);
-    userContext = new UserContext(TOLVANSSON_MEMBER_ID);
+            eventPublisher, claimsService, productPricingService, conversationFactory, memberService, localizationService, userContext);
   }
 
   @Test

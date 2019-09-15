@@ -23,15 +23,13 @@ import com.hedvig.botService.services.LocalizationService
 import org.springframework.beans.factory.annotation.Value
 import java.util.*
 
-@Component
 class MainConversation @Autowired
 constructor(
     private val conversationFactory: ConversationFactory,
     eventPublisher: ApplicationEventPublisher,
     localizationService: LocalizationService,
-    @Value("\${user.language:sv}")
-    private val userLanguage: String?
-) : Conversation(eventPublisher, localizationService, userLanguage) {
+    userContext: UserContext
+) : Conversation(eventPublisher, localizationService, userContext) {
 
     init {
 
@@ -137,7 +135,7 @@ constructor(
                     addToChat(m, userContext)
                     userContext.completeConversation(this) // TODO: End conversation in better way
                     userContext.startConversation(
-                        conversationFactory.createConversation(TrustlyConversation::class.java, userContext.locale.language)
+                        conversationFactory.createConversation(TrustlyConversation::class.java, userContext)
                     )
                     userContext.putUserData(UserContext.FORCE_TRUSTLY_CHOICE, "false")
                     return
@@ -182,7 +180,7 @@ constructor(
     }
 
     private fun startFreeTextChatConversation(uc: UserContext) {
-        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, uc.locale.language)
+        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, uc)
         uc.startConversation(conversation, FREE_CHAT_FROM_CLAIM)
     }
 
@@ -205,7 +203,7 @@ constructor(
                 log.info("conversation complete")
                 userContext.completeConversation(this)
                 userContext.startConversation(
-                    conversationFactory.createConversation(ClaimsConversation::class.java, userContext.locale.language)
+                    conversationFactory.createConversation(ClaimsConversation::class.java, userContext)
                 )
 
                 return

@@ -248,7 +248,7 @@ class ConversationTest {
 
 
   fun makeConversation(constructor: Conversation.(Unit) -> Unit): Conversation {
-    return object : Conversation(eventPublisher!!, localizationService!!, null) {
+    return object : Conversation(eventPublisher!!, localizationService!!, uc) {
       override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
         return listOf()
       }

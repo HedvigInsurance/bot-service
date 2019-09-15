@@ -25,12 +25,11 @@ typealias SelectItemMessageCallback = (MessageBodySingleSelect, UserContext) -> 
 typealias GenericMessageCallback = (Message, UserContext) -> String
 typealias AddMessageCallback = (UserContext) -> Unit
 
-@Component
 abstract class Conversation(
-  var eventPublisher: ApplicationEventPublisher,
+  open var eventPublisher: ApplicationEventPublisher,
   val localizationService: LocalizationService,
   @Value("\${user.language:sv}")
-  private val userLanguage: String?
+  private val userContext: UserContext
 ) {
 
   private val callbacks = TreeMap<String, SelectItemMessageCallback>()
@@ -39,10 +38,6 @@ abstract class Conversation(
 
   private val messageList = TreeMap<String, Message>()
   private val relayList = TreeMap<String, String>()
-
-  private val userLocale: Locale? = userLanguage?.let {
-    Locale(it)
-  }
 
   enum class conversationStatus {
     INITIATED,
@@ -262,7 +257,7 @@ abstract class Conversation(
  * Splits the message text into separate messages based on \f and adds 'Hedvig is thinking' messages in between
  * */
   fun createChatMessage(id: String, body: MessageBody, avatar: String?) {
-    val text = localizationService.getText(userLocale, id) ?: body.text
+    val text = localizationService.getText(userContext.locale, id) ?: body.text
     val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
     val delayFactor = 25 // Milliseconds per character TODO: Externalize this!

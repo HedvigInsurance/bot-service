@@ -44,8 +44,8 @@ public class CharityConversation extends Conversation {
     ProductPricingService productPricingService,
     ApplicationEventPublisher eventPublisher,
     LocalizationService localizationService,
-    @Value("${user.language:sv}") String userLanguage) {
-    super(eventPublisher, localizationService, userLanguage);
+    UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.conversationFactory = factory;
     this.memberService = memberService;
     this.productPricingService = productPricingService;
@@ -150,7 +150,7 @@ public class CharityConversation extends Conversation {
               nxtMsg = MESSAGE_KONTRAKT_CHARITY_TACK;
               addToChat(nxtMsg, userContext);
               userContext.startConversation(
-                  conversationFactory.createConversation(MemberSourceConversation.class, userContext.getLocale().getLanguage()));
+                  conversationFactory.createConversation(MemberSourceConversation.class, userContext));
             return;
           }
 

@@ -102,17 +102,17 @@ public class MessagesService {
 
     switch (actionId) {
       case CHAT:
-        uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class, uc.getLocale().getLanguage()));
+        uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class, uc));
         break;
       case CALL_ME:
-        uc.startConversation(conversationFactory.createConversation(CallMeConversation.class, uc.getLocale().getLanguage()));
+        uc.startConversation(conversationFactory.createConversation(CallMeConversation.class, uc));
         break;
       case REPORT_CLAIM:
-        uc.startConversation(conversationFactory.createConversation(ClaimsConversation.class, uc.getLocale().getLanguage()));
+        uc.startConversation(conversationFactory.createConversation(ClaimsConversation.class, uc));
         break;
       case TRUSTLY:
         uc.startConversation(
-          conversationFactory.createConversation(TrustlyConversation.class, uc.getLocale().getLanguage()),
+          conversationFactory.createConversation(TrustlyConversation.class, uc),
           TrustlyConversation.FORCED_START);
     }
 

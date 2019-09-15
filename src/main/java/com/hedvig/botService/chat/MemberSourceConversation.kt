@@ -11,9 +11,8 @@ import java.util.*
 class MemberSourceConversation(
     eventPublisher: ApplicationEventPublisher,
     localizationService: LocalizationService,
-    @Value("\${user.language:sv}")
-    private val userLanguage: String?
-) : Conversation(eventPublisher, localizationService, userLanguage) {
+    userContext: UserContext
+) : Conversation(eventPublisher, localizationService, userContext) {
     override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
         return listOf()
     }

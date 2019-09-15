@@ -32,7 +32,6 @@ import java.util.Locale;
 import static com.hedvig.botService.chat.MainConversation.MESSAGE_COMPLETE_CLAIM;
 
 @Slf4j
-@Component
 public class ClaimsConversation extends Conversation {
 
   static final String MESSAGE_CLAIMS_START = "message.claims.start";
@@ -58,7 +57,6 @@ public class ClaimsConversation extends Conversation {
   private final ConversationFactory conversationFactory;
   private final MemberService memberService;
 
-  @Autowired
   ClaimsConversation(
     ApplicationEventPublisher eventPublisher,
     ClaimsService claimsService,
@@ -66,8 +64,8 @@ public class ClaimsConversation extends Conversation {
     ConversationFactory conversationFactory,
     MemberService memberService,
     LocalizationService localizationService,
-    @Value("${user.language:sv}") String userLanguage) {
-    super(eventPublisher, localizationService, userLanguage);
+    UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.productPricingService = productPricingService;
@@ -266,7 +264,7 @@ public class ClaimsConversation extends Conversation {
     }
 
     userContext.completeConversation(this);
-    userContext.startConversation(conversationFactory.createConversation(MainConversation.class, userContext.getLocale().getLanguage()));
+    userContext.startConversation(conversationFactory.createConversation(MainConversation.class, userContext));
     return null;
   }
 
@@ -318,7 +316,7 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void completeConversation(UserContext uc) {
-    val conversation = conversationFactory.createConversation(MainConversation.class, uc.getLocale().getLanguage());
+    val conversation = conversationFactory.createConversation(MainConversation.class, uc);
     uc.startConversation(conversation, MESSAGE_COMPLETE_CLAIM);
   }
 }

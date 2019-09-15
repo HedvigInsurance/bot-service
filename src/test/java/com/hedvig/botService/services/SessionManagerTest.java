@@ -97,7 +97,7 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    when(conversationFactory.createConversation(anyString(), anyString())).thenReturn(mockConversation);
+    when(conversationFactory.createConversation(anyString(), eq(tolvanssonUserContext))).thenReturn(mockConversation);
 
     when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(true);
     when(mockConversation.getSelectItemsForAnswer(tolvanssonUserContext))
@@ -126,7 +126,7 @@ public class SessionManagerTest {
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
     when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(false);
-    when(conversationFactory.createConversation(anyString(), anyString())).thenReturn(mockConversation);
+    when(conversationFactory.createConversation(anyString(), eq(tolvanssonUserContext))).thenReturn(mockConversation);
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE);
 
@@ -142,7 +142,7 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    val onboardingConversation = makeOnboardingConversation();
+    val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
     when(conversationFactory.createConversation(any(Class.class), any()))
         .thenReturn(onboardingConversation);
     when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE());
@@ -163,7 +163,7 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    val onboardingConversation = makeOnboardingConversation();
+    val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
     when(conversationFactory.createConversation(any(Class.class), anyObject()))
       .thenReturn(onboardingConversation);
     when(memberService.auth(TOLVANSSON_MEMBERID)).thenReturn(Optional.of(makeBankIdResponse()));
@@ -175,8 +175,8 @@ public class SessionManagerTest {
         .hasFieldOrPropertyWithValue("id", "message.start.login");
   }
 
-  private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, null) ;
+  private OnboardingConversationDevi makeOnboardingConversation(UserContext userContext) {
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, userContext) ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

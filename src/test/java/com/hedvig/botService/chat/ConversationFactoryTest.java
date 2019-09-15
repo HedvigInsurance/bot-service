@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
@@ -19,8 +20,10 @@ import org.springframework.core.env.Environment;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Matchers.any;
 
 @RunWith(Parameterized.class)
 public class ConversationFactoryTest {
@@ -76,7 +79,7 @@ public class ConversationFactoryTest {
           "Test",
           phoneNumberUtil);
 
-    Conversation conversation = factory.createConversation(conversationClass, null);
+    Conversation conversation = factory.createConversation(conversationClass, new UserContext(TOLVANSSON_MEMBER_ID));
 
     assertThat(conversation).isNotNull();
     assertThat(conversation).isInstanceOf(conversationClass);

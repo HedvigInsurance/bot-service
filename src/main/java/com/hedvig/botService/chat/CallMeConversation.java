@@ -29,8 +29,8 @@ public class CallMeConversation extends Conversation {
 
   private final ApplicationEventPublisher eventPublisher;
 
-  public CallMeConversation(ApplicationEventPublisher eventPublisher, LocalizationService localizationService, @Value("${user.language:sv}") String userLanguage) {
-    super(eventPublisher, localizationService, userLanguage);
+  public CallMeConversation(ApplicationEventPublisher eventPublisher, LocalizationService localizationService, UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.eventPublisher = eventPublisher;
     createMessage(
       CALLME_CHAT_START,

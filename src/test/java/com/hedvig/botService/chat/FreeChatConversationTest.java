@@ -44,9 +44,9 @@ public class FreeChatConversationTest {
 
   @Before
   public void SetUp() {
-    testFreeChatConversation = new FreeChatConversation(statusBuilder, eventPublisher,
-      productPricingService, localizationService, null);
     userContext = new UserContext(MEMBER_ID);
+    testFreeChatConversation = new FreeChatConversation(statusBuilder, eventPublisher,
+      productPricingService, localizationService, userContext);
   }
 
 

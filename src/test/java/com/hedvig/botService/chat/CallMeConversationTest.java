@@ -32,8 +32,8 @@ public class CallMeConversationTest {
 
   @Before
   public void SetUp() {
-    testCallMeConversation = new CallMeConversation(eventPublisher, localizationService, null);
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
+    testCallMeConversation = new CallMeConversation(eventPublisher, localizationService, userContext);
   }
 
   @Test

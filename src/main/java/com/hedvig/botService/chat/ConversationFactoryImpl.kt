@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
@@ -28,10 +29,10 @@ class ConversationFactoryImpl(
 ) : ConversationFactory {
     private val log = LoggerFactory.getLogger(ConversationFactoryImpl::class.java)
 
-    override fun createConversation(conversationClass: Class<*>, userLanguage: String?): Conversation {
+    override fun createConversation(conversationClass: Class<*>, userContext: UserContext): Conversation {
 
         if (conversationClass == CharityConversation::class.java) {
-            return CharityConversation(this, memberService, productPricingService, eventPublisher, localizationService, userLanguage)
+            return CharityConversation(this, memberService, productPricingService, eventPublisher, localizationService, userContext)
         }
 
         if (conversationClass == ClaimsConversation::class.java) {
@@ -42,12 +43,12 @@ class ConversationFactoryImpl(
                 this,
                 memberService,
                 localizationService,
-                userLanguage
+                userContext
             )
         }
 
         if (conversationClass == MainConversation::class.java) {
-            return MainConversation(this, eventPublisher, localizationService, userLanguage)
+            return MainConversation(this, eventPublisher, localizationService, userContext)
         }
 
         if (conversationClass == OnboardingConversationDevi::class.java) {
@@ -60,34 +61,34 @@ class ConversationFactoryImpl(
                 appleUserEmail,
                 appleUserPwd,
                 phoneNumberUtil,
-                userLanguage
+                userContext
             )
             onboardingConversationDevi.queuePos = queuePos
             return onboardingConversationDevi
         }
 
         if (conversationClass == TrustlyConversation::class.java) {
-            return TrustlyConversation(triggerService, memberService, eventPublisher, localizationService, userLanguage)
+            return TrustlyConversation(triggerService, memberService, eventPublisher, localizationService, userContext)
         }
 
         if (conversationClass == FreeChatConversation::class.java) {
-            return FreeChatConversation(statusBuilder, eventPublisher, productPricingService, localizationService, userLanguage)
+            return FreeChatConversation(statusBuilder, eventPublisher, productPricingService, localizationService, userContext)
         }
 
         if (conversationClass == CallMeConversation::class.java) {
-            return CallMeConversation(eventPublisher, localizationService, userLanguage)
+            return CallMeConversation(eventPublisher, localizationService, userContext)
         }
 
         return if (conversationClass == MemberSourceConversation::class.java) {
-            MemberSourceConversation(eventPublisher, localizationService, userLanguage)
+            MemberSourceConversation(eventPublisher, localizationService, userContext)
         } else throw RuntimeException("Failed to create conversation")
 
     }
 
-    override fun createConversation(conversationClassName: String, userLanguage: String?): Conversation {
+    override fun createConversation(conversationClassName: String, userContext: UserContext): Conversation {
         try {
             val concreteClass = Class.forName(conversationClassName)
-            return createConversation(concreteClass, userLanguage)
+            return createConversation(concreteClass, userContext)
         } catch (ex: ClassNotFoundException) {
             log.error("Could not create conversation for classname: {}", conversationClassName, ex)
         }

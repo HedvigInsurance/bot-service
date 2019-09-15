@@ -32,8 +32,8 @@ public class TrustlyConversation extends Conversation {
   private final TriggerService triggerService;
   private final MemberService memberService;
 
-  public TrustlyConversation(TriggerService triggerService, MemberService memberService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService, @Value("${user.language:sv}") String userLanguage) {
-    super(eventPublisher, localizationService, userLanguage);
+  public TrustlyConversation(TriggerService triggerService, MemberService memberService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService, UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.triggerService = triggerService;
     this.memberService = memberService;
 

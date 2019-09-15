@@ -36,8 +36,8 @@ public class FreeChatConversation extends Conversation {
     ApplicationEventPublisher eventPublisher,
     ProductPricingService productPricingService,
     LocalizationService localizationService,
-    @Value("${user.language:sv}") String userLanguage) {
-    super(eventPublisher, localizationService, userLanguage);
+    UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.statusBuilder = statusBuilder;
     this.eventPublisher = eventPublisher;
     this.productPricingService = productPricingService;
