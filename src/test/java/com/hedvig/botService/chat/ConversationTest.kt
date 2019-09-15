@@ -53,7 +53,7 @@ class ConversationTest {
       this.createChatMessage("test.message", wrappedMessage)
     }
 
-    sut.addToChat("test.message", uc)
+    sut.addToChat("test.message")
 
     assertThat(executed).isTrue()
 
@@ -83,7 +83,7 @@ class ConversationTest {
 
 
     // ACT
-    sut.addToChat(m, uc)
+    sut.addToChat(m)
 
     // Assert
     then<MemberChat>(mc).should().addToHistory(messageCaptor!!.capture())
@@ -103,7 +103,7 @@ class ConversationTest {
     val m = createTextMessage("En förklarande {REPLACE_THIS} text")
 
     // ACT
-    sut.addToChat(m, uc)
+    sut.addToChat(m)
 
     // Assert
     then<MemberChat>(mc).should().addToHistory(messageCaptor!!.capture())
@@ -128,7 +128,7 @@ class ConversationTest {
       })
     }
 
-    testClass.receiveMessage(uc, makeMessage("message.id", MessageBodySingleSelect("", listOf())))
+    testClass.receiveMessage(makeMessage("message.id", MessageBodySingleSelect("", listOf())))
 
     assertThat(called).isTrue()
   }
@@ -148,7 +148,7 @@ class ConversationTest {
     }
 
 
-    testClass.receiveMessage(uc, makeMessage("message.id", MessageBodyText("")))
+    testClass.receiveMessage(makeMessage("message.id", MessageBodyText("")))
 
     assertThat(called).isTrue()
 
@@ -249,22 +249,22 @@ class ConversationTest {
 
   fun makeConversation(constructor: Conversation.(Unit) -> Unit): Conversation {
     return object : Conversation(eventPublisher!!, localizationService!!, uc) {
-      override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
+      override fun getSelectItemsForAnswer(): List<SelectItem> {
         return listOf()
       }
 
-      override fun canAcceptAnswerToQuestion(uc: UserContext): Boolean {
+      override fun canAcceptAnswerToQuestion(): Boolean {
         return false
       }
 
-      override fun handleMessage(userContext: UserContext, m: Message) {
+      override fun handleMessage(m: Message) {
 
       }
 
-      override fun init(userContext: UserContext) {
+      override fun init() {
       }
 
-      override fun init(userContext: UserContext, startMessage: String) {
+      override fun init(startMessage: String) {
       }
 
       init {

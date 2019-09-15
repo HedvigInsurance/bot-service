@@ -97,7 +97,7 @@ public class OnboardingService {
       OnboardingConversationDevi conversation =
         (OnboardingConversationDevi)
           conversationFactory.createConversation(OnboardingConversationDevi.class, uc);
-      conversation.memberSigned(collectResponse.getReferenceToken(), uc);
+      conversation.memberSigned(collectResponse.getReferenceToken());
     }
 
     return collectResponse;

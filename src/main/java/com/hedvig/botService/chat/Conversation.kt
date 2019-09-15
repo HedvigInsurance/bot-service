@@ -2,20 +2,17 @@ package com.hedvig.botService.chat
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.hedvig.botService.Utils.ConversationUtils
 import com.hedvig.botService.Utils.MessageUtil
 import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.LocalizationService
-import com.hedvig.botService.services.TextKeysLocaleResolver
 import com.hedvig.botService.services.events.MessageSentEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.jwt.JwtHelper
-import org.springframework.stereotype.Component
 import java.io.IOException
 import java.lang.Long.valueOf
 import java.util.*
@@ -28,8 +25,7 @@ typealias AddMessageCallback = (UserContext) -> Unit
 abstract class Conversation(
   open var eventPublisher: ApplicationEventPublisher,
   val localizationService: LocalizationService,
-  @Value("\${user.language:sv}")
-  private val userContext: UserContext
+  userContext: UserContext
 ) {
 
   private val callbacks = TreeMap<String, SelectItemMessageCallback>()
@@ -38,6 +34,8 @@ abstract class Conversation(
 
   private val messageList = TreeMap<String, Message>()
   private val relayList = TreeMap<String, String>()
+
+  open val userContext: UserContext = userContext
 
   enum class conversationStatus {
     INITIATED,
@@ -87,15 +85,15 @@ abstract class Conversation(
     return relayList[s1]
   }
 
-  fun addToChat(messageId: String, userContext: UserContext) {
-    addToChat(getMessage(messageId), userContext)
+  fun addToChat(messageId: String) {
+    addToChat(getMessage(messageId))
   }
 
-  abstract fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem>
+  abstract fun getSelectItemsForAnswer(): List<SelectItem>
 
-  abstract fun canAcceptAnswerToQuestion(uc: UserContext): Boolean
+  abstract fun canAcceptAnswerToQuestion(): Boolean
 
-  public open fun addToChat(m: Message?, userContext: UserContext) {
+  public open fun addToChat(m: Message?) {
     m!!.render(userContext, localizationService)
     log.info("Putting message: " + m.id + " content: " + m.body.text)
     userContext.addToHistory(m)
@@ -141,14 +139,14 @@ abstract class Conversation(
     return this.callbacks.containsKey(messageId)
   }
 
-  internal fun execSelectItemCallback(messageId: String, message: MessageBodySingleSelect, uc: UserContext): String {
-    return this.callbacks[messageId]!!.invoke(message, uc)
+  internal fun execSelectItemCallback(messageId: String, message: MessageBodySingleSelect): String {
+    return this.callbacks[messageId]!!.invoke(message, userContext)
   }
 
 
-  protected fun startConversation(userContext: UserContext, startId: String) {
+  protected fun startConversation(startId: String) {
     log.info("Starting conversation with message: $startId")
-    addToChat(messageList[startId], userContext)
+    addToChat(messageList[startId])
   }
 
   fun setExpectedReturnType(messageId: String, type: HedvigDataType) {
@@ -165,7 +163,7 @@ abstract class Conversation(
   }
 
   // If the message has a preferred return type it is validated otherwise not
-  fun validateReturnType(m: Message, userContext: UserContext): Boolean {
+  fun validateReturnType(m: Message): Boolean {
 
     val mCorr = getMessage(MessageUtil.removeNotValidFromId(m.id))
 
@@ -196,8 +194,8 @@ abstract class Conversation(
       }
 
       if (!ok) {
-        addToChat(m, userContext)
-        addToChat(mCorr, userContext)
+        addToChat(m)
+        addToChat(mCorr)
       }
       return ok
     }
@@ -207,36 +205,36 @@ abstract class Conversation(
   // ------------------------------------------------------------------------------- //
 
 
-  fun receiveMessage(userContext: UserContext, m: Message) {
+  fun receiveMessage(m: Message) {
     var nxtMsg:String? = null
 
-    if(validateReturnType(m, userContext)) {
+    if(validateReturnType(m)) {
       //Generic Lambda
       if (this.hasGenericCallback(m.strippedBaseMessageId)) {
-        nxtMsg = this.execGenericCallback(m, userContext)
+        nxtMsg = this.execGenericCallback(m)
       }
 
       if (nxtMsg != null) {
-        this.completeRequest(nxtMsg, userContext)
+        this.completeRequest(nxtMsg)
       } else {
-        handleMessage(userContext, m)
+        handleMessage(m)
       }
     }
   }
 
-  abstract fun handleMessage(userContext: UserContext, m: Message)
+  abstract fun handleMessage(m: Message)
 
-  protected open fun completeRequest(nxtMsg: String, userContext: UserContext) {
+  protected open fun completeRequest(nxtMsg: String) {
     if (getMessage(nxtMsg) != null) {
-      addToChat(getMessage(nxtMsg), userContext)
+      addToChat(getMessage(nxtMsg))
     }
   }
 
-  open fun receiveEvent(e: EventTypes, value: String, userContext: UserContext) {}
+  open fun receiveEvent(e: EventTypes, value: String) {}
 
-  abstract fun init(userContext: UserContext)
+  abstract fun init()
 
-  abstract fun init(userContext: UserContext, startMessage: String)
+  abstract fun init(startMessage: String)
 
   // ----------------------------------------------------------------------------------------------------------------- //
 
@@ -303,27 +301,27 @@ abstract class Conversation(
   }
 
   @JvmOverloads
-  fun addMessageFromBackOffice(uc: UserContext, message: String, messageId: String, userId: String? = null): Boolean {
-    if (!this.canAcceptAnswerToQuestion(uc)) {
+  fun addMessageFromBackOffice(message: String, messageId: String, userId: String? = null): Boolean {
+    if (!this.canAcceptAnswerToQuestion()) {
       return false
     }
 
-    val msg = createBackOfficeMessage(uc, message, messageId)
+    val msg = createBackOfficeMessage(message, messageId)
     msg.author = getUserId(userId)
 
-    uc.memberChat.addToHistory(msg)
+    userContext.memberChat.addToHistory(msg)
 
     if (eventPublisher != null) {
-      eventPublisher.publishEvent(MessageSentEvent(uc.memberId, msg))
+      eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, msg))
     }
 
     return true
   }
 
 
-  open fun createBackOfficeMessage(uc: UserContext, message: String, id: String): Message {
+  open fun createBackOfficeMessage(message: String, id: String): Message {
     val msg = Message()
-    val selectionItems = getSelectItemsForAnswer(uc)
+    val selectionItems = getSelectItemsForAnswer()
     msg.body = MessageBodySingleSelect(message, selectionItems)
     msg.globalId = null
     msg.header = MessageHeader.createRichTextHeader()
@@ -354,7 +352,7 @@ abstract class Conversation(
     return genericCallbacks.containsKey(id)
   }
 
-  fun execGenericCallback(m: Message, userContext: UserContext): String {
+  fun execGenericCallback(m: Message): String {
     return this.genericCallbacks[m.strippedBaseMessageId]!!.invoke(m, userContext)
   }
 

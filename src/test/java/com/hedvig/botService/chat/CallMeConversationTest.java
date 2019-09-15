@@ -41,7 +41,7 @@ public class CallMeConversationTest {
 
     userContext.putUserData(PHONE_NUMBER, TOLVANSSON_PHONE_NUMBER);
 
-    testCallMeConversation.init(userContext);
+    testCallMeConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
       .startsWith(CallMeConversation.CALLME_CHAT_START);
@@ -49,7 +49,7 @@ public class CallMeConversationTest {
 
   @Test
   public void Should_ReturnACallMeStartMessageWithoutPhone_WhenPhoneNumberIsNotInUserContext() {
-    testCallMeConversation.init(userContext);
+    testCallMeConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
       .startsWith(CallMeConversation.CALLME_CHAT_START_WITHOUT_PHONE);

@@ -62,7 +62,7 @@ public class ClaimsConversationTest {
     Message m = testConversation.getMessage("message.claims.audio");
     val body = (MessageBodyAudio) m.body;
     body.url = AUDIO_RECORDING_URL;
-    testConversation.receiveMessage(userContext, m);
+    testConversation.receiveMessage(m);
 
     then(eventPublisher)
         .should()
@@ -74,7 +74,7 @@ public class ClaimsConversationTest {
   public void init_WhenMemberInsuranceIsInactive_StartsNotActiveFlow() {
     when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(false);
 
-    testConversation.init(userContext);
+    testConversation.init();
 
     Message msg;
     boolean messageIsParagraph;
@@ -83,7 +83,7 @@ public class ClaimsConversationTest {
       msg = Iterables.getLast(userContext.getMemberChat().chatHistory);
       messageIsParagraph = MessageBodyParagraph.class.isInstance(msg.body);
       if (messageIsParagraph) {
-        testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, msg.id, userContext);
+        testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, msg.id);
       }
     } while (messageIsParagraph && i++ < 20);
 
@@ -95,7 +95,7 @@ public class ClaimsConversationTest {
   public void init_WhenMemberInsuranceIsActive_StartsClaimFlow() {
     when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
 
-    testConversation.init(userContext);
+    testConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
         .startsWith(ClaimsConversation.MESSAGE_CLAIMS_START);
@@ -108,7 +108,7 @@ public class ClaimsConversationTest {
     Message m = testConversation.getMessage(ClaimsConversation.MESSAGE_CLAIM_CALLME);
     m.body.text = TOLVANSSON_PHONE_NUMBER;
 
-    testConversation.receiveMessage(userContext, m);
+    testConversation.receiveMessage(m);
 
     then(eventPublisher)
         .should()
@@ -128,7 +128,7 @@ public class ClaimsConversationTest {
     Message m = testConversation.getMessage(ClaimsConversation.MESSAGE_CLAIM_CALLME);
     m.body.text = TOLVANSSON_PHONE_NUMBER;
 
-    testConversation.receiveMessage(userContext, m);
+    testConversation.receiveMessage(m);
 
     then(eventPublisher)
         .should()
@@ -147,7 +147,7 @@ public class ClaimsConversationTest {
 
     userContext.getOnBoardingData().setPhoneNumber(null);
 
-    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START, userContext);
+    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START);
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_PHONE);
   }
@@ -158,7 +158,7 @@ public class ClaimsConversationTest {
 
     userContext.getOnBoardingData().setPhoneNumber("0701234567");
 
-    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START, userContext);
+    testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START);
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id).matches(MESSAGE_CLAIMS_ASK_EXISTING_PHONE);
   }
@@ -171,7 +171,7 @@ public class ClaimsConversationTest {
 
     Message m = testConversation.getMessage(MESSAGE_CLAIMS_ASK_PHONE);
     m.body.text = TOLVANSSON_PHONE_NUMBER;
-    testConversation.handleMessage(userContext,m);
+    testConversation.handleMessage(m);
 
     assertThat(userContext.getMemberChat().chatHistory.get(1).id).matches(MESSAGE_CLAIMS_RECORD_1);
     assertThat(userContext.getDataEntry(PHONE_NUMBER)).isEqualTo(TOLVANSSON_PHONE_NUMBER);
@@ -185,7 +185,7 @@ public class ClaimsConversationTest {
     Message m = testConversation.getMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW);
     m.body.text = TOLVANSSON_PHONE_NUMBER;
 
-    testConversation.handleMessage(userContext, m);
+    testConversation.handleMessage(m);
 
     val lastMessage = userContext.getMemberChat().chatHistory.get(0);
     assertThat(lastMessage.body.text).isEqualTo(TOLVANSSON_PHONE_NUMBER);

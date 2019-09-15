@@ -154,7 +154,7 @@ public class SessionManager {
 
      OnboardingConversationDevi conversationDevi = (OnboardingConversationDevi) conversationFactory.createConversation(OnboardingConversationDevi.class, uc);
 
-     conversationDevi.emailLoginComplete(newUc);
+     conversationDevi.emailLoginComplete();
 
      return true;
     }
@@ -237,7 +237,7 @@ public class SessionManager {
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
 
     Conversation activeConversation = getActiveConversationOrStart(uc, MainConversation.class);
-    return activeConversation.addMessageFromBackOffice(uc, msg, msgId, userId);
+    return activeConversation.addMessageFromBackOffice(msg, msgId, userId);
 
   }
 
@@ -331,7 +331,7 @@ public class SessionManager {
 
     TrustlyConversation tr =
       (TrustlyConversation) conversationFactory.createConversation(TrustlyConversation.class, uc);
-    tr.windowClosed(uc);
+    tr.windowClosed();
 
     userContextRepository.save(uc);
   }

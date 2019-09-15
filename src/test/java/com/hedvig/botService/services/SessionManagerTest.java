@@ -20,7 +20,6 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
 import lombok.val;
-import org.apache.tomcat.util.descriptor.LocalResolver;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +28,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -99,9 +97,11 @@ public class SessionManagerTest {
         .thenReturn(Optional.of(tolvanssonUserContext));
     when(conversationFactory.createConversation(anyString(), eq(tolvanssonUserContext))).thenReturn(mockConversation);
 
-    when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(true);
-    when(mockConversation.getSelectItemsForAnswer(tolvanssonUserContext))
+    when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(true);
+    when(mockConversation.getSelectItemsForAnswer())
         .thenReturn(Lists.newArrayList(SELECT_LINK));
+    when(mockConversation.getUserContext())
+        .thenReturn(tolvanssonUserContext);
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE);
 
@@ -125,7 +125,7 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(false);
+    when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(false);
     when(conversationFactory.createConversation(anyString(), eq(tolvanssonUserContext))).thenReturn(mockConversation);
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE);

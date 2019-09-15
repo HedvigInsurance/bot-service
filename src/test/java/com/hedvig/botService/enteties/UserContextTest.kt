@@ -37,6 +37,6 @@ class UserContextTest {
 
         then<Conversation>(mockConversation)
             .should(times(1))
-            .init(uc, OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_ASK_NAME)
+            .init(OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_ASK_NAME)
     }
 }

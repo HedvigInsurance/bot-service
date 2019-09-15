@@ -51,7 +51,7 @@ public class MainConversationTest {
     uc.getOnBoardingData().setFirstName(TOLVANSSON_FIRSTNAME);
     uc.getOnBoardingData().setFamilyName(TOLVANSSON_LASTNAME);
 
-    testConversation.receiveMessage(uc, m);
+    testConversation.receiveMessage(m);
 
     then(eventPublisher)
         .should()
@@ -69,7 +69,7 @@ public class MainConversationTest {
     Message m = testConversation.getMessage(MainConversation.MESSAGE_MAIN_QUESTION);
     m.body.text = QUESTION;
 
-    testConversation.receiveMessage(uc, m);
+    testConversation.receiveMessage(m);
 
     then(eventPublisher)
         .should()

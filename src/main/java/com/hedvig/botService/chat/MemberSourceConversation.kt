@@ -13,33 +13,33 @@ class MemberSourceConversation(
     localizationService: LocalizationService,
     userContext: UserContext
 ) : Conversation(eventPublisher, localizationService, userContext) {
-    override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
+    override fun getSelectItemsForAnswer(): List<SelectItem> {
         return listOf()
     }
 
-    override fun canAcceptAnswerToQuestion(uc: UserContext): Boolean {
+    override fun canAcceptAnswerToQuestion(): Boolean {
         return false
     }
 
-    override fun handleMessage(userContext: UserContext, m: Message) {
+    override fun handleMessage(m: Message) {
 
     }
 
-    override fun init(userContext: UserContext) {
-        init(userContext, "membersource.poll")
+    override fun init() {
+        init("membersource.poll")
     }
 
-    override fun init(userContext: UserContext, startMessage: String) {
-        startConversation(userContext, startMessage)
+    override fun init(startMessage: String) {
+        startConversation(startMessage)
     }
 
 
-    override fun receiveEvent(e: EventTypes, value: String, userContext: UserContext) {
+    override fun receiveEvent(e: EventTypes, value: String) {
         if (e == Conversation.EventTypes.MESSAGE_FETCHED
         ) {
             val relay = getRelay(value)
             if (relay != null) {
-                completeRequest(relay, userContext)
+                completeRequest(relay)
             }
         }
     }
@@ -63,7 +63,7 @@ class MemberSourceConversation(
             ) { b, u, m ->
                 u.putUserData("MEMBER_SOURCE", b.selectedItem.value)
                 b.text = b.selectedItem.text
-                addToChat(m, u)
+                addToChat(m)
 
                 val nxtMsg = when (b.selectedItem.value) {
                     "other" -> "membersource.text"
@@ -78,7 +78,7 @@ class MemberSourceConversation(
 
         this.createChatMessage("membersource.text",
             WrappedMessage(MessageBodyText("Var hörde du om mig? ")) { b, u, m ->
-                addToChat(m, u)
+                addToChat(m)
                 u.putUserData("MEMBER_SOURCE_TEXT", b.text.trim())
                 "membersource.thanks"
             }

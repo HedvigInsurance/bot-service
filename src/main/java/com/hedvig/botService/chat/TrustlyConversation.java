@@ -72,7 +72,7 @@ public class TrustlyConversation extends Conversation {
   }
 
   @Override
-  public void handleMessage(final UserContext userContext, final Message m) {
+  public void handleMessage(final Message m) {
 
     String nxtMsg = "";
     /*
@@ -84,7 +84,7 @@ public class TrustlyConversation extends Conversation {
       for (SelectItem o : body1.choices) {
         if (o.selected) {
           m.body.text = o.text;
-          addToChat(m, userContext);
+          addToChat(m);
           nxtMsg = o.value;
         }
       }
@@ -92,14 +92,14 @@ public class TrustlyConversation extends Conversation {
 
     switch (m.getStrippedBaseMessageId()) {
       case START:
-        userContext.putUserData(UserContext.TRUSTLY_FORCED_START, "false");
+        getUserContext().putUserData(UserContext.TRUSTLY_FORCED_START, "false");
         // endConversation(userContext);
         return;
       case FORCED_START:
-        userContext.putUserData(UserContext.TRUSTLY_FORCED_START, "true");
+        getUserContext().putUserData(UserContext.TRUSTLY_FORCED_START, "true");
         return;
       case TRUSTLY_POLL:
-        handleTrustlyPollResponse((MessageBodySingleSelect) m.body, userContext);
+        handleTrustlyPollResponse((MessageBodySingleSelect) m.body);
         return;
       case CANCEL:
         return;
@@ -108,13 +108,13 @@ public class TrustlyConversation extends Conversation {
         return;
     }
 
-    completeRequest(nxtMsg, userContext);
+    completeRequest(nxtMsg);
   }
 
-  private void handleTrustlyPollResponse(MessageBodySingleSelect body, UserContext userContext) {
+  private void handleTrustlyPollResponse(MessageBodySingleSelect body) {
     if (body.getSelectedItem().value.equals("end")) {
-      userContext.putUserData(FORCE_TRUSTLY_CHOICE, "true");
-      addToChat(FORCED_START, userContext);
+      getUserContext().putUserData(FORCE_TRUSTLY_CHOICE, "true");
+      addToChat(FORCED_START);
     }
   }
 
@@ -124,7 +124,7 @@ public class TrustlyConversation extends Conversation {
   }
 
   @Override
-  public void receiveEvent(EventTypes e, String value, UserContext userContext) {
+  public void receiveEvent(EventTypes e, String value) {
 
     switch (e) {
         // This is used to let Hedvig say multiple message after another
@@ -134,7 +134,7 @@ public class TrustlyConversation extends Conversation {
         // New way of handeling relay messages
         String relay = getRelay(value);
         if (relay != null) {
-          completeRequest(relay, userContext);
+          completeRequest(relay);
         }
         break;
       default:
@@ -143,61 +143,61 @@ public class TrustlyConversation extends Conversation {
   }
 
   @Override
-  public void init(UserContext userContext) {
-    addToChat(START, userContext);
+  public void init() {
+    addToChat(START);
   }
 
   @Override
-  public void init(UserContext userContext, String startMessage) {
-    addToChat(startMessage, userContext);
+  public void init(String startMessage) {
+    addToChat(startMessage);
   }
 
   @Override
-  public List<SelectItem> getSelectItemsForAnswer(UserContext uc) {
+  public List<SelectItem> getSelectItemsForAnswer() {
     return Lists.newArrayList();
   }
 
   @Override
-  public boolean canAcceptAnswerToQuestion(UserContext uc) {
+  public boolean canAcceptAnswerToQuestion() {
     return false;
   }
 
 
   @Override
-  public void addToChat(Message m, UserContext userContext) {
+  public void addToChat(Message m) {
     if ((m.id.equals(START) || m.id.equals(CANCEL) || m.id.equals(FORCED_START))
         && m.header.fromId == MessageHeader.HEDVIG_USER_ID) {
-      final UserData userData = userContext.getOnBoardingData();
+      final UserData userData = getUserContext().getOnBoardingData();
       UUID triggerUUID =
           triggerService.createTrustlyDirectDebitMandate(
               userData.getSSN(),
               userData.getFirstName(),
               userData.getFamilyName(),
               userData.getEmail(),
-              userContext.getMemberId());
+              getUserContext().getMemberId());
 
-      userContext.putUserData(UserContext.TRUSTLY_TRIGGER_ID, triggerUUID.toString());
+      getUserContext().putUserData(UserContext.TRUSTLY_TRIGGER_ID, triggerUUID.toString());
     }
 
-    super.addToChat(m, userContext);
+    super.addToChat(m);
   }
 
-  public void windowClosed(UserContext uc) {
+  public void windowClosed() {
     String nxtMsg;
 
     final DirectDebitMandateTrigger.TriggerStatus orderState =
-        triggerService.getTrustlyOrderInformation(uc.getDataEntry(UserContext.TRUSTLY_TRIGGER_ID));
+        triggerService.getTrustlyOrderInformation(getUserContext().getDataEntry(UserContext.TRUSTLY_TRIGGER_ID));
     if (orderState.equals(DirectDebitMandateTrigger.TriggerStatus.FAILED)) {
       nxtMsg = CANCEL;
     } else if (orderState.equals(DirectDebitMandateTrigger.TriggerStatus.SUCCESS)) {
       nxtMsg = COMPLETE;
-      addToChat(getMessage(nxtMsg), uc);
-      endConversation(uc);
+      addToChat(getMessage(nxtMsg));
+      endConversation(getUserContext());
       return;
     } else {
       nxtMsg = TRUSTLY_POLL;
     }
 
-    addToChat(getMessage(nxtMsg), uc);
+    addToChat(getMessage(nxtMsg));
   }
 }

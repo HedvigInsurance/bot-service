@@ -77,7 +77,7 @@ public class TrustlyConversationTest {
         .willReturn(triggerUUID);
 
     // ACT
-    testConversation.addToChat(START, userContext);
+    testConversation.addToChat(START);
 
     assertThat(userContext.getDataEntry("{TRUSTLY_TRIGGER_ID}")).isEqualTo(triggerUUID.toString());
   }
@@ -99,7 +99,7 @@ public class TrustlyConversationTest {
                 TOLVANSSON_MEMBER_ID))
         .willReturn(TRIGGER_UUID);
 
-    testConversation.receiveMessage(userContext, message);
+    testConversation.receiveMessage(message);
 
     assertThat(userContext.getMemberChat().chatHistory.size()).isEqualTo(1);
   }

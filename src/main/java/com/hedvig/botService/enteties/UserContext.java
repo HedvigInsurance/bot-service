@@ -134,7 +134,7 @@ public class UserContext implements Serializable {
         "Starting conversation of type: " + c.getClass().getName() + " for user: " + getMemberId());
 
     if (conversationManager.startConversation(c.getClass())) {
-      c.init(this);
+       c.init();
     }
   }
 
@@ -148,7 +148,7 @@ public class UserContext implements Serializable {
             + startMessage);
 
     if (conversationManager.startConversation(c.getClass(), startMessage)) {
-      c.init(this, startMessage);
+      c.init(startMessage);
     }
   }
 

@@ -93,7 +93,7 @@ public class CollectServiceTests {
     CollectService sut = new CollectService(userContextRepository, memberService);
     BankIdCollectResponse actual = sut.collect(memberId, referenceToken, chat);
 
-    verify(chat, times(1)).bankIdAuthGeneralCollectError(userContext);
+    verify(chat, times(1)).bankIdAuthGeneralCollectError();
     assertThat(actual.getBankIdStatus()).isEqualTo(BankIdProgressStatus.COMPLETE);
   }
 
@@ -162,7 +162,7 @@ public class CollectServiceTests {
 
     // Assert
     assertThat(actual.getBankIdStatus()).isEqualTo(BankIdProgressStatus.COMPLETE);
-    verify(chat, times(1)).bankIdAuthComplete(userContext);
+    verify(chat, times(1)).bankIdAuthComplete();
     assertThat(userContext.getBankIdCollectStatus(referenceToken).getDone()).isTrue();
     assertThat(userContext.getBankIdCollectStatus(referenceToken).getLastStatus())
         .isEqualTo("COMPLETE");
@@ -187,7 +187,7 @@ public class CollectServiceTests {
 
     // Assert
     assertThat(actual.getBankIdStatus()).isEqualTo(BankIdProgressStatus.NO_CLIENT);
-    verify(chat, times(1)).noClient(userContext);
+    verify(chat, times(1)).noClient();
     // assertThat(userContext.getBankIdCollectStatus(referenceToken).getDone()).isFalse();
     assertThat(userContext.getBankIdCollectStatus(referenceToken).getLastStatus())
         .isEqualTo("NO_CLIENT");
@@ -212,7 +212,7 @@ public class CollectServiceTests {
 
     // Assert
     assertThat(actual.getBankIdStatus()).isEqualTo(BankIdProgressStatus.COMPLETE);
-    verify(chat, times(1)).couldNotLoadMemberProfile(userContext);
+    verify(chat, times(1)).couldNotLoadMemberProfile();
     assertThat(userContext.getBankIdCollectStatus(referenceToken).getDone()).isTrue();
     assertThat(userContext.getBankIdCollectStatus(referenceToken).getLastStatus())
         .isEqualTo("COMPLETE");
@@ -293,7 +293,7 @@ public class CollectServiceTests {
 
     // VERIFY
 
-    verify(chat, times(1)).bankIdAuthGeneralCollectError(userContext);
+    verify(chat, times(1)).bankIdAuthGeneralCollectError();
   }
 
   @Test
@@ -332,7 +332,7 @@ public class CollectServiceTests {
 
     // VERIFY
 
-    verify(chat, times(1)).memberSigned(referenceToken, userContext);
+    verify(chat, times(1)).memberSigned(referenceToken);
   }
 
   @Test
@@ -387,6 +387,6 @@ public class CollectServiceTests {
 
     // VERIFY
 
-    verify(chat, times(1)).bankIdSignError(userContext);
+    verify(chat, times(1)).bankIdSignError();
   }
 }

@@ -113,17 +113,17 @@ public class CharityConversation extends Conversation {
   }
 
   @Override
-  public List<SelectItem> getSelectItemsForAnswer(UserContext uc) {
+  public List<SelectItem> getSelectItemsForAnswer() {
     return null;
   }
 
   @Override
-  public boolean canAcceptAnswerToQuestion(UserContext uc) {
+  public boolean canAcceptAnswerToQuestion() {
     return false;
   }
 
   @Override
-  public void handleMessage(UserContext userContext, Message m) {
+  public void handleMessage(Message m) {
 
     String nxtMsg = MESSAGE_KONTRAKT_CHARITY;
     switch (m.getStrippedBaseMessageId()) {
@@ -135,22 +135,22 @@ public class CharityConversation extends Conversation {
 
         if (selectedItem.value.startsWith("charity")) {
           m.body.text = "Jag vill att mitt överskott ska gå till " + selectedItem.text;
-          addToChat(m, userContext);
+          addToChat(m);
 
-          userContext.putUserData("{CHARITY}", selectedItem.value);
-          userContext.setOnboardingComplete();
+          getUserContext().putUserData("{CHARITY}", selectedItem.value);
+          getUserContext().setOnboardingComplete();
 
           val charityId = getCharityId(selectedItem.value);
           if (charityId.isPresent()) {
 
-            memberService.selectCashback(userContext.getMemberId(), charityId.get());
+            memberService.selectCashback(getUserContext().getMemberId(), charityId.get());
 
-            userContext.completeConversation(this);
+            getUserContext().completeConversation(this);
 
               nxtMsg = MESSAGE_KONTRAKT_CHARITY_TACK;
-              addToChat(nxtMsg, userContext);
-              userContext.startConversation(
-                  conversationFactory.createConversation(MemberSourceConversation.class, userContext));
+              addToChat(nxtMsg);
+              getUserContext().startConversation(
+                  conversationFactory.createConversation(MemberSourceConversation.class, getUserContext()));
             return;
           }
 
@@ -158,12 +158,12 @@ public class CharityConversation extends Conversation {
         } else {
           m.body.text = selectedItem.text;
           nxtMsg = selectedItem.value;
-          addToChat(m, userContext);
+          addToChat(m);
         }
         break;
     }
 
-    completeRequest(nxtMsg, userContext);
+    completeRequest(nxtMsg);
   }
 
   private Optional<UUID> getCharityId(final String charity) {
@@ -178,7 +178,7 @@ public class CharityConversation extends Conversation {
   }
 
   @Override
-  public void receiveEvent(EventTypes e, String value, UserContext userContext) {
+  public void receiveEvent(EventTypes e, String value) {
 
     switch (e) {
         // This is used to let Hedvig say multiple message after another
@@ -188,7 +188,7 @@ public class CharityConversation extends Conversation {
         // New way of handeling relay messages
         String relay = getRelay(value);
         if (relay != null) {
-          completeRequest(relay, userContext);
+          completeRequest(relay);
         }
         break;
       default:
@@ -197,12 +197,12 @@ public class CharityConversation extends Conversation {
   }
 
   @Override
-  public void init(UserContext userContext) {
-    startConversation(userContext, MESSAGE_KONTRAKT_CHARITY);
+  public void init() {
+    startConversation(MESSAGE_KONTRAKT_CHARITY);
   }
 
   @Override
-  public void init(UserContext userContext, String startMessage) {
-    startConversation(userContext, startMessage);
+  public void init(String startMessage) {
+    startConversation(startMessage);
   }
 }

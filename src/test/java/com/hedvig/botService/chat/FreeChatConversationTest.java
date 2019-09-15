@@ -55,7 +55,7 @@ public class FreeChatConversationTest {
 
     userContext.putUserData("{NAME}", "TestName");
 
-    testFreeChatConversation.init(userContext);
+    testFreeChatConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
       .startsWith(FreeChatConversation.FREE_CHAT_START);
@@ -75,7 +75,7 @@ public class FreeChatConversationTest {
       .getMessage(FreeChatConversation.FREE_CHAT_ONBOARDING_START);
     m.body = new MessageBodyFileUpload("TestContent", TEST_KEY, TEST_TYPE);
 
-    testFreeChatConversation.receiveMessage(userContext, m);
+    testFreeChatConversation.receiveMessage(m);
 
     then(eventPublisher)
       .should()
@@ -97,7 +97,7 @@ public class FreeChatConversationTest {
       .getMessage(FreeChatConversation.FREE_CHAT_ONBOARDING_START);
     m.body = new MessageBodyFileUpload("TestContent", TEST_KEY, TEST_TYPE);
 
-    testFreeChatConversation.receiveMessage(userContext, m);
+    testFreeChatConversation.receiveMessage(m);
 
     then(eventPublisher)
       .should()
