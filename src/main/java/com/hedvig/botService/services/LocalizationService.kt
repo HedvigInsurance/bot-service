@@ -4,9 +4,11 @@ import com.hedvig.botService.enteties.localization.LocalizationData
 import com.hedvig.botService.serviceIntegration.localization.LocalizationClient
 import com.hedvig.botService.serviceIntegration.localization.GraphQLQueryWrapper
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Component
 import java.util.*
 import javax.transaction.Transactional
+import kotlin.concurrent.timer
 
 
 @Component
@@ -15,11 +17,19 @@ class LocalizationService @Autowired constructor(val localizationClient: Localiz
     private var localizationData: LocalizationData? = null
 
     init {
-        this.refreshLocalizations()
+        timer("refreshLocalizations", false, 0, TEN_MINUTES_MS) {
+            this@LocalizationService.refreshLocalizations()
+        }
     }
 
     fun refreshLocalizations() {
-        localizationData = fetchLocalizations()
+        fetchLocalizations()?.let { data ->
+            if (data != localizationData) {
+                synchronized(this@LocalizationService) {
+                    localizationData = data
+                }
+            }
+        }
     }
 
     fun getText(locale: Locale?, key: String): String? {
@@ -58,6 +68,7 @@ class LocalizationService @Autowired constructor(val localizationClient: Localiz
         val GRAPHCMS_TEXT_KEYS_QUERY = GraphQLQueryWrapper(
             "{languages {translations(where: { project: BotService }) {text key {value}} code}}"
         )
+
+        private const val TEN_MINUTES_MS = 600000L
     }
 }
-
