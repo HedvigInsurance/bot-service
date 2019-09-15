@@ -18,7 +18,6 @@ import javax.persistence.InheritanceType;
 
 import com.hedvig.botService.services.LocalizationService;
 import lombok.ToString;
-import lombok.val;
 
 import static com.hedvig.botService.enteties.message.SelectItem.SELECT_POST_FIX;
 
@@ -57,6 +56,9 @@ public class MessageBody {
   @Column(length = 10485)
   public String imageURL;
 
+  @Column
+  public String language;
+
   public Integer imageWidth;
   public Integer imageHeight;
 
@@ -89,6 +91,7 @@ public class MessageBody {
       localizedText = ConversationUtils.INSTANCE.getSplitFromIndex(localizedText, index);
     }
 
+    this.language = userContext.getLocale().getLanguage();
     this.text = userContext.replaceWithContext(localizedText != null ? localizedText : this.text);
   }
 }
