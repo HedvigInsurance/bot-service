@@ -61,7 +61,7 @@ class LocalizationService @Autowired constructor(val localizationClient: Localiz
         languages
             .firstOrNull { it.code == language }
             ?.translations
-            ?.firstOrNull { it.key.value == key }
+            ?.firstOrNull { it.key?.value == key }
             ?.text
 
     companion object {
