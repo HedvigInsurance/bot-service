@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ -z "${TRAVIS_PULL_REQUEST}" ] || [ "${TRAVIS_PULL_REQUEST}" == "false" ]; then
-  if [ "${TRAVIS_BRANCH}" == "master" ] then
+  if [ "${TRAVIS_BRANCH}" == "master" ]; then
     aws s3 cp s3://dev-com-hedvig-cluster-ett-data/kube ~/.kube --recursive
     
     curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
