@@ -1159,7 +1159,7 @@ constructor(
             MESSAGE_STUDENT_LIMIT_PERSONS,
             MessageBodySingleSelect(
                 "Okej! För så många personer (fler än 2) gäller dessvärre inte studentförsäkringen\u000C" + "Men inga problem, du får den vanliga hemförsäkringen som ger ett bredare skydd och jag fixar ett grymt pris till dig ändå! 🙌",
-                Lists.newArrayList<SelectItem>(SelectOption("Okej, jag förstår", "message.student.25klimit"))
+                Lists.newArrayList<SelectItem>(SelectOption("Okej, jag förstår", MESSAGE_STUDENT_25K_LIMIT))
             )
         )
 
@@ -1167,7 +1167,7 @@ constructor(
             MESSAGE_STUDENT_ELIGIBLE_BRF,
             MessageBodySingleSelect(
                 "Grymt! Då får du vår fantastiska studentförsäkring där drulle ingår och betalar bara 99 kr per månad! 🙌",
-                Lists.newArrayList<SelectItem>(SelectOption("Okej, nice!", "message.student.25klimit"))
+                Lists.newArrayList<SelectItem>(SelectOption("Okej, nice!", MESSAGE_STUDENT_25K_LIMIT))
             )
         )
 
@@ -1175,7 +1175,7 @@ constructor(
             MESSAGE_STUDENT_ELIGIBLE_RENT,
             MessageBodySingleSelect(
                 "Grymt! Då får du vår fantastiska studentförsäkring där drulle ingår och betalar bara 79 kr per månad! 🙌",
-                Lists.newArrayList<SelectItem>(SelectOption("Okej, nice!", "message.student.25klimit"))
+                Lists.newArrayList<SelectItem>(SelectOption("Okej, nice!", MESSAGE_STUDENT_25K_LIMIT))
             )
         )
 
@@ -1487,7 +1487,7 @@ constructor(
                 addToChat(m, userContext)
                 val userData = userContext.onBoardingData
                 nxtMsg = if (userData.studentPolicyEligibility == true) {
-                    "message.student.25klimit"
+                    MESSAGE_STUDENT_25K_LIMIT
 
                 } else {
                     MESSAGE_50K_LIMIT
