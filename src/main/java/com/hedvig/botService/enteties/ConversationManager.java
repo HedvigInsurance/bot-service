@@ -143,8 +143,8 @@ public class ConversationManager {
 
       try {
         final Class<?> conversationClass = Class.forName(c.getClassName());
-        final Conversation conversation = conversationFactory.createConversation(conversationClass);
-        conversation.receiveEvent(type, value, userContext);
+        final Conversation conversation = conversationFactory.createConversation(conversationClass, userContext);
+        conversation.receiveEvent(type, value);
 
       } catch (ClassNotFoundException e) {
         log.error("Could not load conversation from db!", e);
@@ -163,8 +163,8 @@ public class ConversationManager {
 
       try {
         final Class<?> conversationClass = Class.forName(c.getClassName());
-        final Conversation conversation = conversationFactory.createConversation(conversationClass);
-        conversation.receiveMessage(userContext, m);
+        final Conversation conversation = conversationFactory.createConversation(conversationClass, userContext);
+        conversation.receiveMessage(m);
 
       } catch (ClassNotFoundException e) {
         log.error("Could not load conversation from db!", e);

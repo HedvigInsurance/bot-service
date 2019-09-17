@@ -41,7 +41,7 @@ public class CollectService {
       BankIdSessionImpl bankIdSession = uc.getBankIdCollectStatus(referenceToken);
       if (bankIdSession == null) {
         log.error("Could not find referenceToken: {}", value("referenceToken", referenceToken));
-        chat.bankIdAuthGeneralCollectError(uc);
+        chat.bankIdAuthGeneralCollectError();
 
         return new BankIdCollectResponse(BankIdProgressStatus.COMPLETE, "", null);
 
@@ -81,20 +81,20 @@ public class CollectService {
                               new RuntimeException("Could not find usercontext fo new memberId."));
 
               bankIdSession.setUserContext(uc);
-              chat.bankIdAuthComplete(uc);
+              chat.bankIdAuthComplete();
             } else {
               try {
                 MemberProfile member = memberService.getProfile(collect.getNewMemberId());
 
                 uc.fillMemberData(member);
                 if (member.getAddress().isPresent()) {
-                  chat.bankIdAuthComplete(uc);
+                  chat.bankIdAuthComplete();
                 } else {
-                  chat.bankIdAuthCompleteNoAddress(uc);
+                  chat.bankIdAuthCompleteNoAddress();
                 }
               } catch (Exception ex) {
                 log.error("Error loading memberProfile from memberService", ex);
-                chat.couldNotLoadMemberProfile(uc);
+                chat.couldNotLoadMemberProfile();
               }
             }
             uc.getOnBoardingData().setUserHasAuthedWithBankId(referenceToken);
@@ -102,19 +102,19 @@ public class CollectService {
           } else if (bankIdSession
               .getCollectionType()
               .equals(BankIdSessionImpl.CollectionType.SIGN)) {
-            chat.memberSigned(referenceToken, uc);
+            chat.memberSigned(referenceToken);
           }
 
           bankIdSession.setDone();
 
         } else if (bankIdStatus == BankIdProgressStatus.STARTED) {
-          chat.started(uc);
+          chat.started();
         } else if (bankIdStatus == BankIdProgressStatus.NO_CLIENT) {
-          chat.noClient(uc);
+          chat.noClient();
         } else if (bankIdStatus == BankIdProgressStatus.USER_SIGN) {
-          chat.userSign(uc);
+          chat.userSign();
         } else if (bankIdStatus == BankIdProgressStatus.OUTSTANDING_TRANSACTION) {
-          chat.oustandingTransaction(uc);
+          chat.oustandingTransaction();
         }
         bankIdSession.update(bankIdStatus);
         return collect;
@@ -125,9 +125,9 @@ public class CollectService {
             e.getErrorType());
 
         if (bankIdSession.getCollectionType() == BankIdSession.CollectionType.SIGN) {
-          chat.signalSignFailure(e.getErrorType(), e.getMessage(), uc);
+          chat.signalSignFailure(e.getErrorType(), e.getMessage());
         } else if (bankIdSession.getCollectionType() == BankIdSession.CollectionType.AUTH) {
-          chat.signalAuthFailiure(e.getErrorType(), e.getMessage(), uc);
+          chat.signalAuthFailiure(e.getErrorType(), e.getMessage());
         }
 
         return createCOMPLETEResponse();
@@ -137,9 +137,9 @@ public class CollectService {
 
         if (bankIdSession.shouldAbort()) {
           if (bankIdSession.getCollectionType() == BankIdSession.CollectionType.SIGN) {
-            chat.bankIdSignError(uc);
+            chat.bankIdSignError();
           } else {
-            chat.bankIdAuthGeneralCollectError(uc);
+            chat.bankIdAuthGeneralCollectError();
           }
           collect = createCOMPLETEResponse();
           bankIdSession.setDone();

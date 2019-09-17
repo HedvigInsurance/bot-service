@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Component
@@ -101,17 +102,17 @@ public class MessagesService {
 
     switch (actionId) {
       case CHAT:
-        uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class));
+        uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class, uc));
         break;
       case CALL_ME:
-        uc.startConversation(conversationFactory.createConversation(CallMeConversation.class));
+        uc.startConversation(conversationFactory.createConversation(CallMeConversation.class, uc));
         break;
       case REPORT_CLAIM:
-        uc.startConversation(conversationFactory.createConversation(ClaimsConversation.class));
+        uc.startConversation(conversationFactory.createConversation(ClaimsConversation.class, uc));
         break;
       case TRUSTLY:
         uc.startConversation(
-          conversationFactory.createConversation(TrustlyConversation.class),
+          conversationFactory.createConversation(TrustlyConversation.class, uc),
           TrustlyConversation.FORCED_START);
     }
 

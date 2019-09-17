@@ -15,21 +15,23 @@ import com.hedvig.botService.enteties.message.SelectOption;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static com.hedvig.botService.chat.MainConversation.MESSAGE_COMPLETE_CLAIM;
 
 @Slf4j
-@Component
 public class ClaimsConversation extends Conversation {
 
   static final String MESSAGE_CLAIMS_START = "message.claims.start";
@@ -41,8 +43,8 @@ public class ClaimsConversation extends Conversation {
   static final String MESSAGE_CLAIMS_OK = "message.claims.ok";
   static final String MESSAGE_CLAIMS_ASK_PHONE = "message.claims.ask.phone";
   static final String MESSAGE_CLAIMS_ASK_PHONE_END = "message.claims.ask.phone.end";
-  static final String MESSAGE_CLAIMS_RECORD_1 = "message.claims.record.1";
-  static final String MESSAGE_CLAIMS_RECORD_2 = "message.claims.record.2";
+  static final String MESSAGE_CLAIMS_RECORD_1 = "message.claims.record.one";
+  static final String MESSAGE_CLAIMS_RECORD_2 = "message.claims.record.two";
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE = "message.claims.ask.existing.phone";
   static final String MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW = "message.claims.ask.existing.phone.ask.new";
   static final String PHONE_NUMBER = "{PHONE_NUMBER}"; // The phone that we have from the onboarding;
@@ -55,14 +57,15 @@ public class ClaimsConversation extends Conversation {
   private final ConversationFactory conversationFactory;
   private final MemberService memberService;
 
-  @Autowired
   ClaimsConversation(
     ApplicationEventPublisher eventPublisher,
     ClaimsService claimsService,
     ProductPricingService productPricingService,
     ConversationFactory conversationFactory,
-    MemberService memberService) {
-    super(eventPublisher);
+    MemberService memberService,
+    LocalizationService localizationService,
+    UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.productPricingService = productPricingService;
@@ -149,62 +152,63 @@ public class ClaimsConversation extends Conversation {
     createMessage("error", new MessageBodyText("Oj nu blev något fel..."));
   }
 
-  public void init(UserContext userContext, String startMessage) {
-    log.info("Starting claims conversation for user: " + userContext.getMemberId());
+  @Override
+  public void init(String startMessage) {
+    log.info("Starting claims conversation for user: " + getUserContext().getMemberId());
     Message m = getMessage(startMessage);
     m.header.fromId = MessageHeader.HEDVIG_USER_ID; // new Long(userContext.getMemberId());
-    addToChat(m, userContext);
-    startConversation(userContext, startMessage); // Id of first message
+    addToChat(m);
+    startConversation(startMessage); // Id of first message
   }
 
   @Override
-  public void init(UserContext userContext) {
-    if (productPricingService.isMemberInsuranceActive(userContext.getMemberId()) == false) {
-      init(userContext, MESSAGE_CLAIMS_NOT_ACTIVE);
+  public void init() {
+    if (productPricingService.isMemberInsuranceActive(getUserContext().getMemberId()) == false) {
+      init(MESSAGE_CLAIMS_NOT_ACTIVE);
       return;
     }
 
-    init(userContext, MESSAGE_CLAIMS_START);
+    init(MESSAGE_CLAIMS_START);
   }
 
   @Override
-  public List<SelectItem> getSelectItemsForAnswer(UserContext uc) {
+  public List<SelectItem> getSelectItemsForAnswer() {
     return null;
   }
 
   @Override
-  public boolean canAcceptAnswerToQuestion(UserContext uc) {
+  public boolean canAcceptAnswerToQuestion() {
     return false;
   }
 
   @Override
-  public void handleMessage(UserContext userContext, Message m) {
+  public void handleMessage(Message m) {
 
     String nxtMsg = "";
 
-    if (!validateReturnType(m, userContext)) {
+    if (!validateReturnType(m)) {
       return;
     }
 
-    switch (m.getBaseMessageId()) {
+    switch (m.getStrippedBaseMessageId()) {
       case "message.claims.audio":
-        nxtMsg = handleAudioReceived(userContext, m);
+        nxtMsg = handleAudioReceived(m);
         break;
 
       case MESSAGE_CLAIM_CALLME:
-        assignPhoneNumberToUserContext(userContext, m, true);
+        assignPhoneNumberToUserContext(m, true);
         nxtMsg = "message.claims.callme.end";
         break;
 
       case MESSAGE_CLAIMS_ASK_PHONE:
       case MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW:
-        assignPhoneNumberToUserContext(userContext, m, false);
-        addToChat(m, userContext);
+        assignPhoneNumberToUserContext(m, false);
+        addToChat(m);
         nxtMsg = MESSAGE_CLAIMS_RECORD_1;
         break;
 
       case MESSAGE_CLAIMS_NOT_ACTIVE:
-        nxtMsg = handleClaimNotActive(userContext, m);
+        nxtMsg = handleClaimNotActive(m);
         if (nxtMsg == null) {
           return;
         }
@@ -220,90 +224,90 @@ public class ClaimsConversation extends Conversation {
       for (SelectItem o : body1.choices) {
         if (o.selected) {
           m.body.text = o.text;
-          addToChat(m, userContext);
+          addToChat(m);
           nxtMsg = o.value;
         }
       }
     }
 
-    completeRequest(nxtMsg, userContext);
+    completeRequest(nxtMsg);
   }
 
-  private void assignPhoneNumberToUserContext(UserContext userContext, Message m, boolean shouldBeCalledRightAway) {
-    userContext.getOnBoardingData().setPhoneNumber(m.body.text);
-    memberService.updatePhoneNumber(userContext.getMemberId(), m.body.text.trim());
+  private void assignPhoneNumberToUserContext(Message m, boolean shouldBeCalledRightAway) {
+    getUserContext().getOnBoardingData().setPhoneNumber(m.body.text);
+    memberService.updatePhoneNumber(getUserContext().getMemberId(), m.body.text.trim());
 
     if (shouldBeCalledRightAway) {
-      sendCallMeEvent(userContext, m);
-      userContext.completeConversation(this);
+      sendCallMeEvent(m);
+      getUserContext().completeConversation(this);
     }
   }
 
-  private void sendCallMeEvent(UserContext userContext, Message m) {
+  private void sendCallMeEvent(Message m) {
     val isInsuranceActive =
-      productPricingService.isMemberInsuranceActive(userContext.getMemberId());
+      productPricingService.isMemberInsuranceActive(getUserContext().getMemberId());
     eventPublisher.publishEvent(
       new ClaimCallMeEvent(
-        userContext.getMemberId(),
-        userContext.getOnBoardingData().getFirstName(),
-        userContext.getOnBoardingData().getFamilyName(),
+        getUserContext().getMemberId(),
+        getUserContext().getOnBoardingData().getFirstName(),
+        getUserContext().getOnBoardingData().getFamilyName(),
         m.body.text,
         isInsuranceActive));
   }
 
-  private String handleClaimNotActive(UserContext userContext, Message m) {
+  private String handleClaimNotActive(Message m) {
 
     MessageBodySingleSelect body = (MessageBodySingleSelect) m.body;
     m.body.text = body.getSelectedItem().text;
-    addToChat(m, userContext);
+    addToChat(m);
     if (body.getSelectedItem().value.equals(MESSAGE_CLAIMS_NOT_ACTIVE_CALL_ME)) {
       return MESSAGE_CLAIM_CALLME;
     }
 
-    userContext.completeConversation(this);
-    userContext.startConversation(conversationFactory.createConversation(MainConversation.class));
+    getUserContext().completeConversation(this);
+    getUserContext().startConversation(conversationFactory.createConversation(MainConversation.class, getUserContext()));
     return null;
   }
 
-  private String handleAudioReceived(UserContext userContext, Message m) {
+  private String handleAudioReceived(Message m) {
     String nxtMsg;
     String audioUrl = ((MessageBodyAudio) m.body).url;
     log.info("Audio recieved with m.body.text: " + m.body.text + " and URL: " + audioUrl);
     m.body.text = "Skicka in anmälan";
 
-    claimsService.createClaimFromAudio(userContext.getMemberId(), audioUrl);
+    claimsService.createClaimFromAudio(getUserContext().getMemberId(), audioUrl);
 
-    this.eventPublisher.publishEvent(new ClaimAudioReceivedEvent(userContext.getMemberId()));
+    this.eventPublisher.publishEvent(new ClaimAudioReceivedEvent(getUserContext().getMemberId()));
 
-    addToChat(m, userContext); // Response parsed to nice format
+    addToChat(m); // Response parsed to nice format
     nxtMsg = "message.claims.record.ok";
     return nxtMsg;
   }
 
   @Override
-  public void receiveEvent(EventTypes e, String value, UserContext userContext) {
+  public void receiveEvent(EventTypes e, String value) {
 
     switch (e) {
       // This is used to let Hedvig say multiple message after another
       case MESSAGE_FETCHED:
         log.info("Message fetched: " + value);
         if (value.equals("message.claims.record.ok")) {
-          completeConversation(userContext);
+          completeConversation(getUserContext());
           return;
         }
 
         String relay = getRelay(value);
         if (relay != null) {
-          completeRequest(relay, userContext);
+          completeRequest(relay);
           break;
         }
 
         if (value.equals(ClaimsConversation.MESSAGE_CLAIMS_START)) {
-          val phone = userContext.getOnBoardingData().getPhoneNumber();
+          val phone = getUserContext().getOnBoardingData().getPhoneNumber();
           if (phone == null || phone.isEmpty()) {
-            completeRequest(MESSAGE_CLAIMS_ASK_PHONE, userContext);
+            completeRequest(MESSAGE_CLAIMS_ASK_PHONE);
           } else {
-            completeRequest(MESSAGE_CLAIMS_ASK_EXISTING_PHONE, userContext);
+            completeRequest(MESSAGE_CLAIMS_ASK_EXISTING_PHONE);
           }
         }
         break;
@@ -313,7 +317,7 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void completeConversation(UserContext uc) {
-    val conversation = conversationFactory.createConversation(MainConversation.class);
+    val conversation = conversationFactory.createConversation(MainConversation.class, uc);
     uc.startConversation(conversation, MESSAGE_COMPLETE_CLAIM);
   }
 }

@@ -1,8 +1,10 @@
 package com.hedvig.botService.chat
 
+import com.hedvig.botService.Utils.ConversationUtils
 import com.hedvig.botService.enteties.MemberChat
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.testHelpers.MessageHelpers.createSingleSelectMessage
 import com.hedvig.botService.testHelpers.MessageHelpers.createTextMessage
 import org.assertj.core.api.Assertions.assertThat
@@ -10,9 +12,11 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
-import org.mockito.BDDMockito.then
+import org.mockito.BDDMockito.*
 import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
+import org.mockito.Mockito.`when`
+import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
 class ConversationTest {
@@ -20,6 +24,9 @@ class ConversationTest {
 
   @Mock
   private val eventPublisher: ApplicationEventPublisher? = null
+
+  @Mock
+  private val localizationService: LocalizationService? = null
 
   private lateinit var uc: UserContext
 
@@ -46,7 +53,7 @@ class ConversationTest {
       this.createChatMessage("test.message", wrappedMessage)
     }
 
-    sut.addToChat("test.message", uc)
+    sut.addToChat("test.message")
 
     assertThat(executed).isTrue()
 
@@ -58,18 +65,25 @@ class ConversationTest {
     // Arrange
     uc.putUserData("{TEST}", "localhost")
 
+    val linkText = "Länk text"
+    val linkValue = "selected.value"
+
+    `when`(localizationService!!.getText(Mockito.any(Locale::class.java), Mockito.anyString())).thenReturn(linkText)
+
     val m = createSingleSelectMessage(
       "En förklarande text",
+      true,
       SelectLink(
-        "Länk text",
-        "selected.value",
+        linkText,
+        linkValue,
         null,
         "bankid:///{TEST}/text",
         "http://{TEST}/text",
         false))
 
+
     // ACT
-    sut.addToChat(m, uc)
+    sut.addToChat(m)
 
     // Assert
     then<MemberChat>(mc).should().addToHistory(messageCaptor!!.capture())
@@ -89,7 +103,7 @@ class ConversationTest {
     val m = createTextMessage("En förklarande {REPLACE_THIS} text")
 
     // ACT
-    sut.addToChat(m, uc)
+    sut.addToChat(m)
 
     // Assert
     then<MemberChat>(mc).should().addToHistory(messageCaptor!!.capture())
@@ -114,11 +128,9 @@ class ConversationTest {
       })
     }
 
-
-    testClass.receiveMessage(uc, makeMessage("message.id", MessageBodySingleSelect("", listOf())))
+    testClass.receiveMessage(makeMessage("message.id", MessageBodySingleSelect("", listOf())))
 
     assertThat(called).isTrue()
-
   }
 
   @Test
@@ -136,10 +148,95 @@ class ConversationTest {
     }
 
 
-    testClass.receiveMessage(uc, makeMessage("message.id", MessageBodyText("")))
+    testClass.receiveMessage(makeMessage("message.id", MessageBodyText("")))
 
     assertThat(called).isTrue()
 
+  }
+
+  @Test
+  fun conversationMessageSpitAndConversationUtils_whitNoSplit() {
+    val key = "key1"
+    val text = "Test1"
+
+    `when`(localizationService!!.getText(null, key)).thenReturn(text)
+
+    sut.createChatMessage(key, MessageBody(text))
+
+    assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1"))).isEqualTo(text)
+  }
+
+  @Test
+  fun conversationMessageSpitAndConversationUtils_whitOneFirstSplit() {
+    val key = "key1"
+    val text = "\u000CTest1"
+
+    `when`(localizationService!!.getText(null, key)).thenReturn(text)
+
+    sut.createChatMessage(key, MessageBody(text))
+
+    assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.0")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.0"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.1")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.1"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.2")?.body?.text).isEqualTo("Test1")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.2"))).isEqualTo("Test1")
+  }
+
+  @Test
+  fun conversationMessageSpitAndConversationUtils_whitOneSplit() {
+    val key = "key1"
+    val text = "Test1\u000CTest2"
+
+    `when`(localizationService!!.getText(null, key)).thenReturn(text)
+
+    sut.createChatMessage(key, MessageBody(text))
+
+    assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.0")?.body?.text).isEqualTo("Test1")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.0"))).isEqualTo("Test1")
+
+    assertThat(sut.getMessage("key1.1")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.1"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.2")?.body?.text).isEqualTo("Test2")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.2"))).isEqualTo("Test2")
+  }
+
+  @Test
+  fun conversationMessageSpitAndConversationUtils_whitTwoSplit() {
+    val key = "key1"
+    val text = "Test1\u000CTest2\u000CTest3"
+
+    `when`(localizationService!!.getText(null, key)).thenReturn(text)
+
+    sut.createChatMessage(key, MessageBody(text))
+
+    assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.0")?.body?.text).isEqualTo("Test1")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.0"))).isEqualTo("Test1")
+
+    assertThat(sut.getMessage("key1.1")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.1"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.2")?.body?.text).isEqualTo("Test2")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.2"))).isEqualTo("Test2")
+
+    assertThat(sut.getMessage("key1.3")?.body?.text).isEqualTo("")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.3"))).isEqualTo("")
+
+    assertThat(sut.getMessage("key1.4")?.body?.text).isEqualTo("Test3")
+    assertThat(ConversationUtils.getSplitFromIndex(text, ConversationUtils.getSplitIndexFromText("key1.4"))).isEqualTo("Test3")
   }
 
   fun makeMessage(id: String, body: MessageBody): Message {
@@ -151,23 +248,23 @@ class ConversationTest {
 
 
   fun makeConversation(constructor: Conversation.(Unit) -> Unit): Conversation {
-    return object : Conversation(eventPublisher!!) {
-      override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
+    return object : Conversation(eventPublisher!!, localizationService!!, uc) {
+      override fun getSelectItemsForAnswer(): List<SelectItem> {
         return listOf()
       }
 
-      override fun canAcceptAnswerToQuestion(uc: UserContext): Boolean {
+      override fun canAcceptAnswerToQuestion(): Boolean {
         return false
       }
 
-      override fun handleMessage(userContext: UserContext, m: Message) {
+      override fun handleMessage(m: Message) {
 
       }
 
-      override fun init(userContext: UserContext) {
+      override fun init() {
       }
 
-      override fun init(userContext: UserContext, startMessage: String) {
+      override fun init(startMessage: String) {
       }
 
       init {

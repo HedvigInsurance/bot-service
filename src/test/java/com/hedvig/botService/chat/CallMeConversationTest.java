@@ -5,6 +5,7 @@ import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.botService.services.LocalizationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,9 @@ public class CallMeConversationTest {
   @Mock
   private ConversationFactory conversationFactory;
 
+  @Mock
+  private LocalizationService localizationService;
+
   private CallMeConversation testCallMeConversation;
   private UserContext userContext;
 
@@ -28,8 +32,8 @@ public class CallMeConversationTest {
 
   @Before
   public void SetUp() {
-    testCallMeConversation = new CallMeConversation(eventPublisher);
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
+    testCallMeConversation = new CallMeConversation(eventPublisher, localizationService, userContext);
   }
 
   @Test
@@ -37,7 +41,7 @@ public class CallMeConversationTest {
 
     userContext.putUserData(PHONE_NUMBER, TOLVANSSON_PHONE_NUMBER);
 
-    testCallMeConversation.init(userContext);
+    testCallMeConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
       .startsWith(CallMeConversation.CALLME_CHAT_START);
@@ -45,7 +49,7 @@ public class CallMeConversationTest {
 
   @Test
   public void Should_ReturnACallMeStartMessageWithoutPhone_WhenPhoneNumberIsNotInUserContext() {
-    testCallMeConversation.init(userContext);
+    testCallMeConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
       .startsWith(CallMeConversation.CALLME_CHAT_START_WITHOUT_PHONE);
