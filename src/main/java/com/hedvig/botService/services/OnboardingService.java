@@ -96,8 +96,8 @@ public class OnboardingService {
     if (collectResponse.getBankIdStatus() == BankIdProgressStatus.COMPLETE) {
       OnboardingConversationDevi conversation =
         (OnboardingConversationDevi)
-          conversationFactory.createConversation(OnboardingConversationDevi.class);
-      conversation.memberSigned(collectResponse.getReferenceToken(), uc);
+          conversationFactory.createConversation(OnboardingConversationDevi.class, uc);
+      conversation.memberSigned(collectResponse.getReferenceToken());
     }
 
     return collectResponse;
@@ -130,7 +130,7 @@ public class OnboardingService {
         .orElseThrow(() -> new RuntimeException("No active conversation."));
 
     if (activeConversation.getClassName().equals(FreeChatConversation.class.getName()) == false) {
-      val conversation = conversationFactory.createConversation(FreeChatConversation.class);
+      val conversation = conversationFactory.createConversation(FreeChatConversation.class, uc);
       uc.startConversation(conversation, FREE_CHAT_ONBOARDING_START);
     }
   }

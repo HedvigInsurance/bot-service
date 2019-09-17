@@ -19,12 +19,17 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_CLAIM
+import com.hedvig.botService.services.LocalizationService
+import org.springframework.beans.factory.annotation.Value
+import java.util.*
 
-@Component
 class MainConversation @Autowired
 constructor(
-    private val conversationFactory: ConversationFactory, eventPublisher: ApplicationEventPublisher
-) : Conversation(eventPublisher) {
+    private val conversationFactory: ConversationFactory,
+    eventPublisher: ApplicationEventPublisher,
+    localizationService: LocalizationService,
+    userContext: UserContext
+) : Conversation(eventPublisher, localizationService, userContext) {
 
     init {
 
@@ -97,7 +102,7 @@ constructor(
         this.createMessage(MESSAGE_ERROR, MessageBodyText("Oj nu blev något fel..."))
     }
 
-    override fun receiveEvent(e: Conversation.EventTypes, value: String, userContext: UserContext) {
+    override fun receiveEvent(e: Conversation.EventTypes, value: String) {
         when (e) {
             // This is used to let Hedvig say multiple message after another
             Conversation.EventTypes.MESSAGE_FETCHED -> {
@@ -106,37 +111,37 @@ constructor(
                 // New way of handeling relay messages
                 val relay = getRelay(value)
                 if (relay != null) {
-                    completeRequest(relay, userContext)
+                    completeRequest(relay)
                 }
             }
         }
     }
 
-    override fun handleMessage(userContext: UserContext, m: Message) {
+    override fun handleMessage(m: Message) {
 
         var nxtMsg = ""
 
-        if (!validateReturnType(m, userContext)) {
+        if (!validateReturnType(m)) {
             return
         }
 
-        when (m.id) {
+        when (m.strippedBaseMessageId) {
             MESSAGE_COMPLETE_CLAIM, MESSAGE_HEDVIG_COM -> {
                 val item = (m.body as MessageBodySingleSelect).selectedItem
                 m.body.text = item.text
                 if (item.value == MESSAGE_MAIN_REPORT) {
                     nxtMsg = CONVERSATION_DONE
                 } else if (item.value == MESSAGE_MAIN_START_TRUSTLY) {
-                    addToChat(m, userContext)
+                    addToChat(m)
                     userContext.completeConversation(this) // TODO: End conversation in better way
                     userContext.startConversation(
-                        conversationFactory.createConversation(TrustlyConversation::class.java)
+                        conversationFactory.createConversation(TrustlyConversation::class.java, userContext)
                     )
                     userContext.putUserData(UserContext.FORCE_TRUSTLY_CHOICE, "false")
                     return
                 }
 
-                addToChat(m, userContext) // Response parsed to nice format
+                addToChat(m) // Response parsed to nice format
             }
             MESSAGE_MAIN_CALLME -> {
                 userContext.putUserData("{PHONE_" + LocalDate().toString() + "}", m.body.text)
@@ -149,10 +154,10 @@ constructor(
                     )
                 )
                 nxtMsg = MESSAGE_MAIN_END
-                addToChat(m, userContext) // Response parsed to nice format
+                addToChat(m) // Response parsed to nice format
                 userContext.completeConversation(this) // TODO: End conversation in better way
             }
-            MESSAGE_MAIN_QUESTION -> nxtMsg = handleQuestion(userContext, m)
+            MESSAGE_MAIN_QUESTION -> nxtMsg = handleQuestion(m)
         }
 
 
@@ -165,24 +170,24 @@ constructor(
             for (o in body1.choices) {
                 if (o.selected) {
                     m.body.text = o.text
-                    addToChat(m, userContext)
+                    addToChat(m)
                     nxtMsg = o.value
                 }
             }
         }
 
-        completeRequest(nxtMsg, userContext)
+        completeRequest(nxtMsg)
     }
 
     private fun startFreeTextChatConversation(uc: UserContext) {
-        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java)
+        val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, uc)
         uc.startConversation(conversation, FREE_CHAT_FROM_CLAIM)
     }
 
-    fun handleQuestion(userContext: UserContext, m: Message): String {
+    fun handleQuestion(m: Message): String {
         val question = m.body.text
         userContext.putUserData("{QUESTION_" + LocalDate().toString() + "}", question)
-        addToChat(m, userContext) // Response parsed to nice format
+        addToChat(m) // Response parsed to nice format
         eventPublisher.publishEvent(QuestionAskedEvent(userContext.memberId, question))
         return MESSAGE_QUESTION_RECIEVED
     }
@@ -190,7 +195,7 @@ constructor(
     /*
    * Generate next chat message or ends conversation
    * */
-    public override fun completeRequest(nxtMsg: String, userContext: UserContext) {
+    public override fun completeRequest(nxtMsg: String) {
         var outNxtMsg = nxtMsg
 
         when (outNxtMsg) {
@@ -198,7 +203,7 @@ constructor(
                 log.info("conversation complete")
                 userContext.completeConversation(this)
                 userContext.startConversation(
-                    conversationFactory.createConversation(ClaimsConversation::class.java)
+                    conversationFactory.createConversation(ClaimsConversation::class.java, userContext)
                 )
 
                 return
@@ -214,7 +219,7 @@ constructor(
             }
         }
 
-        super.completeRequest(outNxtMsg, userContext)
+        super.completeRequest(outNxtMsg)
     }
 
     fun addTrustlyButton(userContext: UserContext) {
@@ -226,27 +231,27 @@ constructor(
         }
     }
 
-    override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
+    override fun getSelectItemsForAnswer(): List<SelectItem> {
         return Lists.newArrayList<SelectItem>(
             SelectOption("Svara Hedvig", MESSAGE_MAIN_QUESTION),
             SelectOption("Tack, det var vad jag behövde veta", MESSAGE_HEDVIG_COM)
         )
     }
 
-    override fun canAcceptAnswerToQuestion(uc: UserContext): Boolean {
+    override fun canAcceptAnswerToQuestion(): Boolean {
         return true
     }
 
-    override fun init(userContext: UserContext) {
+    override fun init() {
         log.info("Starting main conversation")
         addTrustlyButton(userContext)
-        startConversation(userContext, MESSAGE_HEDVIG_COM) // Id of first message
+        startConversation(MESSAGE_HEDVIG_COM) // Id of first message
     }
 
-    override fun init(userContext: UserContext, startMessage: String) {
+    override fun init(startMessage: String) {
         log.info("Starting main conversation with message: $startMessage")
         addTrustlyButton(userContext)
-        startConversation(userContext, startMessage) // Id of first message
+        startConversation(startMessage) // Id of first message
     }
 
     companion object {

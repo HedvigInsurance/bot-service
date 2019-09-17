@@ -9,6 +9,7 @@ import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.message.MessageBodyFileUpload;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
 import org.junit.Before;
@@ -32,6 +33,10 @@ public class FreeChatConversationTest {
   @Mock
   private ProductPricingService productPricingService;
 
+  @Mock
+  private LocalizationService localizationService;
+
+
   private FreeChatConversation testFreeChatConversation;
   private UserContext userContext;
 
@@ -39,9 +44,9 @@ public class FreeChatConversationTest {
 
   @Before
   public void SetUp() {
-    testFreeChatConversation = new FreeChatConversation(statusBuilder, eventPublisher,
-      productPricingService);
     userContext = new UserContext(MEMBER_ID);
+    testFreeChatConversation = new FreeChatConversation(statusBuilder, eventPublisher,
+      productPricingService, localizationService, userContext);
   }
 
 
@@ -50,7 +55,7 @@ public class FreeChatConversationTest {
 
     userContext.putUserData("{NAME}", "TestName");
 
-    testFreeChatConversation.init(userContext);
+    testFreeChatConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
       .startsWith(FreeChatConversation.FREE_CHAT_START);
@@ -70,7 +75,7 @@ public class FreeChatConversationTest {
       .getMessage(FreeChatConversation.FREE_CHAT_ONBOARDING_START);
     m.body = new MessageBodyFileUpload("TestContent", TEST_KEY, TEST_TYPE);
 
-    testFreeChatConversation.receiveMessage(userContext, m);
+    testFreeChatConversation.receiveMessage(m);
 
     then(eventPublisher)
       .should()
@@ -92,7 +97,7 @@ public class FreeChatConversationTest {
       .getMessage(FreeChatConversation.FREE_CHAT_ONBOARDING_START);
     m.body = new MessageBodyFileUpload("TestContent", TEST_KEY, TEST_TYPE);
 
-    testFreeChatConversation.receiveMessage(userContext, m);
+    testFreeChatConversation.receiveMessage(m);
 
     then(eventPublisher)
       .should()

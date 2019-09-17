@@ -2,17 +2,19 @@ package com.hedvig.botService.chat
 
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.services.LocalizationService
 
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
 
-@Component
 class HouseOnboardingConversation
     constructor(
         override var eventPublisher: ApplicationEventPublisher,
-        private val conversationFactory: ConversationFactory
-    ) : Conversation(eventPublisher) {
+        private val conversationFactory: ConversationFactory,
+        localizationService: LocalizationService,
+        userContext: UserContext
+    ) : Conversation(eventPublisher, localizationService, userContext) {
 
     var queuePos: Int? = null
 
@@ -64,13 +66,13 @@ class HouseOnboardingConversation
         this.addRelay(MESSAGE_HUS_FOURTH, CONVERSATION_DONE)
     }
 
-    public override fun completeRequest(nxtMsg: String, userContext: UserContext) {
+    public override fun completeRequest(nxtMsg: String) {
         var nxtMsg = nxtMsg
 
         when (nxtMsg) {
               CONVERSATION_DONE -> {
                   userContext.completeConversation(this)
-                  val conversation = conversationFactory.createConversation(OnboardingConversationDevi::class.java)
+                  val conversation = conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
                   userContext.startConversation(conversation, OnboardingConversationDevi.MESSAGE_50K_LIMIT)
               }
 
@@ -79,32 +81,32 @@ class HouseOnboardingConversation
                 nxtMsg = "error"
             }
         }
-        super.completeRequest(nxtMsg, userContext)
+        super.completeRequest(nxtMsg)
     }
 
-    override fun init(userContext: UserContext) {
+    override fun init() {
         HouseOnboardingConversation.log.info("Starting house conversation")
-        startConversation(userContext, HouseOnboardingConversation.MESSAGE_HUS_FIRST)
+        startConversation(HouseOnboardingConversation.MESSAGE_HUS_FIRST)
     }
 
 
-    override fun init(userContext: UserContext, startMessage: String) {
+    override fun init(startMessage: String) {
         log.info("Starting house onboarding conversation with message: $startMessage")
-        startConversation(userContext, startMessage) // Id of first message
+        startConversation(startMessage) // Id of first message
     }
 
-    override fun handleMessage(userContext: UserContext, m: Message) {
+    override fun handleMessage(m: Message) {
         var nxtMsg = ""
 
-        if (!validateReturnType(m, userContext)) {
+        if (!validateReturnType(m)) {
             return
         }
 
         // Lambda
         if (this.hasSelectItemCallback(m.id) && m.body.javaClass == MessageBodySingleSelect::class.java) {
             // MessageBodySingleSelect body = (MessageBodySingleSelect) m.body;
-            nxtMsg = this.execSelectItemCallback(m.id, m.body as MessageBodySingleSelect, userContext)
-            addToChat(m, userContext)
+            nxtMsg = this.execSelectItemCallback(m.id, m.body as MessageBodySingleSelect)
+            addToChat(m)
         }
 
         val onBoardingData = userContext.onBoardingData
@@ -112,12 +114,12 @@ class HouseOnboardingConversation
         // ... and then the incoming message id
 
         nxtMsg = m.id
-        addToChat(m, userContext)
+        addToChat(m)
 
-        completeRequest(nxtMsg, userContext)
+        completeRequest(nxtMsg)
     }
 
-    override fun receiveEvent(e: Conversation.EventTypes, value: String, userContext: UserContext) {
+    override fun receiveEvent(e: Conversation.EventTypes, value: String) {
         when (e) {
             // This is used to let Hedvig say multiple message after another
             Conversation.EventTypes.MESSAGE_FETCHED -> {
@@ -127,18 +129,18 @@ class HouseOnboardingConversation
                 val relay = getRelay(value)
 
                 if (relay != null) {
-                    completeRequest(relay, userContext)
+                    completeRequest(relay)
                 }
 
             }
         }
     }
 
-    override fun canAcceptAnswerToQuestion(uc: UserContext): Boolean {
+    override fun canAcceptAnswerToQuestion(): Boolean {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getSelectItemsForAnswer(uc: UserContext): List<SelectItem> {
+    override fun getSelectItemsForAnswer(): List<SelectItem> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

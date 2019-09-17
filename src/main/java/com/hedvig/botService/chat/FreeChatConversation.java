@@ -4,16 +4,19 @@ import com.google.common.collect.Lists;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.validation.constraints.NotNull;
 import java.time.Clock;
 import java.util.List;
+import java.util.Locale;
 
 public class FreeChatConversation extends Conversation {
 
@@ -31,8 +34,10 @@ public class FreeChatConversation extends Conversation {
   public FreeChatConversation(
     StatusBuilder statusBuilder,
     ApplicationEventPublisher eventPublisher,
-    ProductPricingService productPricingService) {
-    super(eventPublisher);
+    ProductPricingService productPricingService,
+    LocalizationService localizationService,
+    UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.statusBuilder = statusBuilder;
     this.eventPublisher = eventPublisher;
     this.productPricingService = productPricingService;
@@ -60,19 +65,19 @@ public class FreeChatConversation extends Conversation {
   }
 
   @Override
-  public List<SelectItem> getSelectItemsForAnswer(UserContext uc) {
+  public List<SelectItem> getSelectItemsForAnswer() {
     return Lists.newArrayList();
   }
 
   @Override
-  public boolean canAcceptAnswerToQuestion(UserContext uc) {
+  public boolean canAcceptAnswerToQuestion() {
     return true;
   }
 
   @Override
-  public void handleMessage(UserContext userContext, Message m) {
+  public void handleMessage(Message m) {
     String nxtMsg = "";
-    switch (m.id) {
+    switch (m.getStrippedBaseMessageId()) {
       case FREE_CHAT_START:
       case FREE_CHAT_ONBOARDING_START:
       case FREE_CHAT_FROM_BO:
@@ -81,25 +86,25 @@ public class FreeChatConversation extends Conversation {
         m.header.statusMessage = statusBuilder.getStatusMessage(Clock.systemUTC());
 
         boolean isFile = m.body instanceof MessageBodyFileUpload;
-        if (productPricingService.getInsuranceStatus(userContext.getMemberId()) != null) {
+        if (productPricingService.getInsuranceStatus(getUserContext().getMemberId()) != null) {
           if (isFile) {
             val body = (MessageBodyFileUpload) m.body;
-            eventPublisher.publishEvent(new FileUploadedEvent(userContext.getMemberId(), body.key, body.mimeType));
+            eventPublisher.publishEvent(new FileUploadedEvent(getUserContext().getMemberId(), body.key, body.mimeType));
           } else {
             eventPublisher
-              .publishEvent(new QuestionAskedEvent(userContext.getMemberId(), m.body.text));
+              .publishEvent(new QuestionAskedEvent(getUserContext().getMemberId(), m.body.text));
           }
         } else {
           if (isFile) {
             val body = (MessageBodyFileUpload) m.body;
-            eventPublisher.publishEvent(new OnboardingFileUploadedEvent(userContext.getMemberId(), body.key, body.mimeType));
+            eventPublisher.publishEvent(new OnboardingFileUploadedEvent(getUserContext().getMemberId(), body.key, body.mimeType));
           } else {
             eventPublisher.publishEvent(
-              new OnboardingQuestionAskedEvent(userContext.getMemberId(), m.body.text));
+              new OnboardingQuestionAskedEvent(getUserContext().getMemberId(), m.body.text));
           }
         }
 
-        addToChat(m, userContext);
+        addToChat(m);
         nxtMsg = FREE_CHAT_MESSAGE;
         break;
       }
@@ -115,18 +120,18 @@ public class FreeChatConversation extends Conversation {
       for (SelectItem o : body1.choices) {
         if (o.selected) {
           m.body.text = o.text;
-          addToChat(m, userContext);
+          addToChat(m);
           nxtMsg = o.value;
         }
       }
     }
 
-    completeRequest(nxtMsg, userContext);
+    completeRequest(nxtMsg);
   }
 
   @NotNull
   @Override
-  public Message createBackOfficeMessage(UserContext uc, String message, String id) {
+  public Message createBackOfficeMessage(String message, String id) {
     Message msg = new Message();
     msg.body = new MessageBodyText(message);
     msg.header = MessageHeader.createRichTextHeader();
@@ -139,12 +144,12 @@ public class FreeChatConversation extends Conversation {
   }
 
   @Override
-  public void init(UserContext userContext) {
-    startConversation(userContext, FREE_CHAT_START); // Id of first message
+  public void init() {
+    startConversation(FREE_CHAT_START); // Id of first message
   }
 
   @Override
-  public void init(UserContext userContext, String startMessage) {
-    startConversation(userContext, startMessage); // Id of first message
+  public void init(String startMessage) {
+    startConversation(startMessage); // Id of first message
   }
 }

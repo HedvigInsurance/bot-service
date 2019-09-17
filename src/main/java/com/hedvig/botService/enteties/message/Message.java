@@ -5,6 +5,7 @@ package com.hedvig.botService.enteties.message;
  * */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hedvig.botService.Utils.MessageUtil;
 import com.hedvig.botService.dataTypes.HedvigDataType;
 import com.hedvig.botService.enteties.MemberChat;
 import com.hedvig.botService.enteties.UserContext;
@@ -22,6 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import com.hedvig.botService.services.LocalizationService;
 import lombok.Data;
 import lombok.ToString;
 
@@ -59,13 +61,17 @@ public class Message {
     author = value;
   }
 
+
+  /** @return Message id without trailing numbers and not valid post fix" */
+  public String getStrippedBaseMessageId() {
+    String strippedId = MessageUtil.INSTANCE.removeNotValidFromId(id);
+    return MessageUtil.INSTANCE.getBaseMessageId(strippedId);
+  }
+
   /** @return Message id without trailing numbers" */
   @JsonIgnore
   public String getBaseMessageId() {
-    if (id.matches("^.+?\\d$")) {
-      return id.substring(0, id.lastIndexOf("."));
-    }
-    return id;
+    return MessageUtil.INSTANCE.getBaseMessageId(id);
   }
 
   public Integer getGlobalId() {
@@ -84,7 +90,11 @@ public class Message {
     header.markedAsRead = true;
   }
 
-  public void render(UserContext userContext) {
-    this.body.render(userContext);
+  public void render(UserContext userContext, LocalizationService localizationService) {
+    this.body.render(id, isFromUser(), userContext, localizationService);
+  }
+
+  protected Boolean isFromUser() {
+    return header.fromId != 1;
   }
 }

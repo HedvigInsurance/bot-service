@@ -9,10 +9,13 @@ import com.hedvig.botService.enteties.message.MessageHeader;
 import com.hedvig.botService.enteties.message.SelectItem;
 import com.hedvig.botService.enteties.message.SelectLink;
 import com.hedvig.botService.enteties.message.SelectOption;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import lombok.val;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 
 public class CallMeConversation extends Conversation {
@@ -26,8 +29,8 @@ public class CallMeConversation extends Conversation {
 
   private final ApplicationEventPublisher eventPublisher;
 
-  public CallMeConversation(ApplicationEventPublisher eventPublisher) {
-    super(eventPublisher);
+  public CallMeConversation(ApplicationEventPublisher eventPublisher, LocalizationService localizationService, UserContext userContext) {
+    super(eventPublisher, localizationService, userContext);
     this.eventPublisher = eventPublisher;
     createMessage(
       CALLME_CHAT_START,
@@ -57,28 +60,28 @@ public class CallMeConversation extends Conversation {
   }
 
   @Override
-  public List<SelectItem> getSelectItemsForAnswer(UserContext uc) {
+  public List<SelectItem> getSelectItemsForAnswer() {
     return Lists.newArrayList();
   }
 
   @Override
-  public boolean canAcceptAnswerToQuestion(UserContext uc) {
+  public boolean canAcceptAnswerToQuestion() {
     return true;
   }
 
   @Override
-  public void handleMessage(UserContext userContext, Message m) {
+  public void handleMessage(Message m) {
     String nxtMsg = "";
 
-    switch (m.getBaseMessageId()) {
+    switch (m.getStrippedBaseMessageId()) {
       case CALLME_PHONE_CHANGE:
       case CALLME_CHAT_START_WITHOUT_PHONE: {
         String trimmedText = m.body.text.trim();
-        userContext.putUserData("{PHONE_NUMBER}", trimmedText);
-        m.body.text = "Ni kan nå mig på telefonnummer " + trimmedText;
-        addToChat(m, userContext);
+        getUserContext().putUserData("{PHONE_NUMBER}", trimmedText);
+        m.body.text = "Ni kan nå mig på telefonnummer {PHONE_NUMBER}";
+        addToChat(m);
 
-        endConversation(userContext, m);
+        endConversation(m);
         nxtMsg = CALLME_PHONE_OK;
         break;
       }
@@ -86,7 +89,7 @@ public class CallMeConversation extends Conversation {
         val messageBody = (MessageBodySingleSelect) m.body;
         val selectedItem = messageBody.getSelectedItem();
         if (Objects.equals(selectedItem.value, CALLME_PHONE_OK)) {
-          endConversation(userContext, m);
+          endConversation(m);
         }
       }
     }
@@ -101,38 +104,38 @@ public class CallMeConversation extends Conversation {
       for (SelectItem o : body1.choices) {
         if (o.selected) {
           m.body.text = o.text;
-          addToChat(m, userContext);
+          addToChat(m);
           nxtMsg = o.value;
         }
       }
     }
 
-    completeRequest(nxtMsg, userContext);
+    completeRequest(nxtMsg);
   }
 
-  private void endConversation(UserContext userContext, Message m) {
+  private void endConversation(Message m) {
     eventPublisher.publishEvent(
       new RequestPhoneCallEvent(
-        userContext.getMemberId(),
+        getUserContext().getMemberId(),
         m.body.text,
-        userContext.getOnBoardingData().getFirstName(),
-        userContext.getOnBoardingData().getFamilyName()));
-    userContext.completeConversation(this);
+        getUserContext().getOnBoardingData().getFirstName(),
+        getUserContext().getOnBoardingData().getFamilyName()));
+    getUserContext().completeConversation(this);
   }
 
   @Override
-  public void init(UserContext userContext) {
-    String phoneNumberKey = userContext.getDataEntry(PHONE_NUMBER);
+  public void init() {
+    String phoneNumberKey = getUserContext().getDataEntry(PHONE_NUMBER);
 
     if (phoneNumberKey == null || phoneNumberKey.trim().isEmpty()) {
-      startConversation(userContext, CALLME_CHAT_START_WITHOUT_PHONE);
+      startConversation(CALLME_CHAT_START_WITHOUT_PHONE);
     } else {
-      startConversation(userContext, CALLME_CHAT_START); // Id of first message
+      startConversation(CALLME_CHAT_START); // Id of first message
     }
   }
 
   @Override
-  public void init(UserContext userContext, String startMessage) {
-    startConversation(userContext, startMessage); // Id of first message
+  public void init(String startMessage) {
+    startConversation(startMessage); // Id of first message
   }
 }
