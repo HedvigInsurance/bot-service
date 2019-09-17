@@ -2,6 +2,7 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.hedvig.botService.chat.HouseOnboardingConversation.Companion.MESSAGE_HUS_FIRST
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
@@ -532,26 +533,6 @@ constructor(
                 body.selectedItem.value
             })
         setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN)
-
-
-        this.createChatMessage(
-            MESSAGE_HUS,
-            WrappedMessage(
-                MessageBodySingleSelect(
-                    "Åh, typiskt! Just nu försäkrar jag bara lägenheter\u000C" + "Om du vill så kan jag höra av mig när jag försäkrar hus och villor också?",
-                    SelectOption("Okej!", MESSAGE_NAGOTMER),
-                    SelectOption("Tack, men nej tack", MESSAGE_AVSLUTOK)
-                )
-            ) { body, uc, message ->
-                if (body.selectedItem.value.equals(MESSAGE_NAGOTMER)) {
-                    uc.onBoardingData.newsLetterEmail = uc.onBoardingData.email
-                }
-                addToChat(message, uc)
-                body.text = body.selectedItem.text
-                body.selectedItem.value
-                body.selectedItem.value
-            }
-        )
 
         this.createMessage(
             MESSAGE_TIPSA,
@@ -1739,6 +1720,12 @@ constructor(
                     val bankIdAuthResponse = authResponse.get()
                     userContext.startBankIdAuth(bankIdAuthResponse)
                 }
+            }
+            MESSAGE_HUS -> {
+                userContext.completeConversation(this)
+                val conversation = conversationFactory.createConversation(HouseOnboardingConversation::class.java)
+                userContext.startConversation(conversation, HouseOnboardingConversation.MESSAGE_HUS_FIRST)
+                return
             }
             "onboarding.done" -> {
             }

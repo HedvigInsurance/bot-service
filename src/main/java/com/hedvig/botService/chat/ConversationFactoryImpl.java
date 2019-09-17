@@ -73,6 +73,14 @@ public class ConversationFactoryImpl implements ConversationFactory {
       return onboardingConversationDevi;
     }
 
+    if(conversationClass.equals(HouseOnboardingConversation.class)) {
+      final HouseOnboardingConversation houseOnboardingConversation =
+        new HouseOnboardingConversation(
+          eventPublisher, this);
+      houseOnboardingConversation.setQueuePos(queuePos);
+      return houseOnboardingConversation;
+    }
+
     if (conversationClass.equals(TrustlyConversation.class)) {
       return new TrustlyConversation(triggerService, memberService, eventPublisher);
     }
