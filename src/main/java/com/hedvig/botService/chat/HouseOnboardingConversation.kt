@@ -4,7 +4,9 @@ import com.hedvig.botService.Utils.storeFamilyName
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_AGE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_BATHROOMS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_FOUR
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_ONE
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_THREE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_TWO
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_LAST_NAME
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
@@ -46,6 +48,7 @@ constructor(
         createInputMessage(
             HUS_FIRST
         ) { body, userContext, message ->
+            message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
                 SELECT_RENT.value -> {
@@ -140,6 +143,7 @@ constructor(
             ASK_HAS_EXTRA_BUILDINGS
         ) { body, userContext, message ->
             //TODO store has extra buildings
+            message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
                 SELECT_EXTRA_BUILDING_YES.value -> {
@@ -184,6 +188,7 @@ constructor(
             ASK_HAS_WATER_EXTRA_BUILDING_ONE
         ) { body, userContext, message ->
             //TODO store has water building one
+            message.body.text = body.selectedItem.text
             addToChat(message)
             if (userContext.onBoardingData.numberOfExtraBuilding <= 1) {
                 ASK_SUBLETTING_HOUSE.id
@@ -204,6 +209,7 @@ constructor(
             ASK_HAS_WATER_EXTRA_BUILDING_TWO
         ) { body, userContext, message ->
             //TODO store has water building two
+            message.body.text = body.selectedItem.text
             addToChat(message)
             if (userContext.onBoardingData.numberOfExtraBuilding <= 2) {
                 ASK_SUBLETTING_HOUSE.id
@@ -221,9 +227,10 @@ constructor(
         }
 
         createInputMessage(
-            ASK_SQUARE_METERS_EXTRA_BUILDING_THREE
+            ASK_HAS_WATER_EXTRA_BUILDING_THREE
         ) { body, userContext, message ->
             //TODO store has water building three
+            message.body.text = body.selectedItem.text
             addToChat(message)
             if (userContext.onBoardingData.numberOfExtraBuilding <= 3) {
                 ASK_SUBLETTING_HOUSE.id
@@ -241,9 +248,10 @@ constructor(
         }
 
         createInputMessage(
-            ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR
+            ASK_HAS_WATER_EXTRA_BUILDING_FOUR
         ) { body, userContext, message ->
             //TODO store has water building four
+            message.body.text = body.selectedItem.text
             addToChat(message)
             ASK_SUBLETTING_HOUSE.id
         }
@@ -251,7 +259,9 @@ constructor(
         createInputMessage(
             ASK_SUBLETTING_HOUSE
         ) { body, userContext, message ->
+            message.body.text = body.selectedItem.text
             addToChat(message)
+            message.body.text = body.selectedItem.text
             when (body.selectedItem.value) {
                 SELECT_SUBLETTING_HOUSE_YES.value -> {
                     //TODO store subletting
