@@ -36,6 +36,7 @@ public class UserData {
   public static final String TWENTYFIVE_THOUSAND_LIMIT = "{25K_LIMIT}";
   public static final String PHONE_NUMBER = "{PHONE_NUMBER}";
   public static final String LOGIN = "{LOGIN}";
+  public static final String NO_EXTRA_BUILDINGS = "{NO_EXTRA_BUILDINGS}";
   private final UserContext ctx;
 
   public UserData(UserContext ctx) {
@@ -226,6 +227,14 @@ public class UserData {
 
   public void setUserHasAuthedWithBankId(String referenceId) {
     ctx.putUserData(USER_AUTHED_BANKID, referenceId);
+  }
+
+  public void setNumberOfExtraBuilding(int buildings){
+    ctx.putUserData(NO_EXTRA_BUILDINGS, String.valueOf(buildings));
+  }
+
+  public int getNumberOfExtraBuilding() {
+    return Integer.parseInt(ctx.getDataEntry(NO_EXTRA_BUILDINGS));
   }
 
   public void clear() {

@@ -2,7 +2,6 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
-import com.hedvig.botService.chat.HouseOnboardingConversation.Companion.MESSAGE_HUS_FIRST
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
@@ -12,9 +11,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData
 import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
-import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse
 import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
-import com.hedvig.botService.serviceIntegration.memberService.dto.PersonStatusDto
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.LocalizationService
@@ -22,7 +19,6 @@ import com.hedvig.botService.services.events.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.stereotype.Component
 import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -1797,7 +1793,7 @@ constructor(
             MESSAGE_HUS -> {
                 userContext.completeConversation(this)
                 val conversation = conversationFactory.createConversation(HouseOnboardingConversation::class.java, userContext)
-                userContext.startConversation(conversation, HouseOnboardingConversation.MESSAGE_HUS_FIRST)
+                userContext.startConversation(conversation, HouseConversationConstants.HUS_FIRST.id)
                 return
             }
             "onboarding.done" -> {
