@@ -10,10 +10,10 @@ import com.hedvig.botService.chat.HouseConversationConstants.ASK_LAST_NAME
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_RESIDENTS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUERE_METERS_EXTRA_BUILDING_FOUR
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUERE_METERS_EXTRA_BUILDING_ONE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUERE_METERS_EXTRA_BUILDING_THREE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUERE_METERS_EXTRA_BUILDING_TWO
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_ONE
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_THREE
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_TWO
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_STREET_ADDRESS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBFACE
@@ -46,6 +46,7 @@ constructor(
         createInputMessage(
             HUS_FIRST
         ) { body, userContext, message ->
+            addToChat(message)
             when (body.selectedItem.value) {
                 SELECT_RENT.value -> {
                     userContext.completeConversation(this)
@@ -166,13 +167,13 @@ constructor(
                 }
                 else -> {
                     userContext.onBoardingData.numberOfExtraBuilding = body.value
-                    ASK_SQUERE_METERS_EXTRA_BUILDING_ONE.id
+                    ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id
                 }
             }
         }
 
         createInputMessage(
-            ASK_SQUERE_METERS_EXTRA_BUILDING_ONE
+            ASK_SQUARE_METERS_EXTRA_BUILDING_ONE
         ) { body, userContext, message ->
             //TODO store square meters
             addToChat(message)
@@ -187,12 +188,12 @@ constructor(
             if (userContext.onBoardingData.numberOfExtraBuilding <= 1) {
                 ASK_SUBLETTING_HOUSE.id
             } else {
-                ASK_SQUERE_METERS_EXTRA_BUILDING_TWO.id
+                ASK_SQUARE_METERS_EXTRA_BUILDING_TWO.id
             }
         }
 
         createInputMessage(
-            ASK_SQUERE_METERS_EXTRA_BUILDING_TWO
+            ASK_SQUARE_METERS_EXTRA_BUILDING_TWO
         ) { body, userContext, message ->
             //TODO store square meters
             addToChat(message)
@@ -207,40 +208,40 @@ constructor(
             if (userContext.onBoardingData.numberOfExtraBuilding <= 2) {
                 ASK_SUBLETTING_HOUSE.id
             } else {
-                ASK_SQUERE_METERS_EXTRA_BUILDING_THREE.id
+                ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id
             }
         }
 
         createInputMessage(
-            ASK_SQUERE_METERS_EXTRA_BUILDING_THREE
+            ASK_SQUARE_METERS_EXTRA_BUILDING_THREE
         ) { body, userContext, message ->
             //TODO store square meters
             addToChat(message)
-            ASK_SQUERE_METERS_EXTRA_BUILDING_THREE.id
+            ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id
         }
 
         createInputMessage(
-            ASK_SQUERE_METERS_EXTRA_BUILDING_THREE
+            ASK_SQUARE_METERS_EXTRA_BUILDING_THREE
         ) { body, userContext, message ->
             //TODO store has water building three
             addToChat(message)
             if (userContext.onBoardingData.numberOfExtraBuilding <= 3) {
                 ASK_SUBLETTING_HOUSE.id
             } else {
-                ASK_SQUERE_METERS_EXTRA_BUILDING_FOUR.id
+                ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id
             }
         }
 
         createInputMessage(
-            ASK_SQUERE_METERS_EXTRA_BUILDING_FOUR
+            ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR
         ) { body, userContext, message ->
             //TODO store square meters
             addToChat(message)
-            ASK_SQUERE_METERS_EXTRA_BUILDING_FOUR.id
+            ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id
         }
 
         createInputMessage(
-            ASK_SQUERE_METERS_EXTRA_BUILDING_FOUR
+            ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR
         ) { body, userContext, message ->
             //TODO store has water building four
             addToChat(message)
@@ -406,11 +407,11 @@ object HouseConversationConstants {
 
     const val SPLIT = "\u000C"
 
-    val SELECT_OWN = SingleSelectOption("message.house.own", "Jag äger det")
-    val SELECT_RENT = SingleSelectOption("message.house.rent", "Jag äger det")
+    val SELECT_OWN = SingleSelectOption("message.house.own", "Jag äger huset")
+    val SELECT_RENT = SingleSelectOption("message.house.rent", "Jag hyr huset")
     val HUS_FIRST = SingleSelectMessage(
         "message.house.first",
-        "\uD83D\uDC4D${SPLIT}Hyr du eller äger du den?",
+        "\uD83D\uDC4D${SPLIT}Hyr du eller äger du huset?",
         listOf(
             SELECT_OWN,
             SELECT_RENT
@@ -498,26 +499,26 @@ object HouseConversationConstants {
         "Byggnader"
     )
 
-    val ASK_SQUERE_METERS_EXTRA_BUILDING_ONE = NumberInputMessage(
+    val ASK_SQUARE_METERS_EXTRA_BUILDING_ONE = NumberInputMessage(
         "message.house.square.meters.building.one",
         "Hur stor är extra byggnad ett?",
         "kvm"
     )
 
-    val ASK_SQUERE_METERS_EXTRA_BUILDING_TWO = NumberInputMessage(
-        "message.house.square.meters.building.one",
+    val ASK_SQUARE_METERS_EXTRA_BUILDING_TWO = NumberInputMessage(
+        "message.house.square.meters.building.two",
         "Hur stor är extra byggnad två?",
         "kvm"
     )
 
-    val ASK_SQUERE_METERS_EXTRA_BUILDING_THREE = NumberInputMessage(
-        "message.house.square.meters.building.one",
+    val ASK_SQUARE_METERS_EXTRA_BUILDING_THREE = NumberInputMessage(
+        "message.house.square.meters.building.three",
         "Hur stor är extra byggnad tre?",
         "kvm"
     )
 
-    val ASK_SQUERE_METERS_EXTRA_BUILDING_FOUR = NumberInputMessage(
-        "message.house.square.meters.building.one",
+    val ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR = NumberInputMessage(
+        "message.house.square.meters.building.four",
         "Hur stor är extra byggnad fyra?",
         "kvm"
     )
