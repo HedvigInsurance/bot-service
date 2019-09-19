@@ -134,7 +134,7 @@ constructor(
         ) { body, userContext, message ->
             userContext.onBoardingData.houseSubface = message.body.text
             addToChat(message)
-            ASK_AGE.id
+            ASK_RESIDENTS.id
         }
         //TODO subface data type
 
