@@ -1,5 +1,6 @@
 package com.hedvig.botService.chat
 
+import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.Utils.storeFamilyName
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_AGE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_BATHROOMS
@@ -70,6 +71,10 @@ constructor(
         createInputMessage(
             ASK_SSN
         ) { body, userContext, message ->
+            userContext.storeAndTrimAndAddSSNToChat(body) {
+                message.body.text = it
+                addToChat(message)
+            }
             //TODO look up
             ASK_LAST_NAME.id
         }
@@ -81,6 +86,14 @@ constructor(
             addToChat(message)
             //TODO is this really necessary?
             ASK_AGE.id
+        }
+
+        createInputMessage(
+            ASK_AGE
+        ) { body, userContext, message ->
+            //TODO store age
+            addToChat(message)
+            ASK_STREET_ADDRESS.id
         }
 
         createInputMessage(
@@ -115,13 +128,6 @@ constructor(
             ASK_AGE.id
         }
 
-        createInputMessage(
-            ASK_AGE
-        ) { body, userContext, message ->
-            //TODO store age
-            addToChat(message)
-            ASK_RESIDENTS.id
-        }
 
         createInputMessage(
             ASK_RESIDENTS

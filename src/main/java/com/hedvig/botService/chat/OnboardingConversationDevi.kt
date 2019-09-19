@@ -2,6 +2,7 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import java.nio.charset.Charset
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -236,22 +236,12 @@ constructor(
                 )
             ) { body, uc, m ->
 
-                val trimmedSSN = body.text.trim()
-                body.text = "${trimmedSSN.dropLast(4)}-****"
-                addToChat(m)
-
-                memberService.updateSSN(uc.memberId, trimmedSSN)
-
-                uc.onBoardingData.apply {
-                    ssn = trimmedSSN
-                    birthDate = LocalDate.parse(
-                        "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
-                            4,
-                            6
-                        )}-${trimmedSSN.substring(6, 8)}"
-                    )
+                val trimmedSSN = uc.storeAndTrimAndAddSSNToChat(body) {
+                    m.body.text = it
+                    addToChat(m)
                 }
 
+                memberService.updateSSN(uc.memberId, trimmedSSN)
                 val response = memberService.lookupAddressSWE(trimmedSSN, uc.memberId)
 
                 if (response != null) {
