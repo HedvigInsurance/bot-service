@@ -260,7 +260,7 @@ constructor(
         ) { body, userContext, message ->
             userContext.onBoardingData.houseExtraBuildingThreeSQM = (message.body as MessageBodyNumber).value
             addToChat(message)
-            ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id
+            ASK_HAS_WATER_EXTRA_BUILDING_THREE.id
         }
         //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id, HouseExtraBuildingSQM())
 
@@ -289,7 +289,7 @@ constructor(
         ) { body, userContext, message ->
             userContext.onBoardingData.houseExtraBuildingFourSQM = (message.body as MessageBodyNumber).value
             addToChat(message)
-            ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id
+            ASK_HAS_WATER_EXTRA_BUILDING_FOUR.id
         }
         //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id, HouseExtraBuildingSQM())
 
