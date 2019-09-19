@@ -25,9 +25,15 @@ import com.hedvig.botService.chat.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.HouseConversationConstants.CONVERSATION_RENT_DONE
 import com.hedvig.botService.chat.HouseConversationConstants.HOUSE_CONVERSATION_DONE
 import com.hedvig.botService.chat.HouseConversationConstants.HUS_FIRST
+import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
+import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_RENT
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
+import com.hedvig.botService.dataTypes.HouseholdMemberNumber
+import com.hedvig.botService.dataTypes.LivingSpaceSquareMeters
+import com.hedvig.botService.dataTypes.SSNSweden
+import com.hedvig.botService.dataTypes.ZipCodeSweden
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.LocalizationService
@@ -78,6 +84,7 @@ constructor(
             //TODO look up
             ASK_LAST_NAME.id
         }
+        this.setExpectedReturnType(ASK_SSN.id, SSNSweden())
 
         createInputMessage(
             ASK_LAST_NAME
@@ -99,7 +106,7 @@ constructor(
         createInputMessage(
             ASK_STREET_ADDRESS
         ) { body, userContext, message ->
-            //TODO store address
+            userContext.onBoardingData.addressStreet = message.body.text
             addToChat(message)
             ASK_ZIP_CODE.id
         }
@@ -107,10 +114,11 @@ constructor(
         createInputMessage(
             ASK_ZIP_CODE
         ) { body, userContext, message ->
-            //TODO store zip code
+            userContext.onBoardingData.addressZipCode = message.body.text
             addToChat(message)
             ASK_SQUARE_METERS.id
         }
+        this.setExpectedReturnType(ASK_ZIP_CODE.id, ZipCodeSweden())
 
         createInputMessage(
             ASK_SQUARE_METERS
@@ -119,28 +127,33 @@ constructor(
             addToChat(message)
             ASK_SUBFACE.id
         }
+        this.setExpectedReturnType(ASK_SQUARE_METERS.id, LivingSpaceSquareMeters())
 
         createInputMessage(
             ASK_SUBFACE
         ) { body, userContext, message ->
-            //TODO store subface
+            userContext.onBoardingData.houseSubface = message.body.text
             addToChat(message)
             ASK_AGE.id
         }
-
+        //TODO subface data type
 
         createInputMessage(
             ASK_RESIDENTS
         ) { body, userContext, message ->
-            //TODO store number of residents
+            val nrPersons = (message.body as MessageBodyNumber).value
+            userContext.onBoardingData.setPersonInHouseHold(nrPersons)
             addToChat(message)
             ASK_BATHROOMS.id
         }
+        //TODO check if same as apartment
+        this.setExpectedReturnType(ASK_RESIDENTS.id, HouseholdMemberNumber())
 
         createInputMessage(
             ASK_BATHROOMS
         ) { body, userContext, message ->
-            //TODO store number of residents
+            val bathrooms = (message.body as MessageBodyNumber).value
+            userContext.onBoardingData.bathroomsInHouse = bathrooms
             addToChat(message)
             ASK_HAS_EXTRA_BUILDINGS.id
         }
@@ -148,14 +161,15 @@ constructor(
         createInputMessage(
             ASK_HAS_EXTRA_BUILDINGS
         ) { body, userContext, message ->
-            //TODO store has extra buildings
             message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
                 SELECT_EXTRA_BUILDING_YES.value -> {
+                    userContext.onBoardingData.hasExtraBuildings = true
                     ASK_NUMBER_OF_EXTRA_BUILDINGS.id
                 }
                 else -> {
+                    userContext.onBoardingData.hasExtraBuildings = false
                     ASK_SUBLETTING_HOUSE.id
                 }
             }
@@ -164,39 +178,48 @@ constructor(
         createInputMessage(
             ASK_NUMBER_OF_EXTRA_BUILDINGS
         ) { body, userContext, message ->
-            //TODO store number of extra buildings
             addToChat(message)
             when {
                 body.value <= 0 -> {
-                    // add message
+                    // todo should not happen with
                     ASK_SUBLETTING_HOUSE.id
                 }
                 body.value >= 5 -> {
+                    userContext.onBoardingData.nrExtraBuildings = body.value
                     //TODO ask some questions
                     "phone"
                 }
                 else -> {
-                    userContext.onBoardingData.numberOfExtraBuilding = body.value
+                    userContext.onBoardingData.nrExtraBuildings = body.value
                     ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id
                 }
             }
         }
+        //TODO this.setExpectedReturnType(ASK_RESIDENTS.id, HouseExtraBuildings())
 
         createInputMessage(
             ASK_SQUARE_METERS_EXTRA_BUILDING_ONE
         ) { body, userContext, message ->
-            //TODO store square meters
+            userContext.onBoardingData.houseExtraBuildingOneSQM = (message.body as MessageBodyNumber).value
             addToChat(message)
             ASK_HAS_WATER_EXTRA_BUILDING_ONE.id
         }
+        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id, HouseExtraBuildingSQM())
 
         createInputMessage(
             ASK_HAS_WATER_EXTRA_BUILDING_ONE
         ) { body, userContext, message ->
-            //TODO store has water building one
             message.body.text = body.selectedItem.text
             addToChat(message)
-            if (userContext.onBoardingData.numberOfExtraBuilding <= 1) {
+            when (body.selectedItem.value) {
+                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
+                    userContext.onBoardingData.extraBuildingOneHasWater = true
+                }
+                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
+                    userContext.onBoardingData.extraBuildingOneHasWater = false
+                }
+            }
+            if (userContext.onBoardingData.nrExtraBuildings <= 1) {
                 ASK_SUBLETTING_HOUSE.id
             } else {
                 ASK_SQUARE_METERS_EXTRA_BUILDING_TWO.id
@@ -206,18 +229,26 @@ constructor(
         createInputMessage(
             ASK_SQUARE_METERS_EXTRA_BUILDING_TWO
         ) { body, userContext, message ->
-            //TODO store square meters
+            userContext.onBoardingData.houseExtraBuildingTwoSQM = (message.body as MessageBodyNumber).value
             addToChat(message)
             ASK_HAS_WATER_EXTRA_BUILDING_TWO.id
         }
+        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_TWO.id, HouseExtraBuildingSQM())
 
         createInputMessage(
             ASK_HAS_WATER_EXTRA_BUILDING_TWO
         ) { body, userContext, message ->
-            //TODO store has water building two
             message.body.text = body.selectedItem.text
             addToChat(message)
-            if (userContext.onBoardingData.numberOfExtraBuilding <= 2) {
+            when (body.selectedItem.value) {
+                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
+                    userContext.onBoardingData.extraBuildingTwoHasWater = true
+                }
+                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
+                    userContext.onBoardingData.extraBuildingTwoHasWater = false
+                }
+            }
+            if (userContext.onBoardingData.nrExtraBuildings <= 2) {
                 ASK_SUBLETTING_HOUSE.id
             } else {
                 ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id
@@ -227,18 +258,26 @@ constructor(
         createInputMessage(
             ASK_SQUARE_METERS_EXTRA_BUILDING_THREE
         ) { body, userContext, message ->
-            //TODO store square meters
+            userContext.onBoardingData.houseExtraBuildingThreeSQM = (message.body as MessageBodyNumber).value
             addToChat(message)
             ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id
         }
+        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id, HouseExtraBuildingSQM())
 
         createInputMessage(
             ASK_HAS_WATER_EXTRA_BUILDING_THREE
         ) { body, userContext, message ->
-            //TODO store has water building three
             message.body.text = body.selectedItem.text
             addToChat(message)
-            if (userContext.onBoardingData.numberOfExtraBuilding <= 3) {
+            when (body.selectedItem.value) {
+                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
+                    userContext.onBoardingData.extraBuildingThreeHasWater = true
+                }
+                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
+                    userContext.onBoardingData.extraBuildingThreeHasWater = false
+                }
+            }
+            if (userContext.onBoardingData.nrExtraBuildings <= 3) {
                 ASK_SUBLETTING_HOUSE.id
             } else {
                 ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id
@@ -248,17 +287,25 @@ constructor(
         createInputMessage(
             ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR
         ) { body, userContext, message ->
-            //TODO store square meters
+            userContext.onBoardingData.houseExtraBuildingFourSQM = (message.body as MessageBodyNumber).value
             addToChat(message)
             ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id
         }
+        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id, HouseExtraBuildingSQM())
 
         createInputMessage(
             ASK_HAS_WATER_EXTRA_BUILDING_FOUR
         ) { body, userContext, message ->
-            //TODO store has water building four
             message.body.text = body.selectedItem.text
             addToChat(message)
+            when (body.selectedItem.value) {
+                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
+                    userContext.onBoardingData.extraBuildingFourHasWater = true
+                }
+                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
+                    userContext.onBoardingData.extraBuildingFourHasWater = false
+                }
+            }
             ASK_SUBLETTING_HOUSE.id
         }
 
@@ -270,10 +317,10 @@ constructor(
             message.body.text = body.selectedItem.text
             when (body.selectedItem.value) {
                 SELECT_SUBLETTING_HOUSE_YES.value -> {
-                    //TODO store subletting
+                    userContext.onBoardingData.isSubLetting = true
                 }
                 else -> {
-                    //TODO store not subletting
+                    userContext.onBoardingData.isSubLetting = false
                 }
             }
             HOUSE_CONVERSATION_DONE

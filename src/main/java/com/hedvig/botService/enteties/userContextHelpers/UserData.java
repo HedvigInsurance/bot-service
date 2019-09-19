@@ -36,7 +36,20 @@ public class UserData {
   public static final String TWENTYFIVE_THOUSAND_LIMIT = "{25K_LIMIT}";
   public static final String PHONE_NUMBER = "{PHONE_NUMBER}";
   public static final String LOGIN = "{LOGIN}";
-  public static final String NO_EXTRA_BUILDINGS = "{NO_EXTRA_BUILDINGS}";
+  public static final String HOUSE_SUBFACE_KVM = "{HOUSE_SUBFACE_KVM}";
+  public static final String HOUSE_NR_BATHROOMS = "{HOUSE_NR_BATHROOMS}";
+  public static final String HOUSE_HAS_EXTRA_BUILDINGS = "{HOUSE_HAS_EXTRA_BUILDINGS}";
+  public static final String HOUSE_NR_EXTRA_BUILDINGS = "{HOUSE_NR_EXTRA_BUILDINGS}";
+  public static final String HOUSE_EXTRA_BUILDINGS_ONE_KVM = "{HOUSE_EXTRA_BUILDINGS_ONE_KVM}";
+  public static final String HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER}";
+  public static final String HOUSE_EXTRA_BUILDINGS_TWO_KVM = "{HOUSE_EXTRA_BUILDINGS_TWO_KVM}";
+  public static final String HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER}";
+  public static final String HOUSE_EXTRA_BUILDINGS_THREE_KVM = "{HOUSE_EXTRA_BUILDINGS_THREE_KVM}";
+  public static final String HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER}";
+  public static final String HOUSE_EXTRA_BUILDINGS_FOUR_KVM = "{HOUSE_EXTRA_BUILDINGS_FOUR_KVM}";
+  public static final String HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER}";
+  public static final String HOUSE_IS_SUBLETTING = "{HOUSE_IS_SUBLETTING}";
+
   private final UserContext ctx;
 
   public UserData(UserContext ctx) {
@@ -229,12 +242,133 @@ public class UserData {
     ctx.putUserData(USER_AUTHED_BANKID, referenceId);
   }
 
-  public void setNumberOfExtraBuilding(int buildings){
-    ctx.putUserData(NO_EXTRA_BUILDINGS, String.valueOf(buildings));
+  public void setHouseSubface(String subfaceSqm){
+    ctx.putUserData(HOUSE_SUBFACE_KVM, subfaceSqm);
   }
 
-  public int getNumberOfExtraBuilding() {
-    return Integer.parseInt(ctx.getDataEntry(NO_EXTRA_BUILDINGS));
+  public String getHouseSubface() {
+    return ctx.getDataEntry(HOUSE_SUBFACE_KVM);
+  }
+
+  public void setBathroomsInHouse(int bathrooms) {
+    ctx.putUserData(HOUSE_NR_BATHROOMS, Objects.toString(bathrooms));
+  }
+
+  public int getBathroomsInHouse() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_BATHROOMS));
+  }
+
+
+  public void setHasExtraBuildings(boolean hasExtraBuildings) {
+    ctx.putUserData(HOUSE_NR_EXTRA_BUILDINGS, Objects.toString(hasExtraBuildings));
+  }
+
+  public boolean getHasExtraBuildings() {
+    String value = ctx.getDataEntry(HOUSE_HAS_EXTRA_BUILDINGS);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  public void setNrExtraBuildings(int extraBuildings) {
+    ctx.putUserData(HOUSE_NR_EXTRA_BUILDINGS, Objects.toString(extraBuildings));
+  }
+
+  public int getNrExtraBuildings() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_EXTRA_BUILDINGS));
+  }
+
+  public void setHouseExtraBuildingOneSQM(int sqm){
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_ONE_KVM, String.valueOf(sqm));
+  }
+
+  public int getHouseExtraBuildingOneSQM() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_ONE_KVM));
+  }
+
+  public void setExtraBuildingOneHasWater(boolean hasWater) {
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER, Objects.toString(hasWater));
+  }
+
+  public boolean getExtraBuildingOneHasWater() {
+    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  public void setHouseExtraBuildingTwoSQM(int sqm){
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_TWO_KVM, String.valueOf(sqm));
+  }
+
+  public int getHouseExtraBuildingTwoSQM() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_TWO_KVM));
+  }
+
+  public void setExtraBuildingTwoHasWater(boolean hasWater) {
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER, Objects.toString(hasWater));
+  }
+
+  public boolean getExtraBuildingTwoHasWater() {
+    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  public void setHouseExtraBuildingThreeSQM(int sqm){
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_THREE_KVM, String.valueOf(sqm));
+  }
+
+  public int getHouseExtraBuildingThreeSQM() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_THREE_KVM));
+  }
+
+  public void setExtraBuildingThreeHasWater(boolean hasWater) {
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER, Objects.toString(hasWater));
+  }
+
+  public boolean getExtraBuildingThreeHasWater() {
+    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  public void setHouseExtraBuildingFourSQM(int sqm){
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_FOUR_KVM, String.valueOf(sqm));
+  }
+
+  public int getHouseExtraBuildingFourSQM() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_FOUR_KVM));
+  }
+
+  public void setExtraBuildingFourHasWater(boolean hasWater) {
+    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER, Objects.toString(hasWater));
+  }
+
+  public boolean getExtraBuildingFourHasWater() {
+    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  public void setIsSubLetting(boolean isSubLetting) {
+    ctx.putUserData(HOUSE_IS_SUBLETTING, Objects.toString(isSubLetting));
+  }
+
+  public boolean getIsSubLetting() {
+    String value = ctx.getDataEntry(HOUSE_IS_SUBLETTING);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
   }
 
   public void clear() {
@@ -258,6 +392,8 @@ public class UserData {
     ctx.removeDataEntry(USER_AUTHED_BANKID);
     ctx.removeDataEntry(IS_STUDENT);
     ctx.removeDataEntry(STUDENT_POLICY_ELIGIBILITY);
+
+    // TODO clear more
 
     String nrOfItemsString = ctx.getDataEntry(SECURE_ITEMS_NO);
     int nrOfItems = nrOfItemsString != null ? Integer.parseInt(nrOfItemsString) : 0;
