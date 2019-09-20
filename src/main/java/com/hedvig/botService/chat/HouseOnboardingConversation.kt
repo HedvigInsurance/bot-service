@@ -211,12 +211,12 @@ constructor(
                 }
                 else -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
-                    ASK_SQUARE_METERS_EXTRA_BUILDING.id + 1
+                    ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE.id + 1
                 }
             }
         }
 
-        for (houseNr in 1 until 4) {
+        for (houseNr in 1 .. 4) {
             createInputMessage(
                 ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE,
                 houseNr
@@ -365,7 +365,7 @@ constructor(
         callback: (MessageBodySingleSelect, UserContext, Message) -> String
     ) {
         this.createChatMessage(
-            message.id + ordinal,
+            message.id + (ordinal ?: ""),
             WrappedMessage(
                 MessageBodySingleSelect(
                     message.text,
@@ -382,7 +382,7 @@ constructor(
         callback: (MessageBodyNumber, UserContext, Message) -> String
     ) {
         this.createChatMessage(
-            message.id + ordinal,
+            message.id + (ordinal ?: ""),
             WrappedMessage(
                 MessageBodyNumber(
                     message.text,
@@ -399,7 +399,7 @@ constructor(
         callback: (MessageBodyText, UserContext, Message) -> String
     ) {
         this.createChatMessage(
-            message.id + ordinal,
+            message.id + (ordinal ?: ""),
             WrappedMessage(
                 MessageBodyText(
                     message.text,
