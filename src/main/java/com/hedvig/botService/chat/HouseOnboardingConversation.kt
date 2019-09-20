@@ -272,10 +272,10 @@ constructor(
                 addToChat(message)
                 when (body.selectedItem.value) {
                     SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
-                        userContext.onBoardingData.extraBuildingOneHasWater = true
+                        userContext.onBoardingData.setHouseExtraBuildingHasWater(true, houseNr)
                     }
                     SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
-                        userContext.onBoardingData.extraBuildingOneHasWater = false
+                        userContext.onBoardingData.setHouseExtraBuildingHasWater(false, houseNr)
                     }
                 }
                 if (userContext.onBoardingData.nrExtraBuildings <= houseNr) {

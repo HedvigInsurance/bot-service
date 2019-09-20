@@ -43,14 +43,6 @@ public class UserData {
   public static final String HOUSE_NR_BATHROOMS = "{HOUSE_NR_BATHROOMS}";
   public static final String HOUSE_HAS_EXTRA_BUILDINGS = "{HOUSE_HAS_EXTRA_BUILDINGS}";
   public static final String HOUSE_NR_EXTRA_BUILDINGS = "{HOUSE_NR_EXTRA_BUILDINGS}";
-  public static final String HOUSE_EXTRA_BUILDINGS_TYPE = "{HOUSE_EXTRA_BUILDINGS_ONE_KVM}";
-  public static final String HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER}";
-  public static final String HOUSE_EXTRA_BUILDINGS_TWO_KVM = "{HOUSE_EXTRA_BUILDINGS_TWO_KVM}";
-  public static final String HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER}";
-  public static final String HOUSE_EXTRA_BUILDINGS_THREE_KVM = "{HOUSE_EXTRA_BUILDINGS_THREE_KVM}";
-  public static final String HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER}";
-  public static final String HOUSE_EXTRA_BUILDINGS_FOUR_KVM = "{HOUSE_EXTRA_BUILDINGS_FOUR_KVM}";
-  public static final String HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER}";
   public static final String HOUSE_IS_SUBLETTING = "{HOUSE_IS_SUBLETTING}";
 
   public static final String HOUSE_EXTRA_BUILDINGS_TYPE_TEXT = "{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}";
@@ -306,72 +298,12 @@ public class UserData {
     return Integer.parseInt(ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber +"}"));
   }
 
-  public void setExtraBuildingOneHasWater(boolean hasWater) {
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER, Objects.toString(hasWater));
+  public void setHouseExtraBuildingHasWater(boolean hasWater, int buildingNumber){
+    ctx.putUserData("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber +"}", String.valueOf(hasWater));
   }
 
-  public boolean getExtraBuildingOneHasWater() {
-    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER);
-    if (value == null) {
-      return false;
-    }
-    return Boolean.parseBoolean(value);
-  }
-
-  public void setHouseExtraBuildingTwoSQM(int sqm){
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_TWO_KVM, String.valueOf(sqm));
-  }
-
-  public int getHouseExtraBuildingTwoSQM() {
-    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_TWO_KVM));
-  }
-
-  public void setExtraBuildingTwoHasWater(boolean hasWater) {
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER, Objects.toString(hasWater));
-  }
-
-  public boolean getExtraBuildingTwoHasWater() {
-    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER);
-    if (value == null) {
-      return false;
-    }
-    return Boolean.parseBoolean(value);
-  }
-
-  public void setHouseExtraBuildingThreeSQM(int sqm){
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_THREE_KVM, String.valueOf(sqm));
-  }
-
-  public int getHouseExtraBuildingThreeSQM() {
-    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_THREE_KVM));
-  }
-
-  public void setExtraBuildingThreeHasWater(boolean hasWater) {
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER, Objects.toString(hasWater));
-  }
-
-  public boolean getExtraBuildingThreeHasWater() {
-    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_THREE_HAS_WATER);
-    if (value == null) {
-      return false;
-    }
-    return Boolean.parseBoolean(value);
-  }
-
-  public void setHouseExtraBuildingFourSQM(int sqm){
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_FOUR_KVM, String.valueOf(sqm));
-  }
-
-  public int getHouseExtraBuildingFourSQM() {
-    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_FOUR_KVM));
-  }
-
-  public void setExtraBuildingFourHasWater(boolean hasWater) {
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER, Objects.toString(hasWater));
-  }
-
-  public boolean getExtraBuildingFourHasWater() {
-    String value = ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER);
+  public boolean getHouseExtraBuildingHasWater(int buildingNumber) {
+    String value = ctx.getDataEntry("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber +"}");
     if (value == null) {
       return false;
     }
