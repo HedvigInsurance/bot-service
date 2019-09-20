@@ -5,18 +5,13 @@ import com.hedvig.botService.Utils.storeFamilyName
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_AGE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_BATHROOMS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_FOUR
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_ONE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_THREE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING_TWO
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_LAST_NAME
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_RESIDENTS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_ONE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_THREE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_TWO
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_STREET_ADDRESS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBFACE
@@ -25,6 +20,9 @@ import com.hedvig.botService.chat.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.HouseConversationConstants.CONVERSATION_RENT_DONE
 import com.hedvig.botService.chat.HouseConversationConstants.HOUSE_CONVERSATION_DONE
 import com.hedvig.botService.chat.HouseConversationConstants.HUS_FIRST
+import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
+import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
+import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
@@ -36,6 +34,7 @@ import com.hedvig.botService.dataTypes.SSNSweden
 import com.hedvig.botService.dataTypes.ZipCodeSweden
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.enteties.userContextHelpers.UserData.HOUSE_EXTRA_BUILDINGS_TYPE_TEXT
 import com.hedvig.botService.services.LocalizationService
 
 import org.slf4j.LoggerFactory
@@ -175,6 +174,27 @@ constructor(
             }
         }
 
+        //TODO this.setExpectedReturnType(ASK_RESIDENTS.id, HouseExtraBuildings())
+
+        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_TWO.id, HouseExtraBuildingSQM())
+
+
+        createInputMessage(
+            ASK_SUBLETTING_HOUSE
+        ) { body, userContext, message ->
+            message.body.text = body.selectedItem.text
+            addToChat(message)
+            when (body.selectedItem.value) {
+                SELECT_SUBLETTING_HOUSE_YES.value -> {
+                    userContext.onBoardingData.isSubLetting = true
+                }
+                else -> {
+                    userContext.onBoardingData.isSubLetting = false
+                }
+            }
+            HOUSE_CONVERSATION_DONE
+        }
+
         createInputMessage(
             ASK_NUMBER_OF_EXTRA_BUILDINGS
         ) { body, userContext, message ->
@@ -191,139 +211,66 @@ constructor(
                 }
                 else -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
-                    ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id
+                    ASK_SQUARE_METERS_EXTRA_BUILDING.id + 1
                 }
             }
         }
-        //TODO this.setExpectedReturnType(ASK_RESIDENTS.id, HouseExtraBuildings())
 
-        createInputMessage(
-            ASK_SQUARE_METERS_EXTRA_BUILDING_ONE
-        ) { body, userContext, message ->
-            userContext.onBoardingData.houseExtraBuildingOneSQM = (message.body as MessageBodyNumber).value
-            addToChat(message)
-            ASK_HAS_WATER_EXTRA_BUILDING_ONE.id
-        }
-        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id, HouseExtraBuildingSQM())
+        for (houseNr in 1 until 4) {
+            createInputMessage(
+                ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE,
+                houseNr
+            ) { body, userContext, message ->
+                message.body.text = body.selectedItem.text
+                addToChat(message)
+                when (body.selectedItem.value) {
 
-        createInputMessage(
-            ASK_HAS_WATER_EXTRA_BUILDING_ONE
-        ) { body, userContext, message ->
-            message.body.text = body.selectedItem.text
-            addToChat(message)
-            when (body.selectedItem.value) {
-                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
-                    userContext.onBoardingData.extraBuildingOneHasWater = true
+                    SELECT_EXTRA_BUILDING_GARAGE.value -> {
+                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.GARAGE, houseNr, userContext.locale, localizationService)
+                    }
+                    SELECT_EXTRA_BUILDING_FRIGGEBO.value -> {
+                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.GARAGE, houseNr, userContext.locale, localizationService)
+                    }
+                    SELECT_EXTRA_BUILDING_ATTEFALS.value -> {
+                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.GARAGE, houseNr, userContext.locale, localizationService)
+                    }
+                    else -> {
+                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.OTHER, houseNr, userContext.locale, localizationService)
+                    }
                 }
-                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
-                    userContext.onBoardingData.extraBuildingOneHasWater = false
+                ASK_SQUARE_METERS_EXTRA_BUILDING.id + houseNr
+            }
+
+            createInputMessage(
+                ASK_SQUARE_METERS_EXTRA_BUILDING,
+                houseNr
+            ) { body, userContext, message ->
+                userContext.onBoardingData.setHouseExtraBuildingSQM((message.body as MessageBodyNumber).value, houseNr)
+                addToChat(message)
+                ASK_HAS_WATER_EXTRA_BUILDING.id + houseNr
+            }
+            //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id, HouseExtraBuildingSQM())
+
+            createInputMessage(
+                ASK_HAS_WATER_EXTRA_BUILDING,
+                houseNr
+            ) { body, userContext, message ->
+                message.body.text = body.selectedItem.text
+                addToChat(message)
+                when (body.selectedItem.value) {
+                    SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
+                        userContext.onBoardingData.extraBuildingOneHasWater = true
+                    }
+                    SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
+                        userContext.onBoardingData.extraBuildingOneHasWater = false
+                    }
+                }
+                if (userContext.onBoardingData.nrExtraBuildings <= houseNr) {
+                    ASK_SUBLETTING_HOUSE.id
+                } else {
+                    ASK_SQUARE_METERS_EXTRA_BUILDING.id + (houseNr + 1)
                 }
             }
-            if (userContext.onBoardingData.nrExtraBuildings <= 1) {
-                ASK_SUBLETTING_HOUSE.id
-            } else {
-                ASK_SQUARE_METERS_EXTRA_BUILDING_TWO.id
-            }
-        }
-
-        createInputMessage(
-            ASK_SQUARE_METERS_EXTRA_BUILDING_TWO
-        ) { body, userContext, message ->
-            userContext.onBoardingData.houseExtraBuildingTwoSQM = (message.body as MessageBodyNumber).value
-            addToChat(message)
-            ASK_HAS_WATER_EXTRA_BUILDING_TWO.id
-        }
-        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_TWO.id, HouseExtraBuildingSQM())
-
-        createInputMessage(
-            ASK_HAS_WATER_EXTRA_BUILDING_TWO
-        ) { body, userContext, message ->
-            message.body.text = body.selectedItem.text
-            addToChat(message)
-            when (body.selectedItem.value) {
-                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
-                    userContext.onBoardingData.extraBuildingTwoHasWater = true
-                }
-                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
-                    userContext.onBoardingData.extraBuildingTwoHasWater = false
-                }
-            }
-            if (userContext.onBoardingData.nrExtraBuildings <= 2) {
-                ASK_SUBLETTING_HOUSE.id
-            } else {
-                ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id
-            }
-        }
-
-        createInputMessage(
-            ASK_SQUARE_METERS_EXTRA_BUILDING_THREE
-        ) { body, userContext, message ->
-            userContext.onBoardingData.houseExtraBuildingThreeSQM = (message.body as MessageBodyNumber).value
-            addToChat(message)
-            ASK_HAS_WATER_EXTRA_BUILDING_THREE.id
-        }
-        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_THREE.id, HouseExtraBuildingSQM())
-
-        createInputMessage(
-            ASK_HAS_WATER_EXTRA_BUILDING_THREE
-        ) { body, userContext, message ->
-            message.body.text = body.selectedItem.text
-            addToChat(message)
-            when (body.selectedItem.value) {
-                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
-                    userContext.onBoardingData.extraBuildingThreeHasWater = true
-                }
-                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
-                    userContext.onBoardingData.extraBuildingThreeHasWater = false
-                }
-            }
-            if (userContext.onBoardingData.nrExtraBuildings <= 3) {
-                ASK_SUBLETTING_HOUSE.id
-            } else {
-                ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id
-            }
-        }
-
-        createInputMessage(
-            ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR
-        ) { body, userContext, message ->
-            userContext.onBoardingData.houseExtraBuildingFourSQM = (message.body as MessageBodyNumber).value
-            addToChat(message)
-            ASK_HAS_WATER_EXTRA_BUILDING_FOUR.id
-        }
-        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR.id, HouseExtraBuildingSQM())
-
-        createInputMessage(
-            ASK_HAS_WATER_EXTRA_BUILDING_FOUR
-        ) { body, userContext, message ->
-            message.body.text = body.selectedItem.text
-            addToChat(message)
-            when (body.selectedItem.value) {
-                SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
-                    userContext.onBoardingData.extraBuildingFourHasWater = true
-                }
-                SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
-                    userContext.onBoardingData.extraBuildingFourHasWater = false
-                }
-            }
-            ASK_SUBLETTING_HOUSE.id
-        }
-
-        createInputMessage(
-            ASK_SUBLETTING_HOUSE
-        ) { body, userContext, message ->
-            message.body.text = body.selectedItem.text
-            addToChat(message)
-            message.body.text = body.selectedItem.text
-            when (body.selectedItem.value) {
-                SELECT_SUBLETTING_HOUSE_YES.value -> {
-                    userContext.onBoardingData.isSubLetting = true
-                }
-                else -> {
-                    userContext.onBoardingData.isSubLetting = false
-                }
-            }
-            HOUSE_CONVERSATION_DONE
         }
     }
 
@@ -414,10 +361,11 @@ constructor(
 
     private fun createInputMessage(
         message: SingleSelectMessage,
+        ordinal: Int? = null,
         callback: (MessageBodySingleSelect, UserContext, Message) -> String
     ) {
         this.createChatMessage(
-            message.id,
+            message.id + ordinal,
             WrappedMessage(
                 MessageBodySingleSelect(
                     message.text,
@@ -430,10 +378,11 @@ constructor(
 
     private fun createInputMessage(
         message: NumberInputMessage,
+        ordinal: Int? = null,
         callback: (MessageBodyNumber, UserContext, Message) -> String
     ) {
         this.createChatMessage(
-            message.id,
+            message.id + ordinal,
             WrappedMessage(
                 MessageBodyNumber(
                     message.text,
@@ -446,10 +395,11 @@ constructor(
 
     fun createInputMessage(
         message: TextInputMessage,
+        ordinal: Int? = null,
         callback: (MessageBodyText, UserContext, Message) -> String
     ) {
         this.createChatMessage(
-            message.id,
+            message.id + ordinal,
             WrappedMessage(
                 MessageBodyText(
                     message.text,
@@ -562,62 +512,32 @@ object HouseConversationConstants {
         "Byggnader"
     )
 
-    val ASK_SQUARE_METERS_EXTRA_BUILDING_ONE = NumberInputMessage(
-        "message.house.square.meters.building.one",
-        "Hur stor är extra byggnad ett?",
-        "kvm"
+    val SELECT_EXTRA_BUILDING_GARAGE = SingleSelectOption("message.house.extra.building.garage", "Garage")
+    val SELECT_EXTRA_BUILDING_FRIGGEBO = SingleSelectOption("message.house.extra.building.friggebod", "Friggebod")
+    val SELECT_EXTRA_BUILDING_ATTEFALS = SingleSelectOption("message.house.extra.building.attefalls", "Attefalls")
+    val SELECT_EXTRA_BUILDING_OTHER = SingleSelectOption("message.house.extra.building.other", "Annat")
+    val ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE = SingleSelectMessage(
+        "message.house.extra.building.type",
+        "Vad är det för typ av byggnad?",
+        listOf(
+            SELECT_EXTRA_BUILDING_GARAGE,
+            SELECT_EXTRA_BUILDING_FRIGGEBO,
+            SELECT_EXTRA_BUILDING_ATTEFALS,
+            SELECT_EXTRA_BUILDING_OTHER
+        )
     )
 
-    val ASK_SQUARE_METERS_EXTRA_BUILDING_TWO = NumberInputMessage(
-        "message.house.square.meters.building.two",
-        "Hur stor är extra byggnad två?",
-        "kvm"
-    )
-
-    val ASK_SQUARE_METERS_EXTRA_BUILDING_THREE = NumberInputMessage(
-        "message.house.square.meters.building.three",
-        "Hur stor är extra byggnad tre?",
-        "kvm"
-    )
-
-    val ASK_SQUARE_METERS_EXTRA_BUILDING_FOUR = NumberInputMessage(
-        "message.house.square.meters.building.four",
-        "Hur stor är extra byggnad fyra?",
+    val ASK_SQUARE_METERS_EXTRA_BUILDING = NumberInputMessage(
+        "message.house.square.meters.building",
+        "Hur många kvadratmeter är $HOUSE_EXTRA_BUILDINGS_TYPE_TEXT?",
         "kvm"
     )
 
     val SELECT_EXTRA_BUILDING_HAS_WATER_YES = SingleSelectOption("message.house.extra.building.has.water.yes", "Ja")
     val SELECT_EXTRA_BUILDING_HAS_WATER_NO = SingleSelectOption("message.house.extra.building.has.water.no", "Nej")
-    val ASK_HAS_WATER_EXTRA_BUILDING_ONE = SingleSelectMessage(
-        "message.house.has.water.building.one",
-        "Finns det indraget vatten till byggnad ett?",
-        listOf(
-            SELECT_EXTRA_BUILDING_HAS_WATER_YES,
-            SELECT_EXTRA_BUILDING_HAS_WATER_NO
-        )
-    )
-
-    val ASK_HAS_WATER_EXTRA_BUILDING_TWO = SingleSelectMessage(
-        "message.house.has.water.building.two",
-        "Finns det indraget vatten till byggnad två?",
-        listOf(
-            SELECT_EXTRA_BUILDING_HAS_WATER_YES,
-            SELECT_EXTRA_BUILDING_HAS_WATER_NO
-        )
-    )
-
-    val ASK_HAS_WATER_EXTRA_BUILDING_THREE = SingleSelectMessage(
-        "message.house.has.water.building.three",
-        "Finns det indraget vatten till byggnad tree?",
-        listOf(
-            SELECT_EXTRA_BUILDING_HAS_WATER_YES,
-            SELECT_EXTRA_BUILDING_HAS_WATER_NO
-        )
-    )
-
-    val ASK_HAS_WATER_EXTRA_BUILDING_FOUR = SingleSelectMessage(
-        "message.house.has.water.building.four",
-        "Finns det indraget vatten till byggnad fyra?",
+    val ASK_HAS_WATER_EXTRA_BUILDING = SingleSelectMessage(
+        "message.house.has.water.building",
+        "Finns det indraget vatten till $HOUSE_EXTRA_BUILDINGS_TYPE_TEXT?",
         listOf(
             SELECT_EXTRA_BUILDING_HAS_WATER_YES,
             SELECT_EXTRA_BUILDING_HAS_WATER_NO
@@ -682,3 +602,10 @@ data class SingleSelectOption(
     val value: String,
     val text: String
 )
+
+enum class ExtrabuildingType {
+    GARAGE,
+    ATTAFALL,
+    FRIGGEBOD,
+    OTHER
+}

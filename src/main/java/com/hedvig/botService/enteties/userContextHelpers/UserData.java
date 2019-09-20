@@ -1,11 +1,14 @@
 package com.hedvig.botService.enteties.userContextHelpers;
 
+import com.hedvig.botService.chat.ExtrabuildingType;
 import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.botService.services.LocalizationService;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class UserData {
@@ -40,7 +43,7 @@ public class UserData {
   public static final String HOUSE_NR_BATHROOMS = "{HOUSE_NR_BATHROOMS}";
   public static final String HOUSE_HAS_EXTRA_BUILDINGS = "{HOUSE_HAS_EXTRA_BUILDINGS}";
   public static final String HOUSE_NR_EXTRA_BUILDINGS = "{HOUSE_NR_EXTRA_BUILDINGS}";
-  public static final String HOUSE_EXTRA_BUILDINGS_ONE_KVM = "{HOUSE_EXTRA_BUILDINGS_ONE_KVM}";
+  public static final String HOUSE_EXTRA_BUILDINGS_TYPE = "{HOUSE_EXTRA_BUILDINGS_ONE_KVM}";
   public static final String HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_ONE_HAS_WATER}";
   public static final String HOUSE_EXTRA_BUILDINGS_TWO_KVM = "{HOUSE_EXTRA_BUILDINGS_TWO_KVM}";
   public static final String HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_TWO_HAS_WATER}";
@@ -49,6 +52,8 @@ public class UserData {
   public static final String HOUSE_EXTRA_BUILDINGS_FOUR_KVM = "{HOUSE_EXTRA_BUILDINGS_FOUR_KVM}";
   public static final String HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER = "{HOUSE_EXTRA_BUILDINGS_FOUR_HAS_WATER}";
   public static final String HOUSE_IS_SUBLETTING = "{HOUSE_IS_SUBLETTING}";
+
+  public static final String HOUSE_EXTRA_BUILDINGS_TYPE_TEXT = "{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}";
 
   private final UserContext ctx;
 
@@ -279,12 +284,26 @@ public class UserData {
     return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_EXTRA_BUILDINGS));
   }
 
-  public void setHouseExtraBuildingOneSQM(int sqm){
-    ctx.putUserData(HOUSE_EXTRA_BUILDINGS_ONE_KVM, String.valueOf(sqm));
+  public void setHouseExtraBuildingType(ExtrabuildingType type, int buildingNumber, Locale locale, LocalizationService localizationService){
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber +"}", type.toString());
+    String text = localizationService.getText(locale, "HOUSE_EXTRA_BUILDING_" + type.toString());
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}", text);
   }
 
-  public int getHouseExtraBuildingOneSQM() {
-    return Integer.parseInt(ctx.getDataEntry(HOUSE_EXTRA_BUILDINGS_ONE_KVM));
+  public String getHouseExtraBuildingType(int buildingNumber) {
+    return ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber +"}");
+  }
+
+  public String getHouseExtraBuildingTypeText(int buildingNumber) {
+    return ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}");
+  }
+
+  public void setHouseExtraBuildingSQM(int sqm, int buildingNumber){
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber +"}", String.valueOf(sqm));
+  }
+
+  public int getHouseExtraBuildingSQM(int buildingNumber) {
+    return Integer.parseInt(ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber +"}"));
   }
 
   public void setExtraBuildingOneHasWater(boolean hasWater) {
