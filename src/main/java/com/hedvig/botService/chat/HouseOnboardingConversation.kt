@@ -123,7 +123,7 @@ constructor(
         createInputMessage(
             ASK_SQUARE_METERS
         ) { body, userContext, message ->
-            //TODO store square meters
+            userContext.onBoardingData.livingSpace = (message.body as MessageBodyNumber).value.toFloat()
             addToChat(message)
             ASK_SUBFACE.id
         }
