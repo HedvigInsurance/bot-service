@@ -11,7 +11,7 @@ import com.hedvig.botService.chat.HouseConversationConstants.ASK_NUMBER_OF_EXTRA
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_RESIDENTS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE
+import com.hedvig.botService.chat.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_STREET_ADDRESS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBFACE
@@ -211,14 +211,14 @@ constructor(
                 }
                 else -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
-                    ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE.id + 1
+                    ASK_EXTRA_BUILDING_TYPE.id + 1
                 }
             }
         }
 
         for (houseNr in 1 .. 4) {
             createInputMessage(
-                ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE,
+                ASK_EXTRA_BUILDING_TYPE,
                 houseNr
             ) { body, userContext, message ->
                 message.body.text = body.selectedItem.text
@@ -268,7 +268,7 @@ constructor(
                 if (userContext.onBoardingData.nrExtraBuildings <= houseNr) {
                     ASK_SUBLETTING_HOUSE.id
                 } else {
-                    ASK_SQUARE_METERS_EXTRA_BUILDING.id + (houseNr + 1)
+                    ASK_EXTRA_BUILDING_TYPE.id + (houseNr + 1)
                 }
             }
         }
@@ -516,7 +516,7 @@ object HouseConversationConstants {
     val SELECT_EXTRA_BUILDING_FRIGGEBO = SingleSelectOption("message.house.extra.building.friggebod", "Friggebod")
     val SELECT_EXTRA_BUILDING_ATTEFALS = SingleSelectOption("message.house.extra.building.attefalls", "Attefalls")
     val SELECT_EXTRA_BUILDING_OTHER = SingleSelectOption("message.house.extra.building.other", "Annat")
-    val ASK_SQUARE_METERS_EXTRA_BUILDING_TYPE = SingleSelectMessage(
+    val ASK_EXTRA_BUILDING_TYPE = SingleSelectMessage(
         "message.house.extra.building.type",
         "Vad är det för typ av byggnad?",
         listOf(
