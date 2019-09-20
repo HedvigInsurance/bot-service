@@ -2,7 +2,7 @@ package com.hedvig.botService.chat
 
 import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.Utils.storeFamilyName
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_AGE
+import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDING_START
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_BATHROOMS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
@@ -18,11 +18,13 @@ import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBFACE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBLETTING_HOUSE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.HouseConversationConstants.CONVERSATION_RENT_DONE
+import com.hedvig.botService.chat.HouseConversationConstants.EXTRA_BUILDING_NEXT_MESSAGE
 import com.hedvig.botService.chat.HouseConversationConstants.HOUSE_CONVERSATION_DONE
 import com.hedvig.botService.chat.HouseConversationConstants.HUS_FIRST
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
+import com.hedvig.botService.chat.HouseConversationConstants.MORE_QUESTIONS_CALL
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
@@ -90,21 +92,12 @@ constructor(
         ) { body, userContext, message ->
             userContext.storeFamilyName(body)
             addToChat(message)
-            //TODO is this really necessary?
-            ASK_AGE.id
-        }
-
-        createInputMessage(
-            ASK_AGE
-        ) { body, userContext, message ->
-            //TODO store age
-            addToChat(message)
             ASK_STREET_ADDRESS.id
         }
 
         createInputMessage(
             ASK_STREET_ADDRESS
-        ) { body, userContext, message ->
+        ) { _, userContext, message ->
             userContext.onBoardingData.addressStreet = message.body.text
             addToChat(message)
             ASK_ZIP_CODE.id
@@ -216,7 +209,7 @@ constructor(
             }
         }
 
-        for (houseNr in 1 .. 4) {
+        for (houseNr in 1..4) {
             createInputMessage(
                 ASK_EXTRA_BUILDING_TYPE,
                 houseNr
@@ -226,16 +219,36 @@ constructor(
                 when (body.selectedItem.value) {
 
                     SELECT_EXTRA_BUILDING_GARAGE.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.GARAGE, houseNr, userContext.locale, localizationService)
+                        userContext.onBoardingData.setHouseExtraBuildingType(
+                            ExtraBuildingType.GARAGE,
+                            houseNr,
+                            userContext.locale,
+                            localizationService
+                        )
                     }
                     SELECT_EXTRA_BUILDING_FRIGGEBO.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.GARAGE, houseNr, userContext.locale, localizationService)
+                        userContext.onBoardingData.setHouseExtraBuildingType(
+                            ExtraBuildingType.FRIGGEBOD,
+                            houseNr,
+                            userContext.locale,
+                            localizationService
+                        )
                     }
                     SELECT_EXTRA_BUILDING_ATTEFALS.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.GARAGE, houseNr, userContext.locale, localizationService)
+                        userContext.onBoardingData.setHouseExtraBuildingType(
+                            ExtraBuildingType.ATTAFALL,
+                            houseNr,
+                            userContext.locale,
+                            localizationService
+                        )
                     }
                     else -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(ExtrabuildingType.OTHER, houseNr, userContext.locale, localizationService)
+                        userContext.onBoardingData.setHouseExtraBuildingType(
+                            ExtraBuildingType.OTHER,
+                            houseNr,
+                            userContext.locale,
+                            localizationService
+                        )
                     }
                 }
                 ASK_SQUARE_METERS_EXTRA_BUILDING.id + houseNr
@@ -268,9 +281,25 @@ constructor(
                 if (userContext.onBoardingData.nrExtraBuildings <= houseNr) {
                     ASK_SUBLETTING_HOUSE.id
                 } else {
-                    ASK_EXTRA_BUILDING_TYPE.id + (houseNr + 1)
+                    EXTRA_BUILDING_NEXT_MESSAGE.id + houseNr
                 }
             }
+
+            createParagraphMessage(
+                EXTRA_BUILDING_NEXT_MESSAGE,
+                houseNr
+            ) { _, _, _ ->
+                ASK_EXTRA_BUILDING_TYPE.id + (houseNr + 1)
+            }
+        }
+
+        createInputMessage(
+            MORE_QUESTIONS_CALL
+        ) { body, userContext, message ->
+            userContext.completeConversation(this)
+            val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
+            userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
+            FREE_CHAT_ONBOARDING_START
         }
     }
 
@@ -278,12 +307,13 @@ constructor(
         var nxtMsg = nxtMsg
 
         when (nxtMsg) {
-            HOUSE_CONVERSATION_DONE -> {
-                userContext.completeConversation(this)
-                val conversation =
-                    conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
-                userContext.startConversation(conversation, OnboardingConversationDevi.MESSAGE_50K_LIMIT)
-            }
+            // TODO: do we need?
+//            HOUSE_CONVERSATION_DONE -> {
+//                userContext.completeConversation(this)
+//                val conversation =
+//                    conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
+//                userContext.startConversation(conversation, OnboardingConversationDevi.MESSAGE_50K_LIMIT)
+//            }
 
             "" -> {
                 HouseOnboardingConversation.log.error("I dont know where to go next...")
@@ -411,6 +441,22 @@ constructor(
             )
         )
     }
+
+    fun createParagraphMessage(
+        message: ParagraphMessage,
+        ordinal: Int? = null,
+        callback: (MessageBodyParagraph, UserContext, Message) -> String
+    ) {
+        this.createChatMessage(
+            message.id + (ordinal ?: ""),
+            WrappedMessage(
+                MessageBodyParagraph(
+                    message.text
+                ),
+                receiveMessageCallback = callback
+            )
+        )
+    }
 }
 
 object HouseConversationConstants {
@@ -443,12 +489,6 @@ object HouseConversationConstants {
         TextContentType.FAMILY_NAME,
         KeyboardType.DEFAULT,
         "Efternamn"
-    )
-
-    val ASK_AGE = NumberInputMessage(
-        "message.house.ask.age",
-        "Hur gammal är du?",
-        "Ålder"
     )
 
     val ASK_STREET_ADDRESS = TextInputMessage(
@@ -544,6 +584,11 @@ object HouseConversationConstants {
         )
     )
 
+    val EXTRA_BUILDING_NEXT_MESSAGE = ParagraphMessage(
+        "message.house.",
+        "Sådär ja, då har vi lagt till {HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}. Vi går vidare till nästa byggnad"
+    )
+
     val SELECT_SUBLETTING_HOUSE_YES = SingleSelectOption("message.house.sublet.yes", "yes")
     val SELECT_SUBLETTING_HOUSE_NO = SingleSelectOption("message.house.sublet.no", "no")
     val ASK_SUBLETTING_HOUSE = SingleSelectMessage(
@@ -553,6 +598,17 @@ object HouseConversationConstants {
             SELECT_SUBLETTING_HOUSE_YES,
             SELECT_SUBLETTING_HOUSE_NO
         )
+    )
+
+    val MORE_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call",
+        "Tack! Jag behöver ställa några frågor på telefon till dig, innan jag kan ge dig ditt förslag \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_QUESTION_RESPONSE = ParagraphMessage(
+        "message.house.more.questions.response",
+        "Tack så mycket. Jag hör av mig inom kort med ett förslag!"
     )
 }
 
@@ -598,12 +654,17 @@ data class TextInputMessage(
     val placeholder: String
 )
 
+data class ParagraphMessage(
+    val id: String,
+    val text: String
+)
+
 data class SingleSelectOption(
     val value: String,
     val text: String
 )
 
-enum class ExtrabuildingType {
+enum class ExtraBuildingType {
     GARAGE,
     ATTAFALL,
     FRIGGEBOD,

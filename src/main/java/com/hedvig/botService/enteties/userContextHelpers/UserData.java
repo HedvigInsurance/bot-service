@@ -1,6 +1,6 @@
 package com.hedvig.botService.enteties.userContextHelpers;
 
-import com.hedvig.botService.chat.ExtrabuildingType;
+import com.hedvig.botService.chat.ExtraBuildingType;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.services.LocalizationService;
 import org.jetbrains.annotations.Nullable;
@@ -284,7 +284,7 @@ public class UserData {
     return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_EXTRA_BUILDINGS));
   }
 
-  public void setHouseExtraBuildingType(ExtrabuildingType type, int buildingNumber, Locale locale, LocalizationService localizationService){
+  public void setHouseExtraBuildingType(ExtraBuildingType type, int buildingNumber, Locale locale, LocalizationService localizationService){
     ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber +"}", type.toString());
     String text = localizationService.getText(locale, "HOUSE_EXTRA_BUILDING_" + type.toString());
     ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}", text);
