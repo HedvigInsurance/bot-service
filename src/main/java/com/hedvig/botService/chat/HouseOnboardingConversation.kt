@@ -317,13 +317,12 @@ constructor(
         var nxtMsg = nxtMsg
 
         when (nxtMsg) {
-            // TODO: do we need?
-//            HOUSE_CONVERSATION_DONE -> {
-//                userContext.completeConversation(this)
-//                val conversation =
-//                    conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
-//                userContext.startConversation(conversation, OnboardingConversationDevi.MESSAGE_50K_LIMIT)
-//            }
+            HOUSE_CONVERSATION_DONE -> {
+                userContext.completeConversation(this)
+                val conversation =
+                    conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
+                userContext.startConversation(conversation, OnboardingConversationDevi.MESSAGE_50K_LIMIT)
+            }
 
             "" -> {
                 HouseOnboardingConversation.log.error("I dont know where to go next...")
