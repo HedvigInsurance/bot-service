@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 public class ZipCodeSweden extends HedvigDataType {
 
+  static final String ERROR_MESSAGE_NO_INPUT = "hedvig.data.type.zip.code.sweden.no.input";
+  static final String ERROR_MESSAGE_NO_MATCH = "hedvig.data.type.zip.code.sweden.no.match";
+
   private static final String ZIPCODE_PATTERN = "^(s-|S-|SE|se|S|s){0,1}[0-9]{3}\\s?[0-9]{2}$";
   private Pattern pattern;
   private Matcher matcher;
@@ -37,8 +40,8 @@ public class ZipCodeSweden extends HedvigDataType {
   @Override
   public String getErrorMessageId() {
     if (input == null) {
-      return "hedvig.data.type.zip.code.sweden.no.input";
+      return ERROR_MESSAGE_NO_INPUT;
     }
-    return "hedvig.data.type.zip.code.sweden.no.match";
+    return ERROR_MESSAGE_NO_MATCH;
   }
 }

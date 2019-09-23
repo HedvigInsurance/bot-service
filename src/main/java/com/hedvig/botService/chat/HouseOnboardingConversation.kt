@@ -31,10 +31,7 @@ import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDI
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_RENT
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
 import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes
-import com.hedvig.botService.dataTypes.HouseholdMemberNumber
-import com.hedvig.botService.dataTypes.LivingSpaceSquareMeters
-import com.hedvig.botService.dataTypes.SSNSweden
-import com.hedvig.botService.dataTypes.ZipCodeSweden
+import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.enteties.userContextHelpers.UserData.HOUSE_EXTRA_BUILDINGS_TYPE_TEXT
@@ -134,7 +131,7 @@ constructor(
             addToChat(message)
             ASK_RESIDENTS.id
         }
-        //TODO subface data type
+        this.setExpectedReturnType(ASK_SUBFACE.id, SubfaceSquareMeters())
 
         createInputMessage(
             ASK_RESIDENTS
@@ -320,6 +317,15 @@ constructor(
             }
         }
         return ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
+
+        createInputMessage(
+            MORE_QUESTIONS_CALL
+        ) { body, userContext, message ->
+            userContext.completeConversation(this)
+            val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
+            userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
+            FREE_CHAT_ONBOARDING_START
+        }
     }
 
     public override fun completeRequest(nxtMsg: String) {
