@@ -18,9 +18,9 @@ import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBFACE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBLETTING_HOUSE
 import com.hedvig.botService.chat.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.HouseConversationConstants.CONVERSATION_RENT_DONE
-import com.hedvig.botService.chat.HouseConversationConstants.EXTRA_BUILDING_NEXT_MESSAGE
 import com.hedvig.botService.chat.HouseConversationConstants.HOUSE_CONVERSATION_DONE
 import com.hedvig.botService.chat.HouseConversationConstants.HUS_FIRST
+import com.hedvig.botService.chat.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
@@ -209,87 +209,52 @@ constructor(
             }
         }
 
-        for (houseNr in 1..4) {
-            createInputMessage(
-                ASK_EXTRA_BUILDING_TYPE,
-                houseNr
-            ) { body, userContext, message ->
-                message.body.text = body.selectedItem.text
-                addToChat(message)
-                when (body.selectedItem.value) {
+        createInputMessage(
+            ASK_EXTRA_BUILDING_TYPE,
+            1
+        ) { body, userContext, message ->
+            handleExtraBuildingTypeResponse(body, userContext, message, 1)
+        }
 
-                    SELECT_EXTRA_BUILDING_GARAGE.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(
-                            ExtraBuildingType.GARAGE,
-                            houseNr,
-                            userContext.locale,
-                            localizationService
-                        )
-                    }
-                    SELECT_EXTRA_BUILDING_FRIGGEBO.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(
-                            ExtraBuildingType.FRIGGEBOD,
-                            houseNr,
-                            userContext.locale,
-                            localizationService
-                        )
-                    }
-                    SELECT_EXTRA_BUILDING_ATTEFALS.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(
-                            ExtraBuildingType.ATTAFALL,
-                            houseNr,
-                            userContext.locale,
-                            localizationService
-                        )
-                    }
-                    else -> {
-                        userContext.onBoardingData.setHouseExtraBuildingType(
-                            ExtraBuildingType.OTHER,
-                            houseNr,
-                            userContext.locale,
-                            localizationService
-                        )
-                    }
+        for (buildingNumber in 1..4) {
+            if (buildingNumber != 1) {
+                createInputMessage(
+                    IN_LOOP_ASK_EXTRA_BUILDING_TYPE,
+                    buildingNumber
+                ) { body, userContext, message ->
+                    handleExtraBuildingTypeResponse(body, userContext, message, buildingNumber)
                 }
-                ASK_SQUARE_METERS_EXTRA_BUILDING.id + houseNr
             }
 
             createInputMessage(
                 ASK_SQUARE_METERS_EXTRA_BUILDING,
-                houseNr
+                buildingNumber
             ) { body, userContext, message ->
-                userContext.onBoardingData.setHouseExtraBuildingSQM((message.body as MessageBodyNumber).value, houseNr)
+                userContext.onBoardingData.setHouseExtraBuildingSQM((message.body as MessageBodyNumber).value, buildingNumber)
                 addToChat(message)
-                ASK_HAS_WATER_EXTRA_BUILDING.id + houseNr
+                ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber
             }
             //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id, HouseExtraBuildingSQM())
 
             createInputMessage(
                 ASK_HAS_WATER_EXTRA_BUILDING,
-                houseNr
+                buildingNumber
             ) { body, userContext, message ->
                 message.body.text = body.selectedItem.text
                 addToChat(message)
                 when (body.selectedItem.value) {
                     SELECT_EXTRA_BUILDING_HAS_WATER_YES.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingHasWater(true, houseNr)
+                        userContext.onBoardingData.setHouseExtraBuildingHasWater(true, buildingNumber)
                     }
                     SELECT_EXTRA_BUILDING_HAS_WATER_NO.value -> {
-                        userContext.onBoardingData.setHouseExtraBuildingHasWater(false, houseNr)
+                        userContext.onBoardingData.setHouseExtraBuildingHasWater(false, buildingNumber)
                     }
                 }
-                if (userContext.onBoardingData.nrExtraBuildings <= houseNr) {
+                if (userContext.onBoardingData.nrExtraBuildings <= buildingNumber) {
                     ASK_SUBLETTING_HOUSE.id
                 } else {
-                    EXTRA_BUILDING_NEXT_MESSAGE.id + houseNr
+                    IN_LOOP_ASK_EXTRA_BUILDING_TYPE.id + buildingNumber
                 }
-            }
-
-            createParagraphMessage(
-                EXTRA_BUILDING_NEXT_MESSAGE,
-                houseNr
-            ) { _, _, _ ->
-                ASK_EXTRA_BUILDING_TYPE.id + (houseNr + 1)
             }
         }
 
@@ -301,6 +266,51 @@ constructor(
             userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
             FREE_CHAT_ONBOARDING_START
         }
+    }
+    private fun handleExtraBuildingTypeResponse(
+        body: MessageBodySingleSelect,
+        userContext: UserContext,
+        message: Message,
+        buildingNumber: Int
+    ): String {
+        message.body.text = body.selectedItem.text
+        addToChat(message)
+        when (body.selectedItem.value) {
+
+            SELECT_EXTRA_BUILDING_GARAGE.value -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.GARAGE,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+            SELECT_EXTRA_BUILDING_FRIGGEBO.value -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.FRIGGEBOD,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+            SELECT_EXTRA_BUILDING_ATTEFALS.value -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.ATTAFALL,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+            else -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.OTHER,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+        }
+        return ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
     }
 
     public override fun completeRequest(nxtMsg: String) {
@@ -567,6 +577,17 @@ object HouseConversationConstants {
         )
     )
 
+    val IN_LOOP_ASK_EXTRA_BUILDING_TYPE = SingleSelectMessage(
+        "message.house.extra.building.type",
+        "Sådär ja, då har vi lagt till {HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}. Vi går vidare till nästa byggnad${SPLIT}Vad är det för typ av byggnad?",
+        listOf(
+            SELECT_EXTRA_BUILDING_GARAGE,
+            SELECT_EXTRA_BUILDING_FRIGGEBO,
+            SELECT_EXTRA_BUILDING_ATTEFALS,
+            SELECT_EXTRA_BUILDING_OTHER
+        )
+    )
+
     val ASK_SQUARE_METERS_EXTRA_BUILDING = NumberInputMessage(
         "message.house.square.meters.building",
         "Hur många kvadratmeter är $HOUSE_EXTRA_BUILDINGS_TYPE_TEXT?",
@@ -584,10 +605,6 @@ object HouseConversationConstants {
         )
     )
 
-    val EXTRA_BUILDING_NEXT_MESSAGE = ParagraphMessage(
-        "message.house.",
-        "Sådär ja, då har vi lagt till {HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}. Vi går vidare till nästa byggnad"
-    )
 
     val SELECT_SUBLETTING_HOUSE_YES = SingleSelectOption("message.house.sublet.yes", "yes")
     val SELECT_SUBLETTING_HOUSE_NO = SingleSelectOption("message.house.sublet.no", "no")
