@@ -30,6 +30,7 @@ import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDI
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_RENT
 import com.hedvig.botService.chat.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
+import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes
 import com.hedvig.botService.dataTypes.HouseholdMemberNumber
 import com.hedvig.botService.dataTypes.LivingSpaceSquareMeters
 import com.hedvig.botService.dataTypes.SSNSweden
@@ -60,16 +61,11 @@ constructor(
             addToChat(message)
             when (body.selectedItem.value) {
                 SELECT_RENT.value -> {
-                    userContext.completeConversation(this)
-                    val conversation =
-                        conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
-                    userContext.startConversation(
-                        conversation,
-                        OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER
-                    )
-                    CONVERSATION_RENT_DONE
+                    userContext.onBoardingData.houseType = ProductTypes.RENT.toString()
+                    ASK_SSN.id
                 }
                 else -> {
+                    userContext.onBoardingData.houseType = ProductTypes.HOUSE.toString()
                     ASK_SSN.id
                 }
             }
@@ -117,7 +113,17 @@ constructor(
         ) { body, userContext, message ->
             userContext.onBoardingData.livingSpace = (message.body as MessageBodyNumber).value.toFloat()
             addToChat(message)
-            ASK_SUBFACE.id
+            if (userContext.onBoardingData.houseType == ProductTypes.HOUSE.toString()) {
+                ASK_SUBFACE.id
+            } else {
+                userContext.completeConversation(this)
+                val conversation =
+                    conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
+                userContext.startConversation(
+                    conversation,
+                    OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS)
+                CONVERSATION_RENT_DONE
+            }
         }
         this.setExpectedReturnType(ASK_SQUARE_METERS.id, LivingSpaceSquareMeters())
 
@@ -230,7 +236,10 @@ constructor(
                 ASK_SQUARE_METERS_EXTRA_BUILDING,
                 buildingNumber
             ) { body, userContext, message ->
-                userContext.onBoardingData.setHouseExtraBuildingSQM((message.body as MessageBodyNumber).value, buildingNumber)
+                userContext.onBoardingData.setHouseExtraBuildingSQM(
+                    (message.body as MessageBodyNumber).value,
+                    buildingNumber
+                )
                 addToChat(message)
                 ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber
             }
@@ -267,6 +276,7 @@ constructor(
             FREE_CHAT_ONBOARDING_START
         }
     }
+
     private fun handleExtraBuildingTypeResponse(
         body: MessageBodySingleSelect,
         userContext: UserContext,

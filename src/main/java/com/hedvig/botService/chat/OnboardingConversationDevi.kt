@@ -49,7 +49,8 @@ constructor(
         SUBLET_BRF,
         STUDENT_BRF,
         STUDENT_RENT,
-        LODGER
+        LODGER,
+        HOUSE
     }
 
     init {
@@ -700,8 +701,8 @@ constructor(
             )
         )
 
-        this.createMessage("message.pers", MessageBodyNumber("Okej! Hur många bor där?"))
-        this.setExpectedReturnType("message.pers", HouseholdMemberNumber())
+        this.createMessage(MESSAGE_ASK_NR_RESIDENTS, MessageBodyNumber("Okej! Hur många bor där?"))
+        this.setExpectedReturnType(MESSAGE_ASK_NR_RESIDENTS, HouseholdMemberNumber())
 
         this.createMessage(
             MESSAGE_SAKERHET,
@@ -1399,7 +1400,7 @@ constructor(
                 } else {
                     val obd = userContext.onBoardingData
                     obd.houseType = item.value
-                    nxtMsg = "message.pers"
+                    nxtMsg = MESSAGE_ASK_NR_RESIDENTS
                 }
             }
             "message.lghtyp.sublet" -> {
@@ -1407,7 +1408,7 @@ constructor(
                 val obd = userContext.onBoardingData
                 obd.houseType = item.value
                 m.body.text = item.text
-                nxtMsg = "message.pers"
+                nxtMsg = MESSAGE_ASK_NR_RESIDENTS
             }
 
             "message.student" -> {
@@ -1442,7 +1443,7 @@ constructor(
                 handleFriFraga(userContext, m)
                 nxtMsg = "message.frionboardingfragatack"
             }
-            "message.pers" -> {
+            MESSAGE_ASK_NR_RESIDENTS -> {
                 val nrPersons = (m.body as MessageBodyNumber).value
                 onBoardingData.setPersonInHouseHold(nrPersons)
                 m.body.text = if (nrPersons == 1) {
@@ -2017,6 +2018,8 @@ constructor(
         const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
 
         const val MESSAGE_LAGENHET_ADDRESSNOTFOUND = "message.lagenhet.addressnotfound"
+
+        const val MESSAGE_ASK_NR_RESIDENTS = "message.pers"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"
