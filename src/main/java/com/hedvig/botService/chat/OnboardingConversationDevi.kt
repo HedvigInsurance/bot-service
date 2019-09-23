@@ -373,7 +373,7 @@ constructor(
         this.addRelay("message.missing.bisnode.data", "message.manuellnamn")
 
         this.createMessage(
-            MESSAGE_START_LOGIN, MessageBodyParagraph("Välkommen tillbaka! $emoji_hug"), 1500
+            MESSAGE_START_LOGIN, MessageBodyParagraph("Hej! $emoji_hug"), 1500
         )
         this.addRelay(MESSAGE_START_LOGIN, MESSAGE_LOGIN_WITH_EMAIL)
 
