@@ -210,14 +210,13 @@ constructor(
                 }
                 else -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
-                    ASK_EXTRA_BUILDING_TYPE.id + 1
+                    ASK_EXTRA_BUILDING_TYPE.id
                 }
             }
         }
 
         createInputMessage(
-            ASK_EXTRA_BUILDING_TYPE,
-            1
+            ASK_EXTRA_BUILDING_TYPE
         ) { body, userContext, message ->
             handleExtraBuildingTypeResponse(body, userContext, message, 1)
         }
@@ -262,7 +261,7 @@ constructor(
                 if (userContext.onBoardingData.nrExtraBuildings <= buildingNumber) {
                     ASK_SUBLETTING_HOUSE.id
                 } else {
-                    IN_LOOP_ASK_EXTRA_BUILDING_TYPE.id + buildingNumber
+                    IN_LOOP_ASK_EXTRA_BUILDING_TYPE.id + (1 + buildingNumber)
                 }
             }
         }
