@@ -42,3 +42,20 @@ fun UserContext.storeAndTrimAndAddSSNToChat(body: MessageBodyNumber, addToChat: 
 
     return trimmedSSN
 }
+
+fun MemberService.ssnLookupAndStore(userContext: UserContext, trimmedSSN: String): Boolean {
+    this.updateSSN(userContext.memberId, trimmedSSN)
+    return this.lookupAddressSWE(trimmedSSN, userContext.memberId)?.let { response ->
+        userContext.onBoardingData.let { userData ->
+            userData.familyName = response.lastName
+            userData.firstName = response.firstName
+
+            response.address?.let {
+                userData.addressCity = response.address.city
+                userData.addressStreet = response.address.street
+                userData.addressZipCode = response.address.zipCode
+                true
+            } ?: false
+        }
+    } ?: false
+}

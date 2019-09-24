@@ -2,8 +2,11 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.hedvig.botService.Utils.ssnLookupAndStore
 import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
+import com.hedvig.botService.chat.house.HouseConversationConstants
+import com.hedvig.botService.chat.house.HouseOnboardingConversation
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
@@ -242,23 +245,9 @@ constructor(
                     addToChat(m)
                 }
 
-                memberService.updateSSN(uc.memberId, trimmedSSN)
-                val response = memberService.lookupAddressSWE(trimmedSSN, uc.memberId)
+                val hasAddress = memberService.ssnLookupAndStore(uc, trimmedSSN)
 
-                if (response != null) {
-                    uc.onBoardingData.let {
-                        it.familyName = response.lastName
-                        it.firstName = response.firstName
-
-                        if (response.address != null) {
-                            it.addressCity = response.address.city
-                            it.addressStreet = response.address.street
-                            it.addressZipCode = response.address.zipCode
-                        }
-                    }
-                }
-
-                if (response?.address != null) {
+                if (hasAddress) {
                     MESSAGE_BANKIDJA
                 } else {
                     MESSAGE_LAGENHET_ADDRESSNOTFOUND

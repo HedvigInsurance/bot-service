@@ -1,6 +1,6 @@
 package com.hedvig.botService.enteties.userContextHelpers;
 
-import com.hedvig.botService.chat.ExtraBuildingType;
+import com.hedvig.botService.chat.house.ExtraBuildingType;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.services.LocalizationService;
 import org.jetbrains.annotations.Nullable;

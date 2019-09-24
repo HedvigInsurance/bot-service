@@ -1,40 +1,45 @@
-package com.hedvig.botService.chat
+package com.hedvig.botService.chat.house
 
+import com.hedvig.botService.Utils.ssnLookupAndStore
 import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.Utils.storeFamilyName
+import com.hedvig.botService.chat.*
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDING_START
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_BATHROOMS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_LAST_NAME
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_RESIDENTS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SSN
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_STREET_ADDRESS
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBFACE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_SUBLETTING_HOUSE
-import com.hedvig.botService.chat.HouseConversationConstants.ASK_ZIP_CODE
-import com.hedvig.botService.chat.HouseConversationConstants.CONVERSATION_RENT_DONE
-import com.hedvig.botService.chat.HouseConversationConstants.HOUSE_CONVERSATION_DONE
-import com.hedvig.botService.chat.HouseConversationConstants.HUS_FIRST
-import com.hedvig.botService.chat.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
-import com.hedvig.botService.chat.HouseConversationConstants.MORE_QUESTIONS_CALL
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_RENT
-import com.hedvig.botService.chat.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_BATHROOMS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_RESIDENTS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_ADDRESS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBFACE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBLETTING_HOUSE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ZIP_CODE
+import com.hedvig.botService.chat.house.HouseConversationConstants.CONVERSATION_RENT_DONE
+import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_CONVERSATION_DONE
+import com.hedvig.botService.chat.house.HouseConversationConstants.HUS_FIRST
+import com.hedvig.botService.chat.house.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_RENT
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
 import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LOOK_UP_SUCCESS
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_LOOK_UP_SUCCESS_YES
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.enteties.userContextHelpers.UserData.HOUSE_EXTRA_BUILDINGS_TYPE_TEXT
+import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.services.LocalizationService
 
 import org.slf4j.LoggerFactory
@@ -42,6 +47,7 @@ import org.springframework.context.ApplicationEventPublisher
 
 class HouseOnboardingConversation
 constructor(
+    private val memberService: MemberService,
     override var eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
     localizationService: LocalizationService,
@@ -71,12 +77,19 @@ constructor(
         createInputMessage(
             ASK_SSN
         ) { body, userContext, message ->
-            userContext.storeAndTrimAndAddSSNToChat(body) {
+            val trimmedSSN = userContext.storeAndTrimAndAddSSNToChat(body) {
                 message.body.text = it
                 addToChat(message)
+                it
             }
-            //TODO look up
-            ASK_LAST_NAME.id
+
+            val hasAddress = memberService.ssnLookupAndStore(userContext, trimmedSSN)
+
+            if (hasAddress) {
+                ASK_LOOK_UP_SUCCESS.id
+            } else {
+                ASK_LAST_NAME.id
+            }
         }
         this.setExpectedReturnType(ASK_SSN.id, SSNSweden())
 
@@ -104,7 +117,7 @@ constructor(
             ASK_SQUARE_METERS.id
         }
         this.setExpectedReturnType(ASK_ZIP_CODE.id, ZipCodeSweden())
-
+        // TODO Visma look up
         createInputMessage(
             ASK_SQUARE_METERS
         ) { body, userContext, message ->
@@ -118,7 +131,8 @@ constructor(
                     conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
                 userContext.startConversation(
                     conversation,
-                    OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS)
+                    OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS
+                )
                 CONVERSATION_RENT_DONE
             }
         }
@@ -266,6 +280,16 @@ constructor(
             userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
             FREE_CHAT_ONBOARDING_START
         }
+
+        createInputMessage(
+            ASK_LOOK_UP_SUCCESS
+        ) { body, userContext, message ->
+            when (body.selectedItem.value) {
+                // TODO: Visma look up
+                SELECT_LOOK_UP_SUCCESS_YES.value -> ASK_SQUARE_METERS.id
+                else -> ASK_STREET_ADDRESS.id
+            }
+        }
     }
 
     private fun handleExtraBuildingTypeResponse(
@@ -312,15 +336,6 @@ constructor(
             }
         }
         return ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
-
-        createInputMessage(
-            MORE_QUESTIONS_CALL
-        ) { body, userContext, message ->
-            userContext.completeConversation(this)
-            val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
-            userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
-            FREE_CHAT_ONBOARDING_START
-        }
     }
 
     public override fun completeRequest(nxtMsg: String) {
@@ -331,11 +346,14 @@ constructor(
                 userContext.completeConversation(this)
                 val conversation =
                     conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
-                userContext.startConversation(conversation, OnboardingConversationDevi.MESSAGE_50K_LIMIT)
+                userContext.startConversation(
+                    conversation,
+                    OnboardingConversationDevi.MESSAGE_50K_LIMIT
+                )
             }
 
             "" -> {
-                HouseOnboardingConversation.log.error("I dont know where to go next...")
+                log.error("I dont know where to go next...")
                 nxtMsg = "error"
             }
         }
@@ -343,7 +361,7 @@ constructor(
     }
 
     override fun init() {
-        HouseOnboardingConversation.log.info("Starting house conversation")
+        log.info("Starting house conversation")
         startConversation(HUS_FIRST.id)
     }
 
@@ -377,10 +395,10 @@ constructor(
         completeRequest(nxtMsg)
     }
 
-    override fun receiveEvent(e: Conversation.EventTypes, value: String) {
+    override fun receiveEvent(e: EventTypes, value: String) {
         when (e) {
             // This is used to let Hedvig say multiple message after another
-            Conversation.EventTypes.MESSAGE_FETCHED -> {
+            EventTypes.MESSAGE_FETCHED -> {
                 log.info("Message fetched: $value")
 
                 // New way of handeling relay messages
@@ -554,8 +572,10 @@ object HouseConversationConstants {
         "Badrum"
     )
 
-    val SELECT_EXTRA_BUILDING_YES = SingleSelectOption("message.house.extra.buildings.yes", "Ja, det har jag")
-    val SELECT_EXTRA_BUILDING_NO = SingleSelectOption("message.house.extra.buildings.no", "Nej, gå vidare")
+    val SELECT_EXTRA_BUILDING_YES =
+        SingleSelectOption("message.house.extra.buildings.yes", "Ja, det har jag")
+    val SELECT_EXTRA_BUILDING_NO =
+        SingleSelectOption("message.house.extra.buildings.no", "Nej, gå vidare")
     val ASK_HAS_EXTRA_BUILDINGS = SingleSelectMessage(
         "message.house.extra.buildings",
         "Har du några övriga byggnader på tomten? T.ex. garage eller gäststuga",
@@ -571,10 +591,14 @@ object HouseConversationConstants {
         "Byggnader"
     )
 
-    val SELECT_EXTRA_BUILDING_GARAGE = SingleSelectOption("message.house.extra.building.garage", "Garage")
-    val SELECT_EXTRA_BUILDING_FRIGGEBO = SingleSelectOption("message.house.extra.building.friggebod", "Friggebod")
-    val SELECT_EXTRA_BUILDING_ATTEFALS = SingleSelectOption("message.house.extra.building.attefalls", "Attefalls")
-    val SELECT_EXTRA_BUILDING_OTHER = SingleSelectOption("message.house.extra.building.other", "Annat")
+    val SELECT_EXTRA_BUILDING_GARAGE =
+        SingleSelectOption("message.house.extra.building.garage", "Garage")
+    val SELECT_EXTRA_BUILDING_FRIGGEBO =
+        SingleSelectOption("message.house.extra.building.friggebod", "Friggebod")
+    val SELECT_EXTRA_BUILDING_ATTEFALS =
+        SingleSelectOption("message.house.extra.building.attefalls", "Attefalls")
+    val SELECT_EXTRA_BUILDING_OTHER =
+        SingleSelectOption("message.house.extra.building.other", "Annat")
     val ASK_EXTRA_BUILDING_TYPE = SingleSelectMessage(
         "message.house.extra.building.type",
         "Vad är det för typ av byggnad?",
@@ -603,8 +627,10 @@ object HouseConversationConstants {
         "kvm"
     )
 
-    val SELECT_EXTRA_BUILDING_HAS_WATER_YES = SingleSelectOption("message.house.extra.building.has.water.yes", "Ja")
-    val SELECT_EXTRA_BUILDING_HAS_WATER_NO = SingleSelectOption("message.house.extra.building.has.water.no", "Nej")
+    val SELECT_EXTRA_BUILDING_HAS_WATER_YES =
+        SingleSelectOption("message.house.extra.building.has.water.yes", "Ja")
+    val SELECT_EXTRA_BUILDING_HAS_WATER_NO =
+        SingleSelectOption("message.house.extra.building.has.water.no", "Nej")
     val ASK_HAS_WATER_EXTRA_BUILDING = SingleSelectMessage(
         "message.house.has.water.building",
         "Finns det indraget vatten till $HOUSE_EXTRA_BUILDINGS_TYPE_TEXT?",
@@ -615,8 +641,10 @@ object HouseConversationConstants {
     )
 
 
-    val SELECT_SUBLETTING_HOUSE_YES = SingleSelectOption("message.house.sublet.yes", "yes")
-    val SELECT_SUBLETTING_HOUSE_NO = SingleSelectOption("message.house.sublet.no", "no")
+    val SELECT_SUBLETTING_HOUSE_YES =
+        SingleSelectOption("message.house.sublet.yes", "Ja")
+    val SELECT_SUBLETTING_HOUSE_NO =
+        SingleSelectOption("message.house.sublet.no", "Nej")
     val ASK_SUBLETTING_HOUSE = SingleSelectMessage(
         "message.house.supletting.house",
         "Super! Ett par frågor till \uD83D\uDE0A${SPLIT}Hyr du ut någon del av ditt hus till någon?",
@@ -635,6 +663,19 @@ object HouseConversationConstants {
     val MORE_QUESTION_RESPONSE = ParagraphMessage(
         "message.house.more.questions.response",
         "Tack så mycket. Jag hör av mig inom kort med ett förslag!"
+    )
+
+    val SELECT_LOOK_UP_SUCCESS_YES =
+        SingleSelectOption("merssage.house.look.up.success.yes", "Ja")
+    val SELECT_LOOK_UP_SUCCESS_NO =
+        SingleSelectOption("merssage.house.look.up.success.no", "Nej")
+    val ASK_LOOK_UP_SUCCESS = SingleSelectMessage(
+        "merssage.house.look.up.success",
+        "Tack {NAME}! Är det huset på {ADDRESS} jag ska ta fram ett förslag för?",
+        listOf(
+            SELECT_LOOK_UP_SUCCESS_YES,
+            SELECT_EXTRA_BUILDING_NO
+        )
     )
 }
 

@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
+import com.hedvig.botService.chat.house.HouseOnboardingConversation
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
@@ -11,7 +12,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
-import java.util.*
 
 @Component
 class ConversationFactoryImpl(
