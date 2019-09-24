@@ -2,9 +2,9 @@ package com.hedvig.botService.dataTypes
 
 import java.util.*
 
-class HouseBuildingYear : HedvigDataType() {
+class HouseYearOfConstruction : HedvigDataType() {
 
-    private var buildingYear: Int? = null
+    private var yearOfConstruction: Int? = null
 
     //TODO: is the cap at current year +10?
     private val capFuture: Int
@@ -22,9 +22,9 @@ class HouseBuildingYear : HedvigDataType() {
                 this.errorMessage = "{INPUT} låter lite långt fram i tiden! Hmm... Prova igen tack!"
                 return false
             }
-            this.buildingYear = livingSpaceSquareMeters
+            this.yearOfConstruction = livingSpaceSquareMeters
         } catch (e: NumberFormatException) {
-            buildingYear = null
+            yearOfConstruction = null
             this.errorMessage = "{INPUT} verkar vara ett konstigt byggnas år. Prova igen tack"
             return false
         }
@@ -33,14 +33,14 @@ class HouseBuildingYear : HedvigDataType() {
     }
 
     override fun getErrorMessageId(): String? {
-        return buildingYear?.let { livingSpaceSquareMeters ->
+        return yearOfConstruction?.let { livingSpaceSquareMeters ->
             when {
                 //TODO: Should the cap be at 1?
-                livingSpaceSquareMeters < 0 -> "hedvig.data.type.house.building.year.to.long.ago"
+                livingSpaceSquareMeters < 0 -> "hedvig.data.type.house.year.of.construction.to.long.ago"
                 //TODO: is the cap at 400?
-                livingSpaceSquareMeters > capFuture -> "hedvig.data.type.house.building.year.to.far.in.future"
+                livingSpaceSquareMeters > capFuture -> "hedvig.data.type.house.year.of.construction.to.far.in.future"
                 else -> null
             }
-        } ?: "hedvig.data.type.house.building.year.not.a.number"
+        } ?: "hedvig.data.type.house.year.of.construction.not.a.number"
     }
 }

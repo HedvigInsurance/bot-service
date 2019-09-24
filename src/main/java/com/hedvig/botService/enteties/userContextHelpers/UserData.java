@@ -44,7 +44,7 @@ public class UserData {
   public static final String HOUSE_HAS_EXTRA_BUILDINGS = "{HOUSE_HAS_EXTRA_BUILDINGS}";
   public static final String HOUSE_NR_EXTRA_BUILDINGS = "{HOUSE_NR_EXTRA_BUILDINGS}";
   public static final String HOUSE_IS_SUBLETTING = "{HOUSE_IS_SUBLETTING}";
-  public static final String HOUSE_BUILDING_YEAR = "{HOUSE_BUILDING_YEAR}";
+  public static final String HOUSE_YEAR_OF_CUNSTRUCTION = "{HOUSE_YEAR_OF_CUNSTRUCTION}";
 
   public static final String HOUSE_EXTRA_BUILDINGS_TYPE_TEXT = "{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}";
 
@@ -240,28 +240,28 @@ public class UserData {
     ctx.putUserData(USER_AUTHED_BANKID, referenceId);
   }
 
-  public void setHouseAncillaryArea(String subfaceSqm){
-    ctx.putUserData(HOUSE_ANCILLARY_AREA_KVM, subfaceSqm);
+  public void setHouseAncillaryArea(int ancillaryAreaSqm){
+    ctx.putUserData(HOUSE_ANCILLARY_AREA_KVM, Objects.toString(ancillaryAreaSqm));
   }
 
-  public String getHouseAncillaryArea() {
-    return ctx.getDataEntry(HOUSE_ANCILLARY_AREA_KVM);
+  public int getHouseAncillaryArea() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_ANCILLARY_AREA_KVM));
   }
 
-  public void setBathroomsInHouse(int bathrooms) {
+  public void setNumberOfBathrooms(int bathrooms) {
     ctx.putUserData(HOUSE_NR_BATHROOMS, Objects.toString(bathrooms));
   }
 
-  public int getBathroomsInHouse() {
+  public int getNumberOfBathrooms() {
     return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_BATHROOMS));
   }
 
-  public void setBuildingYear(int bathrooms) {
-    ctx.putUserData(HOUSE_BUILDING_YEAR, Objects.toString(bathrooms));
+  public void setYearOfConstruction(int yearOfConstruction) {
+    ctx.putUserData(HOUSE_YEAR_OF_CUNSTRUCTION, Objects.toString(yearOfConstruction));
   }
 
-  public int getBuildingYear() {
-    return Integer.parseInt(ctx.getDataEntry(HOUSE_BUILDING_YEAR));
+  public int getYearOfConstruction() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_YEAR_OF_CUNSTRUCTION));
   }
 
   public void setHasExtraBuildings(boolean hasExtraBuildings) {

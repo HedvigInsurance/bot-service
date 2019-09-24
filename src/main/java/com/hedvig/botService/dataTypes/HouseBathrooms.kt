@@ -2,7 +2,7 @@ package com.hedvig.botService.dataTypes
 
 class HouseBathrooms : HedvigDataType() {
 
-  private var livingSpaceSquareMeters: Int? = null
+  private var numberOfBathrooms: Int? = null
 
   override fun validate(input: String): Boolean {
     try {
@@ -17,9 +17,9 @@ class HouseBathrooms : HedvigDataType() {
         this.errorMessage = "{INPUT} toaletter?! Låter väldigt många? Hmm... Prova igen tack!"
         return false
       }
-      this.livingSpaceSquareMeters = livingSpaceSquareMeters
+      this.numberOfBathrooms = livingSpaceSquareMeters
     } catch (e: NumberFormatException) {
-      livingSpaceSquareMeters = null
+      numberOfBathrooms = null
       this.errorMessage = "{INPUT} verkar vara ett konstigt antal toaletter. Prova igen tack"
       return false
     }
@@ -28,14 +28,14 @@ class HouseBathrooms : HedvigDataType() {
   }
 
   override fun getErrorMessageId(): String? {
-    return livingSpaceSquareMeters?.let { livingSpaceSquareMeters ->
+    return numberOfBathrooms?.let { livingSpaceSquareMeters ->
       when {
         //TODO: Should the cap be at 1?
-        livingSpaceSquareMeters < 0 ->  "hedvig.data.type.house.bathrooms.to.few"
+        livingSpaceSquareMeters < 0 ->  "hedvig.data.type.house.number.of.bathrooms.to.few"
         //TODO: is the cap at 400?
-        livingSpaceSquareMeters > 400 -> "hedvig.data.type.house.bathrooms.to.many"
+        livingSpaceSquareMeters > 400 -> "hedvig.data.type.house.number.of.bathrooms.to.many"
         else -> null
       }
-    } ?: "hedvig.data.type.house.bathrooms.not.a.number"
+    } ?: "hedvig.data.type.house.number.of.bathrooms.not.a.number"
   }
 }

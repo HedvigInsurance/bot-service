@@ -6,8 +6,8 @@ import com.hedvig.botService.Utils.storeFamilyName
 import com.hedvig.botService.chat.*
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDING_START
 import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_BATHROOMS
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_BUILDING_YEAR
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_YEAR_OF_CONSTRUCTION
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
@@ -142,7 +142,7 @@ constructor(
         createInputMessage(
             ASK_ANCILLARY_AREA
         ) { body, userContext, message ->
-            userContext.onBoardingData.houseAncillaryArea = message.body.text
+            userContext.onBoardingData.houseAncillaryArea = (message.body as MessageBodyNumber).value
             addToChat(message)
             ASK_RESIDENTS.id
         }
@@ -154,26 +154,26 @@ constructor(
             val nrPersons = (message.body as MessageBodyNumber).value
             userContext.onBoardingData.setPersonInHouseHold(nrPersons)
             addToChat(message)
-            ASK_BATHROOMS.id
+            ASK_NUMBER_OF_BATHROOMS.id
         }
         //TODO check if same as apartment
         this.setExpectedReturnType(ASK_RESIDENTS.id, HouseholdMemberNumber())
 
         createInputMessage(
-            ASK_BATHROOMS
+            ASK_NUMBER_OF_BATHROOMS
         ) { body, userContext, message ->
             val bathrooms = (message.body as MessageBodyNumber).value
-            userContext.onBoardingData.bathroomsInHouse = bathrooms
+            userContext.onBoardingData.numberOfBathrooms = bathrooms
             addToChat(message)
-            ASK_BUILDING_YEAR.id
+            ASK_YEAR_OF_CONSTRUCTION.id
         }
-        this.setExpectedReturnType(ASK_BATHROOMS.id, HouseBathrooms())
+        this.setExpectedReturnType(ASK_NUMBER_OF_BATHROOMS.id, HouseBathrooms())
 
         createInputMessage(
-            ASK_BUILDING_YEAR
+            ASK_YEAR_OF_CONSTRUCTION
         ) { body, userContext, message ->
             val bathrooms = (message.body as MessageBodyNumber).value
-            userContext.onBoardingData.buildingYear = bathrooms
+            userContext.onBoardingData.yearOfConstruction = bathrooms
             addToChat(message)
             ASK_HAS_EXTRA_BUILDINGS.id
         }
@@ -564,8 +564,8 @@ object HouseConversationConstants {
         "Bostadsyta"
     )
 
-    val ASK_BUILDING_YEAR = NumberInputMessage(
-        "message.house.building.year",
+    val ASK_YEAR_OF_CONSTRUCTION = NumberInputMessage(
+        "message.house.year.of.cunstruction",
         "Vilket år byggdes huset?",
         "åååå"
     )
@@ -576,8 +576,8 @@ object HouseConversationConstants {
         "Boende"
     )
 
-    val ASK_BATHROOMS = NumberInputMessage(
-        "message.house.bathrooms",
+    val ASK_NUMBER_OF_BATHROOMS = NumberInputMessage(
+        "message.house.number.of.bathrooms",
         "Hur många badrum har du?",
         "Badrum"
     )
