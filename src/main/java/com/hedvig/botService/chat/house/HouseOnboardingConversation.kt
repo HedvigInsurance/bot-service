@@ -14,7 +14,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LOOK_UP_SUCCESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_RESIDENTS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
@@ -118,13 +118,19 @@ constructor(
         }
         this.setExpectedReturnType(ASK_ZIP_CODE.id, ZipCodeSweden())
         // TODO Visma look up
+
         createInputMessage(
             ASK_SQUARE_METERS
         ) { body, userContext, message ->
-            userContext.onBoardingData.livingSpace = (message.body as MessageBodyNumber).value.toFloat()
+            val livingSpace = (message.body as MessageBodyNumber).value.toFloat()
+            userContext.onBoardingData.livingSpace = livingSpace
             addToChat(message)
             if (userContext.onBoardingData.houseType == ProductTypes.HOUSE.toString()) {
-                ASK_ANCILLARY_AREA.id
+                if (livingSpace > MAX_LIVING_SPACE_SQM) {
+                    MORE_QUESTIONS_CALL.id
+                } else {
+                    ASK_ANCILLARY_AREA.id
+                }
             } else {
                 userContext.completeConversation(this)
                 val conversation =
@@ -141,22 +147,30 @@ constructor(
         createInputMessage(
             ASK_ANCILLARY_AREA
         ) { body, userContext, message ->
-            userContext.onBoardingData.houseAncillaryArea = (message.body as MessageBodyNumber).value
+            val ancillaryArea = (message.body as MessageBodyNumber).value
+            userContext.onBoardingData.houseAncillaryArea = ancillaryArea
             addToChat(message)
-            ASK_RESIDENTS.id
+            if (ancillaryArea + userContext.onBoardingData.livingSpace > MAX_LIVING_SPACE_INCLUDING_ANCILLARY_AREA_SQM) {
+                MORE_QUESTIONS_CALL.id
+            } else {
+                ASK_HOUSE_HOUSEHOLD_MEMBERS.id
+            }
         }
         this.setExpectedReturnType(ASK_ANCILLARY_AREA.id, AncillaryAreaSquareMeters())
 
         createInputMessage(
-            ASK_RESIDENTS
+            ASK_HOUSE_HOUSEHOLD_MEMBERS
         ) { body, userContext, message ->
             val nrPersons = (message.body as MessageBodyNumber).value
             userContext.onBoardingData.setPersonInHouseHold(nrPersons)
             addToChat(message)
-            ASK_NUMBER_OF_BATHROOMS.id
+            if (nrPersons > MAX_NUMBER_OF_HOUSE_HOLD_MEMBERS) {
+                MORE_QUESTIONS_CALL.id
+            } else {
+                ASK_NUMBER_OF_BATHROOMS.id
+            }
         }
-        //TODO check if same as apartment
-        this.setExpectedReturnType(ASK_RESIDENTS.id, HouseholdMemberNumber())
+        this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS.id, HouseholdMemberNumber())
 
         createInputMessage(
             ASK_NUMBER_OF_BATHROOMS
@@ -164,18 +178,25 @@ constructor(
             val bathrooms = (message.body as MessageBodyNumber).value
             userContext.onBoardingData.numberOfBathrooms = bathrooms
             addToChat(message)
-            ASK_YEAR_OF_CONSTRUCTION.id
+            if (bathrooms > MAX_NUMBER_OF_BATHROOMS) {
+                MORE_QUESTIONS_CALL.id
+            } else {
+                ASK_YEAR_OF_CONSTRUCTION.id
+            }
         }
         this.setExpectedReturnType(ASK_NUMBER_OF_BATHROOMS.id, HouseBathrooms())
 
         createInputMessage(
             ASK_YEAR_OF_CONSTRUCTION
         ) { body, userContext, message ->
-            //todo
-            val bathrooms = (message.body as MessageBodyNumber).value
-            userContext.onBoardingData.yearOfConstruction = bathrooms
+            val yearOfConstruction = (message.body as MessageBodyNumber).value
+            userContext.onBoardingData.yearOfConstruction = yearOfConstruction
             addToChat(message)
-            ASK_HAS_EXTRA_BUILDINGS.id
+            if (yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION) {
+                MORE_QUESTIONS_CALL.id
+            } else {
+                ASK_HAS_EXTRA_BUILDINGS.id
+            }
         }
         this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, HouseYearOfConstruction())
 
@@ -220,7 +241,7 @@ constructor(
                 body.value == 0 -> {
                     ASK_SUBLETTING_HOUSE.id
                 }
-                body.value >= 5 -> {
+                body.value > MAX_NUMBER_OF_EXTRA_BUILDING -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
                     MORE_QUESTIONS_CALL.id
                 }
@@ -230,7 +251,7 @@ constructor(
                 }
             }
         }
-        this.setExpectedReturnType(ASK_RESIDENTS.id, HouseExtraBuildings())
+        this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS.id, HouseExtraBuildings())
 
         createInputMessage(
             ASK_EXTRA_BUILDING_TYPE
@@ -252,12 +273,17 @@ constructor(
                 ASK_SQUARE_METERS_EXTRA_BUILDING,
                 buildingNumber
             ) { body, userContext, message ->
+                val extraBuildingSQM =  (message.body as MessageBodyNumber).value
                 userContext.onBoardingData.setHouseExtraBuildingSQM(
-                    (message.body as MessageBodyNumber).value,
+                    extraBuildingSQM,
                     buildingNumber
                 )
                 addToChat(message)
-                ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber
+                if (extraBuildingSQM > MAX_EXTRA_BUILDING_SQM) {
+                    MORE_QUESTIONS_CALL.id
+                } else {
+                    ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber
+                }
             }
             this.setExpectedReturnType(ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber, HouseExtraBuildingSQM())
 
@@ -284,15 +310,6 @@ constructor(
         }
 
         createInputMessage(
-            MORE_QUESTIONS_CALL
-        ) { body, userContext, message ->
-            userContext.completeConversation(this)
-            val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
-            userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
-            FREE_CHAT_ONBOARDING_START
-        }
-
-        createInputMessage(
             ASK_LOOK_UP_SUCCESS
         ) { body, userContext, message ->
             message.body.text = body.selectedItem.text
@@ -302,6 +319,15 @@ constructor(
                 SELECT_LOOK_UP_SUCCESS_YES.value -> ASK_SQUARE_METERS.id
                 else -> ASK_STREET_ADDRESS.id
             }
+        }
+
+        createInputMessage(
+            MORE_QUESTIONS_CALL
+        ) { body, userContext, message ->
+            userContext.completeConversation(this)
+            val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
+            userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
+            FREE_CHAT_ONBOARDING_START
         }
     }
 
@@ -433,12 +459,6 @@ constructor(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-
-    companion object {
-        private val log = LoggerFactory.getLogger(HouseOnboardingConversation::class.java)
-    }
-
-
     private fun createInputMessage(
         message: SingleSelectMessage,
         ordinal: Int? = null,
@@ -490,5 +510,21 @@ constructor(
                 receiveMessageCallback = callback
             )
         )
+    }
+
+    companion object {
+        private val log = LoggerFactory.getLogger(HouseOnboardingConversation::class.java)
+
+        private val MAX_LIVING_SPACE_SQM = 250
+        private val MAX_LIVING_SPACE_INCLUDING_ANCILLARY_AREA_SQM = 300
+
+        private val MIN_YEAR_OF_CONSTRUCTION = 1925
+
+        private val MAX_NUMBER_OF_HOUSE_HOLD_MEMBERS = 6
+
+        private val MAX_NUMBER_OF_BATHROOMS = 2
+
+        private val MAX_NUMBER_OF_EXTRA_BUILDING = 4
+        private val MAX_EXTRA_BUILDING_SQM = 75
     }
 }

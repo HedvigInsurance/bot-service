@@ -68,8 +68,8 @@ object HouseConversationConstants {
         "åååå"
     )
 
-    val ASK_RESIDENTS = NumberInputMessage(
-        "message.house.residents",
+    val ASK_HOUSE_HOUSEHOLD_MEMBERS = NumberInputMessage(
+        "message.house.household.members",
         "Okej! Hur många bor där?",
         "Boende"
     )
