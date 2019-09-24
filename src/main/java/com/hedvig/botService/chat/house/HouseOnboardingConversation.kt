@@ -5,43 +5,44 @@ import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.Utils.storeFamilyName
 import com.hedvig.botService.chat.*
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDING_START
+import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_BATHROOMS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_BUILDING_YEAR
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LOOK_UP_SUCCESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_RESIDENTS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_ADDRESS
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBFACE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ANCILLARY_AREA
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBLETTING_HOUSE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.house.HouseConversationConstants.CONVERSATION_RENT_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_CONVERSATION_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HUS_FIRST
 import com.hedvig.botService.chat.house.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_QUESTIONS_CALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
-import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_QUESTIONS_CALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_LOOK_UP_SUCCESS_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_RENT
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
-import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LOOK_UP_SUCCESS
-import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_LOOK_UP_SUCCESS_YES
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.enteties.userContextHelpers.UserData.HOUSE_EXTRA_BUILDINGS_TYPE_TEXT
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
+import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType
 import com.hedvig.botService.services.LocalizationService
-
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 
@@ -124,7 +125,7 @@ constructor(
             userContext.onBoardingData.livingSpace = (message.body as MessageBodyNumber).value.toFloat()
             addToChat(message)
             if (userContext.onBoardingData.houseType == ProductTypes.HOUSE.toString()) {
-                ASK_SUBFACE.id
+                ASK_ANCILLARY_AREA.id
             } else {
                 userContext.completeConversation(this)
                 val conversation =
@@ -139,13 +140,13 @@ constructor(
         this.setExpectedReturnType(ASK_SQUARE_METERS.id, LivingSpaceSquareMeters())
 
         createInputMessage(
-            ASK_SUBFACE
+            ASK_ANCILLARY_AREA
         ) { body, userContext, message ->
-            userContext.onBoardingData.houseSubface = message.body.text
+            userContext.onBoardingData.houseAncillaryArea = message.body.text
             addToChat(message)
             ASK_RESIDENTS.id
         }
-        this.setExpectedReturnType(ASK_SUBFACE.id, SubFaceSquareMeters())
+        this.setExpectedReturnType(ASK_ANCILLARY_AREA.id, AncillaryAreaSquareMeters())
 
         createInputMessage(
             ASK_RESIDENTS
@@ -164,9 +165,18 @@ constructor(
             val bathrooms = (message.body as MessageBodyNumber).value
             userContext.onBoardingData.bathroomsInHouse = bathrooms
             addToChat(message)
-            ASK_HAS_EXTRA_BUILDINGS.id
+            ASK_BUILDING_YEAR.id
         }
         this.setExpectedReturnType(ASK_BATHROOMS.id, HouseBathrooms())
+
+        createInputMessage(
+            ASK_BUILDING_YEAR
+        ) { body, userContext, message ->
+            val bathrooms = (message.body as MessageBodyNumber).value
+            userContext.onBoardingData.buildingYear = bathrooms
+            addToChat(message)
+            ASK_HAS_EXTRA_BUILDINGS.id
+        }
 
         createInputMessage(
             ASK_HAS_EXTRA_BUILDINGS
@@ -548,8 +558,8 @@ object HouseConversationConstants {
         "Bostadsyta"
     )
 
-    val ASK_SUBFACE = NumberInputMessage(
-        "message.house.sub.face",
+    val ASK_ANCILLARY_AREA = NumberInputMessage(
+        "message.house.ancillary.area",
         "Vad är biytan på huset?${SPLIT}Exempel på utrymmen som räknas som biytor är förråd, kallvind, pannrum och garage som sitter ihop med huset.",
         "Bostadsyta"
     )
@@ -730,10 +740,3 @@ data class SingleSelectOption(
     val value: String,
     val text: String
 )
-
-enum class ExtraBuildingType {
-    GARAGE,
-    ATTAFALL,
-    FRIGGEBOD,
-    OTHER
-}

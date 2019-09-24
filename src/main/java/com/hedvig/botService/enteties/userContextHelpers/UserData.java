@@ -1,6 +1,6 @@
 package com.hedvig.botService.enteties.userContextHelpers;
 
-import com.hedvig.botService.chat.house.ExtraBuildingType;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.services.LocalizationService;
 import org.jetbrains.annotations.Nullable;
@@ -39,11 +39,12 @@ public class UserData {
   public static final String TWENTYFIVE_THOUSAND_LIMIT = "{25K_LIMIT}";
   public static final String PHONE_NUMBER = "{PHONE_NUMBER}";
   public static final String LOGIN = "{LOGIN}";
-  public static final String HOUSE_SUBFACE_KVM = "{HOUSE_SUBFACE_KVM}";
+  public static final String HOUSE_ANCILLARY_AREA_KVM = "{HOUSE_ANCILLARY_AREA_KVM}";
   public static final String HOUSE_NR_BATHROOMS = "{HOUSE_NR_BATHROOMS}";
   public static final String HOUSE_HAS_EXTRA_BUILDINGS = "{HOUSE_HAS_EXTRA_BUILDINGS}";
   public static final String HOUSE_NR_EXTRA_BUILDINGS = "{HOUSE_NR_EXTRA_BUILDINGS}";
   public static final String HOUSE_IS_SUBLETTING = "{HOUSE_IS_SUBLETTING}";
+  public static final String HOUSE_BUILDING_YEAR = "{HOUSE_BUILDING_YEAR}";
 
   public static final String HOUSE_EXTRA_BUILDINGS_TYPE_TEXT = "{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}";
 
@@ -239,12 +240,12 @@ public class UserData {
     ctx.putUserData(USER_AUTHED_BANKID, referenceId);
   }
 
-  public void setHouseSubface(String subfaceSqm){
-    ctx.putUserData(HOUSE_SUBFACE_KVM, subfaceSqm);
+  public void setHouseAncillaryArea(String subfaceSqm){
+    ctx.putUserData(HOUSE_ANCILLARY_AREA_KVM, subfaceSqm);
   }
 
-  public String getHouseSubface() {
-    return ctx.getDataEntry(HOUSE_SUBFACE_KVM);
+  public String getHouseAncillaryArea() {
+    return ctx.getDataEntry(HOUSE_ANCILLARY_AREA_KVM);
   }
 
   public void setBathroomsInHouse(int bathrooms) {
@@ -255,6 +256,13 @@ public class UserData {
     return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_BATHROOMS));
   }
 
+  public void setBuildingYear(int bathrooms) {
+    ctx.putUserData(HOUSE_BUILDING_YEAR, Objects.toString(bathrooms));
+  }
+
+  public int getBuildingYear() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_BUILDING_YEAR));
+  }
 
   public void setHasExtraBuildings(boolean hasExtraBuildings) {
     ctx.putUserData(HOUSE_NR_EXTRA_BUILDINGS, Objects.toString(hasExtraBuildings));
