@@ -515,16 +515,16 @@ constructor(
     companion object {
         private val log = LoggerFactory.getLogger(HouseOnboardingConversation::class.java)
 
-        private val MAX_LIVING_SPACE_SQM = 250
-        private val MAX_LIVING_SPACE_INCLUDING_ANCILLARY_AREA_SQM = 300
+        private const val MAX_LIVING_SPACE_SQM = 250
+        private const val MAX_LIVING_SPACE_INCLUDING_ANCILLARY_AREA_SQM = 300
 
-        private val MIN_YEAR_OF_CONSTRUCTION = 1925
+        private const val MIN_YEAR_OF_CONSTRUCTION = 1925
 
-        private val MAX_NUMBER_OF_HOUSE_HOLD_MEMBERS = 6
+        private const val MAX_NUMBER_OF_HOUSE_HOLD_MEMBERS = 6
 
-        private val MAX_NUMBER_OF_BATHROOMS = 2
+        private const val MAX_NUMBER_OF_BATHROOMS = 2
 
-        private val MAX_NUMBER_OF_EXTRA_BUILDING = 4
-        private val MAX_EXTRA_BUILDING_SQM = 75
+        private const val MAX_NUMBER_OF_EXTRA_BUILDING = 4
+        private const val MAX_EXTRA_BUILDING_SQM = 75
     }
 }
