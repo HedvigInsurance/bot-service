@@ -7,14 +7,12 @@ class HouseExtraBuildings : HedvigDataType() {
   override fun validate(input: String): Boolean {
     try {
       val extraBuildings = Integer.parseInt(input)
-      //TODO: Should the cap be at 1?
-      if (extraBuildings < 0) {
+      if (extraBuildings < MIN_NUMBER_OF_EXTRA_BUILDINGS) {
         this.errorMessage = "{INPUT} extra byggnader låter väldigt få. Prova igen tack!"
         return false
       }
-      //TODO: is the cap at 20?
-      if (extraBuildings > 20) {
-        this.errorMessage = "{INPUT} extra byggnader?! Låter väldigt många? Hmm... Prova igen tack!"
+      if (extraBuildings > MAX_NUMBER_OF_EXTRA_BUILDINGS) {
+        this.errorMessage = "{INPUT} extra byggnader?! Låter som väldigt många! Hmm... Prova igen tack!"
         return false
       }
       this.extraBuildings = extraBuildings
@@ -29,14 +27,18 @@ class HouseExtraBuildings : HedvigDataType() {
 
   override fun getErrorMessageId(): String? {
     return extraBuildings?.let { extraBuildings ->
-      if (extraBuildings < 0) {
+      if (extraBuildings < MIN_NUMBER_OF_EXTRA_BUILDINGS) {
         return "hedvig.data.type.house.extra.buildings.to.few"
       }
 
-      if (extraBuildings > 20) {
+      if (extraBuildings > MAX_NUMBER_OF_EXTRA_BUILDINGS) {
         "hedvig.data.type.house.extra.buildings.to.many"
       } else null
     } ?: "hedvig.data.type.house.extra.buildings.not.a.number"
   }
 
+  companion object {
+    private const val MIN_NUMBER_OF_EXTRA_BUILDINGS = 0
+    private const val MAX_NUMBER_OF_EXTRA_BUILDINGS = 20
+  }
 }

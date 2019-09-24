@@ -171,11 +171,13 @@ constructor(
         createInputMessage(
             ASK_YEAR_OF_CONSTRUCTION
         ) { body, userContext, message ->
+            //todo
             val bathrooms = (message.body as MessageBodyNumber).value
             userContext.onBoardingData.yearOfConstruction = bathrooms
             addToChat(message)
             ASK_HAS_EXTRA_BUILDINGS.id
         }
+        this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, HouseYearOfConstruction())
 
         createInputMessage(
             ASK_HAS_EXTRA_BUILDINGS

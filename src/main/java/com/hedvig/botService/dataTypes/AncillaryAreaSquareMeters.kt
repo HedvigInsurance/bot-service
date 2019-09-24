@@ -7,11 +7,11 @@ class AncillaryAreaSquareMeters : HedvigDataType() {
   override fun validate(input: String): Boolean {
     try {
       val ancillaryAreaSquareMeters = Integer.parseInt(input)
-      if (ancillaryAreaSquareMeters < 0) {
+      if (ancillaryAreaSquareMeters < MIN_NUMBER_OF_ANCILLARY_AREA_SQM) {
         this.errorMessage = "{INPUT}kvm låter väldigt litet. Prova igen tack!"
         return false
       }
-      if (ancillaryAreaSquareMeters > 400) {
+      if (ancillaryAreaSquareMeters > MAX_NUMBER_OF_ANCILLARY_AREA_SQM) {
         this.errorMessage = "{INPUT}kvm biyta?! Låter väldigt mycket? Hmm... Prova igen tack!"
         return false
       }
@@ -26,12 +26,17 @@ class AncillaryAreaSquareMeters : HedvigDataType() {
   }
 
   override fun getErrorMessageId(): String? {
-    return ancillaryAreaSquareMeters?.let { subFaceSquareMeters ->
+    return ancillaryAreaSquareMeters?.let { ancillaryAreaSquareMeters ->
       when {
-        subFaceSquareMeters < 0 -> "hedvig.data.type.ancillary.area.square.meters.to.small"
-        subFaceSquareMeters > 400 -> "hedvig.data.type.ancillary.area.square.meters.to.big"
+        ancillaryAreaSquareMeters < MIN_NUMBER_OF_ANCILLARY_AREA_SQM -> "hedvig.data.type.ancillary.area.square.meters.to.small"
+        ancillaryAreaSquareMeters > MAX_NUMBER_OF_ANCILLARY_AREA_SQM -> "hedvig.data.type.ancillary.area.square.meters.to.big"
         else -> null
       }
     } ?:  "hedvig.data.type.ancillary.area.square.meters.not.a.number"
+  }
+
+  companion object {
+    private const val MIN_NUMBER_OF_ANCILLARY_AREA_SQM = 0
+    private const val MAX_NUMBER_OF_ANCILLARY_AREA_SQM = 400
   }
 }
