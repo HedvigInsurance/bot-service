@@ -293,6 +293,8 @@ constructor(
         createInputMessage(
             ASK_LOOK_UP_SUCCESS
         ) { body, userContext, message ->
+            message.body.text = body.selectedItem.text
+            addToChat(message)
             when (body.selectedItem.value) {
                 // TODO: Visma look up
                 SELECT_LOOK_UP_SUCCESS_YES.value -> ASK_SQUARE_METERS.id
