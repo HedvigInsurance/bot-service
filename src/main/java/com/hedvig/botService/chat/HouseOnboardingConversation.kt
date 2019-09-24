@@ -131,7 +131,7 @@ constructor(
             addToChat(message)
             ASK_RESIDENTS.id
         }
-        this.setExpectedReturnType(ASK_SUBFACE.id, SubfaceSquareMeters())
+        this.setExpectedReturnType(ASK_SUBFACE.id, SubFaceSquareMeters())
 
         createInputMessage(
             ASK_RESIDENTS
@@ -152,6 +152,7 @@ constructor(
             addToChat(message)
             ASK_HAS_EXTRA_BUILDINGS.id
         }
+        this.setExpectedReturnType(ASK_BATHROOMS.id, HouseBathrooms())
 
         createInputMessage(
             ASK_HAS_EXTRA_BUILDINGS
@@ -169,11 +170,6 @@ constructor(
                 }
             }
         }
-
-        //TODO this.setExpectedReturnType(ASK_RESIDENTS.id, HouseExtraBuildings())
-
-        //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_TWO.id, HouseExtraBuildingSQM())
-
 
         createInputMessage(
             ASK_SUBLETTING_HOUSE
@@ -196,14 +192,12 @@ constructor(
         ) { body, userContext, message ->
             addToChat(message)
             when {
-                body.value <= 0 -> {
-                    // todo should not happen with
+                body.value == 0 -> {
                     ASK_SUBLETTING_HOUSE.id
                 }
                 body.value >= 5 -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
-                    //TODO ask some questions
-                    "phone"
+                    MORE_QUESTIONS_CALL.id
                 }
                 else -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
@@ -211,6 +205,7 @@ constructor(
                 }
             }
         }
+        this.setExpectedReturnType(ASK_RESIDENTS.id, HouseExtraBuildings())
 
         createInputMessage(
             ASK_EXTRA_BUILDING_TYPE
@@ -239,7 +234,7 @@ constructor(
                 addToChat(message)
                 ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber
             }
-            //TODO this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING_ONE.id, HouseExtraBuildingSQM())
+            this.setExpectedReturnType(ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber, HouseExtraBuildingSQM())
 
             createInputMessage(
                 ASK_HAS_WATER_EXTRA_BUILDING,
