@@ -90,7 +90,7 @@ public class ProductPricingService {
       request.setNumberOfBathrooms(data.getNumberOfBathrooms());
 
       List<ExtraBuilding> extraBuildings = new ArrayList<>();
-      for (int i = 0; i < data.getNrExtraBuildings(); i++) {
+      for (int i = 1; i <= data.getNrExtraBuildings(); i++) {
         ExtraBuilding extraBuilding = new ExtraBuilding(
           ExtraBuildingType.valueOf(data.getHouseExtraBuildingType(i)),
           data.getHouseExtraBuildingSQM(i),
