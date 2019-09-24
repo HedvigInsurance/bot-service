@@ -265,7 +265,7 @@ public class UserData {
   }
 
   public void setHasExtraBuildings(boolean hasExtraBuildings) {
-    ctx.putUserData(HOUSE_NR_EXTRA_BUILDINGS, Objects.toString(hasExtraBuildings));
+    ctx.putUserData(HOUSE_HAS_EXTRA_BUILDINGS, Objects.toString(hasExtraBuildings));
   }
 
   public boolean getHasExtraBuildings() {
