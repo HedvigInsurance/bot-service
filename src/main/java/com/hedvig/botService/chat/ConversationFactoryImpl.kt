@@ -69,7 +69,7 @@ class ConversationFactoryImpl(
 
         if (conversationClass == HouseOnboardingConversation::class.java) {
             val houseOnboardingConversation = HouseOnboardingConversation(
-                eventPublisher, this, localizationService, userContext
+                memberService, eventPublisher, this, localizationService, userContext
             )
             houseOnboardingConversation.queuePos = queuePos
             return houseOnboardingConversation

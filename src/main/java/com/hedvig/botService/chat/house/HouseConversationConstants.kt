@@ -168,11 +168,6 @@ object HouseConversationConstants {
         "070 123 45 67"
     )
 
-    val MORE_QUESTION_RESPONSE = ParagraphMessage(
-        "message.house.more.questions.response",
-        "Tack så mycket. Jag hör av mig inom kort med ett förslag!"
-    )
-
     val SELECT_LOOK_UP_SUCCESS_YES =
         SingleSelectOption("merssage.house.look.up.success.yes", "Ja")
     val SELECT_LOOK_UP_SUCCESS_NO =

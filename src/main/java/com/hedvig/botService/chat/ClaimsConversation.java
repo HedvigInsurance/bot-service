@@ -234,7 +234,6 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void assignPhoneNumberToUserContext(Message m, boolean shouldBeCalledRightAway) {
-    fasf
     getUserContext().getOnBoardingData().setPhoneNumber(m.body.text);
     memberService.updatePhoneNumber(getUserContext().getMemberId(), m.body.text.trim());
 
