@@ -329,7 +329,7 @@ constructor(
             }
             SELECT_EXTRA_BUILDING_ATTEFALS.value -> {
                 userContext.onBoardingData.setHouseExtraBuildingType(
-                    ExtraBuildingType.ATTAFALL,
+                    ExtraBuildingType.ATTEFALL,
                     buildingNumber,
                     this.userContext.locale,
                     localizationService
