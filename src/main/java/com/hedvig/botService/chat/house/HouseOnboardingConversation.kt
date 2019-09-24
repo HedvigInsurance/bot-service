@@ -142,7 +142,7 @@ constructor(
                 CONVERSATION_RENT_DONE
             }
         }
-        this.setExpectedReturnType(ASK_SQUARE_METERS.id, LivingSpaceSquareMeters())
+        this.setExpectedReturnType(ASK_SQUARE_METERS.id, HouseLivingSpaceSquareMeters())
 
         createInputMessage(
             ASK_ANCILLARY_AREA
