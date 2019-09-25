@@ -205,6 +205,7 @@ constructor(
         createInputMessage(
             ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS
         ) { body, userContext, message ->
+            message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
                 SELECT_MORE_THAN_FOUR_FLOORS.value -> {
