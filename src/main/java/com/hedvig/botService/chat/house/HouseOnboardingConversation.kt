@@ -15,6 +15,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LOOK_UP_S
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
@@ -27,6 +28,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_CONVERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.HUS_FIRST
 import com.hedvig.botService.chat.house.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_MORE_THAN_FOUR_FLOORS
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
@@ -195,10 +197,24 @@ constructor(
             if (yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION) {
                 MORE_QUESTIONS_CALL.id
             } else {
-                ASK_HAS_EXTRA_BUILDINGS.id
+                ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS.id
             }
         }
         this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, HouseYearOfConstruction())
+
+        createInputMessage(
+            ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS
+        ) { body, userContext, message ->
+            addToChat(message)
+            when (body.selectedItem.value) {
+                SELECT_MORE_THAN_FOUR_FLOORS.value -> {
+                    MORE_QUESTIONS_CALL.id
+                }
+                else -> {
+                    ASK_HAS_EXTRA_BUILDINGS.id
+                }
+            }
+        }
 
         createInputMessage(
             ASK_HAS_EXTRA_BUILDINGS

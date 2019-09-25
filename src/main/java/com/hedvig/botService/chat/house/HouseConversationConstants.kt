@@ -169,7 +169,7 @@ object HouseConversationConstants {
     )
 
     val SELECT_LOOK_UP_SUCCESS_YES =
-        SingleSelectOption("merssage.house.look.up.success.yes", "Ja")
+        SingleSelectOption("merssage.house.look.up.success.yes", "Ja, det stämmer")
     val SELECT_LOOK_UP_SUCCESS_NO =
         SingleSelectOption("merssage.house.look.up.success.no", "Nej")
     val ASK_LOOK_UP_SUCCESS = SingleSelectMessage(
@@ -178,6 +178,19 @@ object HouseConversationConstants {
         listOf(
             SELECT_LOOK_UP_SUCCESS_YES,
             SELECT_EXTRA_BUILDING_NO
+        )
+    )
+
+    val SELECT_MORE_THAN_FOUR_FLOORS =
+        SingleSelectOption("message.house.above.four.floors.yes", "Ja, mer än 4:a våningar")
+    val SELECT_LESS_THAN_FIVE_FLOORS =
+        SingleSelectOption("message.house.above.four.floors.no", "Nej, mindre än 5 våningar")
+    val ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS = SingleSelectMessage(
+        "message.house.below.four.floors",
+        "Har huset mer än 4 våningar?${SPLIT}Inkludera källare",
+        listOf(
+            SELECT_MORE_THAN_FOUR_FLOORS,
+            SELECT_LESS_THAN_FIVE_FLOORS
         )
     )
 }
