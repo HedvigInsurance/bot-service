@@ -5,6 +5,8 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.hedvig.botService.chat.Conversation.EventTypes
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_50K_LIMIT_YES_YES
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_BANKIDJA
+import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_LAGENHET_ADDRESSNOTFOUND
+import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_MEMBER_UNDER_EIGHTEEN
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_NAGOTMER
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_ONBOARDINGSTART_REPLY_NAME
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_VARBORDUFELADRESS
@@ -604,5 +606,58 @@ class OnboardingConversationDeviTest {
 
     fun getMessage(id: String): Message {
         return testConversation.getMessage(testConversation.findLastChatMessageId(id))!!
+    }
+
+    @Test
+    fun recieveMessageIsUnderEighteenIfPersonnummerShowsMemberIsUnder18() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        val dateToday = LocalDate.now()
+
+        val date18YearsAgo = dateToday.minusYears(18)
+        val dateOneDayYoungerThan18AsString = date18YearsAgo.plusDays(1).toString().replace("-", "")
+        val testPersonnummerAsString = dateOneDayYoungerThan18AsString + "2125"
+
+        message.body.text = testPersonnummerAsString
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_MEMBER_UNDER_EIGHTEEN)
+    }
+
+
+    @Test
+    fun recieveNormalFlowIfMemberIsOlderThan18() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        val dateToday = LocalDate.now()
+
+        val date18YearsAgo = dateToday.minusYears(18)
+        val dateOneDayOlderThan18AsString = date18YearsAgo.minusDays(1).toString().replace("-", "")
+        val testPersonnummerAsString = dateOneDayOlderThan18AsString + "2125"
+
+        message.body.text = testPersonnummerAsString
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
+    }
+
+    @Test
+    fun recieveNormalFlowIfMemberIs18() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        val dateToday = LocalDate.now()
+
+        val date18YearsAgo = dateToday.minusYears(18).toString().replace("-", "")
+        val testPersonnummerAsString = date18YearsAgo + "2125"
+
+        message.body.text = testPersonnummerAsString
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
     }
 }
