@@ -620,7 +620,7 @@ class OnboardingConversationDeviTest {
 
         message.body.text = testPersonnummerAsString
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_MEMBER_UNDER_EIGHTEEN)
     }
@@ -638,7 +638,7 @@ class OnboardingConversationDeviTest {
 
         message.body.text = testPersonnummerAsString
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         val lastMessage = userContext.memberChat.chatHistory.last()
 
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
@@ -655,7 +655,7 @@ class OnboardingConversationDeviTest {
 
         message.body.text = testPersonnummerAsString
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         val lastMessage = userContext.memberChat.chatHistory.last()
 
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)

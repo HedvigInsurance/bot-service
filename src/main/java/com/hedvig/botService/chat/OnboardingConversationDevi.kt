@@ -357,7 +357,8 @@ constructor(
             "message.member.under.eighteen",
             WrappedMessage(
                 MessageBodyParagraph(
-                    "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år \uD83D\uDC76"
+                    "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år"
+                + "Om du råkade skriva fel personnumer så kan du testa att skriva igen \uD83D\uDE42"
                 )
             ) { b,uc, m ->
                 MESSAGE_LAGENHET_NO_PERSONNUMMER
@@ -2068,8 +2069,6 @@ constructor(
         const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
         const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
         const val MESSAGE_MEMBER_UNDER_EIGHTEEN = "message.member.under.eighteen"
-
-        const val MESSAGE_LAGENHET_ADDRESSNOTFOUND = "message.lagenhet.addressnotfound"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"
