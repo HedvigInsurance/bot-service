@@ -27,7 +27,14 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.CONVERSATION_
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_CONVERSATION_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HUS_FIRST
 import com.hedvig.botService.chat.house.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
-import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_BATHROOMS_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_EXTRA_BUILDINGS_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_EXTRA_BUILDING_SQM_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_FLOORS_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_HOUSEHOLD_MEMBERS_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_SQM_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_TOTAL_SQM_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_MORE_THAN_FOUR_FLOORS
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
@@ -129,7 +136,7 @@ constructor(
             addToChat(message)
             if (userContext.onBoardingData.houseType == ProductTypes.HOUSE.toString()) {
                 if (livingSpace > MAX_LIVING_SPACE_SQM) {
-                    MORE_QUESTIONS_CALL.id
+                    MORE_SQM_QUESTIONS_CALL.id
                 } else {
                     ASK_ANCILLARY_AREA.id
                 }
@@ -153,7 +160,7 @@ constructor(
             userContext.onBoardingData.houseAncillaryArea = ancillaryArea
             addToChat(message)
             if (ancillaryArea + userContext.onBoardingData.livingSpace > MAX_LIVING_SPACE_INCLUDING_ANCILLARY_AREA_SQM) {
-                MORE_QUESTIONS_CALL.id
+                MORE_TOTAL_SQM_QUESTIONS_CALL.id
             } else {
                 ASK_HOUSE_HOUSEHOLD_MEMBERS.id
             }
@@ -167,7 +174,7 @@ constructor(
             userContext.onBoardingData.setPersonInHouseHold(nrPersons)
             addToChat(message)
             if (nrPersons > MAX_NUMBER_OF_HOUSE_HOLD_MEMBERS) {
-                MORE_QUESTIONS_CALL.id
+                MORE_HOUSEHOLD_MEMBERS_QUESTIONS_CALL.id
             } else {
                 ASK_NUMBER_OF_BATHROOMS.id
             }
@@ -181,7 +188,7 @@ constructor(
             userContext.onBoardingData.numberOfBathrooms = bathrooms
             addToChat(message)
             if (bathrooms > MAX_NUMBER_OF_BATHROOMS) {
-                MORE_QUESTIONS_CALL.id
+                MORE_BATHROOMS_QUESTIONS_CALL.id
             } else {
                 ASK_YEAR_OF_CONSTRUCTION.id
             }
@@ -195,7 +202,7 @@ constructor(
             userContext.onBoardingData.yearOfConstruction = yearOfConstruction
             addToChat(message)
             if (yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION) {
-                MORE_QUESTIONS_CALL.id
+                MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL.id
             } else {
                 ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS.id
             }
@@ -209,7 +216,7 @@ constructor(
             addToChat(message)
             when (body.selectedItem.value) {
                 SELECT_MORE_THAN_FOUR_FLOORS.value -> {
-                    MORE_QUESTIONS_CALL.id
+                    MORE_FLOORS_QUESTIONS_CALL.id
                 }
                 else -> {
                     ASK_HAS_EXTRA_BUILDINGS.id
@@ -260,7 +267,7 @@ constructor(
                 }
                 body.value > MAX_NUMBER_OF_EXTRA_BUILDING -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
-                    MORE_QUESTIONS_CALL.id
+                    MORE_EXTRA_BUILDINGS_QUESTIONS_CALL.id
                 }
                 else -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
@@ -297,7 +304,7 @@ constructor(
                 )
                 addToChat(message)
                 if (extraBuildingSQM > MAX_EXTRA_BUILDING_SQM) {
-                    MORE_QUESTIONS_CALL.id
+                    MORE_EXTRA_BUILDING_SQM_QUESTIONS_CALL.id
                 } else {
                     ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber
                 }
@@ -338,8 +345,19 @@ constructor(
             }
         }
 
+        addAskMoreQuestionsMessage(MORE_SQM_QUESTIONS_CALL)
+        addAskMoreQuestionsMessage(MORE_HOUSEHOLD_MEMBERS_QUESTIONS_CALL)
+        addAskMoreQuestionsMessage(MORE_TOTAL_SQM_QUESTIONS_CALL)
+        addAskMoreQuestionsMessage(MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL)
+        addAskMoreQuestionsMessage(MORE_FLOORS_QUESTIONS_CALL)
+        addAskMoreQuestionsMessage(MORE_BATHROOMS_QUESTIONS_CALL)
+        addAskMoreQuestionsMessage(MORE_EXTRA_BUILDINGS_QUESTIONS_CALL)
+        addAskMoreQuestionsMessage(MORE_EXTRA_BUILDING_SQM_QUESTIONS_CALL)
+    }
+
+    private fun addAskMoreQuestionsMessage(message: NumberInputMessage) {
         createInputMessage(
-            MORE_QUESTIONS_CALL
+            message
         ) { body, userContext, message ->
             userContext.completeConversation(this)
             val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)

@@ -162,12 +162,6 @@ object HouseConversationConstants {
         )
     )
 
-    val MORE_QUESTIONS_CALL = NumberInputMessage(
-        "message.house.more.questions.call",
-        "Tack! Jag behöver ställa några frågor på telefon till dig, innan jag kan ge dig ditt förslag \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
-        "070 123 45 67"
-    )
-
     val SELECT_LOOK_UP_SUCCESS_YES =
         SingleSelectOption("merssage.house.look.up.success.yes", "Ja, det stämmer")
     val SELECT_LOOK_UP_SUCCESS_NO =
@@ -192,5 +186,53 @@ object HouseConversationConstants {
             SELECT_MORE_THAN_FOUR_FLOORS,
             SELECT_LESS_THAN_FIVE_FLOORS
         )
+    )
+
+    val MORE_SQM_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.sqm",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor större än 250 kvadratmeter \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_HOUSEHOLD_MEMBERS_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.house.hold.members",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor med fler än 6 personer som bor på samma adress \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_TOTAL_SQM_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.total.sqm",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor större än 300 kvadratmeter sammanlagt \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.year.of.construction",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor byggda tidigare än 1925 \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_FLOORS_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.floors",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor med fler än 4 våningar inkl. källare \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_BATHROOMS_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.bathrooms",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor med fler än 2 badrum \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_EXTRA_BUILDINGS_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.extra.buildings",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor med fler än 4 extra byggnader \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
+    )
+
+    val MORE_EXTRA_BUILDING_SQM_QUESTIONS_CALL = NumberInputMessage(
+        "message.house.more.questions.call.extra.building.sqm",
+        "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för extra byggnader som är större än 75 kvadratmeter \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
+        "070 123 45 67"
     )
 }
