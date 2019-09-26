@@ -358,7 +358,7 @@ constructor(
             WrappedMessage(
                 MessageBodyParagraph(
                     "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år"
-                + "Om du råkade skriva fel personnumer så kan du testa att skriva igen \uD83D\uDE42"
+                + "Om du råkade skriva fel personnummer så kan du testa att skriva igen \uD83D\uDE42"
                 )
             ) { b,uc, m ->
                 MESSAGE_LAGENHET_NO_PERSONNUMMER
