@@ -44,7 +44,7 @@ public class SSNSweden extends HedvigDataType {
       birthDateFromSSNUtil.birthDateFromSSN(trimmedInput);
     }
     catch(DateTimeParseException exception) {
-      this.errorMessage = input + " ser ut som ett konstigt personnummer. Ange gärna igen tack!";
+      this.errorMessage = "{INPUT} ser ut som ett konstigt personnummer. Ange gärna igen tack!";
       return false;
     }
 
