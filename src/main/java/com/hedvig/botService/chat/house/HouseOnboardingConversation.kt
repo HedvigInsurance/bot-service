@@ -25,7 +25,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_YEAR_OF_C
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.house.HouseConversationConstants.CONVERSATION_RENT_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_CONVERSATION_DONE
-import com.hedvig.botService.chat.house.HouseConversationConstants.HUS_FIRST
+import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_FIRST
 import com.hedvig.botService.chat.house.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_BATHROOMS_QUESTIONS_CALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_EXTRA_BUILDINGS_QUESTIONS_CALL
@@ -67,7 +67,7 @@ constructor(
 
     init {
         createInputMessage(
-            HUS_FIRST
+            HOUSE_FIRST
         ) { body, userContext, message ->
             message.body.text = body.selectedItem.text
             addToChat(message)
@@ -436,7 +436,7 @@ constructor(
 
     override fun init() {
         log.info("Starting house conversation")
-        startConversation(HUS_FIRST.id)
+        startConversation(HOUSE_FIRST.id)
     }
 
 

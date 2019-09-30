@@ -13,7 +13,7 @@ object HouseConversationConstants {
 
     val SELECT_OWN = SingleSelectOption("message.house.own", "Jag äger huset")
     val SELECT_RENT = SingleSelectOption("message.house.rent", "Jag hyr huset")
-    val HUS_FIRST = SingleSelectMessage(
+    val HOUSE_FIRST = SingleSelectMessage(
         "message.house.first",
         "\uD83D\uDC4D${SPLIT}Hyr du eller äger du huset?",
         listOf(

@@ -1773,7 +1773,7 @@ constructor(
             MESSAGE_HUS -> {
                 userContext.completeConversation(this)
                 val conversation = conversationFactory.createConversation(HouseOnboardingConversation::class.java, userContext)
-                userContext.startConversation(conversation, HouseConversationConstants.HUS_FIRST.id)
+                userContext.startConversation(conversation, HouseConversationConstants.HOUSE_FIRST.id)
                 return
             }
             "onboarding.done" -> {
