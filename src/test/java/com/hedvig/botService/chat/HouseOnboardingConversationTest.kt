@@ -156,7 +156,7 @@ class HouseOnboardingConversationTest {
 
     @Test
     fun houseProvideStreet_userDataStreet_thenGoToZipCode() {
-        val message = testConversation.getMessage(ASK_STREET_ADDRESS.id + ".2")
+        val message = testConversation.getMessage(ASK_STREET_ADDRESS.id + ".0")
         (message!!.body as MessageBodyText).text = TestData.TOLVANSSON_STREET
 
         testConversation.receiveMessage(message)
@@ -165,13 +165,13 @@ class HouseOnboardingConversationTest {
         assertThat(lastMessage.baseMessageId).isEqualTo(ASK_ZIP_CODE.id)
 
         userContext.onBoardingData.let {
-            assertThat(it.addressStreet).isEqualTo(TestData.TOLVANSSON_LASTNAME)
+            assertThat(it.addressStreet).isEqualTo(TestData.TOLVANSSON_STREET)
         }
     }
 
     @Test
     fun houseProvideZipCode_userDataZipCode_thenGoToSquareMeters() {
-        val message = testConversation.getMessage(ASK_ZIP_CODE.id + ".2")
+        val message = testConversation.getMessage(ASK_ZIP_CODE.id + ".0")
         (message!!.body as MessageBodyNumber).text = TestData.TOLVANSSON_ZIP
 
         testConversation.receiveMessage(message)
@@ -202,8 +202,12 @@ class HouseOnboardingConversationTest {
     }
 
     @Test
-    fun houseProvideSquareMeters_productTypeRent_userDataSquareMeters_thenGoToAncillary() {
-        given(conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)).willReturn(mockConversation)
+    fun houseProvideSquareMeters_productTypeRent_userDataSquareMeters_thenEndHouseOnboarding() {
+        var called = false
+        given(conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)).will {
+            called = true
+            mockConversation
+        }
 
         userContext.onBoardingData.houseType = OnboardingConversationDevi.ProductTypes.RENT.toString()
 
@@ -212,8 +216,7 @@ class HouseOnboardingConversationTest {
 
         testConversation.receiveMessage(message)
 
-        val lastMessage = userContext.memberChat.chatHistory.last()
-        assertThat(lastMessage.baseMessageId).isEqualTo(CONVERSATION_RENT_DONE)
+        assertThat(called).isTrue()
 
         userContext.onBoardingData.let {
             assertThat(it.livingSpace).isEqualTo(100f)
