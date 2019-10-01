@@ -1,5 +1,6 @@
 package com.hedvig.botService.services
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver
 import java.util.*
@@ -14,8 +15,13 @@ class TextKeysLocaleResolver {
             return DEFAULT_LOCALE
         }
 
-        val list = Locale.LanguageRange.parse(acceptLanguage)
-        return Locale.lookup(list, LOCALES) ?: DEFAULT_LOCALE
+        return try {
+            val list = Locale.LanguageRange.parse(acceptLanguage)
+            Locale.lookup(list, LOCALES) ?: DEFAULT_LOCALE
+        } catch (e: IllegalArgumentException) {
+            log.error("IllegalArgumentException when parsing acceptLanguage: '$acceptLanguage' message: ${e.message}")
+            DEFAULT_LOCALE
+        }
     }
 
     companion object {
@@ -25,5 +31,6 @@ class TextKeysLocaleResolver {
         )
 
         val DEFAULT_LOCALE = Locale("sv")
+        val log = LoggerFactory.getLogger(this::class.java)
     }
 }
