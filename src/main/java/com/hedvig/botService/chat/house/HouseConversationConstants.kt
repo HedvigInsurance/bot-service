@@ -119,7 +119,7 @@ object HouseConversationConstants {
     )
 
     val IN_LOOP_ASK_EXTRA_BUILDING_TYPE = SingleSelectMessage(
-        "message.house.extra.building.type",
+        "message.in.loop.house.extra.building.type",
         "Sådär ja, då har vi lagt till {HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}. Vi går vidare till nästa byggnad${SPLIT}Vad är det för typ av byggnad?",
         listOf(
             SELECT_EXTRA_BUILDING_GARAGE,
