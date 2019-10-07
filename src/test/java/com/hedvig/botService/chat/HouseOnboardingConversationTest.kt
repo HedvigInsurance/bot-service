@@ -1,37 +1,30 @@
 package com.hedvig.botService.chat
 
-import com.hedvig.botService.Utils.ssnLookupAndStore
-import com.hedvig.botService.chat.house.HouseConversationConstants
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ANCILLARY_AREA
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LOOK_UP_SUCCESS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ADDRESS_LOOK_UP_SUCCESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_ADDRESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ZIP_CODE
-import com.hedvig.botService.chat.house.HouseConversationConstants.CONVERSATION_RENT_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_FIRST
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_OWN
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_RENT
 import com.hedvig.botService.chat.house.HouseOnboardingConversation
-import com.hedvig.botService.chat.house.SingleSelectMessage
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
-import com.hedvig.botService.enteties.userContextHelpers.UserData
+import com.hedvig.botService.serviceIntegration.lookupService.LookupService
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Address
 import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.testHelpers.TestData
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Answers
 import org.mockito.BDDMockito.given
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalDate
@@ -41,6 +34,8 @@ class HouseOnboardingConversationTest {
 
     @Mock
     private lateinit var memberService: MemberService
+    @Mock
+    private lateinit var lookupService: LookupService
     @Mock
     private lateinit var localizationService: LocalizationService
     @Mock
@@ -58,7 +53,7 @@ class HouseOnboardingConversationTest {
         userContext = UserContext(TestData.TOLVANSSON_MEMBER_ID)
 
         testConversation = HouseOnboardingConversation(
-            memberService, publisher, conversationFactory, localizationService, userContext
+            memberService, lookupService, publisher, conversationFactory, localizationService, userContext
         )
     }
 
@@ -107,7 +102,7 @@ class HouseOnboardingConversationTest {
         assertThat(userContext.memberChat.chatHistory.findLast { it.id == message.id }?.body?.text).contains("19121212-****")
 
         val lastMessage = userContext.memberChat.chatHistory.last()
-        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_LOOK_UP_SUCCESS.id)
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_ADDRESS_LOOK_UP_SUCCESS.id)
 
         userContext.onBoardingData.let {
             assertThat(it.ssn).isEqualTo("191212121212")
@@ -171,6 +166,8 @@ class HouseOnboardingConversationTest {
 
     @Test
     fun houseProvideZipCode_userDataZipCode_thenGoToSquareMeters() {
+        userContext.onBoardingData.addressStreet = TestData.TOLVANSSON_STREET
+
         val message = testConversation.getMessage(ASK_ZIP_CODE.id + ".0")
         (message!!.body as MessageBodyNumber).text = TestData.TOLVANSSON_ZIP
 

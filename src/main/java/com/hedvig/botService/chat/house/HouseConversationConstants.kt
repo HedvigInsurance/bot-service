@@ -93,6 +93,19 @@ object HouseConversationConstants {
         )
     )
 
+    val SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES =
+        SingleSelectOption("message.real.estate.lookup.yes", "Ja, allting stämmer")
+    val SELECT_REAL_ESTATE_LOOKUP_CORRECT_NO =
+        SingleSelectOption("message.real.estate.lookup.no", "Nej, en eller flera saker stämmer inte")
+    val ASK_REAL_ESTATE_LOOKUP_CORRECT = SingleSelectMessage(
+        "message.real.estate.lookup",
+        "Toppen! Vi har hämtat lite information om ditt hus som vi behöver${SPLIT}Stämmer all den här informationen? \uD83E\uDDD0${SPLIT}Boyta:{KVM}\nBiyta:{HOUSE_ANCILLARY_AREA_KVM}\nByggnadsår:{HOUSE_YEAR_OF_CUNSTRUCTION}",
+        listOf(
+            SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES,
+            SELECT_REAL_ESTATE_LOOKUP_CORRECT_NO
+        )
+    )
+
     val ASK_NUMBER_OF_EXTRA_BUILDINGS = NumberInputMessage(
         "message.house.number.of.extra.buildings",
         "Hur många extra byggnader har du?",
@@ -162,16 +175,16 @@ object HouseConversationConstants {
         )
     )
 
-    val SELECT_LOOK_UP_SUCCESS_YES =
+    val SELECT_ADDRESS_LOOK_UP_SUCCESS_YES =
         SingleSelectOption("message.house.look.up.success.yes", "Ja, det stämmer")
-    val SELECT_LOOK_UP_SUCCESS_NO =
+    val SELECT_ADDRESS_LOOK_UP_SUCCESS_NO =
         SingleSelectOption("message.house.look.up.success.no", "Nej")
-    val ASK_LOOK_UP_SUCCESS = SingleSelectMessage(
+    val ASK_ADDRESS_LOOK_UP_SUCCESS = SingleSelectMessage(
         "message.house.look.up.success",
         "Tack {NAME}! Är det huset på {ADDRESS} jag ska ta fram ett förslag för?",
         listOf(
-            SELECT_LOOK_UP_SUCCESS_YES,
-            SELECT_EXTRA_BUILDING_NO
+            SELECT_ADDRESS_LOOK_UP_SUCCESS_YES,
+            SELECT_ADDRESS_LOOK_UP_SUCCESS_NO
         )
     )
 

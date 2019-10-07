@@ -11,11 +11,12 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUI
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LOOK_UP_SUCCESS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ADDRESS_LOOK_UP_SUCCESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_REAL_ESTATE_LOOKUP_CORRECT
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
@@ -42,12 +43,17 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
-import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_LOOK_UP_SUCCESS_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_ADDRESS_LOOK_UP_SUCCESS_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_RENT
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.enteties.userContextHelpers.UserData
+import com.hedvig.botService.serviceIntegration.lookupService.LookupService
+import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
+import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateResponse
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType
 import com.hedvig.botService.services.LocalizationService
@@ -57,6 +63,7 @@ import org.springframework.context.ApplicationEventPublisher
 class HouseOnboardingConversation
 constructor(
     private val memberService: MemberService,
+    private val lookupService: LookupService,
     override var eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
     localizationService: LocalizationService,
@@ -95,7 +102,7 @@ constructor(
             val hasAddress = memberService.ssnLookupAndStore(userContext, trimmedSSN)
 
             if (hasAddress) {
-                ASK_LOOK_UP_SUCCESS.id
+                ASK_ADDRESS_LOOK_UP_SUCCESS.id
             } else {
                 ASK_LAST_NAME.id
             }
@@ -123,10 +130,9 @@ constructor(
         ) { body, userContext, message ->
             userContext.onBoardingData.addressZipCode = message.body.text
             addToChat(message)
-            ASK_SQUARE_METERS.id
+            realEstateLookup()
         }
         this.setExpectedReturnType(ASK_ZIP_CODE.id, ZipCodeSweden())
-        // TODO Visma look up
 
         createInputMessage(
             ASK_SQUARE_METERS
@@ -165,7 +171,21 @@ constructor(
                 ASK_HOUSE_HOUSEHOLD_MEMBERS.id
             }
         }
-        this.setExpectedReturnType(ASK_ANCILLARY_AREA.id, AncillaryAreaSquareMeters())
+        this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, AncillaryAreaSquareMeters())
+
+        createInputMessage(
+            ASK_YEAR_OF_CONSTRUCTION
+        ) { body, userContext, message ->
+            val yearOfConstruction = (message.body as MessageBodyNumber).value
+            userContext.onBoardingData.yearOfConstruction = yearOfConstruction
+            addToChat(message)
+            if (yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION) {
+                MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL.id
+            } else {
+                ASK_HOUSE_HOUSEHOLD_MEMBERS.id
+            }
+        }
+        this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, HouseYearOfConstruction())
 
         createInputMessage(
             ASK_HOUSE_HOUSEHOLD_MEMBERS
@@ -190,24 +210,10 @@ constructor(
             if (bathrooms > MAX_NUMBER_OF_BATHROOMS) {
                 MORE_BATHROOMS_QUESTIONS_CALL.id
             } else {
-                ASK_YEAR_OF_CONSTRUCTION.id
-            }
-        }
-        this.setExpectedReturnType(ASK_NUMBER_OF_BATHROOMS.id, HouseBathrooms())
-
-        createInputMessage(
-            ASK_YEAR_OF_CONSTRUCTION
-        ) { body, userContext, message ->
-            val yearOfConstruction = (message.body as MessageBodyNumber).value
-            userContext.onBoardingData.yearOfConstruction = yearOfConstruction
-            addToChat(message)
-            if (yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION) {
-                MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL.id
-            } else {
                 ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS.id
             }
         }
-        this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, HouseYearOfConstruction())
+        this.setExpectedReturnType(ASK_NUMBER_OF_BATHROOMS.id, HouseBathrooms())
 
         createInputMessage(
             ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS
@@ -297,7 +303,7 @@ constructor(
                 ASK_SQUARE_METERS_EXTRA_BUILDING,
                 buildingNumber
             ) { body, userContext, message ->
-                val extraBuildingSQM =  (message.body as MessageBodyNumber).value
+                val extraBuildingSQM = (message.body as MessageBodyNumber).value
                 userContext.onBoardingData.setHouseExtraBuildingSQM(
                     extraBuildingSQM,
                     buildingNumber
@@ -334,14 +340,24 @@ constructor(
         }
 
         createInputMessage(
-            ASK_LOOK_UP_SUCCESS
+            ASK_ADDRESS_LOOK_UP_SUCCESS
         ) { body, userContext, message ->
             message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
-                // TODO: Visma look up
-                SELECT_LOOK_UP_SUCCESS_YES.value -> ASK_SQUARE_METERS.id
+                SELECT_ADDRESS_LOOK_UP_SUCCESS_YES.value -> realEstateLookup()
                 else -> ASK_STREET_ADDRESS.id
+            }
+        }
+
+        createInputMessage(
+            ASK_REAL_ESTATE_LOOKUP_CORRECT
+        ) { body, userContext, message ->
+            message.body.text = body.selectedItem.text
+            addToChat(message)
+            when (body.selectedItem.value) {
+                SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value -> ASK_HOUSE_HOUSEHOLD_MEMBERS.id
+                else -> ASK_SQUARE_METERS.id
             }
         }
 
@@ -354,6 +370,24 @@ constructor(
         addAskMoreQuestionsMessage(MORE_EXTRA_BUILDINGS_QUESTIONS_CALL)
         addAskMoreQuestionsMessage(MORE_EXTRA_BUILDING_SQM_QUESTIONS_CALL)
     }
+
+    private fun realEstateLookup(): String =
+        lookupService.realEstateLookup(
+            userContext.memberId,
+            RealEstateDto(
+                userContext.onBoardingData.addressStreet,
+                userContext.onBoardingData.addressZipCode
+            )
+        )?.let { realEstate ->
+            userContext.onBoardingData.apply {
+                houseAncillaryArea = realEstate.ancillaryArea
+                yearOfConstruction = realEstate.yearOfConstruction
+                livingSpace = realEstate.livingSpace.toFloat()
+            }
+
+            ASK_REAL_ESTATE_LOOKUP_CORRECT.id
+        } ?: ASK_SQUARE_METERS.id
+
 
     private fun addAskMoreQuestionsMessage(message: NumberInputMessage) {
         createInputMessage(

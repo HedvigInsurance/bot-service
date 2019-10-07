@@ -4,6 +4,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.hedvig.botService.chat.house.HouseOnboardingConversation
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService
+import com.hedvig.botService.serviceIntegration.lookupService.LookupService
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.LocalizationService
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component
 @Component
 class ConversationFactoryImpl(
     private val memberService: MemberService,
+    private val lookupService: LookupService,
     private val productPricingService: ProductPricingService,
     private val triggerService: TriggerService,
     private val eventPublisher: ApplicationEventPublisher,
@@ -69,7 +71,7 @@ class ConversationFactoryImpl(
 
         if (conversationClass == HouseOnboardingConversation::class.java) {
             val houseOnboardingConversation = HouseOnboardingConversation(
-                memberService, eventPublisher, this, localizationService, userContext
+                memberService, lookupService, eventPublisher, this, localizationService, userContext
             )
             houseOnboardingConversation.queuePos = queuePos
             return houseOnboardingConversation
