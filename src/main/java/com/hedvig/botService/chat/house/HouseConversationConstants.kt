@@ -159,7 +159,9 @@ object HouseConversationConstants {
     val SELECT_EXTRA_BUILDING_BOATHOUSE =
         SingleSelectOption("message.house.extra.building.attefalls", "Båthus")
     val SELECT_EXTRA_BUILDING_OTHER =
-        SingleSelectOption("message.house.extra.building.other", "Annat")
+        SingleSelectOption("message.house.extra.building.other", "Ingen av dessa")
+    val SELECT_EXTRA_BUILDING_MORE_OTHER =
+        SingleSelectOption("message.house.extra.building.more.other", "Annat")
     val ASK_EXTRA_BUILDING_TYPE = SingleSelectMessage(
         "message.house.extra.building.type",
         "Vad är det för typ av byggnad?",
@@ -179,7 +181,7 @@ object HouseConversationConstants {
             SELECT_EXTRA_BUILDING_CARPORT,
             SELECT_EXTRA_BUILDING_SAUNA,
             SELECT_EXTRA_BUILDING_BOATHOUSE,
-            SELECT_EXTRA_BUILDING_OTHER
+            SELECT_EXTRA_BUILDING_MORE_OTHER
         )
     )
 

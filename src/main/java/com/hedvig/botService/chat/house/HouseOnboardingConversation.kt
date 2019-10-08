@@ -279,12 +279,6 @@ constructor(
             handleExtraBuildingTypeResponse(body, userContext, message, 1)
         }
 
-        createInputMessage(
-            ASK_MORE_EXTRA_BUILDING_TYPE
-        ) { body, userContext, message ->
-            handleMoreExtraBuildingTypeResponse(body, userContext, message, 1)
-        }
-
         for (buildingNumber in 1..4) {
             if (buildingNumber != 1) {
                 createInputMessage(
@@ -293,13 +287,13 @@ constructor(
                 ) { body, userContext, message ->
                     handleExtraBuildingTypeResponse(body, userContext, message, buildingNumber)
                 }
+            }
 
-                createInputMessage(
-                    ASK_MORE_EXTRA_BUILDING_TYPE,
-                    buildingNumber
-                ) { body, userContext, message ->
-                    handleMoreExtraBuildingTypeResponse(body, userContext, message, buildingNumber)
-                }
+            createInputMessage(
+                ASK_MORE_EXTRA_BUILDING_TYPE,
+                buildingNumber
+            ) { body, userContext, message ->
+                handleMoreExtraBuildingTypeResponse(body, userContext, message, buildingNumber)
             }
 
             createInputMessage(
@@ -476,8 +470,7 @@ constructor(
     ): String {
         message.body.text = body.selectedItem.text
         addToChat(message)
-        when (body.selectedItem.value) {
-
+        return when (body.selectedItem.value) {
             SELECT_EXTRA_BUILDING_GARAGE.value -> {
                 userContext.onBoardingData.setHouseExtraBuildingType(
                     ExtraBuildingType.GARAGE,
@@ -485,6 +478,7 @@ constructor(
                     this.userContext.locale,
                     localizationService
                 )
+                ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
             }
             SELECT_EXTRA_BUILDING_FRIGGEBO.value -> {
                 userContext.onBoardingData.setHouseExtraBuildingType(
@@ -493,6 +487,7 @@ constructor(
                     this.userContext.locale,
                     localizationService
                 )
+                ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
             }
             SELECT_EXTRA_BUILDING_ATTEFALL.value -> {
                 userContext.onBoardingData.setHouseExtraBuildingType(
@@ -501,12 +496,12 @@ constructor(
                     this.userContext.locale,
                     localizationService
                 )
+                ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
             }
             else -> {
-                return ASK_MORE_EXTRA_BUILDING_TYPE.id + buildingNumber
+                ASK_MORE_EXTRA_BUILDING_TYPE.id + buildingNumber
             }
         }
-        return ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
     }
 
     private fun handleMoreExtraBuildingTypeResponse(
