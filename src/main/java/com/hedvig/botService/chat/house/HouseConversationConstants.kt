@@ -44,6 +44,14 @@ object HouseConversationConstants {
         "Kungsgatan 1"
     )
 
+    val ASK_STREET_ADDRESS_FAILED_LOOKUP = TextInputMessage(
+        "message.house.street.address.failed.lookup",
+        "Inga problem!${SPLIT}Vilken gatuadress bor du på?",
+        TextContentType.STREET_ADDRESS_LINE1,
+        KeyboardType.DEFAULT,
+        "Kungsgatan 1"
+    )
+
     val ASK_ZIP_CODE = NumberInputMessage(
         "message.house.zip.code",
         "Vad är ditt postnummer?",
@@ -52,13 +60,19 @@ object HouseConversationConstants {
 
     val ASK_SQUARE_METERS = NumberInputMessage(
         "message.house.square.meters",
-        "Vad är husets bostadsyta?${SPLIT}Exempelvis sovrum, vardagsrum, sällskapsutrymmen och kök. I boytan ingår inte förråd, ihopsittande garage, kallvind, pannrum och liknande.",
+        "Vad är husets boyta?${SPLIT}I boytan ingår inte förråd, ihopsittande garage, kallvind, pannrum och liknande",
+        ""
+    )
+
+    val ASK_SQUARE_METERS_FAILED_LOOKUP = NumberInputMessage(
+        "message.house.square.meters.failed.lookup",
+        "Typiskt \uD83D\uDE48, då behöver jag ställa lite fler frågor till dig${SPLIT}Vad är husets boyta?${SPLIT}I boytan ingår inte förråd, ihopsittande garage, kallvind, pannrum och liknande",
         ""
     )
 
     val ASK_ANCILLARY_AREA = NumberInputMessage(
         "message.house.ancillary.area",
-        "Hur stor är biytan på huset?${SPLIT}Exempel på utrymmen som räknas som biytor är förråd, kallvind, pannrum och garage som sitter ihop med huset.",
+        "Hur stor är biytan på huset?${SPLIT}Exempel på utrymmen som räknas som biytor är förråd, kallvind, pannrum och garage som sitter ihop med huset",
         ""
     )
 
@@ -74,9 +88,15 @@ object HouseConversationConstants {
         ""
     )
 
+    val ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP = NumberInputMessage(
+        "message.house.household.members.from.success.lookup",
+        "Okej! Och hur många bor i huset?",
+        ""
+    )
+
     val ASK_NUMBER_OF_BATHROOMS = NumberInputMessage(
         "message.house.number.of.bathrooms",
-        "Hur många badrum har du?",
+        "Hur många badrum finns i huset?",
         ""
     )
 
@@ -168,7 +188,7 @@ object HouseConversationConstants {
         SingleSelectOption("message.house.sublet.no", "Nej")
     val ASK_SUBLETTING_HOUSE = SingleSelectMessage(
         "message.house.supletting.house",
-        "Super! Ett par frågor till \uD83D\uDE0A${SPLIT}Hyr du ut någon del av ditt hus till någon?",
+        "Hyr du ut någon del av ditt hus till någon?",
         listOf(
             SELECT_SUBLETTING_HOUSE_YES,
             SELECT_SUBLETTING_HOUSE_NO
@@ -192,9 +212,18 @@ object HouseConversationConstants {
         SingleSelectOption("message.house.above.four.floors.yes", "Ja")
     val SELECT_LESS_THAN_FIVE_FLOORS =
         SingleSelectOption("message.house.above.four.floors.no", "Nej")
-    val ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS = SingleSelectMessage(
-        "message.house.below.four.floors",
-        "Har huset mer än 4 våningar? Källare inkluderat",
+    val ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES = SingleSelectMessage(
+        "message.house.below.four.floors.from.yes",
+        "Bra, då har vi koll på det \uD83D\uDE42${SPLIT}Har huset mer än 4 våningar? Källare inkluderat",
+        listOf(
+            SELECT_MORE_THAN_FOUR_FLOORS,
+            SELECT_LESS_THAN_FIVE_FLOORS
+        )
+    )
+
+    val ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO = SingleSelectMessage(
+        "message.house.below.four.floors.from.no",
+        "\uD83D\uDC4D${SPLIT}Har huset mer än 4 våningar? Bara så du vet så räknas källaren som en våning",
         listOf(
             SELECT_MORE_THAN_FOUR_FLOORS,
             SELECT_LESS_THAN_FIVE_FLOORS

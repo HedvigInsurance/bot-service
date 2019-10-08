@@ -15,10 +15,13 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ADDRESS_L
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_REAL_ESTATE_LOOKUP_CORRECT
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_FAILED_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_ADDRESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBLETTING_HOUSE
@@ -50,10 +53,8 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_SUBLET
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
-import com.hedvig.botService.enteties.userContextHelpers.UserData
 import com.hedvig.botService.serviceIntegration.lookupService.LookupService
 import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
-import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateResponse
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType
 import com.hedvig.botService.services.LocalizationService
@@ -137,27 +138,16 @@ constructor(
         createInputMessage(
             ASK_SQUARE_METERS
         ) { body, userContext, message ->
-            val livingSpace = (message.body as MessageBodyNumber).value.toFloat()
-            userContext.onBoardingData.livingSpace = livingSpace
-            addToChat(message)
-            if (userContext.onBoardingData.houseType == ProductTypes.HOUSE.toString()) {
-                if (livingSpace > MAX_LIVING_SPACE_SQM) {
-                    MORE_SQM_QUESTIONS_CALL.id
-                } else {
-                    ASK_ANCILLARY_AREA.id
-                }
-            } else {
-                userContext.completeConversation(this)
-                val conversation =
-                    conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
-                userContext.startConversation(
-                    conversation,
-                    OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS
-                )
-                CONVERSATION_RENT_DONE
-            }
+            handleSquareMetersResponse(message)
         }
         this.setExpectedReturnType(ASK_SQUARE_METERS.id, HouseLivingSpaceSquareMeters())
+
+        createInputMessage(
+            ASK_SQUARE_METERS_FAILED_LOOKUP
+        ) { body, userContext, message ->
+            handleSquareMetersResponse(message)
+        }
+        this.setExpectedReturnType(ASK_SQUARE_METERS_FAILED_LOOKUP.id, HouseLivingSpaceSquareMeters())
 
         createInputMessage(
             ASK_ANCILLARY_AREA
@@ -182,24 +172,10 @@ constructor(
             if (yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION) {
                 MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL.id
             } else {
-                ASK_HOUSE_HOUSEHOLD_MEMBERS.id
-            }
-        }
-        this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, HouseYearOfConstruction())
-
-        createInputMessage(
-            ASK_HOUSE_HOUSEHOLD_MEMBERS
-        ) { body, userContext, message ->
-            val nrPersons = (message.body as MessageBodyNumber).value
-            userContext.onBoardingData.setPersonInHouseHold(nrPersons)
-            addToChat(message)
-            if (nrPersons > MAX_NUMBER_OF_HOUSE_HOLD_MEMBERS) {
-                MORE_HOUSEHOLD_MEMBERS_QUESTIONS_CALL.id
-            } else {
                 ASK_NUMBER_OF_BATHROOMS.id
             }
         }
-        this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS.id, HouseholdMemberNumber())
+        this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, HouseYearOfConstruction())
 
         createInputMessage(
             ASK_NUMBER_OF_BATHROOMS
@@ -210,24 +186,52 @@ constructor(
             if (bathrooms > MAX_NUMBER_OF_BATHROOMS) {
                 MORE_BATHROOMS_QUESTIONS_CALL.id
             } else {
-                ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS.id
+                ASK_HOUSE_HOUSEHOLD_MEMBERS.id
             }
         }
         this.setExpectedReturnType(ASK_NUMBER_OF_BATHROOMS.id, HouseBathrooms())
 
         createInputMessage(
-            ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS
+            ASK_HOUSE_HOUSEHOLD_MEMBERS
+        ) { body, userContext, message ->
+            handleHouseholdMembersResponse(message)
+        }
+        this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS.id, HouseholdMemberNumber())
+
+        createInputMessage(
+            ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP
+        ) { body, userContext, message ->
+            handleHouseholdMembersResponse(message)
+        }
+        this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP.id, HouseholdMemberNumber())
+
+        createInputMessage(
+            ASK_SUBLETTING_HOUSE
         ) { body, userContext, message ->
             message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
-                SELECT_MORE_THAN_FOUR_FLOORS.value -> {
-                    MORE_FLOORS_QUESTIONS_CALL.id
+                SELECT_SUBLETTING_HOUSE_YES.value -> {
+                    userContext.onBoardingData.isSubLetting = true
+                    ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES.id
                 }
                 else -> {
-                    ASK_HAS_EXTRA_BUILDINGS.id
+                    userContext.onBoardingData.isSubLetting = false
+                    ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO.id
                 }
             }
+        }
+
+        createInputMessage(
+            ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES
+        ) { body, userContext, message ->
+            handleFloorsResponse(body, message)
+        }
+
+        createInputMessage(
+            ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO
+        ) { body, userContext, message ->
+            handleFloorsResponse(body, message)
         }
 
         createInputMessage(
@@ -245,22 +249,6 @@ constructor(
                     ASK_SUBLETTING_HOUSE.id
                 }
             }
-        }
-
-        createInputMessage(
-            ASK_SUBLETTING_HOUSE
-        ) { body, userContext, message ->
-            message.body.text = body.selectedItem.text
-            addToChat(message)
-            when (body.selectedItem.value) {
-                SELECT_SUBLETTING_HOUSE_YES.value -> {
-                    userContext.onBoardingData.isSubLetting = true
-                }
-                else -> {
-                    userContext.onBoardingData.isSubLetting = false
-                }
-            }
-            HOUSE_CONVERSATION_DONE
         }
 
         createInputMessage(
@@ -356,7 +344,7 @@ constructor(
             message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
-                SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value -> ASK_HOUSE_HOUSEHOLD_MEMBERS.id
+                SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value -> ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP.id
                 else -> ASK_SQUARE_METERS.id
             }
         }
@@ -397,6 +385,52 @@ constructor(
             val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
             userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
             FREE_CHAT_ONBOARDING_START
+        }
+    }
+
+    private fun handleFloorsResponse(body: MessageBodySingleSelect, message: Message): String {
+        message.body.text = body.selectedItem.text
+        addToChat(message)
+        return when (body.selectedItem.value) {
+            SELECT_MORE_THAN_FOUR_FLOORS.value -> {
+                MORE_FLOORS_QUESTIONS_CALL.id
+            }
+            else -> {
+                ASK_HAS_EXTRA_BUILDINGS.id
+            }
+        }
+    }
+
+    private fun handleSquareMetersResponse(message: Message): String {
+        val livingSpace = (message.body as MessageBodyNumber).value.toFloat()
+        userContext.onBoardingData.livingSpace = livingSpace
+        addToChat(message)
+        return if (userContext.onBoardingData.houseType == ProductTypes.HOUSE.toString()) {
+            if (livingSpace > MAX_LIVING_SPACE_SQM) {
+                MORE_SQM_QUESTIONS_CALL.id
+            } else {
+                ASK_ANCILLARY_AREA.id
+            }
+        } else {
+            userContext.completeConversation(this)
+            val conversation =
+                conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
+            userContext.startConversation(
+                conversation,
+                OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS
+            )
+            CONVERSATION_RENT_DONE
+        }
+    }
+
+    private fun handleHouseholdMembersResponse(message: Message): String {
+        val nrPersons = (message.body as MessageBodyNumber).value
+        userContext.onBoardingData.setPersonInHouseHold(nrPersons)
+        addToChat(message)
+        return if (nrPersons > MAX_NUMBER_OF_HOUSE_HOLD_MEMBERS) {
+            MORE_HOUSEHOLD_MEMBERS_QUESTIONS_CALL.id
+        } else {
+            ASK_SUBLETTING_HOUSE.id
         }
     }
 
