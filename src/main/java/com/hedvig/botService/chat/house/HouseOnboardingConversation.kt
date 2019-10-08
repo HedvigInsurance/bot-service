@@ -1,8 +1,8 @@
 package com.hedvig.botService.chat.house
 
-import com.hedvig.botService.Utils.ssnLookupAndStore
-import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
-import com.hedvig.botService.Utils.storeFamilyName
+import com.hedvig.botService.utils.ssnLookupAndStore
+import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
+import com.hedvig.botService.utils.storeFamilyName
 import com.hedvig.botService.chat.*
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDING_START
 import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes

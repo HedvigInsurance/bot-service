@@ -2,7 +2,7 @@ package com.hedvig.botService.chat
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.hedvig.botService.Utils.MessageUtil
+import com.hedvig.botService.utils.MessageUtil
 import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
@@ -11,7 +11,6 @@ import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.MessageSentEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.jwt.JwtHelper
 import java.io.IOException
 import java.lang.Long.valueOf

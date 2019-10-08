@@ -1,4 +1,4 @@
-package com.hedvig.botService.Utils
+package com.hedvig.botService.utils
 
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.MessageBodyNumber
@@ -25,22 +25,21 @@ private fun String.capitalizeAll(): String {
     return this.split(regex = Regex("\\s")).map { it.toLowerCase().capitalize() }.joinToString(" ")
 }
 
-fun UserContext.storeAndTrimAndAddSSNToChat(body: MessageBodyNumber, addToChat: (String) -> Unit): String {
+fun UserContext.storeAndTrimAndAddSSNToChat(body: MessageBodyNumber, addToChat: (String) -> Unit): Pair<String, LocalDate> {
 
     val trimmedSSN = body.text.trim()
     addToChat("${trimmedSSN.dropLast(4)}-****")
 
+    val birthDateFromSSNUtil = BirthDateFromSSNUtil()
+
+    val memberBirthDate = birthDateFromSSNUtil.birthDateFromSSN(trimmedSSN)
+
     this.onBoardingData.apply {
         ssn = trimmedSSN
-        birthDate = LocalDate.parse(
-            "${trimmedSSN.substring(0, 4)}-${trimmedSSN.substring(
-                4,
-                6
-            )}-${trimmedSSN.substring(6, 8)}"
-        )
+        birthDate = memberBirthDate
     }
 
-    return trimmedSSN
+    return Pair(trimmedSSN, memberBirthDate)
 }
 
 fun MemberService.ssnLookupAndStore(userContext: UserContext, trimmedSSN: String): Boolean {

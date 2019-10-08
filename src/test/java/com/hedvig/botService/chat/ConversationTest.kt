@@ -1,6 +1,6 @@
 package com.hedvig.botService.chat
 
-import com.hedvig.botService.Utils.ConversationUtils
+import com.hedvig.botService.utils.ConversationUtils
 import com.hedvig.botService.enteties.MemberChat
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*

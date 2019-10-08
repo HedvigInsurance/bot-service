@@ -2,8 +2,9 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
-import com.hedvig.botService.Utils.ssnLookupAndStore
-import com.hedvig.botService.Utils.storeAndTrimAndAddSSNToChat
+
+import com.hedvig.botService.utils.ssnLookupAndStore
+import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.chat.house.HouseConversationConstants
 import com.hedvig.botService.chat.house.HouseOnboardingConversation
@@ -24,7 +25,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import java.nio.charset.Charset
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.chrono.ChronoLocalDate
 import java.util.*
 
 class OnboardingConversationDevi
@@ -240,9 +243,13 @@ constructor(
                 )
             ) { body, uc, m ->
 
-                val trimmedSSN = uc.storeAndTrimAndAddSSNToChat(body) {
+                val (trimmedSSN, memberBirthDate) = uc.storeAndTrimAndAddSSNToChat(body) {
                     m.body.text = it
                     addToChat(m)
+                }
+
+                if (memberIsYoungerThan18(memberBirthDate)) {
+                    return@WrappedMessage(MESSAGE_MEMBER_UNDER_EIGHTEEN)
                 }
 
                 val hasAddress = memberService.ssnLookupAndStore(uc, trimmedSSN)
@@ -292,7 +299,7 @@ constructor(
                 )
 
             ) { b, uc, m ->
-                if(phoneNumberIsCorrectSwedishFormat(b, m)) {
+                if (phoneNumberIsCorrectSwedishFormat(b, m)) {
                     "message.hedvig.ska.ringa.dig"
                 } else {
                     "fel.telefonnummer.format"
@@ -311,7 +318,7 @@ constructor(
                 )
 
             ) { b, uc, m ->
-                if(phoneNumberIsCorrectSwedishFormat(b, m)) {
+                if (phoneNumberIsCorrectSwedishFormat(b, m)) {
                     "message.hedvig.ska.ringa.dig"
                 } else {
                     "fel.telefonnummer.format"
@@ -324,6 +331,20 @@ constructor(
             MessageBodyText(
                 "Tack så mycket. Jag hör av mig inom kort med ett förslag!"
             )
+        )
+
+
+        this.createChatMessage(
+            "message.member.under.eighteen",
+            WrappedMessage(
+                MessageBodyParagraph(
+                    "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år"
+                            + "Om du råkade skriva fel personnummer så kan du testa att skriva igen \uD83D\uDE42"
+                )
+            ) { b, uc, m ->
+                MESSAGE_LAGENHET_NO_PERSONNUMMER
+            }
+
         )
 
         this.createChatMessage(
@@ -832,7 +853,7 @@ constructor(
                 val ssn = userContext.onBoardingData.ssn
                 if (checkSSN(ssn) == Flag.RED) {
                     completeOnboarding()
-                    return@WrappedMessage("message.vad.ar.ditt.telefonnummer")
+                    return@WrappedMessage ("message.vad.ar.ditt.telefonnummer")
                 }
 
                 for (o in body.choices) {
@@ -1342,7 +1363,7 @@ constructor(
                 addToChat(m)
                 return false
             }
-        } catch(error: Exception) {
+        } catch (error: Exception) {
             "Error thrown when trying to validate phone number" + error.toString()
         }
         return false
@@ -1589,7 +1610,8 @@ constructor(
                     addToChat(getMessage("message.missingvalue"))
                 } else if (m.id == "message.missingvalue" || item.value == MESSAGE_FORSLAG2 ||
                     item.value == MESSAGE_FORSLAG2_ALT_1 ||
-                    item.value == MESSAGE_FORSLAG2_ALT_2) {
+                    item.value == MESSAGE_FORSLAG2_ALT_2
+                ) {
                     completeOnboarding()
                 }
             }
@@ -1752,6 +1774,14 @@ constructor(
         userContext.completeConversation(this)
     }
 
+    private fun memberIsYoungerThan18(birthDate: LocalDate): Boolean {
+        val dateToday = LocalDate.now()
+
+        val chronoBirthDate = ChronoLocalDate.from(birthDate)
+        val date18YearsAgo = dateToday.minusYears(18)
+        return chronoBirthDate.isAfter(date18YearsAgo)
+    }
+
     /*
    * Generate next chat message or ends conversation
    */
@@ -1772,7 +1802,8 @@ constructor(
             }
             MESSAGE_HUS -> {
                 userContext.completeConversation(this)
-                val conversation = conversationFactory.createConversation(HouseOnboardingConversation::class.java, userContext)
+                val conversation =
+                    conversationFactory.createConversation(HouseOnboardingConversation::class.java, userContext)
                 userContext.startConversation(conversation, HouseConversationConstants.HOUSE_FIRST.id)
                 return
             }
@@ -1942,7 +1973,7 @@ constructor(
             }
             return personStatus.flag
 
-        } catch(ex: Exception) {
+        } catch (ex: Exception) {
             log.error("Error getting debt status from member-service", ex)
             return Flag.GREEN
         }
@@ -1990,6 +2021,7 @@ constructor(
         const val MESSAGE_LAGENHET_PRE = "message.lagenhet.pre"
         const val MESSAGE_LAGENHET = "message.lagenhet"
         const val MESSAGE_LAGENHET_NO_PERSONNUMMER = "message.lagenhet.no.personnummer"
+        const val MESSAGE_LAGENHET_ADDRESSNOTFOUND = "message.lagenhet.addressnotfound"
 
         const val MESSAGE_STUDENT_LIMIT_PERSONS = "message.student.limit.persons"
         const val MESSAGE_STUDENT_LIMIT_LIVING_SPACE = "message.student.limit.livingspace"
@@ -2005,8 +2037,7 @@ constructor(
         const val MESSAGE_LOGIN_WITH_EMAIL_PASSWORD_SUCCESS = "message.login.with.mail.passwrod.success"
         const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
         const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
-
-        const val MESSAGE_LAGENHET_ADDRESSNOTFOUND = "message.lagenhet.addressnotfound"
+        const val MESSAGE_MEMBER_UNDER_EIGHTEEN = "message.member.under.eighteen"
 
         const val MESSAGE_ASK_NR_RESIDENTS = "message.pers"
 

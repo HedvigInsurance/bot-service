@@ -1,4 +1,4 @@
-package com.hedvig.botService.Utils
+package com.hedvig.botService.utils
 
 object ConversationUtils {
 
