@@ -18,6 +18,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOU
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_MORE_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_REAL_ESTATE_LOOKUP_CORRECT
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
@@ -40,13 +41,17 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_SQM_QUES
 import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_TOTAL_SQM_QUESTIONS_CALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_MORE_THAN_FOUR_FLOORS
-import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALS
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_ATTEFALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_FRIGGEBO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_ADDRESS_LOOK_UP_SUCCESS_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_BOATHOUSE
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_CARPORT
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_GUESTHOUSE
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_SAUNA
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_RENT
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
@@ -158,10 +163,10 @@ constructor(
             if (ancillaryArea + userContext.onBoardingData.livingSpace > MAX_LIVING_SPACE_INCLUDING_ANCILLARY_AREA_SQM) {
                 MORE_TOTAL_SQM_QUESTIONS_CALL.id
             } else {
-                ASK_HOUSE_HOUSEHOLD_MEMBERS.id
+                ASK_YEAR_OF_CONSTRUCTION.id
             }
         }
-        this.setExpectedReturnType(ASK_YEAR_OF_CONSTRUCTION.id, AncillaryAreaSquareMeters())
+        this.setExpectedReturnType(ASK_ANCILLARY_AREA.id, AncillaryAreaSquareMeters())
 
         createInputMessage(
             ASK_YEAR_OF_CONSTRUCTION
@@ -277,6 +282,12 @@ constructor(
             handleExtraBuildingTypeResponse(body, userContext, message, 1)
         }
 
+        createInputMessage(
+            ASK_MORE_EXTRA_BUILDING_TYPE
+        ) { body, userContext, message ->
+            handleMoreExtraBuildingTypeResponse(body, userContext, message, 1)
+        }
+
         for (buildingNumber in 1..4) {
             if (buildingNumber != 1) {
                 createInputMessage(
@@ -284,6 +295,13 @@ constructor(
                     buildingNumber
                 ) { body, userContext, message ->
                     handleExtraBuildingTypeResponse(body, userContext, message, buildingNumber)
+                }
+
+                createInputMessage(
+                    ASK_MORE_EXTRA_BUILDING_TYPE,
+                    buildingNumber
+                ) { body, userContext, message ->
+                    handleMoreExtraBuildingTypeResponse(body, userContext, message, buildingNumber)
                 }
             }
 
@@ -460,9 +478,58 @@ constructor(
                     localizationService
                 )
             }
-            SELECT_EXTRA_BUILDING_ATTEFALS.value -> {
+            SELECT_EXTRA_BUILDING_ATTEFALL.value -> {
                 userContext.onBoardingData.setHouseExtraBuildingType(
                     ExtraBuildingType.ATTEFALL,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+            else -> {
+                return ASK_MORE_EXTRA_BUILDING_TYPE.id + buildingNumber
+            }
+        }
+        return ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
+    }
+
+    private fun handleMoreExtraBuildingTypeResponse(
+        body: MessageBodySingleSelect,
+        userContext: UserContext,
+        message: Message,
+        buildingNumber: Int
+    ): String {
+        message.body.text = body.selectedItem.text
+        addToChat(message)
+        when (body.selectedItem.value) {
+
+            SELECT_EXTRA_BUILDING_GUESTHOUSE.value -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.GUESTHOUSE,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+            SELECT_EXTRA_BUILDING_CARPORT.value -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.CARPORT,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+            SELECT_EXTRA_BUILDING_SAUNA.value -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.SAUNA,
+                    buildingNumber,
+                    this.userContext.locale,
+                    localizationService
+                )
+            }
+            SELECT_EXTRA_BUILDING_BOATHOUSE.value -> {
+                userContext.onBoardingData.setHouseExtraBuildingType(
+                    ExtraBuildingType.BOATHOUSE,
                     buildingNumber,
                     this.userContext.locale,
                     localizationService
