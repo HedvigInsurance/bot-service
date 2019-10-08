@@ -353,7 +353,19 @@ constructor(
             message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
-                SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value -> ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP.id
+                SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value -> {
+                    when {
+                        userContext.onBoardingData.livingSpace > MAX_LIVING_SPACE_SQM ->
+                            MORE_SQM_QUESTIONS_CALL.id
+                        (userContext.onBoardingData.houseAncillaryArea +
+                                userContext.onBoardingData.livingSpace) > MAX_LIVING_SPACE_INCLUDING_ANCILLARY_AREA_SQM ->
+                            MORE_TOTAL_SQM_QUESTIONS_CALL.id
+                        userContext.onBoardingData.yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION ->
+                            MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL.id
+                        else ->
+                            ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP.id
+                    }
+                }
                 else -> ASK_SQUARE_METERS.id
             }
         }
