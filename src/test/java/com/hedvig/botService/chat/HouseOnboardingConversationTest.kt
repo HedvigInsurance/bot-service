@@ -95,7 +95,7 @@ class HouseOnboardingConversationTest {
             )
         )
 
-        val message = testConversation.getMessage(ASK_SSN.id + ".0")
+        val message = testConversation.getMessage(ASK_SSN.id + ".2")
         (message!!.body as MessageBodyNumber).text = "191212121212"
 
         testConversation.receiveMessage(message)
@@ -119,7 +119,7 @@ class HouseOnboardingConversationTest {
     fun houseProvideValidSSN_userDataStoreSSN_failsLookUp_thenGoToLastName() {
         given(memberService.lookupAddressSWE("191212121212", TestData.TOLVANSSON_MEMBER_ID)).willReturn(null)
 
-        val message = testConversation.getMessage(ASK_SSN.id + ".0")
+        val message = testConversation.getMessage(ASK_SSN.id + ".2")
         (message!!.body as MessageBodyNumber).text = "191212121212"
 
         testConversation.receiveMessage(message)
