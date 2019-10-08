@@ -251,7 +251,7 @@ constructor(
                 }
                 else -> {
                     userContext.onBoardingData.hasExtraBuildings = false
-                    ASK_SUBLETTING_HOUSE.id
+                    HOUSE_CONVERSATION_DONE
                 }
             }
         }
@@ -262,7 +262,7 @@ constructor(
             addToChat(message)
             when {
                 body.value == 0 -> {
-                    ASK_SUBLETTING_HOUSE.id
+                    HOUSE_CONVERSATION_DONE
                 }
                 body.value > MAX_NUMBER_OF_EXTRA_BUILDING -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
@@ -338,7 +338,7 @@ constructor(
                     }
                 }
                 if (userContext.onBoardingData.nrExtraBuildings <= buildingNumber) {
-                    ASK_SUBLETTING_HOUSE.id
+                    HOUSE_CONVERSATION_DONE
                 } else {
                     IN_LOOP_ASK_EXTRA_BUILDING_TYPE.id + (1 + buildingNumber)
                 }
