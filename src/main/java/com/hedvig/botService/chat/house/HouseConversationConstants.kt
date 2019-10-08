@@ -135,29 +135,29 @@ object HouseConversationConstants {
     val SELECT_EXTRA_BUILDING_GARAGE =
         SingleSelectOption("message.house.extra.building.garage", "Garage")
     val SELECT_EXTRA_BUILDING_CARPORT =
-        SingleSelectOption("message.house.extra.building.garage", "Carport")
+        SingleSelectOption("message.house.extra.building.car.port", "Carport")
     val SELECT_EXTRA_BUILDING_SHED =
-        SingleSelectOption("message.house.extra.building.garage", "Skjul")
+        SingleSelectOption("message.house.extra.building.shed", "Skjul")
     val SELECT_EXTRA_BUILDING_STORAGE =
-        SingleSelectOption("message.house.extra.building.garage", "Förråd")
+        SingleSelectOption("message.house.extra.building.storage", "Förråd")
     val SELECT_EXTRA_BUILDING_FRIGGEBO =
         SingleSelectOption("message.house.extra.building.friggebod", "Friggebod")
     val SELECT_EXTRA_BUILDING_ATTEFALL =
         SingleSelectOption("message.house.extra.building.attefalls", "Attefallshus")
     val SELECT_EXTRA_BUILDING_OUTHOUSE =
-        SingleSelectOption("message.house.extra.building.attefalls", "Uthus")
+        SingleSelectOption("message.house.extra.building.outhouse", "Uthus")
     val SELECT_EXTRA_BUILDING_GUESTHOUSE =
-        SingleSelectOption("message.house.extra.building.attefalls", "Gästhus")
+        SingleSelectOption("message.house.extra.building.guest.house", "Gästhus")
     val SELECT_EXTRA_BUILDING_GAZEBO =
-        SingleSelectOption("message.house.extra.building.attefalls", "Lusthus")
+        SingleSelectOption("message.house.extra.building.gazebo", "Lusthus")
     val SELECT_EXTRA_BUILDING_GREENHOUSE =
-        SingleSelectOption("message.house.extra.building.attefalls", "Växthus")
+        SingleSelectOption("message.house.extra.building.green.house", "Växthus")
     val SELECT_EXTRA_BUILDING_SAUNA =
-        SingleSelectOption("message.house.extra.building.attefalls", "Bastu")
+        SingleSelectOption("message.house.extra.building.sauna", "Bastu")
     val SELECT_EXTRA_BUILDING_BARN =
-        SingleSelectOption("message.house.extra.building.attefalls", "Lada")
+        SingleSelectOption("message.house.extra.building.barn", "Lada")
     val SELECT_EXTRA_BUILDING_BOATHOUSE =
-        SingleSelectOption("message.house.extra.building.attefalls", "Båthus")
+        SingleSelectOption("message.house.extra.building.boathouse", "Båthus")
     val SELECT_EXTRA_BUILDING_OTHER =
         SingleSelectOption("message.house.extra.building.other", "Ingen av dessa")
     val SELECT_EXTRA_BUILDING_MORE_OTHER =
