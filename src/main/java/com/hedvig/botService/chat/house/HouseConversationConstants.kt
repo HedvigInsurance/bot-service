@@ -114,10 +114,30 @@ object HouseConversationConstants {
 
     val SELECT_EXTRA_BUILDING_GARAGE =
         SingleSelectOption("message.house.extra.building.garage", "Garage")
+    val SELECT_EXTRA_BUILDING_CARPORT =
+        SingleSelectOption("message.house.extra.building.garage", "Carport")
+    val SELECT_EXTRA_BUILDING_SHED =
+        SingleSelectOption("message.house.extra.building.garage", "Skjul")
+    val SELECT_EXTRA_BUILDING_STORAGE =
+        SingleSelectOption("message.house.extra.building.garage", "Förråd")
     val SELECT_EXTRA_BUILDING_FRIGGEBO =
         SingleSelectOption("message.house.extra.building.friggebod", "Friggebod")
-    val SELECT_EXTRA_BUILDING_ATTEFALS =
-        SingleSelectOption("message.house.extra.building.attefalls", "Attefalls")
+    val SELECT_EXTRA_BUILDING_ATTEFALL =
+        SingleSelectOption("message.house.extra.building.attefalls", "Attefallshus")
+    val SELECT_EXTRA_BUILDING_OUTHOUSE =
+        SingleSelectOption("message.house.extra.building.attefalls", "Uthus")
+    val SELECT_EXTRA_BUILDING_GUESTHOUSE =
+        SingleSelectOption("message.house.extra.building.attefalls", "Gästhus")
+    val SELECT_EXTRA_BUILDING_GAZEBO =
+        SingleSelectOption("message.house.extra.building.attefalls", "Lusthus")
+    val SELECT_EXTRA_BUILDING_GREENHOUSE =
+        SingleSelectOption("message.house.extra.building.attefalls", "Växthus")
+    val SELECT_EXTRA_BUILDING_SAUNA =
+        SingleSelectOption("message.house.extra.building.attefalls", "Bastu")
+    val SELECT_EXTRA_BUILDING_BARN =
+        SingleSelectOption("message.house.extra.building.attefalls", "Lada")
+    val SELECT_EXTRA_BUILDING_BOATHOUSE =
+        SingleSelectOption("message.house.extra.building.attefalls", "Båthus")
     val SELECT_EXTRA_BUILDING_OTHER =
         SingleSelectOption("message.house.extra.building.other", "Annat")
     val ASK_EXTRA_BUILDING_TYPE = SingleSelectMessage(
@@ -126,7 +146,19 @@ object HouseConversationConstants {
         listOf(
             SELECT_EXTRA_BUILDING_GARAGE,
             SELECT_EXTRA_BUILDING_FRIGGEBO,
-            SELECT_EXTRA_BUILDING_ATTEFALS,
+            SELECT_EXTRA_BUILDING_ATTEFALL,
+            SELECT_EXTRA_BUILDING_OTHER
+        )
+    )
+
+    val ASK_MORE_EXTRA_BUILDING_TYPE = SingleSelectMessage(
+        "message.house.more.extra.building.type",
+        "Är det någon av dessa typer?",
+        listOf(
+            SELECT_EXTRA_BUILDING_GUESTHOUSE,
+            SELECT_EXTRA_BUILDING_CARPORT,
+            SELECT_EXTRA_BUILDING_SAUNA,
+            SELECT_EXTRA_BUILDING_BOATHOUSE,
             SELECT_EXTRA_BUILDING_OTHER
         )
     )
@@ -137,7 +169,7 @@ object HouseConversationConstants {
         listOf(
             SELECT_EXTRA_BUILDING_GARAGE,
             SELECT_EXTRA_BUILDING_FRIGGEBO,
-            SELECT_EXTRA_BUILDING_ATTEFALS,
+            SELECT_EXTRA_BUILDING_ATTEFALL,
             SELECT_EXTRA_BUILDING_OTHER
         )
     )
