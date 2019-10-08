@@ -271,7 +271,7 @@ constructor(
                 }
             }
         }
-        this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS.id, HouseExtraBuildings())
+        this.setExpectedReturnType(ASK_NUMBER_OF_EXTRA_BUILDINGS.id, HouseExtraBuildings())
 
         createInputMessage(
             ASK_EXTRA_BUILDING_TYPE

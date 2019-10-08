@@ -265,7 +265,7 @@ object HouseConversationConstants {
     )
 
     val ASK_SSN_UNDER_EIGHTEEN = NumberInputMessage(
-        "message.house.ask.ssn",
+        "message.house.ask.ssn.under.eighteen",
         "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år"
                 + "Om du råkade skriva fel personnummer så kan du testa att skriva igen \uD83D\uDE42${SPLIT}" +
                 "Vad är ditt personnummer?",
