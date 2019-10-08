@@ -262,6 +262,14 @@ object HouseConversationConstants {
         )
     )
 
+    val ASK_SSN_UNDER_EIGHTEEN = NumberInputMessage(
+        "message.house.ask.ssn",
+        "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år"
+                + "Om du råkade skriva fel personnummer så kan du testa att skriva igen \uD83D\uDE42${SPLIT}" +
+                "Vad är ditt personnummer?",
+        "ååååmmddxxxx"
+    )
+
     val MORE_SQM_QUESTIONS_CALL = NumberInputMessage(
         "message.house.more.questions.call.sqm",
         "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för villor större än 250 kvadratmeter \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",

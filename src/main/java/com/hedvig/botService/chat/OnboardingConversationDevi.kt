@@ -21,6 +21,7 @@ import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.*
+import com.hedvig.botService.utils.ConversationUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
@@ -248,7 +249,7 @@ constructor(
                     addToChat(m)
                 }
 
-                if (memberIsYoungerThan18(memberBirthDate)) {
+                if (ConversationUtils.isYoungerThan18(memberBirthDate)) {
                     return@WrappedMessage(MESSAGE_MEMBER_UNDER_EIGHTEEN)
                 }
 
@@ -1772,14 +1773,6 @@ constructor(
 
     private fun endConversation(userContext: UserContext) {
         userContext.completeConversation(this)
-    }
-
-    private fun memberIsYoungerThan18(birthDate: LocalDate): Boolean {
-        val dateToday = LocalDate.now()
-
-        val chronoBirthDate = ChronoLocalDate.from(birthDate)
-        val date18YearsAgo = dateToday.minusYears(18)
-        return chronoBirthDate.isAfter(date18YearsAgo)
     }
 
     /*

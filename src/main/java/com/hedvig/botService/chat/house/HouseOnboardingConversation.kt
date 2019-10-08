@@ -24,6 +24,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_ME
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_FAILED_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN_UNDER_EIGHTEEN
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_ADDRESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBLETTING_HOUSE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_YEAR_OF_CONSTRUCTION
@@ -63,6 +64,7 @@ import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType
 import com.hedvig.botService.services.LocalizationService
+import com.hedvig.botService.utils.ConversationUtils.isYoungerThan18
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 
@@ -99,21 +101,16 @@ constructor(
         createInputMessage(
             ASK_SSN
         ) { body, userContext, message ->
-            val trimmedSSN = userContext.storeAndTrimAndAddSSNToChat(body) {
-                message.body.text = it
-                addToChat(message)
-                it
-            }
-
-            val hasAddress = memberService.ssnLookupAndStore(userContext, trimmedSSN)
-
-            if (hasAddress) {
-                ASK_ADDRESS_LOOK_UP_SUCCESS.id
-            } else {
-                ASK_LAST_NAME.id
-            }
+            handleSsnResponse(body, message)
         }
         this.setExpectedReturnType(ASK_SSN.id, SSNSweden())
+
+        createInputMessage(
+            ASK_SSN_UNDER_EIGHTEEN
+        ) { body, userContext, message ->
+            handleSsnResponse(body, message)
+        }
+        this.setExpectedReturnType(ASK_SSN_UNDER_EIGHTEEN.id, SSNSweden())
 
         createInputMessage(
             ASK_LAST_NAME
@@ -394,6 +391,25 @@ constructor(
             ASK_REAL_ESTATE_LOOKUP_CORRECT.id
         } ?: ASK_SQUARE_METERS.id
 
+    private fun handleSsnResponse(body: MessageBodyNumber, message: Message): String {
+        val (trimmedSSN, memberBirthDate) = userContext.storeAndTrimAndAddSSNToChat(body) {
+            message.body.text = it
+            addToChat(message)
+            it
+        }
+
+        if (isYoungerThan18(memberBirthDate)) {
+            return ASK_SSN_UNDER_EIGHTEEN.id
+        }
+
+        val hasAddress = memberService.ssnLookupAndStore(userContext, trimmedSSN)
+
+        return if (hasAddress) {
+            ASK_ADDRESS_LOOK_UP_SUCCESS.id
+        } else {
+            ASK_LAST_NAME.id
+        }
+    }
 
     private fun addAskMoreQuestionsMessage(message: NumberInputMessage) {
         createInputMessage(
