@@ -119,7 +119,8 @@ object HouseConversationConstants {
         SingleSelectOption("message.real.estate.lookup.no", "Nej, en eller flera saker stämmer inte")
     val ASK_REAL_ESTATE_LOOKUP_CORRECT = SingleSelectMessage(
         "message.real.estate.lookup",
-        "Toppen! Vi har hämtat lite information om ditt hus som vi behöver${SPLIT}Stämmer det att:\n " +
+        "Toppen! Vi har hämtat lite information om ditt hus som vi behöver${SPLIT}" +
+                "Stämmer det att:\n " +
                 "\uD83D\uDC49 Boytan är {KVM} kvadratmeter\n" +
                 "\uD83D\uDC49 Biytan är {HOUSE_ANCILLARY_AREA_KVM} kvadratmeter\n" +
                 "\uD83D\uDC49 Och att huset är byggt {HOUSE_YEAR_OF_CUNSTRUCTION} kvadratmeter?",
