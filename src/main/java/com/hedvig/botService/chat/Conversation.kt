@@ -257,7 +257,7 @@ abstract class Conversation(
     val text = localizationService.getText(userContext.locale, id) ?: body.text
     val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
-    val delayFactor = 25 // Milliseconds per character TODO: Externalize this!
+    val delayFactor = 20 // Milliseconds per character TODO: Externalize this!
 
     val msgs = ArrayList<String>()
 
@@ -274,7 +274,7 @@ abstract class Conversation(
       // if(i==0){
       //	createMessage(s1, new MessageBodyParagraph(""),"h_symbol",(s.length()*delayFactor));
       // }else{
-      createMessage(s1, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
+      createMessage(s1, body = MessageBodyParagraph(""), delay = if (paragraphs[0].endsWith("?")) minOf(200, s.length * delayFactor) else s.length * delayFactor)
       // }
       msgs.add(s1)
       msgs.add(s2)
@@ -286,7 +286,7 @@ abstract class Conversation(
     val s = paragraphs[paragraphs.size - 1] // Last paragraph is put on actual message
     body.text = s
     // createMessage(sWrite, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
-    createMessage(sWrite, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
+    createMessage(sWrite, body = MessageBodyParagraph(""), delay = if (paragraphs[0].endsWith("?")) minOf(200, s.length * delayFactor) else s.length * delayFactor)
     if (avatar != null) {
       createMessage(sFinal, body = body, avatarName = avatar)
     } else {
@@ -359,6 +359,8 @@ abstract class Conversation(
     private val CHAT_ID_FORMAT = "%s.%s"
 
     const val NOT_VALID_POST_FIX = ".not.valid"
+
+    private val MESSAGE_DELAY_FACTOR = 20
 
     private val log = LoggerFactory.getLogger(Conversation::class.java)
   }
