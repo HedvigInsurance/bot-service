@@ -12,6 +12,8 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_EXTRA
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ADDRESS_LOOK_UP_SUCCESS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE_ONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
@@ -261,16 +263,26 @@ constructor(
                     userContext.onBoardingData.nrExtraBuildings = body.value
                     MORE_EXTRA_BUILDINGS_QUESTIONS_CALL.id
                 }
+                body.value == 1 -> {
+                    userContext.onBoardingData.nrExtraBuildings = body.value
+                    ASK_EXTRA_BUILDING_TYPE_ONE.id
+                }
                 else -> {
                     userContext.onBoardingData.nrExtraBuildings = body.value
-                    ASK_EXTRA_BUILDING_TYPE.id
+                    ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE.id
                 }
             }
         }
         this.setExpectedReturnType(ASK_NUMBER_OF_EXTRA_BUILDINGS.id, HouseExtraBuildings())
 
         createInputMessage(
-            ASK_EXTRA_BUILDING_TYPE
+            ASK_EXTRA_BUILDING_TYPE_ONE
+        ) { body, userContext, message ->
+            handleExtraBuildingTypeResponse(body, userContext, message, 1)
+        }
+
+        createInputMessage(
+            ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE
         ) { body, userContext, message ->
             handleExtraBuildingTypeResponse(body, userContext, message, 1)
         }

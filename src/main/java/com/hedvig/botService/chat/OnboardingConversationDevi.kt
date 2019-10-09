@@ -874,7 +874,7 @@ constructor(
         this.createChatMessage(
             MESSAGE_50K_LIMIT_YES,
             MessageBodySingleSelect(
-                "Om du har något som är värt mer än 50 000 kr och som du har med dig på stan, så behöver du lägga till ett extra skydd för den saken!\u000CDet kallas objektsförsäkring, och du lägger enkelt till det i efterhand om du skaffar Hedvig",
+                "Om du har något som är värt mer än 50${nbsp}000 kr och som du har med dig på stan, så behöver du lägga till ett extra skydd för den saken!\u000CDet kallas objektsförsäkring, och du lägger enkelt till det i efterhand om du skaffar Hedvig",
                 SelectOption("Jag förstår!", MESSAGE_50K_LIMIT_YES_YES)
             )
         )

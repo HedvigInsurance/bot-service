@@ -61,7 +61,7 @@ object HouseConversationConstants {
 
     val ASK_SQUARE_METERS = NumberInputMessage(
         "message.house.square.meters",
-        "Vad är husets boyta?${SPLIT}I boytan ingår inte förråd, ihopsittande garage, kallvind, pannrum och liknande",
+        "Vad är husets boyta?${SPLIT}I boytan ingår exempelvis inte förråd, ihopsittande garage, kallvind, pannrum",
         ""
     )
 
@@ -108,7 +108,7 @@ object HouseConversationConstants {
         SingleSelectOption("message.house.extra.buildings.no", "Nej, gå vidare")
     val ASK_HAS_EXTRA_BUILDINGS = SingleSelectMessage(
         "message.house.extra.buildings",
-        "Har du några övriga byggnader på tomten? T.ex. garage eller gäststuga",
+        "Har du några övriga byggnader på tomten? T.ex. garage eller gäststuga \uD83C\uDFD8",
         listOf(
             SELECT_EXTRA_BUILDING_YES,
             SELECT_EXTRA_BUILDING_NO
@@ -168,9 +168,20 @@ object HouseConversationConstants {
         SingleSelectOption("message.house.extra.building.other", "Ingen av dessa")
     val SELECT_EXTRA_BUILDING_MORE_OTHER =
         SingleSelectOption("message.house.extra.building.more.other", "Annat")
-    val ASK_EXTRA_BUILDING_TYPE = SingleSelectMessage(
-        "message.house.extra.building.type",
-        "Vad är det för typ av byggnad?",
+    val ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE = SingleSelectMessage(
+        "message.house.extra.building.type.more.than.one",
+        "Super! Jag behöver veta hur stora varje byggnad är och om de har indraget vatten \uD83D\uDE42${SPLIT}Vi börjar med den första byggnaden${SPLIT}Vad är det för typ av byggnad?",
+        listOf(
+            SELECT_EXTRA_BUILDING_GARAGE,
+            SELECT_EXTRA_BUILDING_FRIGGEBO,
+            SELECT_EXTRA_BUILDING_ATTEFALL,
+            SELECT_EXTRA_BUILDING_OTHER
+        )
+    )
+
+    val ASK_EXTRA_BUILDING_TYPE_ONE = SingleSelectMessage(
+        "message.house.extra.building.type.one",
+        "Super! Jag behöver veta hur stora varje byggnad är och om de har indraget vatten \uD83D\uDE42${SPLIT}Vad är det för typ av byggnad?",
         listOf(
             SELECT_EXTRA_BUILDING_GARAGE,
             SELECT_EXTRA_BUILDING_FRIGGEBO,
@@ -228,7 +239,7 @@ object HouseConversationConstants {
         SingleSelectOption("message.house.sublet.no", "Nej")
     val ASK_SUBLETTING_HOUSE = SingleSelectMessage(
         "message.house.supletting.house",
-        "Hyr du ut någon del av ditt hus till någon?",
+        "Hyr du ut en del av ditt hus till någon?",
         listOf(
             SELECT_SUBLETTING_HOUSE_YES,
             SELECT_SUBLETTING_HOUSE_NO
@@ -254,7 +265,7 @@ object HouseConversationConstants {
         SingleSelectOption("message.house.above.four.floors.no", "Nej")
     val ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES = SingleSelectMessage(
         "message.house.below.four.floors.from.yes",
-        "Bra, då har vi koll på det \uD83D\uDE42${SPLIT}Har huset mer än 4 våningar? Källare inkluderat",
+        "Bra, då har vi koll på det \uD83D\uDE42${SPLIT}Har huset mer än 4 våningar? Bara så du vet så räknas källaren som en våning",
         listOf(
             SELECT_MORE_THAN_FOUR_FLOORS,
             SELECT_LESS_THAN_FIVE_FLOORS
