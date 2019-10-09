@@ -257,7 +257,6 @@ abstract class Conversation(
     val text = localizationService.getText(userContext.locale, id) ?: body.text
     val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
-    val delayFactor = 25 // Milliseconds per character TODO: Externalize this!
 
     val msgs = ArrayList<String>()
 
@@ -265,17 +264,15 @@ abstract class Conversation(
       val s = paragraphs[i]
       val s1 = if (i == 0) id else String.format(CHAT_ID_FORMAT, id, pId++)
       val s2 = String.format(CHAT_ID_FORMAT, id, pId++)
-      // log.info("Create message of size "+(s.length())+" with load time:" +
-      // (s.length()*delayFactor));
-      // createMessage(s1, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
-      // createMessage(s1, new MessageBodyParagraph(""),(s.length()*delayFactor));
       createMessage(s2, body = MessageBodyParagraph(s))
 
-      // if(i==0){
-      //	createMessage(s1, new MessageBodyParagraph(""),"h_symbol",(s.length()*delayFactor));
-      // }else{
-      createMessage(s1, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
-      // }
+      createMessage(
+        s1,
+        body = MessageBodyParagraph(""),
+        delay = calculateDelay(s.length, paragraphs[0].endsWith("?")
+        )
+      )
+
       msgs.add(s1)
       msgs.add(s2)
     }
@@ -285,8 +282,8 @@ abstract class Conversation(
     val sFinal = String.format(CHAT_ID_FORMAT, id, pId++)
     val s = paragraphs[paragraphs.size - 1] // Last paragraph is put on actual message
     body.text = s
-    // createMessage(sWrite, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
-    createMessage(sWrite, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
+
+    createMessage(sWrite, body = MessageBodyParagraph(""), delay = calculateDelay(s.length, paragraphs[0].endsWith("?")))
     if (avatar != null) {
       createMessage(sFinal, body = body, avatarName = avatar)
     } else {
@@ -298,6 +295,8 @@ abstract class Conversation(
     // Connect all messages in relay chain
     for (i in 0 until msgs.size - 1) addRelay(msgs[i], msgs[i + 1])
   }
+
+  private fun calculateDelay(length: Int, isExplanation: Boolean) = if (isExplanation) 250 else length * MESSAGE_DELAY_FACTOR
 
   @JvmOverloads
   fun addMessageFromBackOffice(message: String, messageId: String, userId: String? = null): Boolean {
@@ -359,6 +358,8 @@ abstract class Conversation(
     private val CHAT_ID_FORMAT = "%s.%s"
 
     const val NOT_VALID_POST_FIX = ".not.valid"
+
+    private val MESSAGE_DELAY_FACTOR = 20
 
     private val log = LoggerFactory.getLogger(Conversation::class.java)
   }
