@@ -7,7 +7,6 @@ import com.hedvig.botService.chat.*
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_ONBOARDING_START
 import com.hedvig.botService.chat.OnboardingConversationDevi.ProductTypes
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ANCILLARY_AREA
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
