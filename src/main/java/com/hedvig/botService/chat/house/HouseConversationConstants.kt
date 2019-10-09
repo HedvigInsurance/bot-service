@@ -8,6 +8,7 @@ object HouseConversationConstants {
 
     const val HOUSE_CONVERSATION_DONE = "conversation.done"
     const val CONVERSATION_RENT_DONE = "conversation.rent.done"
+    const val CONVERSATION_APARTMENT_DONE = "conversation.apartment.done"
 
     const val SPLIT = "\u000C"
 
@@ -323,5 +324,19 @@ object HouseConversationConstants {
         "message.house.more.questions.call.extra.building.sqm",
         "Tack! Jag behöver ställa några frågor på telefon till dig eftersom vi för tillfället inte har stöd för extra byggnader som är större än 75 kvadratmeter \uD83D\uDE42${SPLIT}Vilket telefonnummer kan jag nå dig på?",
         "070 123 45 67"
+    )
+
+    // This is just because the user can edit this message
+    val SELECT_APARTMENT =
+        SingleSelectOption("message.lagenhet.pre", "Lägenhet")
+    val SELECT_HOUSE =
+        SingleSelectOption("message.hus", "Hus")
+    val ASK_HOUSE_OR_APARTMENT = SingleSelectMessage(
+        "message.forslagstart",
+        "Tack! Bor du i lägenhet eller eget hus?",
+        listOf(
+            SELECT_APARTMENT,
+            SELECT_HOUSE
+        )
     )
 }

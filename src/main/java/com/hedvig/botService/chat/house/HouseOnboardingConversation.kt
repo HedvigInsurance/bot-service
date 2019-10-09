@@ -17,6 +17,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_OR_APARTMENT
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_MORE_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_REAL_ESTATE_LOOKUP_CORRECT
@@ -29,6 +30,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_AD
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBLETTING_HOUSE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_YEAR_OF_CONSTRUCTION
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ZIP_CODE
+import com.hedvig.botService.chat.house.HouseConversationConstants.CONVERSATION_APARTMENT_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.CONVERSATION_RENT_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_CONVERSATION_DONE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_FIRST
@@ -49,6 +51,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_HAS_WATER_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_ADDRESS_LOOK_UP_SUCCESS_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_APARTMENT
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_BOATHOUSE
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_CARPORT
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_GUESTHOUSE
@@ -371,6 +374,27 @@ constructor(
         addAskMoreQuestionsMessage(MORE_BATHROOMS_QUESTIONS_CALL)
         addAskMoreQuestionsMessage(MORE_EXTRA_BUILDINGS_QUESTIONS_CALL)
         addAskMoreQuestionsMessage(MORE_EXTRA_BUILDING_SQM_QUESTIONS_CALL)
+
+        //To be able edit house/apartment answer
+        createInputMessage(
+            ASK_HOUSE_OR_APARTMENT
+        ) { body, userContext, message ->
+            message.body.text = body.selectedItem.text
+            addToChat(message)
+            when (body.selectedItem.value) {
+                SELECT_APARTMENT.value -> {
+                    userContext.completeConversation(this)
+                    val conversation =
+                        conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
+                    userContext.startConversation(
+                        conversation,
+                        OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER
+                    )
+                    CONVERSATION_APARTMENT_DONE
+                }
+                else -> ASK_SSN.id
+            }
+        }
     }
 
     private fun realEstateLookup(): String =
