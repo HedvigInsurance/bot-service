@@ -90,7 +90,7 @@ object HouseConversationConstants {
 
     val ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP = NumberInputMessage(
         "message.house.number.of.from.success.lookup",
-        "Perfekt! \uD83D\uDE0AHur många badrum finns i huset?",
+        "Perfekt!${SPLIT}\uD83D\uDE0AHur många badrum finns i huset?",
         ""
     )
 
@@ -121,7 +121,7 @@ object HouseConversationConstants {
     val ASK_REAL_ESTATE_LOOKUP_CORRECT = SingleSelectMessage(
         "message.real.estate.lookup",
         "Toppen! Vi har hämtat lite information om ditt hus som vi behöver${SPLIT}" +
-                "Stämmer det att:\n " +
+                "Stämmer det att:\n" +
                 "\uD83D\uDC49 Boytan är {KVM} kvadratmeter\n" +
                 "\uD83D\uDC49 Biytan är {HOUSE_ANCILLARY_AREA_KVM} kvadratmeter\n" +
                 "\uD83D\uDC49 Och att huset är byggt {HOUSE_YEAR_OF_CUNSTRUCTION} kvadratmeter?",
