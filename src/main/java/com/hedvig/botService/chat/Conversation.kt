@@ -274,7 +274,8 @@ abstract class Conversation(
       // if(i==0){
       //	createMessage(s1, new MessageBodyParagraph(""),"h_symbol",(s.length()*delayFactor));
       // }else{
-      createMessage(s1, body = MessageBodyParagraph(""), delay = if (paragraphs[0].endsWith("?")) minOf(200, s.length * delayFactor) else s.length * delayFactor)
+      val delay = if (paragraphs[0].endsWith("?") && paragraphs.size > 1 && i > 0) minOf(2, s.length * delayFactor) else s.length * delayFactor
+      createMessage(s1, body = MessageBodyParagraph(""), delay = delay)
       // }
       msgs.add(s1)
       msgs.add(s2)
@@ -286,7 +287,8 @@ abstract class Conversation(
     val s = paragraphs[paragraphs.size - 1] // Last paragraph is put on actual message
     body.text = s
     // createMessage(sWrite, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
-    createMessage(sWrite, body = MessageBodyParagraph(""), delay = if (paragraphs[0].endsWith("?")) minOf(200, s.length * delayFactor) else s.length * delayFactor)
+    val delay = if (paragraphs[0].endsWith("?") && paragraphs.size > 1) minOf(2, s.length * delayFactor) else s.length * delayFactor
+    createMessage(sWrite, body = MessageBodyParagraph(""), delay = delay)
     if (avatar != null) {
       createMessage(sFinal, body = body, avatarName = avatar)
     } else {
