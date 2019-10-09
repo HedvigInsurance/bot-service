@@ -82,23 +82,24 @@ object HouseConversationConstants {
         "åååå"
     )
 
+    val ASK_NUMBER_OF_BATHROOMS = NumberInputMessage(
+        "message.house.number.of.bathrooms",
+        "Hur många badrum finns i huset?",
+        ""
+    )
+
+    val ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP = NumberInputMessage(
+        "message.house.number.of.from.success.lookup",
+        "Perfekt! \uD83D\uDE0AHur många badrum finns i huset?",
+        ""
+    )
+
     val ASK_HOUSE_HOUSEHOLD_MEMBERS = NumberInputMessage(
         "message.house.household.members",
         "Okej! Hur många bor där?",
         ""
     )
 
-    val ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP = NumberInputMessage(
-        "message.house.household.members.from.success.lookup",
-        "Okej! Och hur många bor i huset?",
-        ""
-    )
-
-    val ASK_NUMBER_OF_BATHROOMS = NumberInputMessage(
-        "message.house.number.of.bathrooms",
-        "Hur många badrum finns i huset?",
-        ""
-    )
 
     val SELECT_EXTRA_BUILDING_YES =
         SingleSelectOption("message.house.extra.buildings.yes", "Ja, det har jag")

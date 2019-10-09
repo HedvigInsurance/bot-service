@@ -17,8 +17,8 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_MORE_EXTRA_BUILDING_TYPE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_REAL_ESTATE_LOOKUP_CORRECT
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
@@ -182,16 +182,16 @@ constructor(
         createInputMessage(
             ASK_NUMBER_OF_BATHROOMS
         ) { body, userContext, message ->
-            val bathrooms = (message.body as MessageBodyNumber).value
-            userContext.onBoardingData.numberOfBathrooms = bathrooms
-            addToChat(message)
-            if (bathrooms > MAX_NUMBER_OF_BATHROOMS) {
-                MORE_BATHROOMS_QUESTIONS_CALL.id
-            } else {
-                ASK_HOUSE_HOUSEHOLD_MEMBERS.id
-            }
+            handleNumberOfBathroomsResponse(message)
         }
         this.setExpectedReturnType(ASK_NUMBER_OF_BATHROOMS.id, HouseBathrooms())
+
+        createInputMessage(
+            ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP
+        ) { body, userContext, message ->
+            handleNumberOfBathroomsResponse(message)
+        }
+        this.setExpectedReturnType(ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP.id, HouseBathrooms())
 
         createInputMessage(
             ASK_HOUSE_HOUSEHOLD_MEMBERS
@@ -199,13 +199,6 @@ constructor(
             handleHouseholdMembersResponse(message)
         }
         this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS.id, HouseholdMemberNumber())
-
-        createInputMessage(
-            ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP
-        ) { body, userContext, message ->
-            handleHouseholdMembersResponse(message)
-        }
-        this.setExpectedReturnType(ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP.id, HouseholdMemberNumber())
 
         createInputMessage(
             ASK_SUBLETTING_HOUSE
@@ -363,7 +356,7 @@ constructor(
                         userContext.onBoardingData.yearOfConstruction < MIN_YEAR_OF_CONSTRUCTION ->
                             MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL.id
                         else ->
-                            ASK_HOUSE_HOUSEHOLD_MEMBERS_FROM_SUCCESS_LOOKUP.id
+                            ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP.id
                     }
                 }
                 else -> ASK_SQUARE_METERS.id
@@ -460,6 +453,17 @@ constructor(
                 OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS
             )
             CONVERSATION_RENT_DONE
+        }
+    }
+
+    private fun handleNumberOfBathroomsResponse(message: Message): String {
+        val bathrooms = (message.body as MessageBodyNumber).value
+        userContext.onBoardingData.numberOfBathrooms = bathrooms
+        addToChat(message)
+        return if (bathrooms > MAX_NUMBER_OF_BATHROOMS) {
+            MORE_BATHROOMS_QUESTIONS_CALL.id
+        } else {
+            ASK_HOUSE_HOUSEHOLD_MEMBERS.id
         }
     }
 
