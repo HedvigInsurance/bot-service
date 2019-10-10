@@ -125,7 +125,7 @@ object HouseConversationConstants {
                 "Stämmer det att:\n" +
                 "\uD83D\uDC49 Boytan är {KVM} kvadratmeter\n" +
                 "\uD83D\uDC49 Biytan är {HOUSE_ANCILLARY_AREA_KVM} kvadratmeter\n" +
-                "\uD83D\uDC49 Och att huset är byggt {HOUSE_YEAR_OF_CUNSTRUCTION} kvadratmeter?",
+                "\uD83D\uDC49 Och att huset är byggt {HOUSE_YEAR_OF_CUNSTRUCTION}?",
         listOf(
             SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES,
             SELECT_REAL_ESTATE_LOOKUP_CORRECT_NO
