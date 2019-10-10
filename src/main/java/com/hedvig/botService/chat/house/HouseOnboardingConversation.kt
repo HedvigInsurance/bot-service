@@ -137,7 +137,11 @@ constructor(
         ) { body, userContext, message ->
             userContext.onBoardingData.addressZipCode = message.body.text
             addToChat(message)
-            realEstateLookup()
+            if (userContext.hasHouseProduct()) {
+                realEstateLookup()
+            } else {
+                ASK_SQUARE_METERS.id
+            }
         }
         this.setExpectedReturnType(ASK_ZIP_CODE.id, ZipCodeSweden())
 
@@ -349,7 +353,13 @@ constructor(
             message.body.text = body.selectedItem.text
             addToChat(message)
             when (body.selectedItem.value) {
-                SELECT_ADDRESS_LOOK_UP_SUCCESS_YES.value -> realEstateLookup()
+                SELECT_ADDRESS_LOOK_UP_SUCCESS_YES.value -> {
+                    if (userContext.hasHouseProduct()) {
+                        realEstateLookup()
+                    } else {
+                        ASK_SQUARE_METERS.id
+                    }
+                }
                 else -> ASK_STREET_ADDRESS.id
             }
         }
@@ -473,7 +483,7 @@ constructor(
         val livingSpace = (message.body as MessageBodyNumber).value.toFloat()
         userContext.onBoardingData.livingSpace = livingSpace
         addToChat(message)
-        return if (userContext.onBoardingData.houseType == ProductTypes.HOUSE.toString()) {
+        return if (userContext.hasHouseProduct()) {
             if (livingSpace > MAX_LIVING_SPACE_SQM) {
                 MORE_SQM_QUESTIONS_CALL.id
             } else {
@@ -743,6 +753,9 @@ constructor(
             )
         )
     }
+
+    private fun UserContext.hasHouseProduct() =
+        this.onBoardingData.houseType == ProductTypes.HOUSE.toString()
 
     companion object {
         private val log = LoggerFactory.getLogger(HouseOnboardingConversation::class.java)
