@@ -249,6 +249,7 @@ constructor(
                 }
                 else -> {
                     userContext.onBoardingData.hasExtraBuildings = false
+                    userContext.onBoardingData.nrExtraBuildings = 0
                     HOUSE_CONVERSATION_DONE
                 }
             }
