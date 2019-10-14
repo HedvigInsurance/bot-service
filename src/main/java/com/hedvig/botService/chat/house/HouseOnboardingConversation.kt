@@ -460,6 +460,7 @@ constructor(
         createInputMessage(
             message
         ) { body, userContext, message ->
+            addToChat(message)
             userContext.completeConversation(this)
             val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
             userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
