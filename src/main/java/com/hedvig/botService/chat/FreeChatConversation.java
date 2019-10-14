@@ -9,6 +9,8 @@ import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,6 +20,7 @@ import java.time.Clock;
 import java.util.List;
 import java.util.Locale;
 
+@Slf4j
 public class FreeChatConversation extends Conversation {
 
   public static final String FREE_CHAT_START = "free.chat.start";
@@ -87,7 +90,15 @@ public class FreeChatConversation extends Conversation {
 
         boolean isFile = m.body instanceof MessageBodyFileUpload;
 
-        if (productPricingService.isMemberInsuranceActive(getUserContext().getMemberId())) {
+        String status;
+        try {
+          status = productPricingService.getInsuranceStatus(getUserContext().getMemberId());
+        } catch (FeignException e) {
+          status = null;
+          log.error("FeignException in getInsuranceStatus", e);
+        }
+
+        if (status != null) {
           if (isFile) {
             val body = (MessageBodyFileUpload) m.body;
             eventPublisher.publishEvent(new FileUploadedEvent(getUserContext().getMemberId(), body.key, body.mimeType));
