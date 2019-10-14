@@ -424,7 +424,7 @@ constructor(
             userContext.memberId,
             RealEstateDto(
                 userContext.onBoardingData.addressStreet,
-                userContext.onBoardingData.addressZipCode
+                userContext.onBoardingData.addressZipCode.replace(" ", "")
             )
         )?.let { realEstate ->
             userContext.onBoardingData.apply {
