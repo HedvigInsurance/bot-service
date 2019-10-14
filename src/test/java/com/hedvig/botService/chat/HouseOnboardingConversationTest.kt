@@ -205,8 +205,9 @@ class HouseOnboardingConversationTest {
         assertThat(lastMessage.baseMessageId).isEqualTo(ASK_SQUARE_METERS.id)
     }
 
-    @Test
-    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToRealEstateLookup() {
+    //TODO: Lot's of test that should be added when we have the time
+//    @Test
+//    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToRealEstateLookup() {
 //        given(
 //            lookupService.realEstateLookup(
 //                TestData.TOLVANSSON_MEMBER_ID,
@@ -235,17 +236,17 @@ class HouseOnboardingConversationTest {
 //            assertThat(it.houseAncillaryArea).isEqualTo(21)
 //            assertThat(it.yearOfConstruction).isEqualTo(1930)
 //        }
-    }
-
-    @Test
-    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToSqm() {
-
-    }
-
-    @Test
-    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToLastName() {
-
-    }
+//    }
+//
+//    @Test
+//    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToSqm() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToLastName() {
+//
+//    }
 
     @Test
     fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToNumberOfBathrooms() {
@@ -264,25 +265,25 @@ class HouseOnboardingConversationTest {
         assertThat(lastMessage.baseMessageId).isEqualTo(ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP.id)
     }
 
-    @Test
-    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallSqm_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallTotalSqm_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallYearOfConstruction_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideRealEstateLookupSuccess_thenGoToSqm() {
-
-    }
+//    @Test
+//    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallSqm_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallTotalSqm_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallYearOfConstruction_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideRealEstateLookupSuccess_thenGoToSqm() {
+//
+//    }
 
 
     @Test
@@ -372,156 +373,156 @@ class HouseOnboardingConversationTest {
     }
 
 
-    @Test
-    fun houseProvideSquareMeters_userDataSquareMeters_thenGoToSqmCall_underWriterGuideLines() {
-
-    }
-
-
-    @Test
-    fun houseFailedLookupProvideSquareMeters_productTypeHouse_userDataSquareMeters_thenGoToAncillary() {
-
-    }
-
-    @Test
-    fun houseFailedLookupProvideSquareMeters_productTypeRent_userDataSquareMeters_thenEndHouseOnboarding() {
-
-    }
-
-    @Test
-    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToYearOfConstruction() {
-
-    }
-
-    @Test
-    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToTotalSqmCall_underWriter() {
-
-    }
-
-    @Test
-    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToNumberOfBathRooms() {
-
-    }
-
-    @Test
-    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToYearOfConstructionCall_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToSubLetting() {
-
-    }
-
-    @Test
-    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToCallHouseHoldMembers_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromYes() {
-
-    }
-
-    @Test
-    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromNo() {
-
-    }
-
-    @Test
-    fun houseProvideFloors_fromNo_userDataNo_thenGoToExtraBuildings() {
-
-    }
-
-    @Test
-    fun houseProvideFloors_fromNo_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideFloors_fromYes_userDataNo_thenGoToExtraBuildings() {
-
-    }
-
-    @Test
-    fun houseProvideFloors_fromYes_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideHasExtraBuildings_userDataNo_thenGoToConversationDone() {
-
-    }
-
-    @Test
-    fun houseProvideHasExtraBuildings_userDataYes_thenGoToNumberOfExtraBuilding() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfExtraBuilding_userDataZero_thenGoToConversationDone() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfExtraBuilding_userDataOne_thenGoToTypeOne() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfExtraBuilding_userDataTwo_thenGoToTypeMoreThanOne() {
-
-    }
-
-    @Test
-    fun houseProvideNumberOfExtraBuilding_userDataFive_thenGoToCallExtraBuildings_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideExtraBuildType_userDataGarage_thenGoToExtraBuildingSqm() {
-
-    }
-
-    @Test
-    fun houseProvideExtraBuildingSqm_userDataTen_thenGoToExtraWaterConnected() {
-
-    }
-
-    @Test
-    fun houseProvideExtraBuildingSqm_userDataEighty_thenGoToExtraWaterConnected_underWriterGuideLines() {
-
-    }
-
-    @Test
-    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToExtraBuildingTypeInLoop() {
-
-    }
-
-    @Test
-    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToConversationDone() {
-
-    }
+//    @Test
+//    fun houseProvideSquareMeters_userDataSquareMeters_thenGoToSqmCall_underWriterGuideLines() {
+//
+//    }
+//
+//
+//    @Test
+//    fun houseFailedLookupProvideSquareMeters_productTypeHouse_userDataSquareMeters_thenGoToAncillary() {
+//
+//    }
+//
+//    @Test
+//    fun houseFailedLookupProvideSquareMeters_productTypeRent_userDataSquareMeters_thenEndHouseOnboarding() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToYearOfConstruction() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToTotalSqmCall_underWriter() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToNumberOfBathRooms() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToYearOfConstructionCall_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToSubLetting() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToCallHouseHoldMembers_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromYes() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromNo() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideFloors_fromNo_userDataNo_thenGoToExtraBuildings() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideFloors_fromNo_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideFloors_fromYes_userDataNo_thenGoToExtraBuildings() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideFloors_fromYes_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideHasExtraBuildings_userDataNo_thenGoToConversationDone() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideHasExtraBuildings_userDataYes_thenGoToNumberOfExtraBuilding() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfExtraBuilding_userDataZero_thenGoToConversationDone() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfExtraBuilding_userDataOne_thenGoToTypeOne() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfExtraBuilding_userDataTwo_thenGoToTypeMoreThanOne() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideNumberOfExtraBuilding_userDataFive_thenGoToCallExtraBuildings_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideExtraBuildType_userDataGarage_thenGoToExtraBuildingSqm() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideExtraBuildingSqm_userDataTen_thenGoToExtraWaterConnected() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideExtraBuildingSqm_userDataEighty_thenGoToExtraWaterConnected_underWriterGuideLines() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToExtraBuildingTypeInLoop() {
+//
+//    }
+//
+//    @Test
+//    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToConversationDone() {
+//
+//    }
 
     private fun ArrayList<SelectItem>.selectWithValue(value: String) {
         this.forEach {
