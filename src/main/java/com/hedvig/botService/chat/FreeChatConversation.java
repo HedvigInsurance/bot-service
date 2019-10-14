@@ -86,7 +86,8 @@ public class FreeChatConversation extends Conversation {
         m.header.statusMessage = statusBuilder.getStatusMessage(Clock.systemUTC());
 
         boolean isFile = m.body instanceof MessageBodyFileUpload;
-        if (productPricingService.getInsuranceStatus(getUserContext().getMemberId()) != null) {
+
+        if (productPricingService.isMemberInsuranceActive(getUserContext().getMemberId())) {
           if (isFile) {
             val body = (MessageBodyFileUpload) m.body;
             eventPublisher.publishEvent(new FileUploadedEvent(getUserContext().getMemberId(), body.key, body.mimeType));
