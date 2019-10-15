@@ -307,7 +307,6 @@ constructor(
             ) { body, userContext, message ->
                 handleMoreExtraBuildingTypeResponse(body, userContext, message, buildingNumber)
             }
-            this.setExpectedReturnType(ASK_MORE_EXTRA_BUILDING_TYPE.id + buildingNumber, HouseExtraBuildingSQM())
 
             createInputMessage(
                 ASK_SQUARE_METERS_EXTRA_BUILDING,
@@ -325,6 +324,7 @@ constructor(
                     ASK_HAS_WATER_EXTRA_BUILDING.id + buildingNumber
                 }
             }
+            this.setExpectedReturnType(ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber, HouseExtraBuildingSQM())
 
             createInputMessage(
                 ASK_HAS_WATER_EXTRA_BUILDING,
