@@ -1,5 +1,6 @@
 package com.hedvig.botService.serviceIntegration.productPricing;
 
+import com.hedvig.botService.chat.OnboardingConversationDevi;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.productPricing.dto.*;
 import com.hedvig.botService.web.dto.InsuranceStatusDTO;
@@ -67,7 +68,7 @@ public class ProductPricingService {
       }
       increasers.add(increaser);
     }
-    if(increasers.isEmpty()){
+    if (increasers.isEmpty()) {
       increasers.add(SafetyIncreaserType.NONE);
     }
 
@@ -81,6 +82,27 @@ public class ProductPricingService {
     address.setZipCode(data.getAddressZipCode());
     address.setFloor(data.getFloor());
     request.setAddress(address);
+
+
+    if (data.getHouseType().equals(OnboardingConversationDevi.ProductTypes.HOUSE.toString())) {
+      request.setAncillaryArea(data.getHouseAncillaryArea());
+      request.setYearOfConstruction(data.getYearOfConstruction());
+      request.setNumberOfBathrooms(data.getNumberOfBathrooms());
+
+      List<ExtraBuilding> extraBuildings = new ArrayList<>();
+      for (int i = 1; i <= data.getNrExtraBuildings(); i++) {
+        ExtraBuilding extraBuilding = new ExtraBuilding(
+          ExtraBuildingType.valueOf(data.getHouseExtraBuildingType(i)),
+          data.getHouseExtraBuildingSQM(i),
+          data.getHouseExtraBuildingHasWater(i)
+        );
+
+        extraBuildings.add(extraBuilding);
+      }
+      request.setExtraBuildings(extraBuildings);
+
+      request.setIsSubleted(data.getIsSubLetting());
+    }
 
     Created result = this.productPricingClient.createQuote(request).getBody();
     return result.id;
@@ -121,10 +143,10 @@ public class ProductPricingService {
     return isActive;
   }
 
-  public void initAppleProduct(String appleMemberId){
+  public void initAppleProduct(String appleMemberId) {
     try {
       this.productPricingClient.initAppleProduct(new AppleInitializationRequest(appleMemberId));
-    }catch (FeignException | RestClientException ex){
+    } catch (FeignException | RestClientException ex) {
       log.error("Cannot init apple product with memberId: {}", appleMemberId);
     }
   }

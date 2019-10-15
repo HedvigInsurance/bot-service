@@ -23,4 +23,10 @@ public class CalculateQuoteRequest {
   private int personsInHouseHold;
 
   private List<SafetyIncreaserType> safetyIncreasers;
+
+  private Integer ancillaryArea;
+  private Integer yearOfConstruction;
+  private Integer numberOfBathrooms;
+  private List<ExtraBuilding> extraBuildings;
+  private Boolean isSubleted;
 }

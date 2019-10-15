@@ -3,6 +3,7 @@ package com.hedvig.botService.chat;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
+import com.hedvig.botService.serviceIntegration.lookupService.LookupService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.LocalizationService;
@@ -34,6 +35,7 @@ public class ConversationFactoryTest {
   @Mock StatusBuilder statusBuilder;
   @Mock Environment springEnvironment;
   @Mock private MemberService memberService;
+  @Mock private LookupService lookupService;
   @Mock private ProductPricingService productPricingService;
   @Mock private TriggerService triggerService;
   @Mock private LocalizationService localizationService;
@@ -68,6 +70,7 @@ public class ConversationFactoryTest {
     ConversationFactory factory =
         new ConversationFactoryImpl(
             memberService,
+            lookupService,
             productPricingService,
             triggerService,
             applicationEventPublisher,

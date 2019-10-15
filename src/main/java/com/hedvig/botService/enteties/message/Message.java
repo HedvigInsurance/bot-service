@@ -5,7 +5,7 @@ package com.hedvig.botService.enteties.message;
  * */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hedvig.botService.Utils.MessageUtil;
+import com.hedvig.botService.utils.MessageUtil;
 import com.hedvig.botService.dataTypes.HedvigDataType;
 import com.hedvig.botService.enteties.MemberChat;
 import com.hedvig.botService.enteties.UserContext;

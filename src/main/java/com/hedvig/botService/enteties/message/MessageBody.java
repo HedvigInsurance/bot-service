@@ -2,9 +2,8 @@ package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.hedvig.botService.Utils.ConversationUtils;
-import com.hedvig.botService.Utils.MessageUtil;
-import com.hedvig.botService.chat.Conversation;
+import com.hedvig.botService.utils.ConversationUtils;
+import com.hedvig.botService.utils.MessageUtil;
 import com.hedvig.botService.enteties.UserContext;
 
 import javax.persistence.Column;

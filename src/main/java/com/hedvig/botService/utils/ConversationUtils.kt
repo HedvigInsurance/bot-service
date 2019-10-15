@@ -1,4 +1,7 @@
-package com.hedvig.botService.Utils
+package com.hedvig.botService.utils
+
+import java.time.LocalDate
+import java.time.chrono.ChronoLocalDate
 
 object ConversationUtils {
 
@@ -19,5 +22,13 @@ object ConversationUtils {
         return if (text.matches("^.+\\.\\d\$".toRegex())) {
             text.substring(text.lastIndexOf(".") + 1, text.length).toInt()
         } else null
+    }
+
+    fun isYoungerThan18(birthDate: LocalDate): Boolean {
+        val dateToday = LocalDate.now()
+
+        val chronoBirthDate = ChronoLocalDate.from(birthDate)
+        val date18YearsAgo = dateToday.minusYears(18)
+        return chronoBirthDate.isAfter(date18YearsAgo)
     }
 }

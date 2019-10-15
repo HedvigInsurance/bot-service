@@ -2,8 +2,12 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
-import com.hedvig.botService.Utils.BirthDateFromSSNUtil
+
+import com.hedvig.botService.utils.ssnLookupAndStore
+import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
+import com.hedvig.botService.chat.house.HouseConversationConstants
+import com.hedvig.botService.chat.house.HouseOnboardingConversation
 import com.hedvig.botService.config.SwitchableInsurers
 import com.hedvig.botService.dataTypes.*
 import com.hedvig.botService.enteties.UserContext
@@ -17,10 +21,10 @@ import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.*
+import com.hedvig.botService.utils.ConversationUtils
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.stereotype.Component
 import java.nio.charset.Charset
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -52,7 +56,8 @@ constructor(
         SUBLET_BRF,
         STUDENT_BRF,
         STUDENT_RENT,
-        LODGER
+        LODGER,
+        HOUSE
     }
 
     init {
@@ -239,41 +244,18 @@ constructor(
                 )
             ) { body, uc, m ->
 
-                val trimmedSSN = body.text.trim()
-                body.text = "${trimmedSSN.dropLast(4)}-****"
-                addToChat(m)
-
-                memberService.updateSSN(uc.memberId, trimmedSSN)
-
-                val birthDateFromSSNUtil = BirthDateFromSSNUtil()
-
-                val memberBirthDate = birthDateFromSSNUtil.birthDateFromSSN(trimmedSSN)
-
-                uc.onBoardingData.apply {
-                    ssn = trimmedSSN
-                    birthDate = memberBirthDate
+                val (trimmedSSN, memberBirthDate) = uc.storeAndTrimAndAddSSNToChat(body) {
+                    m.body.text = it
+                    addToChat(m)
                 }
 
-                if(memberIsYoungerThan18(memberBirthDate)) {
+                if (ConversationUtils.isYoungerThan18(memberBirthDate)) {
                     return@WrappedMessage(MESSAGE_MEMBER_UNDER_EIGHTEEN)
                 }
 
-                val response = memberService.lookupAddressSWE(trimmedSSN, uc.memberId)
+                val hasAddress = memberService.ssnLookupAndStore(uc, trimmedSSN)
 
-                if (response != null) {
-                    uc.onBoardingData.let {
-                        it.familyName = response.lastName
-                        it.firstName = response.firstName
-
-                        if (response.address != null) {
-                            it.addressCity = response.address.city
-                            it.addressStreet = response.address.street
-                            it.addressZipCode = response.address.zipCode
-                        }
-                    }
-                }
-
-                if (response?.address != null) {
+                if (hasAddress) {
                     MESSAGE_BANKIDJA
                 } else {
                     MESSAGE_LAGENHET_ADDRESSNOTFOUND
@@ -318,7 +300,7 @@ constructor(
                 )
 
             ) { b, uc, m ->
-                if(phoneNumberIsCorrectSwedishFormat(b, m)) {
+                if (phoneNumberIsCorrectSwedishFormat(b, m)) {
                     "message.hedvig.ska.ringa.dig"
                 } else {
                     "fel.telefonnummer.format"
@@ -337,7 +319,7 @@ constructor(
                 )
 
             ) { b, uc, m ->
-                if(phoneNumberIsCorrectSwedishFormat(b, m)) {
+                if (phoneNumberIsCorrectSwedishFormat(b, m)) {
                     "message.hedvig.ska.ringa.dig"
                 } else {
                     "fel.telefonnummer.format"
@@ -358,9 +340,9 @@ constructor(
             WrappedMessage(
                 MessageBodyParagraph(
                     "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år"
-                + "Om du råkade skriva fel personnummer så kan du testa att skriva igen \uD83D\uDE42"
+                            + "Om du råkade skriva fel personnummer så kan du testa att skriva igen \uD83D\uDE42"
                 )
-            ) { b,uc, m ->
+            ) { b, uc, m ->
                 MESSAGE_LAGENHET_NO_PERSONNUMMER
             }
 
@@ -594,26 +576,6 @@ constructor(
             })
         setupBankidErrorHandlers(MESSAGE_LOGIN_WITH_EMAIL_TRY_AGAIN)
 
-
-        this.createChatMessage(
-            MESSAGE_HUS,
-            WrappedMessage(
-                MessageBodySingleSelect(
-                    "Åh, typiskt! Just nu försäkrar jag bara lägenheter\u000C" + "Om du vill så kan jag höra av mig när jag försäkrar hus och villor också?",
-                    SelectOption("Okej!", MESSAGE_NAGOTMER),
-                    SelectOption("Tack, men nej tack", MESSAGE_AVSLUTOK)
-                )
-            ) { body, uc, message ->
-                if (body.selectedItem.value.equals(MESSAGE_NAGOTMER)) {
-                    uc.onBoardingData.newsLetterEmail = uc.onBoardingData.email
-                }
-                addToChat(message)
-                body.text = body.selectedItem.text
-                body.selectedItem.value
-                body.selectedItem.value
-            }
-        )
-
         this.createMessage(
             MESSAGE_TIPSA,
             MessageBodyText(
@@ -750,8 +712,8 @@ constructor(
             )
         )
 
-        this.createMessage("message.pers", MessageBodyNumber("Okej! Hur många bor där?"))
-        this.setExpectedReturnType("message.pers", HouseholdMemberNumber())
+        this.createMessage(MESSAGE_ASK_NR_RESIDENTS, MessageBodyNumber("Okej! Hur många bor där?"))
+        this.setExpectedReturnType(MESSAGE_ASK_NR_RESIDENTS, HouseholdMemberNumber())
 
         this.createMessage(
             MESSAGE_SAKERHET,
@@ -892,7 +854,7 @@ constructor(
                 val ssn = userContext.onBoardingData.ssn
                 if (checkSSN(ssn) == Flag.RED) {
                     completeOnboarding()
-                    return@WrappedMessage("message.vad.ar.ditt.telefonnummer")
+                    return@WrappedMessage ("message.vad.ar.ditt.telefonnummer")
                 }
 
                 for (o in body.choices) {
@@ -1402,7 +1364,7 @@ constructor(
                 addToChat(m)
                 return false
             }
-        } catch(error: Exception) {
+        } catch (error: Exception) {
             "Error thrown when trying to validate phone number" + error.toString()
         }
         return false
@@ -1449,7 +1411,7 @@ constructor(
                 } else {
                     val obd = userContext.onBoardingData
                     obd.houseType = item.value
-                    nxtMsg = "message.pers"
+                    nxtMsg = MESSAGE_ASK_NR_RESIDENTS
                 }
             }
             "message.lghtyp.sublet" -> {
@@ -1457,7 +1419,7 @@ constructor(
                 val obd = userContext.onBoardingData
                 obd.houseType = item.value
                 m.body.text = item.text
-                nxtMsg = "message.pers"
+                nxtMsg = MESSAGE_ASK_NR_RESIDENTS
             }
 
             "message.student" -> {
@@ -1492,7 +1454,7 @@ constructor(
                 handleFriFraga(userContext, m)
                 nxtMsg = "message.frionboardingfragatack"
             }
-            "message.pers" -> {
+            MESSAGE_ASK_NR_RESIDENTS -> {
                 val nrPersons = (m.body as MessageBodyNumber).value
                 onBoardingData.setPersonInHouseHold(nrPersons)
                 m.body.text = if (nrPersons == 1) {
@@ -1649,7 +1611,8 @@ constructor(
                     addToChat(getMessage("message.missingvalue"))
                 } else if (m.id == "message.missingvalue" || item.value == MESSAGE_FORSLAG2 ||
                     item.value == MESSAGE_FORSLAG2_ALT_1 ||
-                    item.value == MESSAGE_FORSLAG2_ALT_2) {
+                    item.value == MESSAGE_FORSLAG2_ALT_2
+                ) {
                     completeOnboarding()
                 }
             }
@@ -1812,14 +1775,6 @@ constructor(
         userContext.completeConversation(this)
     }
 
-    private fun memberIsYoungerThan18(birthDate: LocalDate): Boolean {
-            val dateToday = LocalDate.now()
-
-            val chronoBirthDate = ChronoLocalDate.from(birthDate)
-            val date18YearsAgo = dateToday.minusYears(18)
-            return chronoBirthDate.isAfter(date18YearsAgo)
-    }
-
     /*
    * Generate next chat message or ends conversation
    */
@@ -1837,6 +1792,13 @@ constructor(
                     val bankIdAuthResponse = authResponse.get()
                     userContext.startBankIdAuth(bankIdAuthResponse)
                 }
+            }
+            MESSAGE_HUS -> {
+                userContext.completeConversation(this)
+                val conversation =
+                    conversationFactory.createConversation(HouseOnboardingConversation::class.java, userContext)
+                userContext.startConversation(conversation, HouseConversationConstants.HOUSE_FIRST.id)
+                return
             }
             "onboarding.done" -> {
             }
@@ -2004,7 +1966,7 @@ constructor(
             }
             return personStatus.flag
 
-        } catch(ex: Exception) {
+        } catch (ex: Exception) {
             log.error("Error getting debt status from member-service", ex)
             return Flag.GREEN
         }
@@ -2069,6 +2031,8 @@ constructor(
         const val MESSAGE_LOGIN_FAILED_WITH_EMAIL = "message.login.failed.with.mail"
         const val MESSAGE_INSURER_NOT_SWITCHABLE = "message.bolag.not.switchable"
         const val MESSAGE_MEMBER_UNDER_EIGHTEEN = "message.member.under.eighteen"
+
+        const val MESSAGE_ASK_NR_RESIDENTS = "message.pers"
 
         @JvmField
         val IN_OFFER = "{IN_OFFER}"

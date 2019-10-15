@@ -2,7 +2,7 @@ package com.hedvig.botService.chat
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.hedvig.botService.Utils.MessageUtil
+import com.hedvig.botService.utils.MessageUtil
 import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
@@ -11,7 +11,6 @@ import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.MessageSentEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.jwt.JwtHelper
 import java.io.IOException
 import java.lang.Long.valueOf
@@ -258,7 +257,6 @@ abstract class Conversation(
     val text = localizationService.getText(userContext.locale, id) ?: body.text
     val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
-    val delayFactor = 25 // Milliseconds per character TODO: Externalize this!
 
     val msgs = ArrayList<String>()
 
@@ -275,7 +273,7 @@ abstract class Conversation(
       // if(i==0){
       //	createMessage(s1, new MessageBodyParagraph(""),"h_symbol",(s.length()*delayFactor));
       // }else{
-      createMessage(s1, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
+      createMessage(s1, body = MessageBodyParagraph(""), delay = minOf(s.length * MESSAGE_DELAY_FACTOR_MS, MESSAGE_MAX_DELAY_MS))
       // }
       msgs.add(s1)
       msgs.add(s2)
@@ -287,7 +285,7 @@ abstract class Conversation(
     val s = paragraphs[paragraphs.size - 1] // Last paragraph is put on actual message
     body.text = s
     // createMessage(sWrite, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
-    createMessage(sWrite, body = MessageBodyParagraph(""), delay = s.length * delayFactor)
+    createMessage(sWrite, body = MessageBodyParagraph(""), delay =  minOf(s.length * MESSAGE_DELAY_FACTOR_MS, MESSAGE_MAX_DELAY_MS))
     if (avatar != null) {
       createMessage(sFinal, body = body, avatarName = avatar)
     } else {
@@ -360,6 +358,9 @@ abstract class Conversation(
     private val CHAT_ID_FORMAT = "%s.%s"
 
     const val NOT_VALID_POST_FIX = ".not.valid"
+
+    private val MESSAGE_DELAY_FACTOR_MS = 15
+    private val MESSAGE_MAX_DELAY_MS = 1000
 
     private val log = LoggerFactory.getLogger(Conversation::class.java)
   }

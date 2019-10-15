@@ -1,4 +1,4 @@
-package com.hedvig.botService.Utils
+package com.hedvig.botService.utils
 
 import com.hedvig.botService.chat.Conversation.Companion.NOT_VALID_POST_FIX
 
