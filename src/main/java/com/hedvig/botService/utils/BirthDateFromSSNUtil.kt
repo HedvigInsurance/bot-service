@@ -9,4 +9,8 @@ class BirthDateFromSSNUtil {
             ssn.substring(0, 4) + "-" + ssn.substring(4, 6) + "-" + ssn.substring(6, 8)
         )
     }
+
+    fun addCenturyToSSN(ssn: String): String {
+        LocalDate.now().minusYears(10)
+    }
 }
