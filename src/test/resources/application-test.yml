@@ -9,6 +9,7 @@ hedvig:
   trustly.notification.errorUrl: http://hedvig.com/success
   slack:
     url: ""
+    underwriting.url: ""
 
 cloud:
   aws:

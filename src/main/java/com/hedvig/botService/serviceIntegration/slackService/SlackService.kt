@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component
 @Component
 @Profile("slack")
 class SlackService @Autowired
-internal constructor(private val slackServiceClient: SlackServiceClient) {
+internal constructor(
+    private val slackServiceClient: SlackServiceClient,
+    private val slackUnderwritingServiceClient: SlackUnderwritingServiceClient
+) {
 
     @EventListener
     fun on(event: OnboardingCallForQuoteEvent) {
@@ -46,7 +49,7 @@ internal constructor(private val slackServiceClient: SlackServiceClient) {
             slackData.channel = slackChannel
             slackData.text = message
 
-            slackServiceClient.sendNotification(slackData)
+            slackUnderwritingServiceClient.sendNotification(slackData)
         } catch (e: Exception) {
             logger.error("Cannot send notification to slack channel {} with message {}", slackChannel, message)
         }
