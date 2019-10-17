@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 class SlackService @Autowired
 internal constructor(
     private val slackServiceClient: SlackServiceClient,
-    private val slackUnderWritingServiceClient: SlackUnderWritingServiceClient
+    private val slackUnderwritingServiceClient: SlackUnderwritingServiceClient
 ) {
 
     @EventListener
@@ -49,7 +49,7 @@ internal constructor(
             slackData.channel = slackChannel
             slackData.text = message
 
-            slackUnderWritingServiceClient.sendNotification(slackData)
+            slackUnderwritingServiceClient.sendNotification(slackData)
         } catch (e: Exception) {
             logger.error("Cannot send notification to slack channel {} with message {}", slackChannel, message)
         }

@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Headers("Accept: application/xml")
 @FeignClient(
   name = "SlackServiceClient",
-  url = "${hedvig.slack.under.writing.url}",
+  url = "${hedvig.slack.underwriting.url}",
   configuration = FeignConfiguration.class
 )
 
-public interface SlackUnderWritingServiceClient {
+public interface SlackUnderwritingServiceClient {
   @RequestMapping(
     method = RequestMethod.POST,
     produces = "application/json")
