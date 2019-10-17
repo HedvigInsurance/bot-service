@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Headers("Accept: application/xml")
 @FeignClient(
   name = "SlackServiceClient",
-  url = "${hedvig.slack.url.under.writing}",
+  url = "${hedvig.slack.under.writing.url}",
   configuration = FeignConfiguration.class
 )
 
