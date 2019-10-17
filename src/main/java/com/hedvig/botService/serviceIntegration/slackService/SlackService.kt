@@ -42,7 +42,7 @@ internal constructor(
 
         val message =
             "Member ${event.memberId} - ${event.firstName} ${event.lastName} house exceeds underwriting guidelines" +
-                    " on reason [${event.reason}], call the member on ${event.phoneNumber}"
+              " on reason [${event.reason}], call the member on ${event.phoneNumber}"
 
         try {
             val slackData = SlackData()
