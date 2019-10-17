@@ -25,9 +25,10 @@ internal constructor(
             "Potential member ${event.memberId} - ${event.firstName} ${event.lastName} tried to sign-up, give them a call on ${event.phoneNumber}"
 
         try {
-            val slackData = SlackData()
-            slackData.channel = slackChannel
-            slackData.text = message
+            val slackData = SlackData(
+                slackChannel,
+                message
+            )
 
             slackServiceClient.sendNotification(slackData)
         } catch (e: Exception) {
@@ -45,9 +46,10 @@ internal constructor(
               " on reason [${event.reason}], call the member on ${event.phoneNumber}"
 
         try {
-            val slackData = SlackData()
-            slackData.channel = slackChannel
-            slackData.text = message
+            val slackData = SlackData(
+                slackChannel,
+                message
+            )
 
             slackUnderwritingServiceClient.sendNotification(slackData)
         } catch (e: Exception) {
