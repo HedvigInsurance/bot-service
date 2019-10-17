@@ -1,6 +1,6 @@
 package com.hedvig.botService.serviceIntegration.slackService.dto
 
-class SlackData {
-    internal var channel: String? = null
-    internal var text: String? = null
-}
+data class SlackData (
+    val channel: String,
+    val text: String
+)
