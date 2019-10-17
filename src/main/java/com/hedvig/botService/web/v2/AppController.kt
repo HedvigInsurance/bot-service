@@ -33,7 +33,7 @@ class AppController(
     @GetMapping("/")
     fun getMessages(
         @RequestHeader("hedvig.token") hid: String,
-        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String,
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?,
         @RequestParam(name = "intent", required = false, defaultValue = "onboarding")
         intentParameter: String
     ): MessagesDTO {
@@ -49,7 +49,7 @@ class AppController(
     @PostMapping("fabTrigger/{actionId}")
     fun fabTrigger(
         @RequestHeader("hedvig.token") hid: String, @PathVariable actionId: FABAction,
-        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String
+        @RequestHeader(value = "Accept-Language", required = false) acceptLanguage: String?
     ): ResponseEntity<*> {
 
         return this.messagesService.fabTrigger(hid, acceptLanguage, actionId)

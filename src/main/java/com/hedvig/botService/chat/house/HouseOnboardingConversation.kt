@@ -68,6 +68,7 @@ import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType
 import com.hedvig.botService.services.LocalizationService
+import com.hedvig.botService.services.events.HouseUnderwritingLimitCallMeExceedsEvent
 import com.hedvig.botService.utils.ConversationUtils.isYoungerThan18
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
@@ -462,6 +463,23 @@ constructor(
         ) { body, userContext, message ->
             addToChat(message)
             userContext.completeConversation(this)
+
+            val phoneNumber = message.body.text
+            userContext.onBoardingData.phoneNumber = phoneNumber
+
+            val reason = message.id
+                .replace("message.house.more.questions.call.", "")
+                .replace(".", " ")
+
+            eventPublisher.publishEvent(
+                HouseUnderwritingLimitCallMeExceedsEvent(
+                    userContext.memberId,
+                    userContext.onBoardingData.firstName,
+                    userContext.onBoardingData.familyName,
+                    phoneNumber,
+                    reason
+                )
+            )
             val conversation = conversationFactory.createConversation(FreeChatConversation::class.java, userContext)
             userContext.startConversation(conversation, FREE_CHAT_ONBOARDING_START)
             FREE_CHAT_ONBOARDING_START
