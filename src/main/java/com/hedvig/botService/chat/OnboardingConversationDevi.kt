@@ -240,7 +240,7 @@ constructor(
             WrappedMessage(
                 MessageBodyNumber(
                     "Vad är ditt personnummer? Jag behöver det så att jag kan hämta din adress",
-                    "ååååmmddxxxx"
+                    "ååmmddxxxx"
                 )
             ) { body, uc, m ->
 
