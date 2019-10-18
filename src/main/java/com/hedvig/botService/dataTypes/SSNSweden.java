@@ -40,12 +40,11 @@ public class SSNSweden extends HedvigDataType {
     }
 
     if (trimmedInput.length() == 10) {
-
+      trimmedInput = BirthDateFromSSNUtil.INSTANCE.addCenturyToSSN(trimmedInput);
     }
 
     try {
-      BirthDateFromSSNUtil birthDateFromSSNUtil = new BirthDateFromSSNUtil();
-      birthDateFromSSNUtil.birthDateFromSSN(trimmedInput);
+      BirthDateFromSSNUtil.INSTANCE.birthDateFromSSN(trimmedInput);
     }
     catch(DateTimeParseException exception) {
       this.errorMessage = "{INPUT} ser ut som ett konstigt personnummer. Ange gärna igen tack!";
