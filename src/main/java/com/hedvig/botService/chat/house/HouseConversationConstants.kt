@@ -85,13 +85,13 @@ object HouseConversationConstants {
 
     val ASK_NUMBER_OF_BATHROOMS = NumberInputMessage(
         "message.house.number.of.bathrooms",
-        "Hur många badrum finns i huset?",
+        "Hur många badrum finns i huset?${SPLIT}Badrum inkluderar inte mindre gästtoaletter utan dusch/bad",
         ""
     )
 
     val ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP = NumberInputMessage(
         "message.house.number.of.from.success.lookup",
-        "Perfekt!${SPLIT}\uD83D\uDE0AHur många badrum finns i huset?",
+        "Perfekt!${SPLIT}\uD83D\uDE0AHur många badrum finns i huset?${SPLIT}Badrum inkluderar inte mindre gästtoaletter utan dusch/bad",
         ""
     )
 
