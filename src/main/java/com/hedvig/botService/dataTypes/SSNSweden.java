@@ -35,7 +35,7 @@ public class SSNSweden extends HedvigDataType {
     trimmedInput = input.trim().replace(" ", "");
 
     if (trimmedInput.length() != 10 && trimmedInput.length() != 12) {
-      this.errorMessage = "Personnummret måste skrivas med 10 eller 12 siffor.";//todo add to translation
+      this.errorMessage = "Personnummret måste skrivas med 10 eller 12 siffor.";
       return false;
     }
 
@@ -68,7 +68,7 @@ public class SSNSweden extends HedvigDataType {
       return "hedvig.data.type.ssn.no.input";
     }
     if (trimmedInput.length() != 10 && trimmedInput.length() != 12) {
-      return "hedvig.data.type.ssn.not.ten.or.twelve.digits";//todo add to translation
+      return "hedvig.data.type.ssn.not.ten.or.twelve.digits";
     }
     return "hedvig.data.type.ssn.did.not.match";
   }
