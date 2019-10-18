@@ -657,6 +657,17 @@ class OnboardingConversationDeviTest {
     }
 
     @Test
+    fun recieveMessageElevenDigitSsn() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        message.body.text = "012121212"
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo("hedvig.data.type.ssn.not.ten.or.twelve.digits.input.not.valid")
+    }
+
+    @Test
     fun recieveNormalFlowIfMemberIsOlderThan18() {
         val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
 
