@@ -12,6 +12,7 @@ import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_ADDRESS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_FIRST
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_ADDRESS_LOOK_UP_SUCCESS_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_ADDRESS_LOOK_UP_SUCCESS_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_OWN
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES
@@ -206,47 +207,89 @@ class HouseOnboardingConversationTest {
     }
 
     //TODO: Lot's of test that should be added when we have the time
-//    @Test
-//    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToRealEstateLookup() {
-//        given(
-//            lookupService.realEstateLookup(
-//                TestData.TOLVANSSON_MEMBER_ID,
-//                RealEstateDto("SomeStreet 13", "12345")
-//            )
-//        ).willReturn(
-//            RealEstateResponse(
-//                21,
-//                21,
-//                21,
-//                RealEstateDrain("", ""),
-//                200,
-//                1,
-//                "",
-//                RealEstateWater("", ""),
-//                1930
-//            )
-//        )
-//
-//
-//
-//
-//
-//        userContext.onBoardingData.let {
-//            assertThat(it.livingSpace).isEqualTo(200)
-//            assertThat(it.houseAncillaryArea).isEqualTo(21)
-//            assertThat(it.yearOfConstruction).isEqualTo(1930)
-//        }
-//    }
-//
-//    @Test
-//    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToSqm() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToLastName() {
-//
-//    }
+    @Test
+    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToRealEstateLookup() {
+        userContext.onBoardingData.apply {
+            houseType = OnboardingConversationDevi.ProductTypes.HOUSE.toString()
+            addressStreet = "SomeStreet 13"
+            addressZipCode = "12345"
+        }
+
+        given(
+            lookupService.realEstateLookup(
+                TestData.TOLVANSSON_MEMBER_ID,
+                RealEstateDto("SomeStreet 13", "12345")
+            )
+        ).willReturn(
+            RealEstateResponse(
+                21,
+                21,
+                21,
+                RealEstateDrain("", ""),
+                200,
+                1,
+                "",
+                RealEstateWater("", ""),
+                1930
+            )
+        )
+
+        val message = testConversation.getMessage(ASK_ADDRESS_LOOK_UP_SUCCESS.id + ".0")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_ADDRESS_LOOK_UP_SUCCESS_YES.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_REAL_ESTATE_LOOKUP_CORRECT.id)
+    }
+
+    @Test
+    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToSqm() {
+        userContext.onBoardingData.apply {
+            houseType = OnboardingConversationDevi.ProductTypes.HOUSE.toString()
+            addressStreet = "SomeStreet 13"
+            addressZipCode = "12345"
+        }
+
+        given(
+            lookupService.realEstateLookup(
+                TestData.TOLVANSSON_MEMBER_ID,
+                RealEstateDto("SomeStreet 13", "12345")
+            )
+        ).willReturn(null)
+
+        val message = testConversation.getMessage(ASK_ADDRESS_LOOK_UP_SUCCESS.id + ".0")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_ADDRESS_LOOK_UP_SUCCESS_YES.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_SQUARE_METERS.id)
+    }
+
+    @Test
+    fun houseProvideLookupSuccess_userDataStoreAddress_thenGoToLastName() {
+        userContext.onBoardingData.apply {
+            houseType = OnboardingConversationDevi.ProductTypes.HOUSE.toString()
+            addressStreet = "SomeStreet 13"
+            addressZipCode = "12345"
+        }
+
+        given(
+            lookupService.realEstateLookup(
+                TestData.TOLVANSSON_MEMBER_ID,
+                RealEstateDto("SomeStreet 13", "12345")
+            )
+        ).willReturn(null)
+
+        val message = testConversation.getMessage(ASK_ADDRESS_LOOK_UP_SUCCESS.id + ".0")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_ADDRESS_LOOK_UP_SUCCESS_NO.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_STREET_ADDRESS.id)
+    }
 
     @Test
     fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToNumberOfBathrooms() {
@@ -267,7 +310,11 @@ class HouseOnboardingConversationTest {
 
 //    @Test
 //    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallSqm_underWriterGuideLines() {
-//
+//     userContext.onBoardingData.let {
+//            assertThat(it.livingSpace).isEqualTo(200f)
+//            assertThat(it.houseAncillaryArea).isEqualTo(21)
+//            assertThat(it.yearOfConstruction).isEqualTo(1930)
+//        }
 //    }
 //
 //    @Test
