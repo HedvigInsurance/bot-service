@@ -626,6 +626,46 @@ class OnboardingConversationDeviTest {
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_MEMBER_UNDER_EIGHTEEN)
     }
 
+    @Test
+    fun recieveMessageTenDigitSsn20Century() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        message.body.text = "9912121212"
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
+
+        userContext.onBoardingData.let {
+            assertThat(it.ssn).isEqualTo("199912121212")
+        }
+    }
+
+    @Test
+    fun recieveMessageTenDigitSsn21Century() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        message.body.text = "0012121212"
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
+
+        userContext.onBoardingData.let {
+            assertThat(it.ssn).isEqualTo("200012121212")
+        }
+    }
+
+    @Test
+    fun recieveMessageElevenDigitSsn() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        message.body.text = "012121212"
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo("hedvig.data.type.ssn.not.ten.or.twelve.digits.input.not.valid")
+    }
 
     @Test
     fun recieveNormalFlowIfMemberIsOlderThan18() {

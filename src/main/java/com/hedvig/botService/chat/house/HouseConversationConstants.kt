@@ -26,7 +26,7 @@ object HouseConversationConstants {
     val ASK_SSN = NumberInputMessage(
         "message.house.ask.ssn",
         "Vad är ditt personnummer? Jag behöver det så jag kan hämta din adress",
-        "ååååmmddxxxx"
+        "ååmmddxxxx"
     )
 
     val ASK_LAST_NAME = TextInputMessage(
@@ -85,13 +85,13 @@ object HouseConversationConstants {
 
     val ASK_NUMBER_OF_BATHROOMS = NumberInputMessage(
         "message.house.number.of.bathrooms",
-        "Hur många badrum finns i huset?",
+        "Hur många badrum finns i huset?${SPLIT}Badrum inkluderar inte mindre gästtoaletter utan dusch/bad",
         ""
     )
 
     val ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP = NumberInputMessage(
         "message.house.number.of.from.success.lookup",
-        "Perfekt!${SPLIT}\uD83D\uDE0AHur många badrum finns i huset?",
+        "Perfekt!${SPLIT}\uD83D\uDE0AHur många badrum finns i huset?${SPLIT}Badrum inkluderar inte mindre gästtoaletter utan dusch/bad",
         ""
     )
 
@@ -286,7 +286,7 @@ object HouseConversationConstants {
         "Hoppsan! \uD83D\uDE4A För att skaffa en försäkring hos mig behöver du tyvärr ha fyllt 18 år"
                 + "Om du råkade skriva fel personnummer så kan du testa att skriva igen \uD83D\uDE42${SPLIT}" +
                 "Vad är ditt personnummer?",
-        "ååååmmddxxxx"
+        "ååmmddxxxx"
     )
 
     val MORE_SQM_QUESTIONS_CALL = NumberInputMessage(

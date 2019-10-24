@@ -7,14 +7,14 @@ import java.util.regex.Pattern;
 
 public class SSNSweden extends HedvigDataType {
 
-  private static final String ZIPCODE_PATTERN = "^((19|20)?[0-9]{6})[- ]?[0-9]{4}$";
+  private static final String SSN_PATTERN = "^((19|20)?[0-9]{6})[- ]?[0-9]{4}$";
   private Pattern pattern;
   private Matcher matcher;
 
   private String trimmedInput;
 
   public SSNSweden() {
-    pattern = Pattern.compile(ZIPCODE_PATTERN);
+    pattern = Pattern.compile(SSN_PATTERN);
   }
 
   public static void main(String args[]) {
@@ -34,14 +34,17 @@ public class SSNSweden extends HedvigDataType {
 
     trimmedInput = input.trim().replace(" ", "");
 
-    if (trimmedInput.length() != 12) {
-      this.errorMessage = "Personnummret måste skrivas med 12 siffor.";
+    if (trimmedInput.length() != 10 && trimmedInput.length() != 12) {
+      this.errorMessage = "Personnummret måste skrivas med 10 eller 12 siffor.";
       return false;
     }
 
+    if (trimmedInput.length() == 10) {
+      trimmedInput = BirthDateFromSSNUtil.INSTANCE.addCenturyToSSN(trimmedInput);
+    }
+
     try {
-      BirthDateFromSSNUtil birthDateFromSSNUtil = new BirthDateFromSSNUtil();
-      birthDateFromSSNUtil.birthDateFromSSN(trimmedInput);
+      BirthDateFromSSNUtil.INSTANCE.birthDateFromSSN(trimmedInput);
     }
     catch(DateTimeParseException exception) {
       this.errorMessage = "{INPUT} ser ut som ett konstigt personnummer. Ange gärna igen tack!";
@@ -64,8 +67,8 @@ public class SSNSweden extends HedvigDataType {
     if (trimmedInput == null) {
       return "hedvig.data.type.ssn.no.input";
     }
-    if (trimmedInput.length() != 12) {
-      return "hedvig.data.type.ssn.not.twelve.digits";
+    if (trimmedInput.length() != 10 && trimmedInput.length() != 12) {
+      return "hedvig.data.type.ssn.not.ten.or.twelve.digits";
     }
     return "hedvig.data.type.ssn.did.not.match";
   }

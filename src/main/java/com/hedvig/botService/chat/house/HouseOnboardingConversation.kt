@@ -70,6 +70,7 @@ import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuilding
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.HouseUnderwritingLimitCallMeExceedsEvent
 import com.hedvig.botService.utils.ConversationUtils.isYoungerThan18
+import com.hedvig.botService.utils.MessageUtil
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 
@@ -467,7 +468,7 @@ constructor(
             val phoneNumber = message.body.text
             userContext.onBoardingData.phoneNumber = phoneNumber
 
-            val reason = message.id
+            val reason = MessageUtil.getBaseMessageId(message.id)
                 .replace("message.house.more.questions.call.", "")
                 .replace(".", " ")
 

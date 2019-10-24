@@ -26,13 +26,17 @@ private fun String.capitalizeAll(): String {
 }
 
 fun UserContext.storeAndTrimAndAddSSNToChat(body: MessageBodyNumber, addToChat: (String) -> Unit): Pair<String, LocalDate> {
+    val trimmedSSN = body.text.trim().let { ssn ->
+        if (ssn.length == 10) {
+            BirthDateFromSSNUtil.addCenturyToSSN(ssn)
+        } else {
+            ssn
+        }
+    }
 
-    val trimmedSSN = body.text.trim()
     addToChat("${trimmedSSN.dropLast(4)}-****")
 
-    val birthDateFromSSNUtil = BirthDateFromSSNUtil()
-
-    val memberBirthDate = birthDateFromSSNUtil.birthDateFromSSN(trimmedSSN)
+    val memberBirthDate = BirthDateFromSSNUtil.birthDateFromSSN(trimmedSSN)
 
     this.onBoardingData.apply {
         ssn = trimmedSSN
