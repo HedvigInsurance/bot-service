@@ -4,19 +4,43 @@ import com.hedvig.botService.chat.house.HouseConversationConstants
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ANCILLARY_AREA
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ADDRESS_LOOK_UP_SUCCESS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_EXTRA_BUILDING_TYPE_ONE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_EXTRA_BUILDINGS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HAS_WATER_EXTRA_BUILDING
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_HOUSE_HOUSEHOLD_MEMBERS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_MORE_EXTRA_BUILDING_TYPE
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_EXTRA_BUILDINGS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_REAL_ESTATE_LOOKUP_CORRECT
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_EXTRA_BUILDING
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS_FAILED_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SSN
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_STREET_ADDRESS
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SUBLETTING_HOUSE
+import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_YEAR_OF_CONSTRUCTION
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ZIP_CODE
 import com.hedvig.botService.chat.house.HouseConversationConstants.HOUSE_FIRST
+import com.hedvig.botService.chat.house.HouseConversationConstants.IN_LOOP_ASK_EXTRA_BUILDING_TYPE
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_SQM_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_TOTAL_SQM_QUESTIONS_CALL
+import com.hedvig.botService.chat.house.HouseConversationConstants.MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_ADDRESS_LOOK_UP_SUCCESS_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_ADDRESS_LOOK_UP_SUCCESS_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_GARAGE
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_NO
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_EXTRA_BUILDING_YES
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_LESS_THAN_FIVE_FLOORS
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_OWN
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_REAL_ESTATE_LOOKUP_CORRECT_NO
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES
 import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_RENT
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_NO
+import com.hedvig.botService.chat.house.HouseConversationConstants.SELECT_SUBLETTING_HOUSE_YES
 import com.hedvig.botService.chat.house.HouseOnboardingConversation
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
@@ -308,29 +332,73 @@ class HouseOnboardingConversationTest {
         assertThat(lastMessage.baseMessageId).isEqualTo(ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP.id)
     }
 
-//    @Test
-//    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallSqm_underWriterGuideLines() {
-//     userContext.onBoardingData.let {
-//            assertThat(it.livingSpace).isEqualTo(200f)
-//            assertThat(it.houseAncillaryArea).isEqualTo(21)
-//            assertThat(it.yearOfConstruction).isEqualTo(1930)
-//        }
-//    }
-//
-//    @Test
-//    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallTotalSqm_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallYearOfConstruction_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideRealEstateLookupSuccess_thenGoToSqm() {
-//
-//    }
+    @Test
+    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallSqm_underWriterGuideLines() {
+        userContext.onBoardingData.apply {
+            livingSpace = 270f
+            houseAncillaryArea = 21
+            yearOfConstruction = 1930
+        }
+
+        val message = testConversation.getMessage(ASK_REAL_ESTATE_LOOKUP_CORRECT.id + ".2")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MORE_SQM_QUESTIONS_CALL.id)
+    }
+
+    @Test
+    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallTotalSqm_underWriterGuideLines() {
+        userContext.onBoardingData.apply {
+            livingSpace = 220f
+            houseAncillaryArea = 121
+            yearOfConstruction = 1930
+        }
+
+        val message = testConversation.getMessage(ASK_REAL_ESTATE_LOOKUP_CORRECT.id + ".2")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MORE_TOTAL_SQM_QUESTIONS_CALL.id)
+    }
+
+    @Test
+    fun houseProvideRealEstateLookupSuccess_userDataSqm_thenGoToCallYearOfConstruction_underWriterGuideLines() {
+        userContext.onBoardingData.apply {
+            livingSpace = 220f
+            houseAncillaryArea = 11
+            yearOfConstruction = 1910
+        }
+
+        val message = testConversation.getMessage(ASK_REAL_ESTATE_LOOKUP_CORRECT.id + ".2")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_REAL_ESTATE_LOOKUP_CORRECT_YES.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MORE_YEAR_OF_CONSTRUCTION_QUESTIONS_CALL.id)
+    }
+
+    @Test
+    fun houseProvideRealEstateLookupSuccess_thenGoToSqm() {
+        userContext.onBoardingData.apply {
+            livingSpace = 220f
+            houseAncillaryArea = 11
+            yearOfConstruction = 1910
+        }
+
+        val message = testConversation.getMessage(ASK_REAL_ESTATE_LOOKUP_CORRECT.id + ".2")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_REAL_ESTATE_LOOKUP_CORRECT_NO.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_SQUARE_METERS.id)
+    }
 
 
     @Test
@@ -420,156 +488,370 @@ class HouseOnboardingConversationTest {
     }
 
 
-//    @Test
-//    fun houseProvideSquareMeters_userDataSquareMeters_thenGoToSqmCall_underWriterGuideLines() {
-//
-//    }
-//
-//
-//    @Test
-//    fun houseFailedLookupProvideSquareMeters_productTypeHouse_userDataSquareMeters_thenGoToAncillary() {
-//
-//    }
-//
-//    @Test
-//    fun houseFailedLookupProvideSquareMeters_productTypeRent_userDataSquareMeters_thenEndHouseOnboarding() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToYearOfConstruction() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToTotalSqmCall_underWriter() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToNumberOfBathRooms() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToYearOfConstructionCall_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToSubLetting() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToCallHouseHoldMembers_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromYes() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromNo() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideFloors_fromNo_userDataNo_thenGoToExtraBuildings() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideFloors_fromNo_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideFloors_fromYes_userDataNo_thenGoToExtraBuildings() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideFloors_fromYes_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideHasExtraBuildings_userDataNo_thenGoToConversationDone() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideHasExtraBuildings_userDataYes_thenGoToNumberOfExtraBuilding() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfExtraBuilding_userDataZero_thenGoToConversationDone() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfExtraBuilding_userDataOne_thenGoToTypeOne() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfExtraBuilding_userDataTwo_thenGoToTypeMoreThanOne() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideNumberOfExtraBuilding_userDataFive_thenGoToCallExtraBuildings_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideExtraBuildType_userDataGarage_thenGoToExtraBuildingSqm() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideExtraBuildingSqm_userDataTen_thenGoToExtraWaterConnected() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideExtraBuildingSqm_userDataEighty_thenGoToExtraWaterConnected_underWriterGuideLines() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToExtraBuildingTypeInLoop() {
-//
-//    }
-//
-//    @Test
-//    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToConversationDone() {
-//
-//    }
+    @Test
+    fun houseProvideSquareMeters_userDataSquareMeters_thenGoToSqmCall_underWriterGuideLines() {
+        userContext.onBoardingData.houseType = OnboardingConversationDevi.ProductTypes.HOUSE.toString()
+
+        val message = testConversation.getMessage(ASK_SQUARE_METERS.id + ".2")
+        (message!!.body as MessageBodyNumber).text = 290.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MORE_SQM_QUESTIONS_CALL.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.livingSpace).isEqualTo(290f)
+        }
+    }
+
+    @Test
+    fun houseFailedLookupProvideSquareMeters_productTypeHouse_userDataSquareMeters_thenGoToAncillary() {
+        userContext.onBoardingData.houseType = OnboardingConversationDevi.ProductTypes.HOUSE.toString()
+
+        val message = testConversation.getMessage(ASK_SQUARE_METERS_FAILED_LOOKUP.id + ".4")
+        (message!!.body as MessageBodyNumber).text = 100.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_ANCILLARY_AREA.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.livingSpace).isEqualTo(100f)
+        }
+    }
+
+    @Test
+    fun houseFailedLookupProvideSquareMeters_productTypeRent_userDataSquareMeters_thenEndHouseOnboarding() {
+        var called = false
+        given(conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)).will {
+            called = true
+            mockConversation
+        }
+
+        userContext.onBoardingData.houseType = OnboardingConversationDevi.ProductTypes.RENT.toString()
+
+        val message = testConversation.getMessage(ASK_SQUARE_METERS_FAILED_LOOKUP.id + ".4")
+        (message!!.body as MessageBodyNumber).text = 100.toString()
+
+        testConversation.receiveMessage(message)
+
+        assertThat(called).isTrue()
+
+        userContext.onBoardingData.let {
+            assertThat(it.livingSpace).isEqualTo(100f)
+        }
+    }
+
+    @Test
+    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToYearOfConstruction() {
+        userContext.onBoardingData.livingSpace = 100f
+        userContext.onBoardingData.houseType = OnboardingConversationDevi.ProductTypes.HOUSE.toString()
+
+        val message = testConversation.getMessage(ASK_ANCILLARY_AREA.id + ".2")
+        (message!!.body as MessageBodyNumber).text = 10.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_YEAR_OF_CONSTRUCTION.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.houseAncillaryArea).isEqualTo(10)
+        }
+    }
+
+    @Test
+    fun houseProvideAncillaryArea_userDataAncillaryArea_thenGoToTotalSqmCall_underWriter() {
+        userContext.onBoardingData.livingSpace = 101f
+        userContext.onBoardingData.houseType = OnboardingConversationDevi.ProductTypes.HOUSE.toString()
+
+        val message = testConversation.getMessage(ASK_ANCILLARY_AREA.id + ".2")
+        (message!!.body as MessageBodyNumber).text = 200.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MORE_TOTAL_SQM_QUESTIONS_CALL.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.houseAncillaryArea).isEqualTo(200)
+        }
+    }
+
+    @Test
+    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToNumberOfBathRooms() {
+        val message = testConversation.getMessage(ASK_YEAR_OF_CONSTRUCTION.id + ".0")
+        (message!!.body as MessageBodyNumber).text = 1930.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_NUMBER_OF_BATHROOMS.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.yearOfConstruction).isEqualTo(1930)
+        }
+    }
+
+    @Test
+    fun houseProvideYearOfConstruction_userDataYearOfConstruction_thenGoToYearOfConstructionCall_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
+        val message = testConversation.getMessage(ASK_NUMBER_OF_BATHROOMS.id + ".2")
+        (message!!.body as MessageBodyNumber).text = 2.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_HOUSE_HOUSEHOLD_MEMBERS.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.numberOfBathrooms).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun houseProvideNumberOfBathrooms_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToAskHouseHold() {
+        val message = testConversation.getMessage(ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP.id + ".4")
+        (message!!.body as MessageBodyNumber).text = 2.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_HOUSE_HOUSEHOLD_MEMBERS.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.numberOfBathrooms).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun houseProvideNumberOfBathroomsLookupSuccess_userDataNumberOfBathrooms_thenGoToCallNumberOfBathrooms_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToSubLetting() {
+        val message = testConversation.getMessage(ASK_HOUSE_HOUSEHOLD_MEMBERS.id + ".0")
+        (message!!.body as MessageBodyNumber).text = 2.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_SUBLETTING_HOUSE.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.personsInHouseHold).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun houseProvideHouseHoldMembers_userDataHouseHoldMembers_thenGoToCallHouseHoldMembers_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromYes() {
+        val message = testConversation.getMessage(ASK_SUBLETTING_HOUSE.id + ".0")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_SUBLETTING_HOUSE_YES.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.isSubLetting).isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun houseProvideSubLetting_userDataYes_thenGoToFloorsFromNo() {
+        val message = testConversation.getMessage(ASK_SUBLETTING_HOUSE.id + ".0")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_SUBLETTING_HOUSE_NO.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.isSubLetting).isEqualTo(false)
+        }
+    }
+
+    @Test
+    fun houseProvideFloors_fromNo_userDataNo_thenGoToExtraBuildings() {
+        val message = testConversation.getMessage(ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_NO.id + ".2")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_LESS_THAN_FIVE_FLOORS.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_HAS_EXTRA_BUILDINGS.id)
+    }
+
+    @Test
+    fun houseProvideFloors_fromNo_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideFloors_fromYes_userDataNo_thenGoToExtraBuildings() {
+        val message = testConversation.getMessage(ASK_HOUSE_HAS_MORE_THAN_FOUR_FLOORS_FROM_YES.id + ".2")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_LESS_THAN_FIVE_FLOORS.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_HAS_EXTRA_BUILDINGS.id)
+    }
+
+    @Test
+    fun houseProvideFloors_fromYes_userDataYes_thenGoToCallFloors_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideHasExtraBuildings_userDataNo_thenGoToConversationDone() {
+        var called = false
+        given(conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)).will {
+            called = true
+            mockConversation
+        }
+
+        val message = testConversation.getMessage(ASK_HAS_EXTRA_BUILDINGS.id + ".0")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_EXTRA_BUILDING_NO.value)
+
+        testConversation.receiveMessage(message)
+
+        userContext.onBoardingData.let {
+            assertThat(it.hasExtraBuildings).isEqualTo(false)
+            assertThat(it.nrExtraBuildings).isEqualTo(0)
+        }
+        assertThat(called).isTrue()
+    }
+
+    @Test
+    fun houseProvideHasExtraBuildings_userDataYes_thenGoToNumberOfExtraBuilding() {
+        val message = testConversation.getMessage(ASK_HAS_EXTRA_BUILDINGS.id + ".0")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_EXTRA_BUILDING_YES.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_NUMBER_OF_EXTRA_BUILDINGS.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.hasExtraBuildings).isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun houseProvideNumberOfExtraBuilding_userDataZero_thenGoToConversationDone() {
+        var called = false
+        given(conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)).will {
+            called = true
+            mockConversation
+        }
+
+        val message = testConversation.getMessage(ASK_NUMBER_OF_EXTRA_BUILDINGS.id + ".0")
+        (message!!.body as MessageBodyNumber).text = 0.toString()
+
+        testConversation.receiveMessage(message)
+
+        assertThat(called).isTrue()
+    }
+
+    @Test
+    fun houseProvideNumberOfExtraBuilding_userDataOne_thenGoToTypeOne() {
+        val message = testConversation.getMessage(ASK_NUMBER_OF_EXTRA_BUILDINGS.id + ".0")
+        (message!!.body as MessageBodyNumber).text = 1.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_EXTRA_BUILDING_TYPE_ONE.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.nrExtraBuildings).isEqualTo(1)
+        }
+    }
+
+    @Test
+    fun houseProvideNumberOfExtraBuilding_userDataTwo_thenGoToTypeMoreThanOne() {
+        val message = testConversation.getMessage(ASK_NUMBER_OF_EXTRA_BUILDINGS.id + ".0")
+        (message!!.body as MessageBodyNumber).text = 3.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE.id)
+
+        userContext.onBoardingData.let {
+            assertThat(it.nrExtraBuildings).isEqualTo(3)
+        }
+    }
+
+    @Test
+    fun houseProvideNumberOfExtraBuilding_userDataFive_thenGoToCallExtraBuildings_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideExtraBuildType_userDataGarage_thenGoToExtraBuildingSqm() {
+        val message = testConversation.getMessage(ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE.id + ".4")
+        (message!!.body as MessageBodySingleSelect).choices.selectWithValue(SELECT_EXTRA_BUILDING_GARAGE.value)
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.id).isEqualTo(ASK_SQUARE_METERS_EXTRA_BUILDING.id + "1")
+
+        userContext.onBoardingData.let {
+            assertThat(it.getHouseExtraBuildingType(1)).isEqualTo("GARAGE")
+        }
+    }
+
+    @Test
+    fun houseProvideExtraBuildingSqm_userDataTen_thenGoToExtraWaterConnected() {
+        val message = testConversation.getMessage(ASK_SQUARE_METERS_EXTRA_BUILDING.id + "1.0")
+        (message!!.body as MessageBodyNumber).text = 10.toString()
+
+        testConversation.receiveMessage(message)
+
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.id).isEqualTo(ASK_HAS_WATER_EXTRA_BUILDING.id + "1")
+
+        userContext.onBoardingData.let {
+            assertThat(it.getHouseExtraBuildingSQM(1)).isEqualTo(10)
+        }
+    }
+
+    @Test
+    fun houseProvideExtraBuildingSqm_userDataEighty_thenGoToExtraWaterConnected_underWriterGuideLines() {
+
+    }
+
+    @Test
+    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToExtraBuildingTypeInLoop() {
+
+    }
+
+    @Test
+    fun houseProvideExtraBuildingWaterConnected_userDataYes_thenGoToConversationDone() {
+
+    }
 
     private fun ArrayList<SelectItem>.selectWithValue(value: String) {
         this.forEach {
