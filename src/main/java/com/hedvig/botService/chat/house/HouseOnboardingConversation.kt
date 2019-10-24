@@ -261,20 +261,18 @@ constructor(
             ASK_NUMBER_OF_EXTRA_BUILDINGS
         ) { body, userContext, message ->
             addToChat(message)
+            userContext.onBoardingData.nrExtraBuildings = body.value
             when {
                 body.value == 0 -> {
                     HOUSE_CONVERSATION_DONE
                 }
                 body.value > MAX_NUMBER_OF_EXTRA_BUILDING -> {
-                    userContext.onBoardingData.nrExtraBuildings = body.value
                     MORE_EXTRA_BUILDINGS_QUESTIONS_CALL.id
                 }
                 body.value == 1 -> {
-                    userContext.onBoardingData.nrExtraBuildings = body.value
                     ASK_EXTRA_BUILDING_TYPE_ONE.id
                 }
                 else -> {
-                    userContext.onBoardingData.nrExtraBuildings = body.value
                     ASK_EXTRA_BUILDING_TYPE_MORE_THAN_ONE.id
                 }
             }
