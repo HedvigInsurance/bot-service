@@ -54,23 +54,22 @@ Summer party no cover after 3pm
 *Regular Working Hours*
 
 *Måndag-Torsdag*
-09-18 – Hedvig svarar inom 10 min **
-18-20 - Hedvig svarar inom 20 min **
-20-23 – Hedvig svarar inom 30 min **
-23-02 – Hedvig svarar i morgon
-02-08.59 – Hedvig svarar efter kl. 09
+08-17 – Hedvig svarar inom 10 min **
+17-22 - Hedvig svarar inom 20 min **
+22-02 – Hedvig svarar i morgon
+02-07.59 – Hedvig svarar efter kl. 08
 
 *Fredag*
-09-18 – Hedvig svarar inom 10 min **
+08-17 – Hedvig svarar inom 10 min **
 11-11.45 - Hedvig svarar inom {11.45 - current time rounded to 5 minutes and with a 5 minute buffer} min
-18-23 – Hedvig svarar inom 30 min
-23-02 – Hedvig svarar i morgon
-02-09.59 – Hedvig svarar efter kl. 10
+17-22 – Hedvig svarar inom 20 min
+22-02 – Hedvig svarar i morgon
+02-08.59 – Hedvig svarar efter kl. 9
 
 *Helg och helgdag* - same as redDays
-10-23 – Hedvig svarar inom en timme **
-23-02 – Hedvig svarar i morgon
-02-09.59 – Hedvig svarar efter kl. 10
+09-22 – Hedvig svarar inom en timme **
+22-02 – Hedvig svarar i morgon
+02-08.59 – Hedvig svarar efter kl. 9
  */
 
 @Component
@@ -115,9 +114,9 @@ public class StatusBuilderImpl implements StatusBuilder {
 
     if (hour <= 2) {
       return "Hedvig svarar imorgon";
-    } else if (hour < 10) {
-      return "Hedvig svarar efter kl. 10";
-    } else if (hour < 23) {
+    } else if (hour < 9) {
+      return "Hedvig svarar efter kl. 9";
+    } else if (hour < 22) {
       return "Hedvig svarar inom en timme";
     }
     else {
@@ -151,10 +150,10 @@ public class StatusBuilderImpl implements StatusBuilder {
         if (hour <= 2) {
           return "Hedvig svarar imorgon";
         }
-        if (hour < 9) {
-          return "Hedvig svarar efter kl. 9";
+        if (hour < 8) {
+          return "Hedvig svarar efter kl. 8";
         }
-        if (hour < 18) {
+        if (hour < 17) {
           return "Hedvig svarar inom 15 min";
         }
         if (summerWeekendsWithNoChatCover.contains(tomorrowDate)) {
@@ -230,17 +229,14 @@ public class StatusBuilderImpl implements StatusBuilder {
           if (hour <= 2) {
             return "Hedvig svarar imorgon";
           }
-          if (hour < 9) {
-            return "Hedvig svarar efter kl. 9";
+          if (hour < 8) {
+            return "Hedvig svarar efter kl. 8";
           }
-          if (hour < 18) {
+          if (hour < 17) {
             return "Hedvig svarar inom 10 min";
           }
-          else if (hour < 20) {
+          else if (hour < 22) {
             return "Hedvig svarar inom 20 min";
-          }
-          else if (hour < 23) {
-            return "Hedvig svarar inom 30 min";
           } else {
             return "Hedvig svarar imorgon";
           }
@@ -249,17 +245,17 @@ public class StatusBuilderImpl implements StatusBuilder {
           if (hour <= 2) {
             return "Hedvig svarar imorgon";
           }
-          if (hour < 9) {
-            return "Hedvig svarar efter kl. 9";
+          if (hour < 8) {
+            return "Hedvig svarar efter kl. 8";
           }
           if (hour == 11 && minute >= 0 && minute <= 45) {
             int meetingEndTime = 45;
             return getFridayRetroMeetingTime(minute, meetingEndTime);
           }
-          if (hour < 18) {
+          if (hour < 17) {
             return "Hedvig svarar inom 10 min";
-          } else if (hour < 23) {
-            return "Hedvig svarar inom 30 min";
+          } else if (hour < 22) {
+            return "Hedvig svarar inom 20 min";
           } else {
             return "Hedvig svarar imorgon";
           }

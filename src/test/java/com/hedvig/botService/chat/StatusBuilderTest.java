@@ -58,15 +58,15 @@ public class StatusBuilderTest {
   }
 
   @Test
-  public void returnHedvigSvararMandagAfter6pmIfNextDayIsNonWorkingDay() {
+  public void returnHedvigSvararMandagAfter5pmIfNextDayIsNonWorkingDay() {
     assertEquals("Hedvig svarar på Måndag", builder.getSummerWeekdayAnswerTimes(19, 00, LocalDate.parse("2019-07-26")));
-    assertEquals("Hedvig svarar på Måndag", builder.getSummerWeekdayAnswerTimes(18, 00, LocalDate.parse("2019-08-02")));
+    assertEquals("Hedvig svarar på Måndag", builder.getSummerWeekdayAnswerTimes(17, 00, LocalDate.parse("2019-08-02")));
   }
 
   @Test
   public void returnUsualAnswerTimesBefore6pmDayBeforeNonWorkingWeekend() {
     assertEquals("Hedvig svarar inom 15 min", builder.getSummerWeekdayAnswerTimes(9, 00, LocalDate.parse("2019-07-26")));
-    assertEquals("Hedvig svarar efter kl. 9", builder.getSummerWeekdayAnswerTimes(8, 30, LocalDate.parse("2019-08-02")));
+    assertEquals("Hedvig svarar efter kl. 8", builder.getSummerWeekdayAnswerTimes(7, 30, LocalDate.parse("2019-08-02")));
     assertEquals("Hedvig svarar inom 15 min", builder.getSummerWeekdayAnswerTimes(12, 00, LocalDate.parse("2019-08-02")));
     assertEquals("Hedvig svarar inom 15 min", builder.getSummerWeekdayAnswerTimes(12, 30, LocalDate.parse("2019-06-21")));
   }
@@ -74,7 +74,7 @@ public class StatusBuilderTest {
   @Test
   public void redDayAndWeekendTimesAsExpected() {
     assertEquals("Hedvig svarar imorgon", builder.getRedDayAndWeekendAnswerTimes(2));
-    assertEquals("Hedvig svarar efter kl. 10", builder.getRedDayAndWeekendAnswerTimes(9));
+    assertEquals("Hedvig svarar efter kl. 9", builder.getRedDayAndWeekendAnswerTimes(8));
     assertEquals("Hedvig svarar inom en timme", builder.getRedDayAndWeekendAnswerTimes(10));
     assertEquals("Hedvig svarar inom en timme", builder.getRedDayAndWeekendAnswerTimes(20));
     assertEquals("Hedvig svarar imorgon", builder.getRedDayAndWeekendAnswerTimes(23));
