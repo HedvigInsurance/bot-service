@@ -16,6 +16,6 @@ public interface ClaimsServiceClient {
   @RequestMapping(value = "/_/claims/activeClaims/{userId}", method = RequestMethod.GET)
   ActiveClaimsDTO getActiveClaims(@PathVariable("userId") String memberId);
 
-  @PostMapping("/linkFileToClaim")
+  @PostMapping("/_/claims/linkFileToClaim")
   ResponseEntity<Void> linkFileFromAppToClaim(@RequestBody ClaimFileFromAppDTO dto);
 }
