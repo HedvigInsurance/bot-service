@@ -10,6 +10,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.contains;
 
+import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
@@ -39,11 +40,12 @@ public class NotificationServiceTest {
   private static final String GOOD_QUESTION = "A long and good question";
   @Mock private NotificationMessagingTemplate messagingTemplate;
   @Mock private TicketService ticketService;
+  @Mock private ClaimsService claimsService;
   private NotificationService notificationService;
 
   @Before
   public void setup() {
-    notificationService = new NotificationService(messagingTemplate, ticketService);
+    notificationService = new NotificationService(messagingTemplate, ticketService, claimsService);
   }
 
   @Test
