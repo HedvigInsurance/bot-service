@@ -1,5 +1,7 @@
 package com.hedvig.botService.services;
 
+import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
+import com.hedvig.botService.serviceIntegration.claimsService.dto.ClaimFileFromAppDTO;
 import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
 import com.hedvig.botService.services.events.*;
 import lombok.val;
@@ -18,14 +20,17 @@ public class NotificationService {
   private final NotificationMessagingTemplate template;
   private final TicketService ticketService;
   private final Logger log = LoggerFactory.getLogger(NotificationService.class);
+  private final ClaimsService claimsService;
 
   @Autowired
   public NotificationService(
     NotificationMessagingTemplate template,
-    TicketService ticketService
+    TicketService ticketService,
+    ClaimsService claimsService
   ) {
     this.template = template;
     this.ticketService = ticketService;
+    this.claimsService = claimsService;
   }
 
   @EventListener
@@ -84,6 +89,18 @@ public class NotificationService {
         String.format("A new file is uploaded from member %s with type %s. The file key is %s",
             e.getMemberId(), e.getMimeType(), e.getKey());
     sendMessageFromMemberNotification(message, "CallMe");
+
+    ClaimFileFromAppDTO claimFile  = new ClaimFileFromAppDTO(
+      e.getKey(),
+      e.getMimeType(),
+      e.getMemberId()
+    );
+
+    try {
+      claimsService.linkFileFromAppToClaim(claimFile);
+    } catch(Exception exception) {
+      log.error("Cannot link file " + e.getKey() + " to a claim" + exception);
+    }
   }
 
   @EventListener
