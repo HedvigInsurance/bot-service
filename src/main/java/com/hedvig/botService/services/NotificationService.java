@@ -4,6 +4,7 @@ import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.claimsService.dto.ClaimFileFromAppDTO;
 import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
 import com.hedvig.botService.services.events.*;
+import io.sentry.Sentry;
 import lombok.val;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,7 @@ public class NotificationService {
     try {
       claimsService.linkFileFromAppToClaim(claimFile);
     } catch(Exception exception) {
+      Sentry.capture(exception);
       log.error("Cannot link file " + e.getKey() + " to a claim" + exception);
     }
   }
