@@ -1477,7 +1477,7 @@ constructor(
                 onBoardingData.livingSpace = java.lang.Float.parseFloat(kvm)
                 m.body.text = "{KVM} kvm"
                 addToChat(m)
-                nxtMsg = if (Integer.parseInt(kvm) > 250) {
+                nxtMsg = if (Integer.parseInt(kvm) > MAX_LIVING_SPACE_RENT_SQM) {
                     "message.uwlimit.housingsize"
                 } else {
                     handleStudentPolicyLivingSpace("message.lghtyp", userContext)
@@ -1973,6 +1973,7 @@ constructor(
     }
 
     companion object {
+        const val MAX_LIVING_SPACE_RENT_SQM = 250
 
         const val MESSAGE_HUS = "message.hus"
         const val MESSAGE_NYHETSBREV = "message.nyhetsbrev"
