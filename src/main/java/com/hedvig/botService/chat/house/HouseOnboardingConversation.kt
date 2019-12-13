@@ -509,14 +509,18 @@ constructor(
                 ASK_ANCILLARY_AREA.id
             }
         } else {
-            userContext.completeConversation(this)
-            val conversation =
-                conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
-            userContext.startConversation(
-                conversation,
-                OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS
-            )
-            CONVERSATION_RENT_DONE
+            if (livingSpace > OnboardingConversationDevi.MAX_LIVING_SPACE_RENT_SQM) {
+                MORE_SQM_QUESTIONS_CALL.id
+            } else {
+                userContext.completeConversation(this)
+                val conversation =
+                    conversationFactory.createConversation(OnboardingConversationDevi::class.java, userContext)
+                userContext.startConversation(
+                    conversation,
+                    OnboardingConversationDevi.MESSAGE_ASK_NR_RESIDENTS
+                )
+                CONVERSATION_RENT_DONE
+            }
         }
     }
 
