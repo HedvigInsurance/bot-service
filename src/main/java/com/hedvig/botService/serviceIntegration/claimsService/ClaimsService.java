@@ -1,5 +1,6 @@
 package com.hedvig.botService.serviceIntegration.claimsService;
 
+import com.hedvig.botService.serviceIntegration.claimsService.dto.ClaimFileFromAppDTO;
 import com.hedvig.botService.serviceIntegration.claimsService.dto.StartClaimAudioDTO;
 import feign.FeignException;
 import java.time.LocalDateTime;
@@ -38,5 +39,9 @@ public class ClaimsService {
     }
 
     return 0;
+  }
+
+  public void linkFileFromAppToClaim(ClaimFileFromAppDTO dto) {
+    claimsClient.linkFileFromAppToClaim(dto);
   }
 }

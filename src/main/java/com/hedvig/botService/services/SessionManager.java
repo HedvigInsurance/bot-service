@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import static com.hedvig.botService.chat.OnboardingConversationDevi.MESSAGE_START_LOGIN;
@@ -48,6 +49,7 @@ public class SessionManager {
   private final ConversationFactory conversationFactory;
   private final TrackingDataRespository trackerRepo;
   private final ObjectMapper objectMapper;
+  private final TextKeysLocaleResolver graphCMSLocaleResolver;
 
   private static final String LINK_URI_KEY = "{{LINK_URI}";
   private static final String LINK_URI_VALUE = "hedvig://+";
@@ -64,17 +66,19 @@ public class SessionManager {
     MemberService memberService,
     ConversationFactory conversationFactory,
     TrackingDataRespository trackerRepo,
-    ObjectMapper objectMapper) {
+    ObjectMapper objectMapper,
+    TextKeysLocaleResolver graphCMSLocaleResolver) {
     this.userContextRepository = userContextRepository;
     this.memberService = memberService;
     this.conversationFactory = conversationFactory;
     this.trackerRepo = trackerRepo;
     this.objectMapper = objectMapper;
+    this.graphCMSLocaleResolver = graphCMSLocaleResolver;
   }
 
-  public List<Message> getMessages(int i, String hid) {
+  public List<Message> getMessages(int i, String hid, String acceptLanguage) {
     log.info("Getting " + i + " messages for user: " + hid);
-    List<Message> messages = getAllMessages(hid, null);
+    List<Message> messages = getAllMessages(hid, acceptLanguage, null);
 
     return messages.subList(Math.max(messages.size() - i, 0), messages.size());
   }
@@ -124,10 +128,15 @@ public class SessionManager {
 
     CollectService service = new CollectService(userContextRepository, memberService);
 
+    UserContext uc =
+      userContextRepository
+        .findByMemberId(hid)
+        .orElseGet(null);
+
     return service.collect(
       hid,
       referenceToken,
-      (BankIdChat) conversationFactory.createConversation(OnboardingConversationDevi.class));
+      (BankIdChat) conversationFactory.createConversation(OnboardingConversationDevi.class, uc));
   }
 
   public boolean emailSign(String memberId){
@@ -143,9 +152,9 @@ public class SessionManager {
           .findByMemberId(APPLE_USER_MEMBER_ID)
           .orElseThrow(() -> new ResourceNotFoundException("Could not fina userContext."));
 
-     OnboardingConversationDevi conversationDevi = (OnboardingConversationDevi) conversationFactory.createConversation(OnboardingConversationDevi.class);
+     OnboardingConversationDevi conversationDevi = (OnboardingConversationDevi) conversationFactory.createConversation(OnboardingConversationDevi.class, uc);
 
-     conversationDevi.emailLoginComplete(newUc);
+     conversationDevi.emailLoginComplete();
 
      return true;
     }
@@ -155,7 +164,7 @@ public class SessionManager {
   /*
    * Create a new users chat and context
    */
-  public void init(String hid, String linkUri) {
+  public void init(String hid, String acceptLanguage, String linkUri) {
 
     UserContext uc =
       userContextRepository
@@ -169,6 +178,9 @@ public class SessionManager {
 
     uc.putUserData("{LINK_URI}", linkUri);
     uc.putUserData(UserContext.ONBOARDING_COMPLETE, "false");
+
+    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
 
     userContextRepository.saveAndFlush(uc);
   }
@@ -226,21 +238,22 @@ public class SessionManager {
 
 
     Conversation activeConversation = getActiveConversationOrStart(uc, MainConversation.class);
+
     if(forceSendMessage && ClaimsConversation.class.isInstance(activeConversation)){
       uc.completeConversation(activeConversation);
       activeConversation = getActiveConversationOrStart(uc, FreeChatConversation.class);
     }
-    return activeConversation.addMessageFromBackOffice(uc, msg, msgId, userId);
+    return activeConversation.addMessageFromBackOffice(msg, msgId, userId);
 
   }
 
   private Conversation getActiveConversationOrStart(
     UserContext uc, Class<?> conversationToStart) {
     return uc.getActiveConversation()
-      .map(x -> conversationFactory.createConversation(x.getClassName()))
+      .map(x -> conversationFactory.createConversation(x.getClassName(), uc))
       .orElseGet(
         () -> {
-          val newConversation = conversationFactory.createConversation(conversationToStart);
+          val newConversation = conversationFactory.createConversation(conversationToStart, uc);
           uc.startConversation(newConversation);
           return newConversation;
         });
@@ -269,7 +282,7 @@ public class SessionManager {
       uc.getOnBoardingData().setEmail(email);
 
       Conversation onboardingConversation =
-        conversationFactory.createConversation(OnboardingConversationDevi.class);
+        conversationFactory.createConversation(OnboardingConversationDevi.class, uc);
       if (Objects.equals("true", uc.getDataEntry(LOGIN))) {
         uc.startConversation(onboardingConversation, MESSAGE_START_LOGIN);
       } else {
@@ -280,7 +293,7 @@ public class SessionManager {
     }
   }
 
-  public List<Message> getAllMessages(String hid, Intent intent) {
+  public List<Message> getAllMessages(String hid, String acceptLanguage, Intent intent) {
 
     /*
      * Find users chat and context. First time it is created
@@ -290,6 +303,9 @@ public class SessionManager {
       userContextRepository
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
+
+    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
 
     val messages = uc.getMessages(intent, conversationFactory);
     return messages;
@@ -306,7 +322,7 @@ public class SessionManager {
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
 
-    Conversation mainConversation = conversationFactory.createConversation(MainConversation.class);
+    Conversation mainConversation = conversationFactory.createConversation(MainConversation.class, uc);
     uc.startConversation(mainConversation);
 
     userContextRepository.saveAndFlush(uc);
@@ -320,8 +336,8 @@ public class SessionManager {
           () -> new ResourceNotFoundException("Could not find usercontext for user: " + hid));
 
     TrustlyConversation tr =
-      (TrustlyConversation) conversationFactory.createConversation(TrustlyConversation.class);
-    tr.windowClosed(uc);
+      (TrustlyConversation) conversationFactory.createConversation(TrustlyConversation.class, uc);
+    tr.windowClosed();
 
     userContextRepository.save(uc);
   }

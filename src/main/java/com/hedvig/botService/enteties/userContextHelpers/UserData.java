@@ -1,11 +1,14 @@
 package com.hedvig.botService.enteties.userContextHelpers;
 
+import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType;
 import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.botService.services.LocalizationService;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class UserData {
@@ -36,6 +39,15 @@ public class UserData {
   public static final String TWENTYFIVE_THOUSAND_LIMIT = "{25K_LIMIT}";
   public static final String PHONE_NUMBER = "{PHONE_NUMBER}";
   public static final String LOGIN = "{LOGIN}";
+  public static final String HOUSE_ANCILLARY_AREA_KVM = "{HOUSE_ANCILLARY_AREA_KVM}";
+  public static final String HOUSE_NR_BATHROOMS = "{HOUSE_NR_BATHROOMS}";
+  public static final String HOUSE_HAS_EXTRA_BUILDINGS = "{HOUSE_HAS_EXTRA_BUILDINGS}";
+  public static final String HOUSE_NR_EXTRA_BUILDINGS = "{HOUSE_NR_EXTRA_BUILDINGS}";
+  public static final String HOUSE_IS_SUBLETTING = "{HOUSE_IS_SUBLETTING}";
+  public static final String HOUSE_YEAR_OF_CUNSTRUCTION = "{HOUSE_YEAR_OF_CUNSTRUCTION}";
+
+  public static final String HOUSE_EXTRA_BUILDINGS_TYPE_TEXT = "{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}";
+
   private final UserContext ctx;
 
   public UserData(UserContext ctx) {
@@ -228,6 +240,96 @@ public class UserData {
     ctx.putUserData(USER_AUTHED_BANKID, referenceId);
   }
 
+  public void setHouseAncillaryArea(int ancillaryAreaSqm){
+    ctx.putUserData(HOUSE_ANCILLARY_AREA_KVM, Objects.toString(ancillaryAreaSqm));
+  }
+
+  public int getHouseAncillaryArea() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_ANCILLARY_AREA_KVM));
+  }
+
+  public void setNumberOfBathrooms(int bathrooms) {
+    ctx.putUserData(HOUSE_NR_BATHROOMS, Objects.toString(bathrooms));
+  }
+
+  public int getNumberOfBathrooms() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_BATHROOMS));
+  }
+
+  public void setYearOfConstruction(int yearOfConstruction) {
+    ctx.putUserData(HOUSE_YEAR_OF_CUNSTRUCTION, Objects.toString(yearOfConstruction));
+  }
+
+  public int getYearOfConstruction() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_YEAR_OF_CUNSTRUCTION));
+  }
+
+  public void setHasExtraBuildings(boolean hasExtraBuildings) {
+    ctx.putUserData(HOUSE_HAS_EXTRA_BUILDINGS, Objects.toString(hasExtraBuildings));
+  }
+
+  public boolean getHasExtraBuildings() {
+    String value = ctx.getDataEntry(HOUSE_HAS_EXTRA_BUILDINGS);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  public void setNrExtraBuildings(int extraBuildings) {
+    ctx.putUserData(HOUSE_NR_EXTRA_BUILDINGS, Objects.toString(extraBuildings));
+  }
+
+  public int getNrExtraBuildings() {
+    return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_EXTRA_BUILDINGS));
+  }
+
+  public void setHouseExtraBuildingType(ExtraBuildingType type, int buildingNumber, Locale locale, LocalizationService localizationService){
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber +"}", type.toString());
+    String text = localizationService.getText(locale, "HOUSE_EXTRA_BUILDING_" + type.toString());
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}", text);
+  }
+
+  public String getHouseExtraBuildingType(int buildingNumber) {
+    return ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber +"}");
+  }
+
+  public String getHouseExtraBuildingTypeText(int buildingNumber) {
+    return ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}");
+  }
+
+  public void setHouseExtraBuildingSQM(int sqm, int buildingNumber){
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber +"}", String.valueOf(sqm));
+  }
+
+  public int getHouseExtraBuildingSQM(int buildingNumber) {
+    return Integer.parseInt(ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber +"}"));
+  }
+
+  public void setHouseExtraBuildingHasWater(boolean hasWater, int buildingNumber){
+    ctx.putUserData("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber +"}", String.valueOf(hasWater));
+  }
+
+  public boolean getHouseExtraBuildingHasWater(int buildingNumber) {
+    String value = ctx.getDataEntry("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber +"}");
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
+  public void setIsSubLetting(boolean isSubLetting) {
+    ctx.putUserData(HOUSE_IS_SUBLETTING, Objects.toString(isSubLetting));
+  }
+
+  public boolean getIsSubLetting() {
+    String value = ctx.getDataEntry(HOUSE_IS_SUBLETTING);
+    if (value == null) {
+      return false;
+    }
+    return Boolean.parseBoolean(value);
+  }
+
   public void clear() {
     ctx.removeDataEntry(MEMBER_BIRTH_DATE);
     ctx.removeDataEntry(FIRST_NAME);
@@ -249,6 +351,8 @@ public class UserData {
     ctx.removeDataEntry(USER_AUTHED_BANKID);
     ctx.removeDataEntry(IS_STUDENT);
     ctx.removeDataEntry(STUDENT_POLICY_ELIGIBILITY);
+
+    // TODO clear more
 
     String nrOfItemsString = ctx.getDataEntry(SECURE_ITEMS_NO);
     int nrOfItems = nrOfItemsString != null ? Integer.parseInt(nrOfItemsString) : 0;

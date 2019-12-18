@@ -1,16 +1,20 @@
 package com.hedvig.botService.dataTypes;
 
+import com.hedvig.botService.utils.BirthDateFromSSNUtil;
+import java.time.format.DateTimeParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SSNSweden extends HedvigDataType {
 
-  private static final String ZIPCODE_PATTERN = "^((19|20)?[0-9]{6})[- ]?[0-9]{4}$";
+  private static final String SSN_PATTERN = "^((19|20)?[0-9]{6})[- ]?[0-9]{4}$";
   private Pattern pattern;
   private Matcher matcher;
 
+  private String trimmedInput;
+
   public SSNSweden() {
-    pattern = Pattern.compile(ZIPCODE_PATTERN);
+    pattern = Pattern.compile(SSN_PATTERN);
   }
 
   public static void main(String args[]) {
@@ -28,20 +32,44 @@ public class SSNSweden extends HedvigDataType {
       return false;
     }
 
-    String trimmedInput = input.trim().replace(" ", "");
+    trimmedInput = input.trim().replace(" ", "");
 
-    if (trimmedInput.length() != 12) {
-      this.errorMessage = "Personnummret måste skrivas med 12 siffor.";
+    if (trimmedInput.length() != 10 && trimmedInput.length() != 12) {
+      this.errorMessage = "Personnummret måste skrivas med 10 eller 12 siffor.";
       return false;
     }
+
+    if (trimmedInput.length() == 10) {
+      trimmedInput = BirthDateFromSSNUtil.INSTANCE.addCenturyToSSN(trimmedInput);
+    }
+
+    try {
+      BirthDateFromSSNUtil.INSTANCE.birthDateFromSSN(trimmedInput);
+    }
+    catch(DateTimeParseException exception) {
+      this.errorMessage = "{INPUT} ser ut som ett konstigt personnummer. Ange gärna igen tack!";
+      return false;
+    }
+
     matcher = pattern.matcher(trimmedInput);
 
     boolean ok = matcher.matches();
     if (!ok) {
-      this.errorMessage = input + " ser ut som ett konstigt personnummer. Ange gärna igen tack!";
+      this.errorMessage = "{INPUT} ser ut som ett konstigt personnummer. Ange gärna igen tack!";
       return false;
     }
 
     return true;
+  }
+
+  @Override
+  public String getErrorMessageId() {
+    if (trimmedInput == null) {
+      return "hedvig.data.type.ssn.no.input";
+    }
+    if (trimmedInput.length() != 10 && trimmedInput.length() != 12) {
+      return "hedvig.data.type.ssn.not.ten.or.twelve.digits";
+    }
+    return "hedvig.data.type.ssn.did.not.match";
   }
 }

@@ -19,6 +19,7 @@ import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.message.MessageBodySingleSelect;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
+import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import java.util.UUID;
 import org.junit.Before;
@@ -39,12 +40,16 @@ public class TrustlyConversationTest {
   private TrustlyConversation testConversation;
 
   @Mock
+  private LocalizationService localizationService;
+
+
+  @Mock
   private ApplicationEventPublisher applicationEventPublisher;
 
   @Before
   public void setup() {
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
-    testConversation = new TrustlyConversation(triggerService, memberService, applicationEventPublisher);
+    testConversation = new TrustlyConversation(triggerService, memberService, applicationEventPublisher, localizationService, userContext);
   }
 
   public void addTolvansonToUserContext() {
@@ -72,7 +77,7 @@ public class TrustlyConversationTest {
         .willReturn(triggerUUID);
 
     // ACT
-    testConversation.addToChat(START, userContext);
+    testConversation.addToChat(START);
 
     assertThat(userContext.getDataEntry("{TRUSTLY_TRIGGER_ID}")).isEqualTo(triggerUUID.toString());
   }
@@ -94,7 +99,7 @@ public class TrustlyConversationTest {
                 TOLVANSSON_MEMBER_ID))
         .willReturn(TRIGGER_UUID);
 
-    testConversation.receiveMessage(userContext, message);
+    testConversation.receiveMessage(message);
 
     assertThat(userContext.getMemberChat().chatHistory.size()).isEqualTo(1);
   }

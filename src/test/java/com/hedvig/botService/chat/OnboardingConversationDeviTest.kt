@@ -1,9 +1,12 @@
 package com.hedvig.botService.chat
 
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil
 import com.hedvig.botService.chat.Conversation.EventTypes
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_50K_LIMIT_YES_YES
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_BANKIDJA
+import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_LAGENHET_ADDRESSNOTFOUND
+import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_MEMBER_UNDER_EIGHTEEN
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_NAGOTMER
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_ONBOARDINGSTART_REPLY_NAME
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_VARBORDUFELADRESS
@@ -14,6 +17,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Address
 import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
+import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent
 import com.hedvig.botService.services.events.RequestObjectInsuranceEvent
 import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
@@ -37,6 +41,8 @@ class OnboardingConversationDeviTest {
 
     @Mock
     private lateinit var memberService: MemberService
+    @Mock
+    private lateinit var localizationService: LocalizationService
 
     @Mock
     private lateinit var productPricingService: ProductPricingService
@@ -47,8 +53,12 @@ class OnboardingConversationDeviTest {
     @Mock
     private lateinit var conversationFactory: ConversationFactory
 
+    @Mock
+    private lateinit var phoneNumberUtil: PhoneNumberUtil
+
     private lateinit var userContext: UserContext
     private lateinit var testConversation: OnboardingConversationDevi
+
 
     @Before
     fun setup() {
@@ -56,7 +66,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, publisher, conversationFactory, "test", "test"
+            memberService, productPricingService, publisher, conversationFactory,localizationService, "test", "test", phoneNumberUtil, userContext
         )
     }
 
@@ -76,7 +86,7 @@ class OnboardingConversationDeviTest {
         val body = m!!.body as MessageBodySingleSelect
         body.choices[1].selected = true
 
-        testConversation.receiveMessage(userContext, m)
+        testConversation.receiveMessage(m)
 
         val onBoardingData = userContext.onBoardingData
         assertThat(onBoardingData.addressCity).isNull()
@@ -94,7 +104,7 @@ class OnboardingConversationDeviTest {
         val m = testConversation.getMessage("message.uwlimit.housingsize")
         m!!.body.text = TOLVANSSON_PHONE_NUMBER
 
-        testConversation.receiveMessage(userContext, m)
+        testConversation.receiveMessage(m)
 
         then<ApplicationEventPublisher>(publisher)
             .should()
@@ -118,7 +128,7 @@ class OnboardingConversationDeviTest {
         val m = testConversation.getMessage("message.uwlimit.householdsize")
         m!!.body.text = TOLVANSSON_PHONE_NUMBER
 
-        testConversation.receiveMessage(userContext, m)
+        testConversation.receiveMessage(m)
 
         then<ApplicationEventPublisher>(publisher)
             .should()
@@ -141,7 +151,7 @@ class OnboardingConversationDeviTest {
         val m = testConversation.getMessage("message.frifraga")
         m!!.body.text = "I wonder if I can get a home insurance, even thouh my name is Tolvan?"
 
-        testConversation.receiveMessage(userContext, m)
+        testConversation.receiveMessage(m)
 
         then<ApplicationEventPublisher>(publisher)
             .should()
@@ -161,7 +171,7 @@ class OnboardingConversationDeviTest {
 
         choice.get().selected = true
 
-        testConversation.receiveMessage(userContext, m)
+        testConversation.receiveMessage(m)
         then<ApplicationEventPublisher>(publisher)
             .should(times(0))
             .publishEvent(
@@ -173,7 +183,7 @@ class OnboardingConversationDeviTest {
     fun sendNotificationEvent_WhenMemberSignedIsCalled_withUserContextValue50K_LIMITeqTRUE() {
         val referenceId = "53bb6e92-5cc7-11e8-8c3b-235d0786c76b"
         userContext.putUserData("{50K_LIMIT}", "true")
-        testConversation.memberSigned(referenceId, userContext)
+        testConversation.memberSigned(referenceId)
         then<ApplicationEventPublisher>(publisher)
             .should(times(1))
             .publishEvent(
@@ -184,7 +194,7 @@ class OnboardingConversationDeviTest {
     @Test
     fun doNothing_WhenMemberSignedIsCalled_withUserContextValue50K_LIMITeqNULL() {
         val referenceId = "53bb6e92-5cc7-11e8-8c3b-235d0786c76b"
-        testConversation.memberSigned(referenceId, userContext)
+        testConversation.memberSigned(referenceId)
         then<ApplicationEventPublisher>(publisher)
             .should(times(0))
             .publishEvent(
@@ -195,8 +205,7 @@ class OnboardingConversationDeviTest {
     @Test
     fun canAlwaysAcceptAnswersToQuestion() {
 
-        val uc = UserContext(TOLVANSSON_MEMBER_ID)
-        val canAcceptAnswer = testConversation.canAcceptAnswerToQuestion(uc)
+        val canAcceptAnswer = testConversation.canAcceptAnswerToQuestion()
 
         assertThat(canAcceptAnswer).isEqualTo(true)
     }
@@ -205,7 +214,6 @@ class OnboardingConversationDeviTest {
     fun addCorrectStartMessage_WhenInitWithMessageId() {
 
         testConversation.init(
-            userContext,
             OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_ASK_NAME
         )
 
@@ -219,7 +227,7 @@ class OnboardingConversationDeviTest {
     @Test
     fun addMessageOnboardingStartShort_WhenCallingInit_WithoutMessageId() {
 
-        testConversation.init(userContext)
+        testConversation.init()
 
         assertThat(userContext.memberChat.chatHistory)
             .first()
@@ -235,8 +243,7 @@ class OnboardingConversationDeviTest {
             EventTypes.MESSAGE_FETCHED,
             testConversation.findLastChatMessageId(
                 OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_SHORT
-            ),
-            userContext
+            )
         )
 
         assertThat(userContext.memberChat.chatHistory)
@@ -269,11 +276,11 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "TOLVAN"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         assertThat(userContext.memberChat.chatHistory.findLast { it.id == message.id }?.body?.text).contains("TOLVAN")
 
         val paragraphMessage = userContext.memberChat.chatHistory.last()
-        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id, userContext = userContext)
+        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_ONBOARDINGSTART_REPLY_NAME)
@@ -289,11 +296,11 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "Hej jag heter Tolvan"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         assertThat(userContext.memberChat.chatHistory.findLast { it.id == message.id }?.body?.text).contains("Hej jag heter Tolvan")
 
         val paragraphMessage = userContext.memberChat.chatHistory.last()
-        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id, userContext = userContext)
+        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_ONBOARDINGSTART_REPLY_NAME)
@@ -309,11 +316,11 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "Hejs jag heter Tolvan"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         assertThat(userContext.memberChat.chatHistory.findLast { it.id == message.id }?.body?.text).contains("Hejs jag heter Tolvan")
 
         val paragraphMessage = userContext.memberChat.chatHistory.last()
-        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id, userContext = userContext)
+        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_ONBOARDINGSTART_REPLY_NAME)
@@ -329,11 +336,11 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "Hej, jag heter Tolvan"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         assertThat(userContext.memberChat.chatHistory.findLast { it.id == message.id }?.body?.text).contains("Hej, jag heter Tolvan")
 
         val paragraphMessage = userContext.memberChat.chatHistory.last()
-        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id, userContext = userContext)
+        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_ONBOARDINGSTART_REPLY_NAME)
@@ -349,11 +356,11 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "Tolvan!"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         assertThat(userContext.memberChat.chatHistory.findLast { it.id == message.id }?.body?.text).contains("Tolvan!")
 
         val paragraphMessage = userContext.memberChat.chatHistory.last()
-        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id, userContext = userContext)
+        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_ONBOARDINGSTART_REPLY_NAME)
@@ -376,7 +383,7 @@ class OnboardingConversationDeviTest {
         val message = getMessage(OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_ASK_EMAIL)
         message.body.text = "tolvan@hej.com"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         then(memberService).should(times(1)).updateEmail(TOLVANSSON_MEMBER_ID, "tolvan@hej.com")
 
@@ -398,11 +405,11 @@ class OnboardingConversationDeviTest {
             )
         )
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         assertThat(userContext.memberChat.chatHistory.findLast { it.id == message.id }?.body?.text).contains("19121212-****")
 
         val paragraphMessage = userContext.memberChat.chatHistory.last()
-        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id, userContext = userContext)
+        testConversation.receiveEvent(EventTypes.MESSAGE_FETCHED, paragraphMessage.id)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_BANKIDJA)
@@ -436,7 +443,7 @@ class OnboardingConversationDeviTest {
             )
         )
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo("message.lagenhet.addressnotfound")
@@ -462,7 +469,7 @@ class OnboardingConversationDeviTest {
 
         given(memberService.lookupAddressSWE("191212121212", "1337")).willReturn(null)
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo("message.lagenhet.addressnotfound")
@@ -488,7 +495,7 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "Tolvansson"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         userContext.onBoardingData.let {
             assertThat(it.firstName).isEqualTo("Tolvan")
@@ -506,7 +513,7 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "Tolvan"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         userContext.onBoardingData.let {
             assertThat(it.firstName).isEqualTo("Tolvan")
@@ -524,7 +531,7 @@ class OnboardingConversationDeviTest {
         val body = message.body as MessageBodyText
         body.text = "A Tolvan"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         userContext.onBoardingData.let {
             assertThat(it.firstName).isEqualTo("A Tolvan")
@@ -537,7 +544,7 @@ class OnboardingConversationDeviTest {
         val message = getMessage("message.lagenhet.addressnotfound")
         message.body.text = "tolvansson"
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         userContext.onBoardingData.let {
             assertThat(it.familyName).isEqualTo("Tolvansson")
@@ -560,7 +567,7 @@ class OnboardingConversationDeviTest {
         (message.body as MessageBodySingleSelect).choices.findLast { it.value == MESSAGE_VARBORDUFELADRESS }!!.selected =
                 true
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
 
         userContext.onBoardingData.let {
             assertThat(it.addressCity).isNull()
@@ -576,11 +583,12 @@ class OnboardingConversationDeviTest {
         (message.body as MessageBodySingleSelect).choices.findLast { it.value == MESSAGE_VARBORDUFELADRESS }!!.selected =
                 true
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_VARBORDUFELADRESS)
     }
 
+    /* TODO test
     @Test
     fun dontAskForTheEmailAddress_whenHouseFlow_nextMessageIs_MESSAGE_NAGOTMER(){
 
@@ -590,15 +598,107 @@ class OnboardingConversationDeviTest {
         val message = getMessage(OnboardingConversationDevi.MESSAGE_HUS)
         (message.body as MessageBodySingleSelect).choices.findLast { it.value == MESSAGE_NAGOTMER }!!.selected = true
 
-        testConversation.receiveMessage(userContext, message)
+        testConversation.receiveMessage(message)
         val lastMessage = userContext.memberChat.chatHistory.last()
         assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_NAGOTMER)
         assertThat(userContext.onBoardingData.newsLetterEmail).isEqualTo(remarkableEmail)
 
-    }
-
+    }*/
 
     fun getMessage(id: String): Message {
         return testConversation.getMessage(testConversation.findLastChatMessageId(id))!!
+    }
+
+    @Test
+    fun recieveMessageIsUnderEighteenIfPersonnummerShowsMemberIsUnder18() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        val dateToday = LocalDate.now()
+
+        val date18YearsAgo = dateToday.minusYears(18)
+        val dateOneDayYoungerThan18AsString = date18YearsAgo.plusDays(1).toString().replace("-", "")
+        val testPersonnummerAsString = dateOneDayYoungerThan18AsString + "2125"
+
+        message.body.text = testPersonnummerAsString
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_MEMBER_UNDER_EIGHTEEN)
+    }
+
+    @Test
+    fun recieveMessageTenDigitSsn20Century() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        message.body.text = "9912121212"
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
+
+        userContext.onBoardingData.let {
+            assertThat(it.ssn).isEqualTo("199912121212")
+        }
+    }
+
+    @Test
+    fun recieveMessageTenDigitSsn21Century() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        message.body.text = "0012121212"
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
+
+        userContext.onBoardingData.let {
+            assertThat(it.ssn).isEqualTo("200012121212")
+        }
+    }
+
+    @Test
+    fun recieveMessageElevenDigitSsn() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        message.body.text = "012121212"
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+        assertThat(lastMessage.baseMessageId).isEqualTo("hedvig.data.type.ssn.not.ten.or.twelve.digits.input.not.valid")
+    }
+
+    @Test
+    fun recieveNormalFlowIfMemberIsOlderThan18() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        val dateToday = LocalDate.now()
+
+        val date18YearsAgo = dateToday.minusYears(18)
+        val dateOneDayOlderThan18AsString = date18YearsAgo.minusDays(1).toString().replace("-", "")
+        val testPersonnummerAsString = dateOneDayOlderThan18AsString + "2125"
+
+        message.body.text = testPersonnummerAsString
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
+    }
+
+    @Test
+    fun recieveNormalFlowIfMemberIs18() {
+        val message = getMessage(OnboardingConversationDevi.MESSAGE_LAGENHET_NO_PERSONNUMMER)
+
+        val dateToday = LocalDate.now()
+
+        val date18YearsAgo = dateToday.minusYears(18).toString().replace("-", "")
+        val testPersonnummerAsString = date18YearsAgo + "2125"
+
+        message.body.text = testPersonnummerAsString
+
+        testConversation.receiveMessage(message)
+        val lastMessage = userContext.memberChat.chatHistory.last()
+
+        assertThat(lastMessage.baseMessageId).isEqualTo(MESSAGE_LAGENHET_ADDRESSNOTFOUND)
     }
 }

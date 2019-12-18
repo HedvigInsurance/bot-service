@@ -45,12 +45,13 @@ public class MessagesController {
   @GetMapping(path = "/messages/{messageCount}")
   public Map<Integer, Message> messages(
       @PathVariable int messageCount,
+      @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
       @RequestHeader(value = "hedvig.token", required = false) String hid) {
 
     log.info("Getting " + messageCount + " messages for member: " + hid);
 
     return sessionManager
-        .getMessages(messageCount, hid)
+        .getMessages(messageCount, hid, acceptLanguage)
         .stream()
         .collect(Collectors.toMap(m -> m.getGlobalId(), Function.identity()));
   }
@@ -64,6 +65,7 @@ public class MessagesController {
       method = RequestMethod.GET)
   public Map<Integer, Message> allMessages(
       @RequestHeader(value = "hedvig.token", required = false) String hid,
+      @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
       @RequestParam(name = "intent", required = false, defaultValue = "onboarding")
           String intentParameter) {
 
@@ -77,7 +79,7 @@ public class MessagesController {
             : SessionManager.Intent.ONBOARDING;
 
     return sessionManager
-        .getAllMessages(hid, intent)
+        .getAllMessages(hid, acceptLanguage, intent)
         .stream()
         .collect(
             Collectors.toMap(Message::getGlobalId, Function.identity(), (x, y) -> y, TreeMap::new))

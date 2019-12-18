@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @Component
@@ -26,21 +27,26 @@ public class MessagesService {
   private final UserContextRepository userContextRepository;
   private final ConversationFactory conversationFactory;
   private final MessageRepository messageRepository;
+  private final TextKeysLocaleResolver graphCMSLocaleResolver;
 
   public MessagesService(
     UserContextRepository userContextRepository,
     ConversationFactory conversationFactory,
-    MessageRepository messageRepository) {
+    MessageRepository messageRepository,
+    TextKeysLocaleResolver graphCMSLocaleResolver) {
     this.userContextRepository = userContextRepository;
     this.conversationFactory = conversationFactory;
     this.messageRepository = messageRepository;
+    this.graphCMSLocaleResolver = graphCMSLocaleResolver;
   }
 
-  public MessagesDTO getMessagesAndStatus(String hid, SessionManager.Intent intent) {
+  public MessagesDTO getMessagesAndStatus(String hid, String acceptLanguage, SessionManager.Intent intent) {
     UserContext uc =
       userContextRepository
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
+
+    putAcceptLanguage(acceptLanguage, uc);
 
     val messages = uc.getMessages(intent, conversationFactory);
 
@@ -93,25 +99,27 @@ public class MessagesService {
     return messageRepository.save(message);
   }
 
-  public ResponseEntity<?> fabTrigger(String hid, FABAction actionId) {
+  public ResponseEntity<?> fabTrigger(String hid, String acceptLanguage, FABAction actionId) {
     UserContext uc =
       userContextRepository
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
 
+    putAcceptLanguage(acceptLanguage, uc);
+
     switch (actionId) {
       case CHAT:
-        uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class));
+        uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class, uc));
         break;
       case CALL_ME:
-        uc.startConversation(conversationFactory.createConversation(CallMeConversation.class));
+        uc.startConversation(conversationFactory.createConversation(CallMeConversation.class, uc));
         break;
       case REPORT_CLAIM:
-        uc.startConversation(conversationFactory.createConversation(ClaimsConversation.class));
+        uc.startConversation(conversationFactory.createConversation(ClaimsConversation.class, uc));
         break;
       case TRUSTLY:
         uc.startConversation(
-          conversationFactory.createConversation(TrustlyConversation.class),
+          conversationFactory.createConversation(TrustlyConversation.class, uc),
           TrustlyConversation.FORCED_START);
     }
 
@@ -120,5 +128,10 @@ public class MessagesService {
 
   private String createFabTriggerUrl(FABAction action) {
     return String.format(triggerUrl, action.name());
+  }
+
+  private void putAcceptLanguage(String acceptLanguage, UserContext uc) {
+    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
   }
 }

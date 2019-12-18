@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.hedvig.botService.chat.ClaimsConversation;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.hedvig.botService.chat.Conversation;
 import com.hedvig.botService.chat.ConversationFactory;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
@@ -34,9 +35,8 @@ import java.util.UUID;
 import static com.hedvig.botService.enteties.message.MessageHeader.HEDVIG_USER_ID;
 import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -62,6 +62,13 @@ public class SessionManagerTest {
 
   @Mock ClaimsService claimsService;
 
+  @Mock LocalizationService localizationService;
+
+  @Mock
+  TextKeysLocaleResolver localeResolver;
+
+  @Mock PhoneNumberUtil phoneNumberUtil;
+
   @Mock
   ApplicationEventPublisher applicationEventPublisher;
 
@@ -76,7 +83,8 @@ public class SessionManagerTest {
             memberService,
           conversationFactory,
             campaignCodeRepository,
-            objectMapper);
+            objectMapper,
+            localeResolver);
   }
 
   // FIXME
@@ -89,11 +97,13 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    when(conversationFactory.createConversation(anyString())).thenReturn(mockConversation);
+    when(conversationFactory.createConversation(anyString(), eq(tolvanssonUserContext))).thenReturn(mockConversation);
 
-    when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(true);
-    when(mockConversation.getSelectItemsForAnswer(tolvanssonUserContext))
+    when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(true);
+    when(mockConversation.getSelectItemsForAnswer())
         .thenReturn(Lists.newArrayList(SELECT_LINK));
+    when(mockConversation.getUserContext())
+        .thenReturn(tolvanssonUserContext);
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, false);
 
@@ -117,8 +127,8 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(false);
-    when(conversationFactory.createConversation(anyString())).thenReturn(mockConversation);
+    when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(false);
+    when(conversationFactory.createConversation(anyString(), eq(tolvanssonUserContext))).thenReturn(mockConversation);
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, false);
 
@@ -157,10 +167,12 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    when(conversationFactory.createConversation(any(Class.class)))
-        .thenReturn(makeOnboardingConversation());
+    val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
+    when(conversationFactory.createConversation(any(Class.class), any()))
+        .thenReturn(onboardingConversation);
+    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE());
 
-    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, null);
+    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID,  null, null);
 
     assertThat(Iterables.getLast(messages))
         .hasFieldOrPropertyWithValue(
@@ -176,18 +188,20 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
         .thenReturn(Optional.of(tolvanssonUserContext));
-    when(conversationFactory.createConversation(any(Class.class)))
-        .thenReturn(makeOnboardingConversation());
+    val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
+    when(conversationFactory.createConversation(any(Class.class), anyObject()))
+      .thenReturn(onboardingConversation);
     when(memberService.auth(TOLVANSSON_MEMBERID)).thenReturn(Optional.of(makeBankIdResponse()));
+    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE());
 
-    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, SessionManager.Intent.LOGIN);
+    val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, null, SessionManager.Intent.LOGIN);
 
     assertThat(Iterables.getLast(messages))
         .hasFieldOrPropertyWithValue("id", "message.start.login");
   }
 
-  private OnboardingConversationDevi makeOnboardingConversation() {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, "test", "test") ;
+  private OnboardingConversationDevi makeOnboardingConversation(UserContext userContext) {
+    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, userContext) ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {
