@@ -141,7 +141,7 @@ public class SessionManagerTest {
   public void givenForceSendMessageANDClaimsConversationThatCanNotAcceptMessage_WhenAddMessageFromHedvig_ThenAddMessageReturnFalse() {
 
     //Conversationfactory should return mocked conversation
-    when(conversationFactory.createConversation(anyString())).thenReturn(mockConversation);
+    when(conversationFactory.createConversation(anyString(),any())).thenReturn(mockConversation);
 
     //During test replace mockConversation with ClaimsConversation, this will force a call to conversation factory
     mockConversation = mock(ClaimsConversation.class);//, withSettings().defaultAnswer(CALLS_REAL_METHODS));
@@ -151,7 +151,7 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
       .thenReturn(Optional.of(tolvanssonUserContext));
-    when(mockConversation.canAcceptAnswerToQuestion(tolvanssonUserContext)).thenReturn(false);
+    when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(false);
 
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, true);
