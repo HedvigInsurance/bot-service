@@ -241,6 +241,7 @@ public class SessionManager {
 
     if(forceSendMessage){
       uc.completeConversation(activeConversation);
+      uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class, uc));
       activeConversation = getActiveConversationOrStart(uc, FreeChatConversation.class);
     }
     return activeConversation.addMessageFromBackOffice(msg, msgId, userId);
