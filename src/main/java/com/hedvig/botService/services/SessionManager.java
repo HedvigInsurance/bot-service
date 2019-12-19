@@ -239,7 +239,7 @@ public class SessionManager {
 
     Conversation activeConversation = getActiveConversationOrStart(uc, MainConversation.class);
 
-    if(forceSendMessage && ClaimsConversation.class.isInstance(activeConversation)){
+    if(forceSendMessage){
       uc.completeConversation(activeConversation);
       activeConversation = getActiveConversationOrStart(uc, FreeChatConversation.class);
     }

@@ -3,11 +3,8 @@ package com.hedvig.botService.services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.hedvig.botService.chat.ClaimsConversation;
+import com.hedvig.botService.chat.*;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.hedvig.botService.chat.Conversation;
-import com.hedvig.botService.chat.ConversationFactory;
-import com.hedvig.botService.chat.OnboardingConversationDevi;
 import com.hedvig.botService.enteties.TrackingDataRespository;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.UserContextRepository;
@@ -138,13 +135,12 @@ public class SessionManagerTest {
   }
 
   @Test
-  public void givenForceSendMessageANDClaimsConversationThatCanNotAcceptMessage_WhenAddMessageFromHedvig_ThenAddMessageReturnFalse() {
+  public void givenForceSendMessageANDConversationThatCanNotAcceptMessage_WhenAddMessageFromHedvig_ThenStartNewConversationReturnTrue() {
+
+    val mockFreeTextConversation  = mock(FreeChatConversation.class);
 
     //Conversationfactory should return mocked conversation
-    when(conversationFactory.createConversation(anyString(),any())).thenReturn(mockConversation);
-
-    //During test replace mockConversation with ClaimsConversation, this will force a call to conversation factory
-    mockConversation = mock(ClaimsConversation.class);//, withSettings().defaultAnswer(CALLS_REAL_METHODS));
+    when(conversationFactory.createConversation(anyString(),any())).thenReturn(mockConversation, mockFreeTextConversation);
 
     val tolvanssonUserContext = makeTolvanssonUserContext();
     startMockConversation(tolvanssonUserContext);
@@ -152,12 +148,13 @@ public class SessionManagerTest {
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
       .thenReturn(Optional.of(tolvanssonUserContext));
     when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(false);
+    when(mockFreeTextConversation.addMessageFromBackOffice(anyString(),anyString(),anyString())).thenReturn(true);
 
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, true);
     val messageCouldBeAdded = sessionManager.addMessageFromHedvig(requestDTO);
 
-    assertThat(messageCouldBeAdded).isFalse();
+    assertThat(messageCouldBeAdded).isTrue();
   }
 
   @Test
