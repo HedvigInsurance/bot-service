@@ -148,6 +148,8 @@ public class SessionManagerTest {
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
       .thenReturn(Optional.of(tolvanssonUserContext));
     when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(false);
+    when(conversationFactory.createConversation(any(Class.class), any()))
+      .thenReturn(mock(FreeChatConversation.class));
     when(mockFreeTextConversation.addMessageFromBackOffice(anyString(),anyString(),anyString())).thenReturn(true);
 
 
