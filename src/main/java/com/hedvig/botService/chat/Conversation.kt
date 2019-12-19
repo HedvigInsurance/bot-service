@@ -9,9 +9,10 @@ import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.MessageSentEvent
-import org.springframework.context.ApplicationEventPublisher
 import org.slf4j.LoggerFactory
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.jwt.JwtHelper
+import org.springframework.stereotype.Component
 import java.io.IOException
 import java.lang.Long.valueOf
 import java.util.*
@@ -21,6 +22,7 @@ typealias SelectItemMessageCallback = (MessageBodySingleSelect, UserContext) -> 
 typealias GenericMessageCallback = (Message, UserContext) -> String
 typealias AddMessageCallback = (UserContext) -> Unit
 
+@Component
 abstract class Conversation(
   open var eventPublisher: ApplicationEventPublisher,
   val localizationService: LocalizationService,
@@ -229,6 +231,7 @@ abstract class Conversation(
     }
   }
 
+
   open fun receiveEvent(e: EventTypes, value: String) {}
 
   abstract fun init()
@@ -257,17 +260,13 @@ abstract class Conversation(
     val text = localizationService.getText(userContext.locale, id) ?: body.text
     val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
-
     val msgs = ArrayList<String>()
 
     for (i in 0 until paragraphs.size - 1) {
       val s = paragraphs[i]
       val s1 = if (i == 0) id else String.format(CHAT_ID_FORMAT, id, pId++)
       val s2 = String.format(CHAT_ID_FORMAT, id, pId++)
-      // log.info("Create message of size "+(s.length())+" with load time:" +
-      // (s.length()*delayFactor));
-      // createMessage(s1, new MessageBodyParagraph(""), "h_symbol",(s.length()*delayFactor));
-      // createMessage(s1, new MessageBodyParagraph(""),(s.length()*delayFactor));
+
       createMessage(s2, body = MessageBodyParagraph(s))
 
       // if(i==0){
@@ -308,6 +307,7 @@ abstract class Conversation(
     msg.author = getUserId(userId)
 
     userContext.memberChat.addToHistory(msg)
+
 
     if (eventPublisher != null) {
       eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, msg))
