@@ -94,6 +94,14 @@ public class StatusBuilderImpl implements StatusBuilder {
     )
   );
 
+  private static LocalDate christmasStartDate = LocalDate.parse("2019-12-22");
+  private static LocalDate christmasEndDate = LocalDate.parse("2020-01-07");
+
+  private static ArrayList<LocalDate> christmasRedDays = new ArrayList<>(Arrays.asList(
+    LocalDate.parse("2019-12-24"), LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26"),
+    LocalDate.parse("2019-12-31"), LocalDate.parse("2020-01-01")
+  ));
+
   final private LocalDate midsommarStartDate = LocalDate.parse("2019-06-20");
   final private LocalDate midsommarEndDate = LocalDate.parse("2019-06-21");
 
@@ -110,8 +118,25 @@ public class StatusBuilderImpl implements StatusBuilder {
     return "Hedvig svarar inom " + timeToAnswer + " min";
   }
 
-  public String getRedDayAndWeekendAnswerTimes(int hour) {
+  public String getChristmasPeriodAnswerTimes(int hour, LocalDate date) {
+    if (hour <= 2) {
+      return "Hedvig svarar imorgon";
+    }
+    if (hour < 10) {
+      return "Hedvig svarar efter kl. 10";
+    }
+    if (hour < 17) {
+      return christmasRedDays.contains(date) ? "Hedvig svarar inom en halvtimme": "Hedvig svarar inom 10 min";
+    }
+    if (hour < 20) {
+      return christmasRedDays.contains(date) ? "Hedvig svarar inom en halvtimme": "Hedvig svarar inom 20 min";
+    }
+    else {
+      return "Hedvig svarar imorgon";
+    }
+  }
 
+  public String getRedDayAndWeekendAnswerTimes(int hour) {
     if (hour <= 2) {
       return "Hedvig svarar imorgon";
     } else if (hour < 9) {
@@ -204,6 +229,10 @@ public class StatusBuilderImpl implements StatusBuilder {
     final int hour = time.getHour();
     final int minute = time.getMinute();
     final LocalDate todayDate = LocalDate.now();
+
+    if(todayDate.isAfter(christmasStartDate) && todayDate.isBefore(christmasEndDate)) {
+      return getChristmasPeriodAnswerTimes(hour, todayDate);
+    }
 
     if ((todayDate.equals(midsommarStartDate) && hour >= 23) || (todayDate.equals(midsommarEndDate))) {
       return "Hedvig svarar den 22e juni";
