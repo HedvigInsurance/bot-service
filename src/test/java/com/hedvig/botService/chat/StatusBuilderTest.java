@@ -45,6 +45,17 @@ public class StatusBuilderTest {
   }
 
   @Test
+  public void christmasAnsweringTimesToBeAsExcepted() {
+    assertEquals("Hedvig svarar inom 10 min", builder.getChristmasPeriodAnswerTimes(10, LocalDate.parse("2019-12-23")));
+    assertEquals("Hedvig svarar efter kl. 10", builder.getChristmasPeriodAnswerTimes(8, LocalDate.parse("2019-12-23")));
+    assertEquals("Hedvig svarar imorgon", builder.getChristmasPeriodAnswerTimes(20, LocalDate.parse("2019-12-23")));
+    assertEquals("Hedvig svarar inom 10 min", builder.getChristmasPeriodAnswerTimes(16, LocalDate.parse("2019-12-23")));
+    assertEquals("Hedvig svarar inom en halvtimme", builder.getChristmasPeriodAnswerTimes(16, LocalDate.parse("2019-12-26")));
+    assertEquals("Hedvig svarar inom 20 min", builder.getChristmasPeriodAnswerTimes(18, LocalDate.parse("2019-12-23")));
+    assertEquals("Hedvig svarar inom en halvtimme", builder.getChristmasPeriodAnswerTimes(18, LocalDate.parse("2019-12-26")));
+  }
+
+  @Test
   public void summerWaitingTimesToBeAsExpected() {
     assertEquals("Hedvig svarar inom 15 min", builder.getSummerWeekdayAnswerTimes(12,30, LocalDate.parse("2019-07-04")));
     assertEquals("Hedvig svarar inom 5 min", builder.getSummerWeekdayAnswerTimes(11, 45, LocalDate.parse("2019-07-05")));
