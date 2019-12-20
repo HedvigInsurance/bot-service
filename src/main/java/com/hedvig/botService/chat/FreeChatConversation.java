@@ -24,7 +24,7 @@ import java.util.Locale;
 public class FreeChatConversation extends Conversation {
 
   public static final String FREE_CHAT_START = "free.chat.start";
-  private static final String FREE_CHAT_MESSAGE = "free.chat.message";
+  public static final String FREE_CHAT_MESSAGE = "free.chat.message";
   public static final String FREE_CHAT_FROM_BO = "free.chat.from.bo";
   public static final String FREE_CHAT_FROM_CLAIM = "free.chat.from.claim";
   public static final String FREE_CHAT_ONBOARDING_START = "free.chat.onboarding.start";

@@ -7,6 +7,7 @@ public class BackOfficeInputMessageDTO {
   String userId;
   String memberId;
   String msg;
+  boolean forceSendMessage = false;
 
   public BackOfficeInputMessageDTO() {
     super ();

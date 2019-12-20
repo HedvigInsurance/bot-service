@@ -35,7 +35,7 @@ class OnboardingConversationDevi
 constructor(
     private val memberService: MemberService,
     private val productPricingService: ProductPricingService,
-    override var eventPublisher: ApplicationEventPublisher,
+    eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
     localizationService: LocalizationService,
     @Value("\${hedvig.appleUser.email}")

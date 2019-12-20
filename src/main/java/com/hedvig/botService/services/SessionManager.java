@@ -223,26 +223,33 @@ public class SessionManager {
   }
 
   public boolean addAnswerFromHedvig(BackOfficeAnswerDTO backOfficeAnswer) {
-    return addMessage(backOfficeAnswer.getMemberId(), backOfficeAnswer.getUserId(), backOfficeAnswer.getMsg(), BackOfficeAnswerDTO.MESSAGE_ID);
+    return addMessage(backOfficeAnswer.getMemberId(), backOfficeAnswer.getUserId(), backOfficeAnswer.getMsg(),backOfficeAnswer.isForceSendMessage() , BackOfficeAnswerDTO.MESSAGE_ID);
   }
 
   public boolean addMessageFromHedvig(AddMessageRequestDTO backOfficeMessage) {
-    return addMessage(backOfficeMessage.getMemberId(), backOfficeMessage.getUserId(), backOfficeMessage.getMsg(), AddMessageRequestDTO.MESSAGE_ID);
+    return addMessage(backOfficeMessage.getMemberId(), backOfficeMessage.getUserId(), backOfficeMessage.getMsg(), backOfficeMessage.isForceSendMessage() , AddMessageRequestDTO.MESSAGE_ID);
   }
 
-  private boolean addMessage(String memberId, String userId, String msg, String msgId) {
+  private boolean addMessage(String memberId, String userId, String msg, boolean forceSendMessage, String msgId) {
     UserContext uc =
       userContextRepository
         .findByMemberId(memberId)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
 
+
     Conversation activeConversation = getActiveConversationOrStart(uc, MainConversation.class);
+
+    if(forceSendMessage){
+      uc.completeConversation(activeConversation);
+      uc.startConversation(conversationFactory.createConversation(FreeChatConversation.class, uc), FreeChatConversation.FREE_CHAT_MESSAGE);
+      activeConversation = getActiveConversationOrStart(uc, FreeChatConversation.class);
+    }
     return activeConversation.addMessageFromBackOffice(msg, msgId, userId);
 
   }
 
   private Conversation getActiveConversationOrStart(
-    UserContext uc, Class<MainConversation> conversationToStart) {
+    UserContext uc, Class<?> conversationToStart) {
     return uc.getActiveConversation()
       .map(x -> conversationFactory.createConversation(x.getClassName(), uc))
       .orElseGet(
