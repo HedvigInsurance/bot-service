@@ -99,7 +99,7 @@ public class StatusBuilderImpl implements StatusBuilder {
 
   private static ArrayList<LocalDate> christmasRedDays = new ArrayList<>(Arrays.asList(
     LocalDate.parse("2019-12-24"), LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26"),
-    LocalDate.parse("2019-12-31"), LocalDate.parse("2020-01-01")
+    LocalDate.parse("2019-12-31"), LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-06")
   ));
 
   final private LocalDate midsommarStartDate = LocalDate.parse("2019-06-20");
