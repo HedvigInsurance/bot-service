@@ -6,13 +6,17 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.junit.Before;
 
 import java.time.LocalDate;
+import java.util.Calendar;
 
 import static junit.framework.TestCase.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class StatusBuilderTest {
 
+  private static int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
   private StatusBuilderImpl builder;
+
   @Before
   public void before() {
     builder = new StatusBuilderImpl();
@@ -30,16 +34,16 @@ public class StatusBuilderTest {
 
   @Test
   public void summerTimeShouldReturnFalseIfNotSummer() {
-    boolean resFalse1 = builder.isSummerTime(LocalDate.parse("2019-06-12"));
-    boolean resFalse2 = builder.isSummerTime(LocalDate.parse("2019-08-20"));
+    boolean resFalse1 = builder.isSummerTime(LocalDate.of(currentYear, 6, 12));
+    boolean resFalse2 = builder.isSummerTime(LocalDate.of(currentYear, 8, 20));
     assertFalse(resFalse1);
     assertFalse(resFalse2);
   }
 
   @Test
   public void summerTimeShouldReturnTrueIfSummer() {
-    boolean resTrue1 = builder.isSummerTime(LocalDate.parse("2019-06-21"));
-    boolean resTrue2 = builder.isSummerTime(LocalDate.parse("2019-08-11"));
+    boolean resTrue1 = builder.isSummerTime(LocalDate.of(currentYear, 6, 21));
+    boolean resTrue2 = builder.isSummerTime(LocalDate.of(currentYear, 8, 11));
     assertTrue(resTrue1);
     assertTrue(resTrue2);
   }
@@ -64,8 +68,8 @@ public class StatusBuilderTest {
 
   @Test
   public void summerWeekendTimesWithCoverToBeAsExpected() {
-    assertEquals("Hedvig svarar inom en timme", builder.getSummerWeekendTimes(12, LocalDate.parse("2019-06-22")));
-    assertEquals("Hedvig svarar imorgon", builder.getSummerWeekendTimes(18, LocalDate.parse("2019-06-22")));
+    assertEquals("Hedvig svarar inom en timme", builder.getSummerWeekendTimes(12, LocalDate.of(currentYear, 6, 22)));
+    assertEquals("Hedvig svarar imorgon", builder.getSummerWeekendTimes(18, LocalDate.of(currentYear, 6, 22)));
   }
 
   @Test
