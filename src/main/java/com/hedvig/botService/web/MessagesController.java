@@ -3,6 +3,7 @@ package com.hedvig.botService.web;
 import static java.lang.Long.valueOf;
 
 import com.hedvig.botService.enteties.message.Message;
+import com.hedvig.botService.enteties.message.MessageBodyText;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.AvatarDTO;
 import com.hedvig.botService.web.dto.EventDTO;
@@ -106,8 +107,11 @@ public class MessagesController {
       msg.body.text = msg.body.text.trim();
     }
 
-    if ((msg.body.text != null && !msg.body.text.isEmpty()) ||
-      (msg.body.imageURL != null && !msg.body.imageURL.isEmpty())) {
+    if (msg.body instanceof MessageBodyText) {
+      if (msg.body.text != null && !msg.body.text.isEmpty()) {
+        sessionManager.receiveMessage(msg, hid);
+      }
+    } else {
       sessionManager.receiveMessage(msg, hid);
     }
 
