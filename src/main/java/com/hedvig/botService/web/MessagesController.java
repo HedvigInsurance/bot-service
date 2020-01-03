@@ -3,7 +3,6 @@ package com.hedvig.botService.web;
 import static java.lang.Long.valueOf;
 
 import com.hedvig.botService.enteties.message.Message;
-import com.hedvig.botService.enteties.message.MessageBodyNumber;
 import com.hedvig.botService.enteties.message.MessageBodyText;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.AvatarDTO;
