@@ -106,7 +106,8 @@ public class MessagesController {
       msg.body.text = msg.body.text.trim();
     }
 
-    if (msg.body.text != null && !msg.body.text.isEmpty()) {
+    if ((msg.body.text != null && !msg.body.text.isEmpty()) ||
+      (msg.body.imageURL != null && !msg.body.imageURL.isEmpty())) {
       sessionManager.receiveMessage(msg, hid);
     }
 
