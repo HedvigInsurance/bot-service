@@ -107,13 +107,7 @@ public class MessagesController {
       msg.body.text = msg.body.text.trim();
     }
 
-    if (msg.body instanceof MessageBodyText) {
-      if (msg.body.text != null && !msg.body.text.isEmpty()) {
-        sessionManager.receiveMessage(msg, hid);
-      }
-    } else {
-      sessionManager.receiveMessage(msg, hid);
-    }
+    sessionManager.receiveMessage(msg, hid);
 
     return ResponseEntity.noContent().build();
   }
