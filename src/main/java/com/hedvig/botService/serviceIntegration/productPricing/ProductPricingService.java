@@ -2,7 +2,13 @@ package com.hedvig.botService.serviceIntegration.productPricing;
 
 import com.hedvig.botService.chat.OnboardingConversationDevi;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
-import com.hedvig.botService.serviceIntegration.productPricing.dto.*;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.Address;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.AppleInitializationRequest;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.CalculateQuoteRequest;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.Created;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuilding;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.SafetyIncreaserType;
 import com.hedvig.botService.web.dto.InsuranceStatusDTO;
 import feign.FeignException;
 import org.slf4j.Logger;
@@ -106,18 +112,6 @@ public class ProductPricingService {
 
     Created result = this.productPricingClient.createQuote(request).getBody();
     return result.id;
-  }
-
-  public void quoteAccepted(String hid) {
-    this.productPricingClient.quoteAccepted(hid);
-  }
-
-  public void contractSigned(String memberId, String referenceToken) {
-    this.productPricingClient.contractSigned(new ContractSignedRequest(memberId, referenceToken));
-  }
-
-  public void setInsuranceStatus(String hid, String status) {
-    this.productPricingClient.setInsuranceStatus(hid, status);
   }
 
   public String getInsuranceStatus(String hid) {

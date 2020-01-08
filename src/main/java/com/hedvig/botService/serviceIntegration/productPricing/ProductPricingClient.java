@@ -23,10 +23,6 @@ public interface ProductPricingClient {
   ResponseEntity<?> setInsuranceStatus(
       @PathVariable("user_id") String userId, @PathVariable("status") String status);
 
-  // @RequestMapping(value = "/insurance/member_id/", method = RequestMethod.POST, produces =
-  // "application/json")
-  // ResponseEntity<?> createProduct(@RequestBody CalculateQuoteRequest request);
-
   @RequestMapping(
       value = "/createProduct",
       method = RequestMethod.POST,
