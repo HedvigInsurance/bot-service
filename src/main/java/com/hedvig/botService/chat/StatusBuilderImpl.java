@@ -137,11 +137,17 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   public String getRedDayAndWeekendAnswerTimes(int hour) {
+
+    final LocalDate noCoverDate = LocalDate.parse("2020-01-11");
+
     if (hour <= 2) {
       return "Hedvig svarar imorgon";
     } else if (hour < 9) {
       return "Hedvig svarar efter kl. 9";
     } else if (hour < 22) {
+      if(LocalDate.now().equals(noCoverDate) && hour > 18) {
+        return "Hedvig svarar imorgon";
+      }
       return "Hedvig svarar inom en timme";
     }
     else {
