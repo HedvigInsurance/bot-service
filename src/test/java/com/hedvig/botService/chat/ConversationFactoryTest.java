@@ -24,7 +24,6 @@ import java.util.Collection;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
 
 @RunWith(Parameterized.class)
 public class ConversationFactoryTest {

@@ -19,8 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.hedvig.botService.testHelpers.TestData.*;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

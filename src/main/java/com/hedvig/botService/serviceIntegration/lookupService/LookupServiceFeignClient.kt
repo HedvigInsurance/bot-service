@@ -3,7 +3,8 @@ package com.hedvig.botService.serviceIntegration.lookupService
 import com.hedvig.botService.config.LookupFeignConfiguration
 import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
 import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateResponse
-import org.springframework.cloud.netflix.feign.FeignClient
+import org.springframework.cloud.openfeign.FeignClient
+
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping

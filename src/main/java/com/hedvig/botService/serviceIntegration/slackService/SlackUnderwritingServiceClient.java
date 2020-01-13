@@ -3,7 +3,7 @@ package com.hedvig.botService.serviceIntegration.slackService;
 import com.hedvig.botService.config.FeignConfiguration;
 import com.hedvig.botService.serviceIntegration.slackService.dto.SlackData;
 import feign.Headers;
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

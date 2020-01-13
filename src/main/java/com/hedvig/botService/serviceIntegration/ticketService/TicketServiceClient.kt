@@ -1,7 +1,7 @@
 package com.hedvig.botService.serviceIntegration.ticketService
 
 import com.hedvig.botService.serviceIntegration.ticketService.dto.CreateCallMeTicketDto
-import org.springframework.cloud.netflix.feign.FeignClient
+import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 

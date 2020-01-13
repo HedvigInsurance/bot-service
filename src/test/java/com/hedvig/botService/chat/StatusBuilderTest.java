@@ -2,8 +2,8 @@ package com.hedvig.botService.chat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.junit.Before;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.util.Calendar;

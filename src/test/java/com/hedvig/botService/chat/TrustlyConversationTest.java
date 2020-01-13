@@ -1,7 +1,6 @@
 package com.hedvig.botService.chat;
 
 import static com.hedvig.botService.chat.TrustlyConversation.START;
-import static com.hedvig.botService.enteties.UserContext.TRUSTLY_FORCED_START;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_EMAIL;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_FIRSTNAME;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_LASTNAME;
@@ -9,11 +8,7 @@ import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_SSN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
 
-import com.hedvig.botService.enteties.DirectDebitMandateTrigger.TriggerStatus;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.message.MessageBodySingleSelect;
@@ -26,7 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -89,15 +84,6 @@ public class TrustlyConversationTest {
     ((MessageBodySingleSelect) message.body).choices.get(0).selected = true;
 
     addTolvansonToUserContext();
-
-    given(
-            triggerService.createTrustlyDirectDebitMandate(
-                TOLVANSSON_SSN,
-                TOLVANSSON_FIRSTNAME,
-                TOLVANSSON_LASTNAME,
-                TOLVANSSON_EMAIL,
-                TOLVANSSON_MEMBER_ID))
-        .willReturn(TRIGGER_UUID);
 
     testConversation.receiveMessage(message);
 

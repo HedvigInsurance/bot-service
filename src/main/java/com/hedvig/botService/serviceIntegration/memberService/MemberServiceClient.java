@@ -3,7 +3,8 @@ package com.hedvig.botService.serviceIntegration.memberService;
 import com.hedvig.botService.serviceIntegration.memberService.dto.*;
 import com.hedvig.botService.web.dto.Member;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

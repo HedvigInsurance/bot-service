@@ -6,9 +6,9 @@ import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PRODUCT_TYPE;
 import static org.mockito.AdditionalMatchers.and;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.contains;
 
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.cloud.aws.messaging.core.NotificationMessagingTemplate;
 
 @RunWith(MockitoJUnitRunner.class)

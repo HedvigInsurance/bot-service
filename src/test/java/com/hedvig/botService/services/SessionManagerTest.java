@@ -32,8 +32,8 @@ import java.util.UUID;
 import static com.hedvig.botService.enteties.message.MessageHeader.HEDVIG_USER_ID;
 import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -147,10 +147,10 @@ public class SessionManagerTest {
 
     when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
       .thenReturn(Optional.of(tolvanssonUserContext));
-    when(mockConversation.canAcceptAnswerToQuestion()).thenReturn(false);
+
     when(conversationFactory.createConversation(any(Class.class), any()))
-      .thenReturn(mock(FreeChatConversation.class));
-    when(mockFreeTextConversation.addMessageFromBackOffice(anyString(),anyString(),anyString())).thenReturn(true);
+      .thenReturn(mockFreeTextConversation);
+    when(mockFreeTextConversation.addMessageFromBackOffice(anyString(),anyString(),any())).thenReturn(true);
 
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, true);

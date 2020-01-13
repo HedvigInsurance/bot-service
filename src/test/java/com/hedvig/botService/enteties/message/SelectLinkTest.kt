@@ -1,15 +1,12 @@
 package com.hedvig.botService.enteties.message
 
 import com.hedvig.botService.enteties.UserContext
-import com.hedvig.botService.serviceIntegration.localization.LocalizationClient
 import com.hedvig.botService.services.LocalizationService
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.runners.MockitoJUnitRunner
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.mock.mockito.MockBean
+import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class SelectLinkTest {

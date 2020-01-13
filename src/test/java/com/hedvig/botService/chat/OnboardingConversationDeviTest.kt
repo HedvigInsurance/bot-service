@@ -32,7 +32,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.then
 import org.mockito.Mock
 import org.mockito.Mockito.times
-import org.mockito.runners.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalDate
 

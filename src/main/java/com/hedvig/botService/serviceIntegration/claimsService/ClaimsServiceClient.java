@@ -3,7 +3,7 @@ package com.hedvig.botService.serviceIntegration.claimsService;
 import com.hedvig.botService.serviceIntegration.claimsService.dto.ActiveClaimsDTO;
 import com.hedvig.botService.serviceIntegration.claimsService.dto.ClaimFileFromAppDTO;
 import com.hedvig.botService.serviceIntegration.claimsService.dto.StartClaimAudioDTO;
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

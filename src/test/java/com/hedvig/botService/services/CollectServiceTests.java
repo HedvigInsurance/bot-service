@@ -17,10 +17,15 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdCollectR
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdProgressStatus;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusType;
 import feign.FeignException;
+
+import java.nio.charset.Charset;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
+
+import feign.Request;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -272,6 +277,7 @@ public class CollectServiceTests {
                 .status(500)
                 .headers(new HashMap<>())
                 .body("".getBytes())
+                .request(Request.create("GET", "", new HashMap<>(), new byte[0], Charset.defaultCharset()))
                 .build());
     when(memberService.collect(referenceToken, memberId)).thenThrow(ex);
 
@@ -363,6 +369,7 @@ public class CollectServiceTests {
                 .status(500)
                 .headers(new HashMap<>())
                 .body("".getBytes())
+                .request(Request.create("GET", "", new HashMap<>(), new byte[0], Charset.defaultCharset()))
                 .build());
     when(memberService.collect(referenceToken, memberId)).thenThrow(ex);
 

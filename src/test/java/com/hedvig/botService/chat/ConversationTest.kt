@@ -13,12 +13,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.BDDMockito.*
-import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
 import org.mockito.Mockito.`when`
 import java.util.*
 
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(org.mockito.junit.MockitoJUnitRunner::class)
 class ConversationTest {
   private lateinit var sut: Conversation
 
