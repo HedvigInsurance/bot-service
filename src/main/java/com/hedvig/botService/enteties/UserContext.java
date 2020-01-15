@@ -194,6 +194,7 @@ public class UserContext implements Serializable {
     return null;
   }
 
+  @NotNull
   public UserData getOnBoardingData() {
     return new UserData(this);
   }

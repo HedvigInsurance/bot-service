@@ -16,6 +16,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusType;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
 import lombok.val;
 import org.junit.Before;
@@ -60,6 +61,8 @@ public class SessionManagerTest {
   @Mock ClaimsService claimsService;
 
   @Mock LocalizationService localizationService;
+
+  @Mock Underwriter underwriter;
 
   @Mock
   TextKeysLocaleResolver localeResolver;
@@ -200,7 +203,7 @@ public class SessionManagerTest {
   }
 
   private OnboardingConversationDevi makeOnboardingConversation(UserContext userContext) {
-    return new OnboardingConversationDevi(memberService, productPricingService, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, userContext) ;
+    return new OnboardingConversationDevi(memberService, productPricingService, underwriter, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, userContext) ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Headers("Accept: application/xml")
-@Profile("!test")
+@Profile("slack")
 @FeignClient(
   name = "SlackServiceClient",
   url = "${hedvig.slack.url}",

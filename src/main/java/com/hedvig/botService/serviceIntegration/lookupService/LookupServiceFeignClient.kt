@@ -1,6 +1,5 @@
 package com.hedvig.botService.serviceIntegration.lookupService
 
-import com.hedvig.botService.config.LookupFeignConfiguration
 import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
 import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateResponse
 import org.springframework.cloud.openfeign.FeignClient
