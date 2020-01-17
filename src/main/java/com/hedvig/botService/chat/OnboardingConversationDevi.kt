@@ -1365,7 +1365,6 @@ constructor(
 
     private fun completeOnboarding() {
         underwriter.createQuote(userContext)
-        userContext.onBoardingData.productId = productId
         this.memberService.finalizeOnBoarding(
             userContext.memberId, userContext.onBoardingData
         )

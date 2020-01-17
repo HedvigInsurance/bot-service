@@ -158,8 +158,6 @@ class ConversationTest {
     val key = "key1"
     val text = "Test1"
 
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
-
     sut.createChatMessage(key, MessageBody(text))
 
     assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
@@ -170,8 +168,6 @@ class ConversationTest {
   fun conversationMessageSpitAndConversationUtils_whitOneFirstSplit() {
     val key = "key1"
     val text = "\u000CTest1"
-
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
 
     sut.createChatMessage(key, MessageBody(text))
 
@@ -193,8 +189,6 @@ class ConversationTest {
     val key = "key1"
     val text = "Test1\u000CTest2"
 
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
-
     sut.createChatMessage(key, MessageBody(text))
 
     assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
@@ -214,8 +208,6 @@ class ConversationTest {
   fun conversationMessageSpitAndConversationUtils_whitTwoSplit() {
     val key = "key1"
     val text = "Test1\u000CTest2\u000CTest3"
-
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
 
     sut.createChatMessage(key, MessageBody(text))
 

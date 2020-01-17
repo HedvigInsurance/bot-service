@@ -29,7 +29,7 @@ public class UserData {
   public static final String KVM = "{KVM}";
   public static final String SSN = "{SSN}";
   public static final String INSURANCE_COMPANY_TODAY = "{INSURANCE_COMPANY_TODAY}";
-  public static final String PRODUCT_ID = "{PRODUCT_ID}";
+  public static final String PRODUCT_ID = "{PRODUCT_ID}"; //Used a one place for backwards compatibility
   public static final String USER_HAS_SIGNED = "{USER_HAS_SIGNED}";
   public static final String USER_AUTHED_BANKID = "USER_AUTHED_BANKID";
   public static final String IS_STUDENT = "{STUDENT}";
@@ -203,14 +203,6 @@ public class UserData {
     return ctx.getDataEntry(ADDRESS_ZIP);
   }
 
-  public String getProductId() {
-    return ctx.getDataEntry(PRODUCT_ID);
-  }
-
-  public void setProductId(String productId) {
-    ctx.putUserData(PRODUCT_ID, productId);
-  }
-
   public Boolean getUserHasSigned() {
     String value = ctx.getDataEntry(USER_HAS_SIGNED);
     if (value == null) {
@@ -223,10 +215,6 @@ public class UserData {
     ctx.putUserData(USER_HAS_SIGNED, Objects.toString(b));
   }
 
-  public boolean userHasAuthedWithBankId(String referenceId) {
-    String b = ctx.getDataEntry(USER_AUTHED_BANKID);
-    return b != null && b.equals(referenceId);
-  }
 
   public void setBankIdMessage(String bankIdMessage) {
     ctx.putUserData(BANK_ID_MESSAGE, bankIdMessage);

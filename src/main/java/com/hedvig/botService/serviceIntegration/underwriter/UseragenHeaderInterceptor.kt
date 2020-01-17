@@ -12,7 +12,7 @@ class UserAgentHeaderInterceptor : RequestInterceptor {
     private val userAgentHeader = "User-Agent"
     override fun apply(template: RequestTemplate?) {
         val requestAttributes =
-            RequestContextHolder.getRequestAttributes() as ServletRequestAttributes
+            RequestContextHolder.getRequestAttributes() as ServletRequestAttributes? ?: return
         val request = requestAttributes.request
         val language = request.getHeader(userAgentHeader) ?: return
         template?.header(userAgentHeader, language)
