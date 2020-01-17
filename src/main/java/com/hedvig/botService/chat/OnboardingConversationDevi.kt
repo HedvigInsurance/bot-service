@@ -2,16 +2,31 @@ package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
 import com.google.i18n.phonenumbers.PhoneNumberUtil
-
-import com.hedvig.botService.utils.ssnLookupAndStore
-import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
 import com.hedvig.botService.chat.MainConversation.Companion.MESSAGE_HEDVIG_COM_POST_LOGIN
 import com.hedvig.botService.chat.house.HouseConversationConstants
 import com.hedvig.botService.chat.house.HouseOnboardingConversation
 import com.hedvig.botService.config.SwitchableInsurers
-import com.hedvig.botService.dataTypes.*
+import com.hedvig.botService.dataTypes.EmailAdress
+import com.hedvig.botService.dataTypes.HouseholdMemberNumber
+import com.hedvig.botService.dataTypes.LivingSpaceSquareMeters
+import com.hedvig.botService.dataTypes.SSNSweden
+import com.hedvig.botService.dataTypes.TextInput
+import com.hedvig.botService.dataTypes.ZipCodeSweden
 import com.hedvig.botService.enteties.UserContext
-import com.hedvig.botService.enteties.message.*
+import com.hedvig.botService.enteties.message.KeyboardType
+import com.hedvig.botService.enteties.message.Message
+import com.hedvig.botService.enteties.message.MessageBody
+import com.hedvig.botService.enteties.message.MessageBodyBankIdCollect
+import com.hedvig.botService.enteties.message.MessageBodyMultipleSelect
+import com.hedvig.botService.enteties.message.MessageBodyNumber
+import com.hedvig.botService.enteties.message.MessageBodyParagraph
+import com.hedvig.botService.enteties.message.MessageBodySingleSelect
+import com.hedvig.botService.enteties.message.MessageBodyText
+import com.hedvig.botService.enteties.message.MessageHeader
+import com.hedvig.botService.enteties.message.SelectItem
+import com.hedvig.botService.enteties.message.SelectLink
+import com.hedvig.botService.enteties.message.SelectOption
+import com.hedvig.botService.enteties.message.TextContentType
 import com.hedvig.botService.enteties.userContextHelpers.UserData
 import com.hedvig.botService.enteties.userContextHelpers.UserData.IS_STUDENT
 import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
@@ -19,22 +34,30 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
+import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
+import com.hedvig.botService.serviceIntegration.underwriter.UnderwriterClient
 import com.hedvig.botService.services.LocalizationService
-import com.hedvig.botService.services.events.*
+import com.hedvig.botService.services.events.MemberSignedEvent
+import com.hedvig.botService.services.events.OnboardingCallForQuoteEvent
+import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent
+import com.hedvig.botService.services.events.RequestObjectInsuranceEvent
+import com.hedvig.botService.services.events.RequestStudentObjectInsuranceEvent
+import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
 import com.hedvig.botService.utils.ConversationUtils
+import com.hedvig.botService.utils.ssnLookupAndStore
+import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
 import java.nio.charset.Charset
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.chrono.ChronoLocalDate
-import java.util.*
+import java.util.ArrayList
 
 class OnboardingConversationDevi
 constructor(
     private val memberService: MemberService,
     private val productPricingService: ProductPricingService,
+    private val underwriter: Underwriter,
     eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
     localizationService: LocalizationService,
@@ -1341,10 +1364,7 @@ constructor(
     }
 
     private fun completeOnboarding() {
-        val productId = this.productPricingService.createProduct(
-            userContext.memberId, userContext.onBoardingData
-        )
-        userContext.onBoardingData.productId = productId
+        underwriter.createQuote(userContext)
         this.memberService.finalizeOnBoarding(
             userContext.memberId, userContext.onBoardingData
         )

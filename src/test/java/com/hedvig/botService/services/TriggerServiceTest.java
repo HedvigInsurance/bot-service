@@ -15,6 +15,8 @@ import com.hedvig.botService.serviceIntegration.paymentService.dto.OrderState;
 import com.hedvig.botService.services.exceptions.UnauthorizedException;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import com.hedvig.botService.services.triggerService.dto.CreateDirectDebitMandateDTO;
+
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.Before;
 import org.junit.Rule;
@@ -24,7 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TriggerServiceTest {
@@ -53,8 +55,9 @@ public class TriggerServiceTest {
     given(repo.save(any(DirectDebitMandateTrigger.class)))
         .will(
             x -> {
-              x.getArgumentAt(0, DirectDebitMandateTrigger.class).setId(generatedTriggerId);
-              return x;
+              DirectDebitMandateTrigger trigger = (DirectDebitMandateTrigger) x.getArgument(0);
+              trigger.setId(generatedTriggerId);
+              return trigger;
             });
   }
 
@@ -100,7 +103,7 @@ public class TriggerServiceTest {
 
     DirectDebitMandateTrigger ddm =
         createDirectDebitMandateTrigger(triggerId, null, TOLVANSSON_MEMBERID);
-    given(repo.findOne(triggerId)).willReturn(ddm);
+    given(repo.findById(triggerId)).willReturn(Optional.of(ddm));
 
     given(
             pService.registerTrustlyDirectDebit(
@@ -130,7 +133,7 @@ public class TriggerServiceTest {
     DirectDebitMandateTrigger ddm =
         createDirectDebitMandateTrigger(triggerId, TRIGGER_URL, TOLVANSSON_MEMBERID);
 
-    given(repo.findOne(triggerId)).willReturn(ddm);
+    given(repo.findById(triggerId)).willReturn(Optional.of(ddm));
 
     // act
     final String actualTriggerUrl = sut.getTriggerUrl(triggerId, TOLVANSSON_MEMBERID);
@@ -146,7 +149,7 @@ public class TriggerServiceTest {
 
     DirectDebitMandateTrigger ddm =
         createDirectDebitMandateTrigger(TRIGGER_ID, TRIGGER_URL, TOLVANSSON_MEMBERID);
-    given(repo.findOne(TRIGGER_ID)).willReturn(ddm);
+    given(repo.findById(TRIGGER_ID)).willReturn(Optional.of(ddm));
 
     // act
     thrown.expect(UnauthorizedException.class);
@@ -162,7 +165,7 @@ public class TriggerServiceTest {
 
     DirectDebitMandateTrigger ddm =
         createDirectDebitMandateTrigger(TRIGGER_ID, TRIGGER_URL, TOLVANSSON_MEMBERID);
-    given(repo.findOne(TRIGGER_ID)).willReturn(ddm);
+    given(repo.findById(TRIGGER_ID)).willReturn(Optional.of(ddm));
 
     getTrustlyOrderInformationWillReturnGiven(OrderState.COMPLETE, ddm.getOrderId());
 
@@ -185,7 +188,7 @@ public class TriggerServiceTest {
     DirectDebitMandateTrigger ddm =
         createDirectDebitMandateTrigger(TRIGGER_ID, TRIGGER_URL, TOLVANSSON_MEMBERID);
 
-    given(repo.findOne(TRIGGER_ID)).willReturn(ddm);
+    given(repo.findById(TRIGGER_ID)).willReturn(Optional.of(ddm));
     getTrustlyOrderInformationWillReturnGiven(OrderState.CANCELED, ddm.getOrderId());
 
     final DirectDebitMandateTrigger.TriggerStatus trustlyOrderInformation =
@@ -202,7 +205,7 @@ public class TriggerServiceTest {
     DirectDebitMandateTrigger ddm =
         createDirectDebitMandateTrigger(TRIGGER_ID, TRIGGER_URL, TOLVANSSON_MEMBERID);
 
-    given(repo.findOne(TRIGGER_ID)).willReturn(ddm);
+    given(repo.findById(TRIGGER_ID)).willReturn(Optional.of(ddm));
     getTrustlyOrderInformationWillReturnGiven(OrderState.CONFIRMED, ddm.getOrderId());
 
     final DirectDebitMandateTrigger.TriggerStatus trustlyOrderInformation =

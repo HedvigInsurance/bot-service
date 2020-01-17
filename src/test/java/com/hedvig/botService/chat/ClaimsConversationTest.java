@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
 
 import static com.hedvig.botService.chat.ClaimsConversation.*;
@@ -143,8 +143,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void givenThatMemberCanReportClaim_WhenPhoneNumberIsMissing_ThenQuestionAboutPhoneShouldPopUp(){
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
-
     userContext.getOnBoardingData().setPhoneNumber(null);
 
     testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START);
@@ -154,8 +152,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void givenPhoneNumberIsPresent_WhenStartsClaimsChat_ThenQuestionAboutChangePhoneShouldPopUp() {
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
-
     userContext.getOnBoardingData().setPhoneNumber("0701234567");
 
     testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, MESSAGE_CLAIMS_START);
@@ -165,8 +161,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void givenThatMemberCanReportClaim_WhenPhoneNumberIsMissingAndProvided_ThenClaimsRecord1MessagePopsUp(){
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
-
     userContext.getOnBoardingData().setPhoneNumber(null);
 
     Message m = testConversation.getMessage(MESSAGE_CLAIMS_ASK_PHONE);
@@ -179,8 +173,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void givenThatMemberCanReportClaim_WhenPhoneNumberIsPresentButMemberWantsToChange__ThenQuestionAboutNewPhoneShouldPopUp(){
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
-
     userContext.getOnBoardingData().setPhoneNumber("0700700707");
     Message m = testConversation.getMessage(MESSAGE_CLAIMS_ASK_EXISTING_PHONE_ASK_NEW);
     m.body.text = TOLVANSSON_PHONE_NUMBER;

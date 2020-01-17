@@ -4,7 +4,6 @@ import com.hedvig.botService.chat.house.HouseConversationConstants
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ANCILLARY_AREA
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_LAST_NAME
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_ADDRESS_LOOK_UP_SUCCESS
-import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_NUMBER_OF_BATHROOMS_FROM_SUCCESS_LOOKUP
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_REAL_ESTATE_LOOKUP_CORRECT
 import com.hedvig.botService.chat.house.HouseConversationConstants.ASK_SQUARE_METERS
@@ -35,7 +34,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mock
-import org.mockito.runners.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnitRunner
+
 import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalDate
 

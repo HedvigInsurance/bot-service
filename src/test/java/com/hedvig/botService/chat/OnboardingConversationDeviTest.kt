@@ -17,6 +17,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Address
 import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
+import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent
 import com.hedvig.botService.services.events.RequestObjectInsuranceEvent
@@ -32,7 +33,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.then
 import org.mockito.Mock
 import org.mockito.Mockito.times
-import org.mockito.runners.MockitoJUnitRunner
+import org.mockito.junit.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
 import java.time.LocalDate
 
@@ -43,7 +44,8 @@ class OnboardingConversationDeviTest {
     private lateinit var memberService: MemberService
     @Mock
     private lateinit var localizationService: LocalizationService
-
+    @Mock
+    private lateinit var underwriter: Underwriter
     @Mock
     private lateinit var productPricingService: ProductPricingService
 
@@ -66,7 +68,7 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, publisher, conversationFactory,localizationService, "test", "test", phoneNumberUtil, userContext
+            memberService, productPricingService, underwriter, publisher, conversationFactory,localizationService, "test", "test", phoneNumberUtil, userContext
         )
     }
 

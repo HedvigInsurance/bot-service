@@ -2,8 +2,10 @@ package com.hedvig.botService.config;
 
 import ch.qos.logback.access.tomcat.LogbackValve;
 import javax.servlet.Filter;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+
+import lombok.val;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,8 +18,8 @@ public class LogBackAccess {
   }
 
   @Bean
-  public EmbeddedServletContainerFactory servletContainer() {
-    TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+  public ServletWebServerFactory servletContainer() {
+    val tomcat = new TomcatServletWebServerFactory();
 
     LogbackValve logbackValve = new LogbackValve();
 

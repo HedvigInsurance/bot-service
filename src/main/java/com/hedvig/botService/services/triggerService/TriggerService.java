@@ -55,7 +55,7 @@ public class TriggerService {
 
   public String getTriggerUrl(UUID triggerId, String memberId) {
 
-    final DirectDebitMandateTrigger one = repo.findOne(triggerId);
+    final DirectDebitMandateTrigger one = repo.findById(triggerId).get();
     if (!one.getMemberId().equals(memberId)) {
       throw new UnauthorizedException("No allowed to access trigger");
     }
@@ -74,7 +74,7 @@ public class TriggerService {
 
   public DirectDebitMandateTrigger.TriggerStatus getTrustlyOrderInformation(String triggerId) {
 
-    final DirectDebitMandateTrigger trigger = repo.findOne(UUID.fromString(triggerId));
+    final DirectDebitMandateTrigger trigger = repo.findById(UUID.fromString(triggerId)).get();
 
     if (trigger.getStatus() == null
         || trigger.getStatus() == DirectDebitMandateTrigger.TriggerStatus.IN_PROGRESS
@@ -99,7 +99,7 @@ public class TriggerService {
 
   public String clientNotificationReceived(
       UUID triggerId, DirectDebitMandateTrigger.TriggerStatus status) {
-    DirectDebitMandateTrigger trigger = repo.findOne(triggerId);
+    DirectDebitMandateTrigger trigger = repo.findById(triggerId).get();
     if (trigger.getStatus() == null
         || trigger.getStatus() == DirectDebitMandateTrigger.TriggerStatus.IN_PROGRESS
         || trigger.getStatus() == DirectDebitMandateTrigger.TriggerStatus.CRATED) {

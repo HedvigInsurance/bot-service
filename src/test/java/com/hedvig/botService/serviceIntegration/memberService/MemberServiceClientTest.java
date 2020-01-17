@@ -1,11 +1,5 @@
 package com.hedvig.botService.serviceIntegration.memberService;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.http.Fault;
 import com.hedvig.botService.BotServiceApplicationTests;
@@ -20,19 +14,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
@@ -45,7 +39,6 @@ import org.springframework.test.context.junit4.SpringRunner;
       "hedvig.notificationservice.baseurl:test"
     },
     locations = "/application-test.yml")
-@EnableFeignClients
 public class MemberServiceClientTest {
 
   @Rule public ExpectedException thrown = ExpectedException.none();
@@ -57,7 +50,6 @@ public class MemberServiceClientTest {
 
   ObjectMapper objectMapper;
   @Autowired MemberServiceClient feignClient;
-  @Autowired ObjectFactory<HttpMessageConverters> feignEncoder;
 
   @Before
   public void setup() {

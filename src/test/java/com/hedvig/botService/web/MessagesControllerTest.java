@@ -1,8 +1,8 @@
 package com.hedvig.botService.web;
 
 import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.contains;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

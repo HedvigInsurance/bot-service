@@ -7,6 +7,7 @@ import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService
 import com.hedvig.botService.serviceIntegration.lookupService.LookupService
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
+import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
 import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.triggerService.TriggerService
 import org.slf4j.LoggerFactory
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component
 class ConversationFactoryImpl(
     private val memberService: MemberService,
     private val lookupService: LookupService,
+    private val underwriter: Underwriter,
     private val productPricingService: ProductPricingService,
     private val triggerService: TriggerService,
     private val eventPublisher: ApplicationEventPublisher,
@@ -57,6 +59,7 @@ class ConversationFactoryImpl(
             val onboardingConversationDevi = OnboardingConversationDevi(
                 memberService,
                 productPricingService,
+                underwriter,
                 eventPublisher,
                 this,
                 localizationService,

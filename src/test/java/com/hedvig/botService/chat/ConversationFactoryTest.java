@@ -6,6 +6,7 @@ import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.lookupService.LookupService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
+import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import org.junit.Before;
@@ -24,7 +25,6 @@ import java.util.Collection;
 import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_MEMBER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
 
 @RunWith(Parameterized.class)
 public class ConversationFactoryTest {
@@ -36,6 +36,7 @@ public class ConversationFactoryTest {
   @Mock Environment springEnvironment;
   @Mock private MemberService memberService;
   @Mock private LookupService lookupService;
+  @Mock private Underwriter underwriter;
   @Mock private ProductPricingService productPricingService;
   @Mock private TriggerService triggerService;
   @Mock private LocalizationService localizationService;
@@ -71,6 +72,7 @@ public class ConversationFactoryTest {
         new ConversationFactoryImpl(
             memberService,
             lookupService,
+            underwriter,
             productPricingService,
             triggerService,
             applicationEventPublisher,

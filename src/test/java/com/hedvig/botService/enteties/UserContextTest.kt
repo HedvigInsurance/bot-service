@@ -11,11 +11,8 @@ import lombok.`val`
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.*
-import org.mockito.Matchers
 import org.mockito.Mock
-import org.mockito.Mockito.*
-import org.mockito.runners.MockitoJUnitRunner
-import java.util.*
+import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class UserContextTest {

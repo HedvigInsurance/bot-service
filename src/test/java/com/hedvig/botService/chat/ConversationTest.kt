@@ -13,12 +13,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.*
 import org.mockito.BDDMockito.*
-import org.mockito.runners.MockitoJUnitRunner
 import org.springframework.context.ApplicationEventPublisher
 import org.mockito.Mockito.`when`
 import java.util.*
 
-@RunWith(MockitoJUnitRunner::class)
+@RunWith(org.mockito.junit.MockitoJUnitRunner::class)
 class ConversationTest {
   private lateinit var sut: Conversation
 
@@ -159,8 +158,6 @@ class ConversationTest {
     val key = "key1"
     val text = "Test1"
 
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
-
     sut.createChatMessage(key, MessageBody(text))
 
     assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
@@ -171,8 +168,6 @@ class ConversationTest {
   fun conversationMessageSpitAndConversationUtils_whitOneFirstSplit() {
     val key = "key1"
     val text = "\u000CTest1"
-
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
 
     sut.createChatMessage(key, MessageBody(text))
 
@@ -194,8 +189,6 @@ class ConversationTest {
     val key = "key1"
     val text = "Test1\u000CTest2"
 
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
-
     sut.createChatMessage(key, MessageBody(text))
 
     assertThat(sut.getMessage("key1")?.body?.text).isEqualTo("")
@@ -215,8 +208,6 @@ class ConversationTest {
   fun conversationMessageSpitAndConversationUtils_whitTwoSplit() {
     val key = "key1"
     val text = "Test1\u000CTest2\u000CTest3"
-
-    `when`(localizationService!!.getText(null, key)).thenReturn(text)
 
     sut.createChatMessage(key, MessageBody(text))
 
