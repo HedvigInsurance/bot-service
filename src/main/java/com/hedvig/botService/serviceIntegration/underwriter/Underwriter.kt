@@ -34,21 +34,11 @@ class Underwriter(private val underwriterClient: UnderwriterClient) {
                 incompleteQuoteData = createQuoteData(onboardingProductType, onboardingData),
                 memberId = userContext.memberId,
                 originatingProductId = null,
-                startDate = calculateStartDate(onboardingData),
+                startDate = null,
                 shouldComplete = true,
                 underwritingGuidelinesBypassedBy = null
             )
         )
-    }
-
-    private fun calculateStartDate(onboardingData: UserData): Instant? {
-        return if (onboardingData.currentInsurer != null)
-            null
-        else
-            ZonedDateTime
-                .now(ZoneId.of("Europe/Stockholm"))
-                .truncatedTo(ChronoUnit.DAYS)
-                .toInstant()
     }
 
     private fun createQuoteData(
