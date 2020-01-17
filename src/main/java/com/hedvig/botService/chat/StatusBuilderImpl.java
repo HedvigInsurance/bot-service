@@ -138,16 +138,11 @@ public class StatusBuilderImpl implements StatusBuilder {
 
   public String getRedDayAndWeekendAnswerTimes(int hour) {
 
-    final LocalDate noCoverDate = LocalDate.parse("2020-01-11");
-
     if (hour <= 2) {
       return "Hedvig svarar imorgon";
     } else if (hour < 9) {
       return "Hedvig svarar efter kl. 9";
     } else if (hour < 22) {
-      if(LocalDate.now().equals(noCoverDate) && hour > 18) {
-        return "Hedvig svarar imorgon";
-      }
       return "Hedvig svarar inom en timme";
     }
     else {
@@ -231,6 +226,8 @@ public class StatusBuilderImpl implements StatusBuilder {
     Instant now = Instant.now(c);
     ZonedDateTime time = now.atZone(ZoneId.of("Europe/Stockholm"));
 
+    final LocalDate noCoverDate = LocalDate.parse("2020-01-17");
+
     final DayOfWeek dayOfWeek = time.getDayOfWeek();
     final int hour = time.getHour();
     final int minute = time.getMinute();
@@ -238,6 +235,10 @@ public class StatusBuilderImpl implements StatusBuilder {
 
     if(todayDate.isAfter(christmasStartDate) && todayDate.isBefore(christmasEndDate)) {
       return getChristmasPeriodAnswerTimes(hour, todayDate);
+    }
+
+    if (todayDate.equals(noCoverDate) && hour >= 20) {
+      return "Hedvig svarar imorgon";
     }
 
     if ((todayDate.equals(midsommarStartDate) && hour >= 23) || (todayDate.equals(midsommarEndDate))) {
