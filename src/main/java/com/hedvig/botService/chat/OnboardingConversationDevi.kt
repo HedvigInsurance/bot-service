@@ -866,6 +866,13 @@ constructor(
         )
 
         this.createChatMessage(
+            "message.hedvig.uwlimit.askemail",
+            MessageBodyText(
+                "Tack! Tyvärr kan vi inte ta fram ett pris till dig här i appen. En av våra försäkringsexperter behöver kika på din ansökan. För att få ditt erbjudande, maila till oss på prisforslag@hedvig.com"
+            )
+        )
+
+        this.createChatMessage(
             MESSAGE_50K_LIMIT, WrappedMessage(
                 MessageBodySingleSelect(
                     "Toppen!\u000CÄger du något som du tar med dig utanför hemmet som är värt över 50 000 kr som du vill försäkra? 💍",
@@ -877,7 +884,7 @@ constructor(
                 val ssn = userContext.onBoardingData.ssn
                 if (checkSSN(ssn) == Flag.RED) {
                     completeOnboarding()
-                    return@WrappedMessage ("message.vad.ar.ditt.telefonnummer")
+                    return@WrappedMessage ("message.hedvig.uwlimit.askemail")
                 }
 
                 for (o in body.choices) {
