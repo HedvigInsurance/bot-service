@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import com.hedvig.botService.services.LocalizationService;
+import com.hedvig.localization.service.LocalizationService;
 import lombok.ToString;
 
 import static com.hedvig.botService.enteties.message.SelectItem.SELECT_POST_FIX;

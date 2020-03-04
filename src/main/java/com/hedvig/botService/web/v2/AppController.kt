@@ -5,9 +5,10 @@ import com.hedvig.botService.serviceIntegration.notificationService.Notification
 import com.hedvig.botService.services.MessagesService
 import com.hedvig.botService.services.SessionManager
 import com.hedvig.botService.enteties.message.Message
-import com.hedvig.botService.services.TextKeysLocaleResolver
-import com.hedvig.botService.services.LocalizationService
+
 import com.hedvig.botService.web.v2.dto.*
+import com.hedvig.localization.service.LocalizationService
+import com.hedvig.localization.service.TextKeysLocaleResolver
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -87,7 +88,7 @@ class AppController(
 
     @PostMapping("/refreshLocalization")
     fun refreshLocalization(): ResponseEntity<String> {
-        localizationService.refreshLocalizations()
+        //localizationService.refreshLocalizations()
         return ResponseEntity.ok("Localizations refreshed")
     }
 }

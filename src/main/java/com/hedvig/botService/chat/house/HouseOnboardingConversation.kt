@@ -67,10 +67,10 @@ import com.hedvig.botService.serviceIntegration.lookupService.LookupService
 import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType
-import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.HouseUnderwritingLimitCallMeExceedsEvent
 import com.hedvig.botService.utils.ConversationUtils.isYoungerThan18
 import com.hedvig.botService.utils.MessageUtil
+import com.hedvig.localization.service.LocalizationService
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 

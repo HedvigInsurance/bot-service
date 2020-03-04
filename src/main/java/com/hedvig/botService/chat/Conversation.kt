@@ -7,8 +7,8 @@ import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
-import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.MessageSentEvent
+import com.hedvig.localization.service.LocalizationService
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.jwt.JwtHelper

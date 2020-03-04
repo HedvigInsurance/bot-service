@@ -2,7 +2,7 @@ package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.services.LocalizationService;
+import com.hedvig.localization.service.LocalizationService;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -25,12 +25,13 @@ public class MessageBodySingleSelect extends MessageBody {
     this.choices.addAll(items);
   }
 
-  public MessageBodySingleSelect(String content, SelectItem... items){
+  public MessageBodySingleSelect(String content, SelectItem... items) {
     super(content);
     this.choices.addAll(Arrays.asList(items));
   }
 
-  MessageBodySingleSelect() {}
+  MessageBodySingleSelect() {
+  }
 
   @JsonIgnore
   public SelectItem getSelectedItem() {
@@ -40,9 +41,9 @@ public class MessageBodySingleSelect extends MessageBody {
       }
     }
     throw new RuntimeException(
-        String.format(
-            "No item selected for list: [%s]",
-            this.choices.stream().map(SelectItem::toString).collect(Collectors.joining(","))));
+      String.format(
+        "No item selected for list: [%s]",
+        this.choices.stream().map(SelectItem::toString).collect(Collectors.joining(","))));
   }
 
   @Override

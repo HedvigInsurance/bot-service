@@ -6,8 +6,6 @@ import com.hedvig.botService.chat.Conversation
 import com.hedvig.botService.chat.ConversationFactory
 import com.hedvig.botService.chat.OnboardingConversationDevi
 import com.hedvig.botService.services.SessionManager.Intent
-import com.hedvig.botService.services.TextKeysLocaleResolver
-import lombok.`val`
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.*

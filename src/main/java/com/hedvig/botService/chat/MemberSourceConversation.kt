@@ -1,12 +1,14 @@
 package com.hedvig.botService.chat
 
 import com.hedvig.botService.enteties.UserContext
-import com.hedvig.botService.enteties.message.*
-import com.hedvig.botService.services.LocalizationService
-import org.springframework.beans.factory.annotation.Value
+import com.hedvig.botService.enteties.message.Message
+import com.hedvig.botService.enteties.message.MessageBodySingleSelect
+import com.hedvig.botService.enteties.message.MessageBodyText
+import com.hedvig.botService.enteties.message.SelectItem
+import com.hedvig.botService.enteties.message.SelectLink
+import com.hedvig.botService.enteties.message.SelectOption
+import com.hedvig.localization.service.LocalizationService
 import org.springframework.context.ApplicationEventPublisher
-import java.util.*
-
 
 class MemberSourceConversation(
     eventPublisher: ApplicationEventPublisher,
@@ -22,7 +24,6 @@ class MemberSourceConversation(
     }
 
     override fun handleMessage(m: Message) {
-
     }
 
     override fun init() {
@@ -32,7 +33,6 @@ class MemberSourceConversation(
     override fun init(startMessage: String) {
         startConversation(startMessage)
     }
-
 
     override fun receiveEvent(e: EventTypes, value: String) {
         if (e == Conversation.EventTypes.MESSAGE_FETCHED
@@ -89,5 +89,4 @@ class MemberSourceConversation(
             MessageBodySingleSelect("Toppen, tack!", listOf(SelectLink.toDashboard("Börja utforska appen", "expore")))
         )
     }
-
 }

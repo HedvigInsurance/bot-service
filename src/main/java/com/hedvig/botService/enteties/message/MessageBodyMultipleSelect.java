@@ -1,14 +1,14 @@
 package com.hedvig.botService.enteties.message;
 
+import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.localization.service.LocalizationService;
+import lombok.ToString;
+
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
-import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.services.LocalizationService;
-import lombok.ToString;
 
 @Entity
 @DiscriminatorValue("multipleChoice")
@@ -21,12 +21,13 @@ public class MessageBodyMultipleSelect extends MessageBody {
     this.choices.addAll(items); // TODO
   }
 
-  MessageBodyMultipleSelect() {}
+  MessageBodyMultipleSelect() {
+  }
 
   public String selectedOptionsAsString() {
 
     final List<SelectItem> selectedOptions =
-        this.choices.stream().filter(x -> x.selected).collect(Collectors.toList());
+      this.choices.stream().filter(x -> x.selected).collect(Collectors.toList());
 
     if (selectedOptions.size() == 1) {
       return selectedOptions.get(0).text.toLowerCase();
@@ -54,11 +55,11 @@ public class MessageBodyMultipleSelect extends MessageBody {
 
   public List<SelectOption> selectedOptions() {
     return this.choices
-        .stream()
-        .filter(x -> x.selected)
-        .filter(SelectOption.class::isInstance)
-        .map(SelectOption.class::cast)
-        .collect(Collectors.toList());
+      .stream()
+      .filter(x -> x.selected)
+      .filter(SelectOption.class::isInstance)
+      .map(SelectOption.class::cast)
+      .collect(Collectors.toList());
   }
 
   public long getNoSelectedOptions() {

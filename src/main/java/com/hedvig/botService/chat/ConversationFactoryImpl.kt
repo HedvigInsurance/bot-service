@@ -8,8 +8,8 @@ import com.hedvig.botService.serviceIntegration.lookupService.LookupService
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
-import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.triggerService.TriggerService
+import com.hedvig.localization.service.LocalizationService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
@@ -58,7 +58,6 @@ class ConversationFactoryImpl(
         if (conversationClass == OnboardingConversationDevi::class.java) {
             val onboardingConversationDevi = OnboardingConversationDevi(
                 memberService,
-                productPricingService,
                 underwriter,
                 eventPublisher,
                 this,
@@ -81,7 +80,7 @@ class ConversationFactoryImpl(
         }
 
         if (conversationClass == TrustlyConversation::class.java) {
-            return TrustlyConversation(triggerService, memberService, eventPublisher, localizationService, userContext)
+            return TrustlyConversation(triggerService, eventPublisher, localizationService, userContext)
         }
 
         if (conversationClass == FreeChatConversation::class.java) {

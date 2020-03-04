@@ -1,4 +1,4 @@
-package com.hedvig.botService;
+package com.hedvig.botService.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
