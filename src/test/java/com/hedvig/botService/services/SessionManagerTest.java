@@ -18,6 +18,9 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
+import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.localization.service.TextKeysLocaleResolver;
+import com.hedvig.localization.service.TextKeysLocaleResolverImpl;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -60,7 +64,8 @@ public class SessionManagerTest {
 
   @Mock ClaimsService claimsService;
 
-  @Mock LocalizationService localizationService;
+  @Mock
+  LocalizationService localizationService;
 
   @Mock Underwriter underwriter;
 
@@ -172,7 +177,7 @@ public class SessionManagerTest {
     val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
     when(conversationFactory.createConversation(any(Class.class), any()))
         .thenReturn(onboardingConversation);
-    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE());
+    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolverImpl.Companion.getDEFAULT_LOCALE());
 
     val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID,  null, null);
 
@@ -194,7 +199,7 @@ public class SessionManagerTest {
     when(conversationFactory.createConversation(any(Class.class), anyObject()))
       .thenReturn(onboardingConversation);
     when(memberService.auth(TOLVANSSON_MEMBERID)).thenReturn(Optional.of(makeBankIdResponse()));
-    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolver.Companion.getDEFAULT_LOCALE());
+    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolverImpl.Companion.getDEFAULT_LOCALE());
 
     val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, null, SessionManager.Intent.LOGIN);
 
@@ -202,8 +207,53 @@ public class SessionManagerTest {
         .hasFieldOrPropertyWithValue("id", "message.start.login");
   }
 
+
+  @Test
+  public void giveAcceptLocale_setsLocale_inUserContext() {
+    val tolvanssonUserContext = makeTolvanssonUserContext();
+
+    when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
+      .thenReturn(Optional.of(tolvanssonUserContext));
+
+
+    sessionManager =
+      new SessionManager(
+        userContextRepository,
+        memberService,
+        conversationFactory,
+        campaignCodeRepository,
+        new ObjectMapper(),
+        new TextKeysLocaleResolverImpl());
+    sessionManager.init(TOLVANSSON_MEMBERID, "nb-NO", "");
+
+    assertThat(tolvanssonUserContext.getLocale()).isEqualTo(new Locale("nb","no"));
+  }
+
+  @Test
+  public void getAllMessages_setsLocale_inUserContext() {
+    val tolvanssonUserContext = makeTolvanssonUserContext();
+
+    when(userContextRepository.findByMemberId(TOLVANSSON_MEMBERID))
+      .thenReturn(Optional.of(tolvanssonUserContext));
+    val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
+    when(conversationFactory.createConversation(any(Class.class), anyObject()))
+      .thenReturn(onboardingConversation);
+
+    sessionManager =
+      new SessionManager(
+        userContextRepository,
+        memberService,
+        conversationFactory,
+        campaignCodeRepository,
+        new ObjectMapper(),
+        new TextKeysLocaleResolverImpl());
+    sessionManager.getAllMessages(TOLVANSSON_MEMBERID, "nb-NO", SessionManager.Intent.LOGIN);
+
+    assertThat(tolvanssonUserContext.getLocale()).isEqualTo(new Locale("nb","no"));
+  }
+
   private OnboardingConversationDevi makeOnboardingConversation(UserContext userContext) {
-    return new OnboardingConversationDevi(memberService, productPricingService, underwriter, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, userContext) ;
+    return new OnboardingConversationDevi(memberService, underwriter, applicationEventPublisher, conversationFactory, localizationService, "test", "test", phoneNumberUtil, userContext) ;
   }
 
   private BankIdAuthResponse makeBankIdResponse() {

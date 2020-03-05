@@ -1,8 +1,8 @@
 package com.hedvig.botService.enteties.userContextHelpers;
 
-import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType;
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.services.LocalizationService;
+import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType;
+import com.hedvig.localization.service.LocalizationService;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
@@ -85,7 +85,7 @@ public class UserData {
 
   public Boolean isStudent() {
     return (ctx.getDataEntry(IS_STUDENT) != null
-        && Objects.equals(ctx.getDataEntry(IS_STUDENT), "1"));
+      && Objects.equals(ctx.getDataEntry(IS_STUDENT), "1"));
   }
 
   public void setEmail(String email) {
@@ -96,9 +96,13 @@ public class UserData {
     return ctx.getDataEntry(EMAIL);
   }
 
-  public String getPhoneNumber(){ return ctx.getDataEntry(PHONE_NUMBER); }
+  public String getPhoneNumber() {
+    return ctx.getDataEntry(PHONE_NUMBER);
+  }
 
-  public void setPhoneNumber(String phoneNumber) { ctx.putUserData(PHONE_NUMBER, phoneNumber); }
+  public void setPhoneNumber(String phoneNumber) {
+    ctx.putUserData(PHONE_NUMBER, phoneNumber);
+  }
 
   public void setFamilyName(String familyName) {
     ctx.putUserData(FAMILY_NAME, familyName);
@@ -228,7 +232,7 @@ public class UserData {
     ctx.putUserData(USER_AUTHED_BANKID, referenceId);
   }
 
-  public void setHouseAncillaryArea(int ancillaryAreaSqm){
+  public void setHouseAncillaryArea(int ancillaryAreaSqm) {
     ctx.putUserData(HOUSE_ANCILLARY_AREA_KVM, Objects.toString(ancillaryAreaSqm));
   }
 
@@ -272,34 +276,34 @@ public class UserData {
     return Integer.parseInt(ctx.getDataEntry(HOUSE_NR_EXTRA_BUILDINGS));
   }
 
-  public void setHouseExtraBuildingType(ExtraBuildingType type, int buildingNumber, Locale locale, LocalizationService localizationService){
-    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber +"}", type.toString());
+  public void setHouseExtraBuildingType(ExtraBuildingType type, int buildingNumber, Locale locale, LocalizationService localizationService) {
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber + "}", type.toString());
     String text = localizationService.getText(locale, "HOUSE_EXTRA_BUILDING_" + type.toString());
     ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}", text);
   }
 
   public String getHouseExtraBuildingType(int buildingNumber) {
-    return ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber +"}");
+    return ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber + "}");
   }
 
   public String getHouseExtraBuildingTypeText(int buildingNumber) {
     return ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}");
   }
 
-  public void setHouseExtraBuildingSQM(int sqm, int buildingNumber){
-    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber +"}", String.valueOf(sqm));
+  public void setHouseExtraBuildingSQM(int sqm, int buildingNumber) {
+    ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber + "}", String.valueOf(sqm));
   }
 
   public int getHouseExtraBuildingSQM(int buildingNumber) {
-    return Integer.parseInt(ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber +"}"));
+    return Integer.parseInt(ctx.getDataEntry("{HOUSE_EXTRA_BUILDINGS_KVM_" + buildingNumber + "}"));
   }
 
-  public void setHouseExtraBuildingHasWater(boolean hasWater, int buildingNumber){
-    ctx.putUserData("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber +"}", String.valueOf(hasWater));
+  public void setHouseExtraBuildingHasWater(boolean hasWater, int buildingNumber) {
+    ctx.putUserData("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber + "}", String.valueOf(hasWater));
   }
 
   public boolean getHouseExtraBuildingHasWater(int buildingNumber) {
-    String value = ctx.getDataEntry("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber +"}");
+    String value = ctx.getDataEntry("{HOUSE_EXTRA_BUILDING_HAS_WATER_" + buildingNumber + "}");
     if (value == null) {
       return false;
     }

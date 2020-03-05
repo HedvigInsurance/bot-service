@@ -2,7 +2,6 @@ package com.hedvig.botService.serviceIntegration.memberService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.http.Fault;
-import com.hedvig.botService.BotServiceApplicationTests;
 import com.hedvig.botService.serviceIntegration.memberService.dto.APIErrorDTO;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthRequest;
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResponse;
@@ -16,8 +15,10 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -28,10 +29,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+
+@SpringBootApplication
+@EnableFeignClients()
+class TestsConfiguration {
+}
+
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(classes = BotServiceApplicationTests.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "graphcms.project:test")
+@ContextConfiguration(classes = TestsConfiguration.class)
 @AutoConfigureWireMock(port = 4777)
 @TestPropertySource(
     properties = {

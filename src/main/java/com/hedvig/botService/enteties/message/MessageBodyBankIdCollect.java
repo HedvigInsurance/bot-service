@@ -1,11 +1,11 @@
 package com.hedvig.botService.enteties.message;
 
 import com.hedvig.botService.enteties.UserContext;
+import com.hedvig.localization.service.LocalizationService;
+import lombok.ToString;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
-import com.hedvig.botService.services.LocalizationService;
-import lombok.ToString;
 
 @Entity
 @DiscriminatorValue("bankidCollect")
@@ -13,7 +13,8 @@ import lombok.ToString;
 public class MessageBodyBankIdCollect extends MessageBody {
   public String referenceId;
 
-  public MessageBodyBankIdCollect() {}
+  public MessageBodyBankIdCollect() {
+  }
 
   public MessageBodyBankIdCollect(String referenceId) {
     super("");

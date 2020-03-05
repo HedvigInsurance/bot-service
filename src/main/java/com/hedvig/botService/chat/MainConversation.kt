@@ -1,6 +1,7 @@
 package com.hedvig.botService.chat
 
 import com.google.common.collect.Lists
+import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_CLAIM
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.Message
 import com.hedvig.botService.enteties.message.MessageBodyNumber
@@ -12,16 +13,11 @@ import com.hedvig.botService.enteties.message.SelectLink
 import com.hedvig.botService.enteties.message.SelectOption
 import com.hedvig.botService.services.events.QuestionAskedEvent
 import com.hedvig.botService.services.events.RequestPhoneCallEvent
+import com.hedvig.localization.service.LocalizationService
 import org.joda.time.LocalDate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationEventPublisher
-import org.springframework.stereotype.Component
-
-import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_CLAIM
-import com.hedvig.botService.services.LocalizationService
-import org.springframework.beans.factory.annotation.Value
-import java.util.*
 
 class MainConversation @Autowired
 constructor(
@@ -65,10 +61,10 @@ constructor(
                     SelectOption("Jag har en fråga", MESSAGE_MAIN_START_FREE_TEXT_CHAT)
                 )
             ) { body, uc, _ ->
-              if (body.selectedItem.value == MESSAGE_MAIN_START_FREE_TEXT_CHAT) {
-                startFreeTextChatConversation(uc)
-              }
-              body.selectedItem.value
+                if (body.selectedItem.value == MESSAGE_MAIN_START_FREE_TEXT_CHAT) {
+                    startFreeTextChatConversation(uc)
+                }
+                body.selectedItem.value
             }
         )
 
@@ -159,7 +155,6 @@ constructor(
             }
             MESSAGE_MAIN_QUESTION -> nxtMsg = handleQuestion(m)
         }
-
 
         /*
      * In a Single select, there is only one trigger event. Set default here to be a link to a new message

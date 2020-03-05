@@ -2,21 +2,14 @@ package com.hedvig.botService.chat;
 
 import com.google.common.collect.Lists;
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.enteties.message.Message;
-import com.hedvig.botService.enteties.message.MessageBodySingleSelect;
-import com.hedvig.botService.enteties.message.MessageBodyText;
-import com.hedvig.botService.enteties.message.MessageHeader;
-import com.hedvig.botService.enteties.message.SelectItem;
-import com.hedvig.botService.enteties.message.SelectLink;
-import com.hedvig.botService.enteties.message.SelectOption;
-import com.hedvig.botService.services.LocalizationService;
+import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
+import com.hedvig.localization.service.LocalizationService;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
+
+import java.util.List;
+import java.util.Objects;
 
 public class CallMeConversation extends Conversation {
 

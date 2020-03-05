@@ -7,7 +7,6 @@ import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_5
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_BANKIDJA
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_LAGENHET_ADDRESSNOTFOUND
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_MEMBER_UNDER_EIGHTEEN
-import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_NAGOTMER
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_ONBOARDINGSTART_REPLY_NAME
 import com.hedvig.botService.chat.OnboardingConversationDevi.Companion.MESSAGE_VARBORDUFELADRESS
 import com.hedvig.botService.enteties.UserContext
@@ -18,12 +17,12 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.Address
 import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
-import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent
 import com.hedvig.botService.services.events.RequestObjectInsuranceEvent
 import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
 import com.hedvig.botService.testHelpers.TestData
 import com.hedvig.botService.testHelpers.TestData.*
+import com.hedvig.localization.service.LocalizationService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.Before
@@ -68,7 +67,15 @@ class OnboardingConversationDeviTest {
         userContext.putUserData(UserData.HOUSE, TOLVANSSON_PRODUCT_TYPE)
 
         testConversation = OnboardingConversationDevi(
-            memberService, productPricingService, underwriter, publisher, conversationFactory,localizationService, "test", "test", phoneNumberUtil, userContext
+            memberService,
+            underwriter,
+            publisher,
+            conversationFactory,
+            localizationService,
+            "test",
+            "test",
+            phoneNumberUtil,
+            userContext
         )
     }
 

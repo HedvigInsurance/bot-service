@@ -33,10 +33,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
-import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
-import com.hedvig.botService.serviceIntegration.underwriter.UnderwriterClient
-import com.hedvig.botService.services.LocalizationService
 import com.hedvig.botService.services.events.MemberSignedEvent
 import com.hedvig.botService.services.events.OnboardingCallForQuoteEvent
 import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent
@@ -46,6 +43,7 @@ import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
 import com.hedvig.botService.utils.ConversationUtils
 import com.hedvig.botService.utils.ssnLookupAndStore
 import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
+import com.hedvig.localization.service.LocalizationService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
@@ -53,10 +51,8 @@ import java.nio.charset.Charset
 import java.time.LocalDateTime
 import java.util.ArrayList
 
-class OnboardingConversationDevi
-constructor(
+class OnboardingConversationDevi(
     private val memberService: MemberService,
-    private val productPricingService: ProductPricingService,
     private val underwriter: Underwriter,
     eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,

@@ -1,7 +1,7 @@
 package com.hedvig.botService.enteties.message;
 
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.services.LocalizationService;
+import com.hedvig.localization.service.LocalizationService;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -45,7 +45,7 @@ public class MessageBodyText extends MessageBody {
 
   @Enumerated(EnumType.STRING)
   public KeyboardType keyboardType = KeyboardType.DEFAULT;
-  
+
   public String placeholder;
 
   @Enumerated(EnumType.STRING)

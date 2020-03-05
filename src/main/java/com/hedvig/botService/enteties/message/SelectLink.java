@@ -1,7 +1,7 @@
 package com.hedvig.botService.enteties.message;
 
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.services.LocalizationService;
+import com.hedvig.localization.service.LocalizationService;
 import lombok.ToString;
 
 @ToString
@@ -10,15 +10,15 @@ public class SelectLink extends SelectItem {
   static final long serialVersionUID = 1L;
 
   public SelectLink(
-      String text, String value, String view, String appUrl, String webUrl, boolean selected) {
+    String text, String value, String view, String appUrl, String webUrl, boolean selected) {
     super(selected, text, value);
     this.view = view;
     this.appUrl = appUrl;
     this.webUrl = webUrl;
   }
 
-  public
-  SelectLink() {} // NOTE! All objects need to have a default constructor in order for Jackson to
+  public SelectLink() {
+  } // NOTE! All objects need to have a default constructor in order for Jackson to
   // marshall.
 
   public static SelectLink toDashboard(String text, String value) {

@@ -14,9 +14,10 @@ import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.message.MessageBodySingleSelect;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
-import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import java.util.UUID;
+
+import com.hedvig.localization.service.LocalizationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +45,7 @@ public class TrustlyConversationTest {
   @Before
   public void setup() {
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
-    testConversation = new TrustlyConversation(triggerService, memberService, applicationEventPublisher, localizationService, userContext);
+    testConversation = new TrustlyConversation(triggerService, applicationEventPublisher, localizationService, userContext);
   }
 
   public void addTolvansonToUserContext() {

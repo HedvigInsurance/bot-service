@@ -10,6 +10,7 @@ import com.hedvig.botService.enteties.*;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.web.v2.dto.FABAction;
 import com.hedvig.botService.web.v2.dto.MessagesDTO;
+import com.hedvig.localization.service.TextKeysLocaleResolver;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -132,6 +133,6 @@ public class MessagesService {
 
   private void putAcceptLanguage(String acceptLanguage, UserContext uc) {
     val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
-    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
+    uc.setLocale(locale);
   }
 }

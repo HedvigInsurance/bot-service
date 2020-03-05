@@ -1,26 +1,19 @@
 package com.hedvig.botService.chat;
 
-import static com.hedvig.botService.enteties.UserContext.FORCE_TRUSTLY_CHOICE;
-
 import com.google.common.collect.Lists;
 import com.hedvig.botService.enteties.DirectDebitMandateTrigger;
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.enteties.message.Message;
-import com.hedvig.botService.enteties.message.MessageBodySingleSelect;
-import com.hedvig.botService.enteties.message.MessageHeader;
-import com.hedvig.botService.enteties.message.SelectItem;
-import com.hedvig.botService.enteties.message.SelectItemTrustly;
-import com.hedvig.botService.enteties.message.SelectLink;
+import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
-import com.hedvig.botService.services.LocalizationService;
 import com.hedvig.botService.services.triggerService.TriggerService;
-import org.springframework.beans.factory.annotation.Value;
+import com.hedvig.localization.service.LocalizationService;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
+
+import static com.hedvig.botService.enteties.UserContext.FORCE_TRUSTLY_CHOICE;
 
 public class TrustlyConversation extends Conversation {
 
@@ -30,45 +23,43 @@ public class TrustlyConversation extends Conversation {
   private static final String COMPLETE = "trustly.complete";
   public static final String FORCED_START = "forced.start";
   private final TriggerService triggerService;
-  private final MemberService memberService;
 
-  public TrustlyConversation(TriggerService triggerService, MemberService memberService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService, UserContext userContext) {
+  public TrustlyConversation(TriggerService triggerService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService, UserContext userContext) {
     super(eventPublisher, localizationService, userContext);
     this.triggerService = triggerService;
-    this.memberService = memberService;
 
     createChatMessage(
-        START,
-        new MessageBodySingleSelect(
-            "Fantastiskt! Nu är allt klart, jag ska bara sätta upp din betalning \fDet ska vara smidigt såklart, så jag använder digitalt autogiro genom Trustly\fInga pengar dras såklart förrän försäkringen börjar gälla!",
-            Lists.newArrayList(new SelectItemTrustly("Välj bankkonto", "trustly.noop"))));
+      START,
+      new MessageBodySingleSelect(
+        "Fantastiskt! Nu är allt klart, jag ska bara sätta upp din betalning \fDet ska vara smidigt såklart, så jag använder digitalt autogiro genom Trustly\fInga pengar dras såklart förrän försäkringen börjar gälla!",
+        Lists.newArrayList(new SelectItemTrustly("Välj bankkonto", "trustly.noop"))));
 
     createChatMessage(
-        FORCED_START,
-        new MessageBodySingleSelect(
-            "Då är det dags att sätta upp din betalning \fDet ska vara smidigt såklart, så jag använder digitalt autogiro genom Trustly\fInga pengar dras såklart förrän försäkringen börjar gälla!",
-            Lists.newArrayList(new SelectItemTrustly("Välj bankkonto", "trustly.noop"))));
+      FORCED_START,
+      new MessageBodySingleSelect(
+        "Då är det dags att sätta upp din betalning \fDet ska vara smidigt såklart, så jag använder digitalt autogiro genom Trustly\fInga pengar dras såklart förrän försäkringen börjar gälla!",
+        Lists.newArrayList(new SelectItemTrustly("Välj bankkonto", "trustly.noop"))));
 
     createChatMessage(
-        TRUSTLY_POLL,
-        new MessageBodySingleSelect(
-            "Om du hellre vill så kan vi vänta med att sätta upp betalningen!\fDå hör jag av mig till dig lite innan din försäkring aktiveras",
-            Lists.newArrayList(
-                new SelectItemTrustly("Vi gör klart det nu", "trustly.noop"),
-                SelectLink.toDashboard("Vi gör det senare, ta mig till appen!", "end"))));
+      TRUSTLY_POLL,
+      new MessageBodySingleSelect(
+        "Om du hellre vill så kan vi vänta med att sätta upp betalningen!\fDå hör jag av mig till dig lite innan din försäkring aktiveras",
+        Lists.newArrayList(
+          new SelectItemTrustly("Vi gör klart det nu", "trustly.noop"),
+          SelectLink.toDashboard("Vi gör det senare, ta mig till appen!", "end"))));
 
     createMessage(
-        CANCEL,
-        new MessageBodySingleSelect(
-            "Oj, nu verkar det som att något gick lite fel med betalningsregistreringen. Vi testar igen!",
-            Lists.newArrayList(new SelectItemTrustly("Välj bankkonto", "trustly.noop"))));
+      CANCEL,
+      new MessageBodySingleSelect(
+        "Oj, nu verkar det som att något gick lite fel med betalningsregistreringen. Vi testar igen!",
+        Lists.newArrayList(new SelectItemTrustly("Välj bankkonto", "trustly.noop"))));
 
     createMessage(
-        COMPLETE,
-        new MessageBodySingleSelect(
-            "Tack! Dags att börja utforska appen!",
-            Lists.newArrayList(
-                new SelectLink("Sätt igång", "end", "Dashboard", null, null, false))));
+      COMPLETE,
+      new MessageBodySingleSelect(
+        "Tack! Dags att börja utforska appen!",
+        Lists.newArrayList(
+          new SelectLink("Sätt igång", "end", "Dashboard", null, null, false))));
   }
 
   @Override
@@ -127,7 +118,7 @@ public class TrustlyConversation extends Conversation {
   public void receiveEvent(EventTypes e, String value) {
 
     switch (e) {
-        // This is used to let Hedvig say multiple message after another
+      // This is used to let Hedvig say multiple message after another
       case MESSAGE_FETCHED:
         // log.info("Message fetched:" + value);
 
@@ -166,15 +157,15 @@ public class TrustlyConversation extends Conversation {
   @Override
   public void addToChat(Message m) {
     if ((m.id.equals(START) || m.id.equals(CANCEL) || m.id.equals(FORCED_START))
-        && m.header.fromId == MessageHeader.HEDVIG_USER_ID) {
+      && m.header.fromId == MessageHeader.HEDVIG_USER_ID) {
       final UserData userData = getUserContext().getOnBoardingData();
       UUID triggerUUID =
-          triggerService.createTrustlyDirectDebitMandate(
-              userData.getSSN(),
-              userData.getFirstName(),
-              userData.getFamilyName(),
-              userData.getEmail(),
-              getUserContext().getMemberId());
+        triggerService.createTrustlyDirectDebitMandate(
+          userData.getSSN(),
+          userData.getFirstName(),
+          userData.getFamilyName(),
+          userData.getEmail(),
+          getUserContext().getMemberId());
 
       getUserContext().putUserData(UserContext.TRUSTLY_TRIGGER_ID, triggerUUID.toString());
     }
@@ -186,7 +177,7 @@ public class TrustlyConversation extends Conversation {
     String nxtMsg;
 
     final DirectDebitMandateTrigger.TriggerStatus orderState =
-        triggerService.getTrustlyOrderInformation(getUserContext().getDataEntry(UserContext.TRUSTLY_TRIGGER_ID));
+      triggerService.getTrustlyOrderInformation(getUserContext().getDataEntry(UserContext.TRUSTLY_TRIGGER_ID));
     if (orderState.equals(DirectDebitMandateTrigger.TriggerStatus.FAILED)) {
       nxtMsg = CANCEL;
     } else if (orderState.equals(DirectDebitMandateTrigger.TriggerStatus.SUCCESS)) {

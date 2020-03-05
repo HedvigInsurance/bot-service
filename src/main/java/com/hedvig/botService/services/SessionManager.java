@@ -11,6 +11,7 @@ import com.hedvig.botService.web.dto.AddMessageRequestDTO;
 import com.hedvig.botService.web.dto.BackOfficeAnswerDTO;
 import com.hedvig.botService.web.dto.TrackingDTO;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
+import com.hedvig.localization.service.TextKeysLocaleResolver;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static com.hedvig.botService.chat.OnboardingConversationDevi.MESSAGE_START_LOGIN;
@@ -180,7 +180,7 @@ public class SessionManager {
     uc.putUserData(UserContext.ONBOARDING_COMPLETE, "false");
 
     val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
-    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
+    uc.setLocale(locale);
 
     userContextRepository.saveAndFlush(uc);
   }
@@ -306,7 +306,7 @@ public class SessionManager {
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
 
     val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
-    uc.putUserData(UserContext.LANGUAGE_KEY, locale.getLanguage());
+    uc.setLocale(locale);
 
     val messages = uc.getMessages(intent, conversationFactory);
     return messages;
