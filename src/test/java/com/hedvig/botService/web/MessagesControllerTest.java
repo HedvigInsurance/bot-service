@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = MessagesController.class)
 @ContextConfiguration(classes = BotServiceApplicationTests.class)
-//@ImportAutoConfiguration({RibbonAutoConfiguration.class, FeignRibbonClientAutoConfiguration.class, FeignAutoConfiguration.class})
 public class MessagesControllerTest {
 
   @MockBean SessionManager sessionManager;

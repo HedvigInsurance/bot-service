@@ -85,10 +85,4 @@ class AppController(
 
         return ResponseEntity.ok(OnboardingData.from(userContext.get()))
     }
-
-    @PostMapping("/refreshLocalization")
-    fun refreshLocalization(): ResponseEntity<String> {
-        //localizationService.refreshLocalizations()
-        return ResponseEntity.ok("Localizations refreshed")
-    }
 }
