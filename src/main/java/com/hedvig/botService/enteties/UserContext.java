@@ -3,6 +3,7 @@ package com.hedvig.botService.enteties;
 import com.google.common.collect.ImmutableMap;
 import com.hedvig.botService.chat.Conversation;
 import com.hedvig.botService.chat.ConversationFactory;
+import com.hedvig.botService.chat.FreeChatConversation;
 import com.hedvig.botService.chat.OnboardingConversationDevi;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
@@ -310,6 +311,14 @@ public class UserContext implements Serializable {
     startConversation(onboardingConversation, startMsg);
   }
 
+  private void initFreeChat(String startMsg, @NotNull ConversationFactory conversationFactory) {
+    putUserData("{WEB_USER}", "FALSE");
+
+    Conversation freeChatConversation =
+      conversationFactory.createConversation(FreeChatConversation.class, this);
+    startConversation(freeChatConversation, startMsg);
+  }
+
   public List<Message> getMessages(
       SessionManager.Intent intent, ConversationFactory conversationFactory) {
     MemberChat chat = getMemberChat();
@@ -317,6 +326,8 @@ public class UserContext implements Serializable {
     if (getActiveConversation().isPresent() == false) {
       if (intent == SessionManager.Intent.LOGIN) {
         initChat(OnboardingConversationDevi.MESSAGE_START_LOGIN, conversationFactory);
+      } else if(chat.userContext.getLocale().getCountry().equals("NO")){
+        initFreeChat(FreeChatConversation.FREE_CHAT_ONBOARDING_START, conversationFactory);
       } else {
         initChat(OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_ASK_NAME, conversationFactory);
       }
