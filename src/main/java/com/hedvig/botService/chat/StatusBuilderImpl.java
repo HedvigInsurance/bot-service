@@ -125,36 +125,36 @@ public class StatusBuilderImpl implements StatusBuilder {
 
     int timeToAnswer = (meetingEndTime + buffer) - roundedTime;
 
-    return getReplaysWithinMinText(timeToAnswer, locale);
+    return getRepliesWithinMinText(timeToAnswer, locale);
   }
 
   public String getChristmasPeriodAnswerTimes(int hour, LocalDate date, Locale locale) {
     if (hour <= 2) {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     }
     if (hour < 10) {
-      return getReplaysAfterHourOfDay(10, locale);
+      return getRepliesAfterHourOfDay(10, locale);
     }
     if (hour < 17) {
-      return christmasRedDays.contains(date) ? getReplaysWithinHalfAnHour(locale) : getReplaysWithinMinText(10, locale);
+      return christmasRedDays.contains(date) ? getRepliesWithinHalfAnHour(locale) : getRepliesWithinMinText(10, locale);
     }
     if (hour < 20) {
-      return christmasRedDays.contains(date) ? getReplaysWithinHalfAnHour(locale) : getReplaysWithinMinText(20, locale);
+      return christmasRedDays.contains(date) ? getRepliesWithinHalfAnHour(locale) : getRepliesWithinMinText(20, locale);
     } else {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     }
   }
 
   public String getRedDayAndWeekendAnswerTimes(int hour, Locale locale) {
 
     if (hour <= 2) {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     } else if (hour < 9) {
-      return getReplaysAfterHourOfDay(9, locale);
+      return getRepliesAfterHourOfDay(9, locale);
     } else if (hour < 22) {
-      return getReplaysWithinAnHour(locale);
+      return getRepliesWithinAnHour(locale);
     } else {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     }
   }
 
@@ -168,7 +168,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
 
     if (todayDate.isEqual(summerParty) && hour >= 15) {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     }
 
     switch (dayOfWeek) {
@@ -178,18 +178,18 @@ public class StatusBuilderImpl implements StatusBuilder {
       case THURSDAY:
       case FRIDAY: {
         if (hour <= 2) {
-          return getReplaysTomorrow(locale);
+          return getRepliesTomorrow(locale);
         }
         if (hour < 8) {
-          return getReplaysAfterHourOfDay(8, locale);
+          return getRepliesAfterHourOfDay(8, locale);
         }
         if (hour < 17) {
-          return getReplaysWithinMinText(15, locale);
+          return getRepliesWithinMinText(15, locale);
         }
         if (summerWeekendsWithNoChatCover.contains(tomorrowDate)) {
-          return getReplaysOnMonday(locale);
+          return getRepliesOnMonday(locale);
         }
-        return getReplaysTomorrow(locale);
+        return getRepliesTomorrow(locale);
       }
       default: {
         log.error("getSummerWeekdayAnswerTimes method has not returned a hedvig answer time");
@@ -201,19 +201,19 @@ public class StatusBuilderImpl implements StatusBuilder {
   public String getSummerWeekendTimes(int hour, LocalDate todayDate, Locale locale) {
 
     if (summerWeekendsWithNoChatCover.contains(todayDate)) {
-      return getReplaysOnMonday(locale);
+      return getRepliesOnMonday(locale);
     }
 
     if (hour <= 2) {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     }
     if (hour < 10) {
-      return getReplaysAfterHourOfDay(10, locale);
+      return getRepliesAfterHourOfDay(10, locale);
     }
     if (hour < 18) {
-      return getReplaysWithinAnHour(locale);
+      return getRepliesWithinAnHour(locale);
     } else {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     }
   }
 
@@ -241,7 +241,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
 
     if (todayDate.equals(noCoverDate) && hour >= 20) {
-      return getReplaysTomorrow(locale);
+      return getRepliesTomorrow(locale);
     }
 
     if ((todayDate.equals(midsommarStartDate) && hour >= 23) || (todayDate.equals(midsommarEndDate))) {
@@ -265,36 +265,36 @@ public class StatusBuilderImpl implements StatusBuilder {
         case WEDNESDAY:
         case THURSDAY: {
           if (hour <= 2) {
-            return getReplaysTomorrow(locale);
+            return getRepliesTomorrow(locale);
           }
           if (hour < 8) {
-            return getReplaysAfterHourOfDay(8, locale);
+            return getRepliesAfterHourOfDay(8, locale);
           }
           if (hour < 17) {
-            return getReplaysWithinMinText(10, locale);
+            return getRepliesWithinMinText(10, locale);
           } else if (hour < 22) {
-            return getReplaysWithinMinText(20, locale);
+            return getRepliesWithinMinText(20, locale);
           } else {
-            return getReplaysTomorrow(locale);
+            return getRepliesTomorrow(locale);
           }
         }
         case FRIDAY: {
           if (hour <= 2) {
-            return getReplaysTomorrow(locale);
+            return getRepliesTomorrow(locale);
           }
           if (hour < 8) {
-            return getReplaysAfterHourOfDay(8, locale);
+            return getRepliesAfterHourOfDay(8, locale);
           }
           if (hour == 11 && minute >= 0 && minute <= 45) {
             int meetingEndTime = 45;
             return getFridayRetroMeetingTime(minute, meetingEndTime, locale);
           }
           if (hour < 17) {
-            return getReplaysWithinMinText(10, locale);
+            return getRepliesWithinMinText(10, locale);
           } else if (hour < 22) {
-            return getReplaysWithinMinText(20, locale);
+            return getRepliesWithinMinText(20, locale);
           } else {
-            return getReplaysTomorrow(locale);
+            return getRepliesTomorrow(locale);
           }
         }
         case SATURDAY:
@@ -309,7 +309,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
   }
 
-  private String getReplaysWithinMinText(int min, Locale locale) {
+  private String getRepliesWithinMinText(int min, Locale locale) {
     String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_MIN");
     if (text == null) {
       text = "Hedvig svarar inom {MINUTES} min";
@@ -318,7 +318,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     return text.replace("{MINUTES}", String.valueOf(min));
   }
 
-  private String getReplaysAfterHourOfDay(int hourOfDay, Locale locale) {
+  private String getRepliesAfterHourOfDay(int hourOfDay, Locale locale) {
     String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY");
     if (text == null) {
       text = "Hedvig svarar efter kl. {HOUR_OF_DAY}";
@@ -327,7 +327,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     return text.replace("{HOUR_OF_DAY}", String.valueOf(hourOfDay));
   }
 
-  private String getReplaysTomorrow(Locale locale) {
+  private String getRepliesTomorrow(Locale locale) {
     String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_TOMORROW");
     if (text == null) {
       text = "Hedvig svarar imorgon";
@@ -336,7 +336,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     return text;
   }
 
-  private String getReplaysWithinHalfAnHour(Locale locale) {
+  private String getRepliesWithinHalfAnHour(Locale locale) {
     String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_HALF_AN_HOUR");
     if (text == null) {
       text = "Hedvig svarar inom en halvtimme";
@@ -345,7 +345,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     return text;
   }
 
-  private String getReplaysWithinAnHour(Locale locale) {
+  private String getRepliesWithinAnHour(Locale locale) {
     String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR");
     if (text == null) {
       text = "Hedvig svarar inom en timme";
@@ -355,7 +355,7 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
 
-  private String getReplaysOnMonday(Locale locale) {
+  private String getRepliesOnMonday(Locale locale) {
     String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_ON_MONDAY");
     if (text == null) {
       text = "Hedvig svarar på Måndag";
