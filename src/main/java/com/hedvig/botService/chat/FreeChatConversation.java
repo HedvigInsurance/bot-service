@@ -84,7 +84,7 @@ public class FreeChatConversation extends Conversation {
       case FREE_CHAT_FROM_BO:
       case FREE_CHAT_FROM_CLAIM:
       case FREE_CHAT_MESSAGE: {
-        m.header.statusMessage = statusBuilder.getStatusMessage(Clock.systemUTC());
+        m.header.statusMessage = statusBuilder.getStatusMessage(Clock.systemUTC(), getUserContext().getLocale());
 
         boolean isFile = m.body instanceof MessageBodyFileUpload;
 
