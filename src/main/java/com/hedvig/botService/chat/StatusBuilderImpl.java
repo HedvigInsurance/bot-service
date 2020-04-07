@@ -9,9 +9,12 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
+import com.hedvig.localization.service.LocalizationService;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /*
@@ -76,22 +79,28 @@ Summer party no cover after 3pm
 @Slf4j
 public class StatusBuilderImpl implements StatusBuilder {
 
+  public StatusBuilderImpl(@Autowired LocalizationService localizationService) {
+    this.localizationService = localizationService;
+  }
+
+  private LocalizationService localizationService;
+
   private static int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
   private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(
-      LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-06"), LocalDate.parse("2019-04-19"),
-      LocalDate.parse("2019-04-21"), LocalDate.parse("2019-04-22"), LocalDate.parse("2019-05-01"),
-      LocalDate.parse("2019-05-30"), LocalDate.parse("2019-06-06"), LocalDate.parse("2019-12-25"),
-      LocalDate.parse("2019-12-26")
-    )
+    LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-06"), LocalDate.parse("2019-04-19"),
+    LocalDate.parse("2019-04-21"), LocalDate.parse("2019-04-22"), LocalDate.parse("2019-05-01"),
+    LocalDate.parse("2019-05-30"), LocalDate.parse("2019-06-06"), LocalDate.parse("2019-12-25"),
+    LocalDate.parse("2019-12-26")
+  )
   );
 
   private static ArrayList<LocalDate> summerWeekendsWithNoChatCover = new ArrayList<>(Arrays.asList(
-      LocalDate.parse("2019-07-13"), LocalDate.parse("2019-07-14"), LocalDate.parse("2019-07-20"),
-      LocalDate.parse("2019-07-21"), LocalDate.parse("2019-07-27"), LocalDate.parse("2019-07-28"),
-      LocalDate.parse("2019-08-03"), LocalDate.parse("2019-08-04"), LocalDate.parse("2019-08-10"),
-      LocalDate.parse("2019-08-11")
-    )
+    LocalDate.parse("2019-07-13"), LocalDate.parse("2019-07-14"), LocalDate.parse("2019-07-20"),
+    LocalDate.parse("2019-07-21"), LocalDate.parse("2019-07-27"), LocalDate.parse("2019-07-28"),
+    LocalDate.parse("2019-08-03"), LocalDate.parse("2019-08-04"), LocalDate.parse("2019-08-10"),
+    LocalDate.parse("2019-08-11")
+  )
   );
 
   private static LocalDate christmasStartDate = LocalDate.parse("2019-12-22");
@@ -105,66 +114,61 @@ public class StatusBuilderImpl implements StatusBuilder {
   final private LocalDate midsommarStartDate = LocalDate.parse("2019-06-20");
   final private LocalDate midsommarEndDate = LocalDate.parse("2019-06-21");
 
-  public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime) {
+  public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime, Locale locale) {
     int roundedTime = currentMinute;
     final int buffer = 5;
 
-    if(currentMinute % 5 != 0) {
+    if (currentMinute % 5 != 0) {
       int remainder = currentMinute % 5;
       roundedTime = currentMinute - remainder;
     }
 
     int timeToAnswer = (meetingEndTime + buffer) - roundedTime;
-    return "Hedvig svarar inom " + timeToAnswer + " min";
+
+    return getRepliesWithinMinText(timeToAnswer, locale);
   }
 
-  public String getChristmasPeriodAnswerTimes(int hour, LocalDate date) {
+  public String getChristmasPeriodAnswerTimes(int hour, LocalDate date, Locale locale) {
     if (hour <= 2) {
-      return "Hedvig svarar imorgon";
+      return getRepliesTomorrow(locale);
     }
     if (hour < 10) {
-      return "Hedvig svarar efter kl. 10";
+      return getRepliesAfterHourOfDay(10, locale);
     }
     if (hour < 17) {
-      return christmasRedDays.contains(date) ? "Hedvig svarar inom en halvtimme": "Hedvig svarar inom 10 min";
+      return christmasRedDays.contains(date) ? getRepliesWithinHalfAnHour(locale) : getRepliesWithinMinText(10, locale);
     }
     if (hour < 20) {
-      return christmasRedDays.contains(date) ? "Hedvig svarar inom en halvtimme": "Hedvig svarar inom 20 min";
-    }
-    else {
-      return "Hedvig svarar imorgon";
+      return christmasRedDays.contains(date) ? getRepliesWithinHalfAnHour(locale) : getRepliesWithinMinText(20, locale);
+    } else {
+      return getRepliesTomorrow(locale);
     }
   }
 
-  public String getRedDayAndWeekendAnswerTimes(int hour) {
+  public String getRedDayAndWeekendAnswerTimes(int hour, Locale locale) {
 
     if (hour <= 2) {
-      return "Hedvig svarar imorgon";
+      return getRepliesTomorrow(locale);
     } else if (hour < 9) {
-      return "Hedvig svarar efter kl. 9";
+      return getRepliesAfterHourOfDay(9, locale);
     } else if (hour < 22) {
-      return "Hedvig svarar inom en timme";
-    }
-    else {
-      return "Hedvig svarar imorgon";
+      return getRepliesWithinAnHour(locale);
+    } else {
+      return getRepliesTomorrow(locale);
     }
   }
 
-  public String hedvigWillAnswerOnMonday() {
-    return "Hedvig svarar på Måndag";
-  }
-
-  public String getSummerWeekdayAnswerTimes(int hour, int minute, LocalDate todayDate) {
+  public String getSummerWeekdayAnswerTimes(int hour, int minute, LocalDate todayDate, Locale locale) {
     final DayOfWeek dayOfWeek = todayDate.getDayOfWeek();
     final LocalDate tomorrowDate = todayDate.plusDays(1);
     final LocalDate summerParty = LocalDate.parse("2019-06-28");
 
-    if(dayOfWeek.equals(DayOfWeek.FRIDAY) && hour == 11 && minute >= 0 && minute <= 45) {
-        return getFridayRetroMeetingTime(minute, 45);
+    if (dayOfWeek.equals(DayOfWeek.FRIDAY) && hour == 11 && minute >= 0 && minute <= 45) {
+      return getFridayRetroMeetingTime(minute, 45, locale);
     }
 
-    if(todayDate.isEqual(summerParty) && hour >= 15) {
-      return "Hedvig svarar imorgon";
+    if (todayDate.isEqual(summerParty) && hour >= 15) {
+      return getRepliesTomorrow(locale);
     }
 
     switch (dayOfWeek) {
@@ -174,18 +178,18 @@ public class StatusBuilderImpl implements StatusBuilder {
       case THURSDAY:
       case FRIDAY: {
         if (hour <= 2) {
-          return "Hedvig svarar imorgon";
+          return getRepliesTomorrow(locale);
         }
         if (hour < 8) {
-          return "Hedvig svarar efter kl. 8";
+          return getRepliesAfterHourOfDay(8, locale);
         }
         if (hour < 17) {
-          return "Hedvig svarar inom 15 min";
+          return getRepliesWithinMinText(15, locale);
         }
         if (summerWeekendsWithNoChatCover.contains(tomorrowDate)) {
-          return hedvigWillAnswerOnMonday();
+          return getRepliesOnMonday(locale);
         }
-        return "Hedvig svarar imorgon";
+        return getRepliesTomorrow(locale);
       }
       default: {
         log.error("getSummerWeekdayAnswerTimes method has not returned a hedvig answer time");
@@ -194,34 +198,33 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
   }
 
-  public String getSummerWeekendTimes(int hour, LocalDate todayDate) {
+  public String getSummerWeekendTimes(int hour, LocalDate todayDate, Locale locale) {
 
     if (summerWeekendsWithNoChatCover.contains(todayDate)) {
-      return hedvigWillAnswerOnMonday();
+      return getRepliesOnMonday(locale);
     }
 
     if (hour <= 2) {
-      return "Hedvig svarar imorgon";
+      return getRepliesTomorrow(locale);
     }
     if (hour < 10) {
-      return "Hedvig svarar efter kl. 10";
+      return getRepliesAfterHourOfDay(10, locale);
     }
     if (hour < 18) {
-      return "Hedvig svarar inom en timme";
-    }
-    else {
-      return "Hedvig svarar imorgon";
+      return getRepliesWithinAnHour(locale);
+    } else {
+      return getRepliesTomorrow(locale);
     }
   }
 
   public boolean isSummerTime(LocalDate todayDate) {
-    LocalDate summerStart = LocalDate.of(currentYear,6,20);
-    LocalDate summerEnd = LocalDate.of(currentYear,8,12);
+    LocalDate summerStart = LocalDate.of(currentYear, 6, 20);
+    LocalDate summerEnd = LocalDate.of(currentYear, 8, 12);
     return todayDate.isAfter(summerStart) && todayDate.isBefore(summerEnd);
   }
 
   @Override
-  public String getStatusMessage(Clock c) {
+  public String getStatusMessage(Clock c, Locale locale) {
 
     Instant now = Instant.now(c);
     ZonedDateTime time = now.atZone(ZoneId.of("Europe/Stockholm"));
@@ -233,72 +236,70 @@ public class StatusBuilderImpl implements StatusBuilder {
     final int minute = time.getMinute();
     final LocalDate todayDate = LocalDate.now();
 
-    if(todayDate.isAfter(christmasStartDate) && todayDate.isBefore(christmasEndDate)) {
-      return getChristmasPeriodAnswerTimes(hour, todayDate);
+    if (todayDate.isAfter(christmasStartDate) && todayDate.isBefore(christmasEndDate)) {
+      return getChristmasPeriodAnswerTimes(hour, todayDate, locale);
     }
 
     if (todayDate.equals(noCoverDate) && hour >= 20) {
-      return "Hedvig svarar imorgon";
+      return getRepliesTomorrow(locale);
     }
 
     if ((todayDate.equals(midsommarStartDate) && hour >= 23) || (todayDate.equals(midsommarEndDate))) {
-      return "Hedvig svarar den 22e juni";
+      return "Hedvig svarar den 22e juni"; //TODO lets fix support for dates later!
     }
 
     if (isSummerTime(todayDate) && (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY))) {
-      return getSummerWeekendTimes(hour, todayDate);
+      return getSummerWeekendTimes(hour, todayDate, locale);
     }
 
     if (isSummerTime(todayDate) && (!dayOfWeek.equals(DayOfWeek.SATURDAY)) && !dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-      return getSummerWeekdayAnswerTimes(hour, minute, todayDate);
+      return getSummerWeekdayAnswerTimes(hour, minute, todayDate, locale);
     }
 
     if (redDays.contains(todayDate)) {
-      return getRedDayAndWeekendAnswerTimes(hour);
-    }
-    else {
+      return getRedDayAndWeekendAnswerTimes(hour, locale);
+    } else {
       switch (dayOfWeek) {
         case MONDAY:
         case TUESDAY:
         case WEDNESDAY:
         case THURSDAY: {
           if (hour <= 2) {
-            return "Hedvig svarar imorgon";
+            return getRepliesTomorrow(locale);
           }
           if (hour < 8) {
-            return "Hedvig svarar efter kl. 8";
+            return getRepliesAfterHourOfDay(8, locale);
           }
           if (hour < 17) {
-            return "Hedvig svarar inom 10 min";
-          }
-          else if (hour < 22) {
-            return "Hedvig svarar inom 20 min";
+            return getRepliesWithinMinText(10, locale);
+          } else if (hour < 22) {
+            return getRepliesWithinMinText(20, locale);
           } else {
-            return "Hedvig svarar imorgon";
+            return getRepliesTomorrow(locale);
           }
         }
         case FRIDAY: {
           if (hour <= 2) {
-            return "Hedvig svarar imorgon";
+            return getRepliesTomorrow(locale);
           }
           if (hour < 8) {
-            return "Hedvig svarar efter kl. 8";
+            return getRepliesAfterHourOfDay(8, locale);
           }
           if (hour == 11 && minute >= 0 && minute <= 45) {
             int meetingEndTime = 45;
-            return getFridayRetroMeetingTime(minute, meetingEndTime);
+            return getFridayRetroMeetingTime(minute, meetingEndTime, locale);
           }
           if (hour < 17) {
-            return "Hedvig svarar inom 10 min";
+            return getRepliesWithinMinText(10, locale);
           } else if (hour < 22) {
-            return "Hedvig svarar inom 20 min";
+            return getRepliesWithinMinText(20, locale);
           } else {
-            return "Hedvig svarar imorgon";
+            return getRepliesTomorrow(locale);
           }
         }
         case SATURDAY:
         case SUNDAY: {
-          return getRedDayAndWeekendAnswerTimes(hour);
+          return getRedDayAndWeekendAnswerTimes(hour, locale);
         }
         default: {
           log.error("getstatusmessage method has not returned a hedvig answer time");
@@ -306,5 +307,60 @@ public class StatusBuilderImpl implements StatusBuilder {
         }
       }
     }
+  }
+
+  private String getRepliesWithinMinText(int min, Locale locale) {
+    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_MIN");
+    if (text == null) {
+      text = "Hedvig svarar inom {MINUTES} min";
+    }
+
+    return text.replace("{MINUTES}", String.valueOf(min));
+  }
+
+  private String getRepliesAfterHourOfDay(int hourOfDay, Locale locale) {
+    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY");
+    if (text == null) {
+      text = "Hedvig svarar efter kl. {HOUR_OF_DAY}";
+    }
+
+    return text.replace("{HOUR_OF_DAY}", String.valueOf(hourOfDay));
+  }
+
+  private String getRepliesTomorrow(Locale locale) {
+    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_TOMORROW");
+    if (text == null) {
+      text = "Hedvig svarar imorgon";
+    }
+
+    return text;
+  }
+
+  private String getRepliesWithinHalfAnHour(Locale locale) {
+    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_HALF_AN_HOUR");
+    if (text == null) {
+      text = "Hedvig svarar inom en halvtimme";
+    }
+
+    return text;
+  }
+
+  private String getRepliesWithinAnHour(Locale locale) {
+    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR");
+    if (text == null) {
+      text = "Hedvig svarar inom en timme";
+    }
+
+    return text;
+  }
+
+
+  private String getRepliesOnMonday(Locale locale) {
+    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_ON_MONDAY");
+    if (text == null) {
+      text = "Hedvig svarar på Måndag";
+    }
+
+    return text;
   }
 }
