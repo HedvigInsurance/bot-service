@@ -103,8 +103,8 @@ public class StatusBuilderImpl implements StatusBuilder {
   )
   );
 
-  private static LocalDate easterStartDate = LocalDate.parse("2020-04-08");
-  private static LocalDate easterEndDate = LocalDate.parse("2020-04-14");
+  private static LocalDate dayBeforeEasterHoliday = LocalDate.parse("2020-04-08");
+  private static LocalDate dayAfterEasterHoliday = LocalDate.parse("2020-04-14");
 
   private static ArrayList<LocalDate> christmasRedDays = new ArrayList<>(Arrays.asList(
     LocalDate.parse("2019-12-24"), LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26"),
@@ -250,7 +250,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     final int minute = time.getMinute();
     final LocalDate todayDate = LocalDate.now();
 
-    if (todayDate.isAfter(easterStartDate) && todayDate.isBefore(easterEndDate)) {
+    if (todayDate.isAfter(dayBeforeEasterHoliday) && todayDate.isBefore(dayAfterEasterHoliday)) {
       return getEasterPeriodAnswerTimes(hour, locale);
     }
 
