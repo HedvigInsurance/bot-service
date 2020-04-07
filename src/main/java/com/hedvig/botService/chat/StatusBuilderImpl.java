@@ -103,8 +103,8 @@ public class StatusBuilderImpl implements StatusBuilder {
   )
   );
 
-  private static LocalDate christmasStartDate = LocalDate.parse("2019-12-22");
-  private static LocalDate christmasEndDate = LocalDate.parse("2020-01-07");
+  private static LocalDate easterStartDate = LocalDate.parse("2020-04-08");
+  private static LocalDate easterEndDate = LocalDate.parse("2020-04-14");
 
   private static ArrayList<LocalDate> christmasRedDays = new ArrayList<>(Arrays.asList(
     LocalDate.parse("2019-12-24"), LocalDate.parse("2019-12-25"), LocalDate.parse("2019-12-26"),
@@ -140,6 +140,20 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
     if (hour < 20) {
       return christmasRedDays.contains(date) ? getRepliesWithinHalfAnHour(locale) : getRepliesWithinMinText(20, locale);
+    } else {
+      return getRepliesTomorrow(locale);
+    }
+  }
+
+  public String getEasterPeriodAnswerTimes(int hour, Locale locale) {
+    if (hour <= 2) {
+      return getRepliesTomorrow(locale);
+    }
+    if (hour < 10) {
+      return getRepliesAfterHourOfDay(10, locale);
+    }
+    if (hour < 22) {
+      return getRepliesWithinAnHour(locale);
     } else {
       return getRepliesTomorrow(locale);
     }
@@ -236,8 +250,8 @@ public class StatusBuilderImpl implements StatusBuilder {
     final int minute = time.getMinute();
     final LocalDate todayDate = LocalDate.now();
 
-    if (todayDate.isAfter(christmasStartDate) && todayDate.isBefore(christmasEndDate)) {
-      return getChristmasPeriodAnswerTimes(hour, todayDate, locale);
+    if (todayDate.isAfter(easterStartDate) && todayDate.isBefore(easterEndDate)) {
+      return getEasterPeriodAnswerTimes(hour, locale);
     }
 
     if (todayDate.equals(noCoverDate) && hour >= 20) {

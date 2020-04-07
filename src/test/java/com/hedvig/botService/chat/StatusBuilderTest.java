@@ -68,6 +68,13 @@ public class StatusBuilderTest {
   }
 
   @Test
+  public void easterAnsweringTimesToBeAsExpected() {
+    assertEquals("Hedvig svarar inom en timme", builder.getEasterPeriodAnswerTimes(16, DEFAULT_LOCALE));
+    assertEquals("Hedvig svarar imorgon", builder.getEasterPeriodAnswerTimes(22, DEFAULT_LOCALE));
+    assertEquals("Hedvig svarar efter kl. 10", builder.getEasterPeriodAnswerTimes(6, DEFAULT_LOCALE));
+  }
+
+  @Test
   public void summerWaitingTimesToBeAsExpected() {
     assertEquals("Hedvig svarar inom 15 min", builder.getSummerWeekdayAnswerTimes(12, 30, LocalDate.parse("2019-07-04"), DEFAULT_LOCALE));
     assertEquals("Hedvig svarar inom 5 min", builder.getSummerWeekdayAnswerTimes(11, 45, LocalDate.parse("2019-07-05"), DEFAULT_LOCALE));
