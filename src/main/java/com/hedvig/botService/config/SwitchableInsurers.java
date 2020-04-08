@@ -9,8 +9,7 @@ public class SwitchableInsurers {
     "ICA",
     "Tre Kronor",
     "Länsförsäkringar Stockholm",
-    "Aktsam",
-    "Dina Försäkringar"
+    "Aktsam"
   );
 }
 
