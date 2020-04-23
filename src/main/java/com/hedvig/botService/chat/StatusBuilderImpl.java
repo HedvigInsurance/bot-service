@@ -42,30 +42,23 @@ import org.springframework.stereotype.Component;
 02-09.59 – Hedvig svarar efter kl. 10
 
 *Weekends with no cover during summer*
-13th - 14th July
-20th - 21st July
-27th - 28th July
-3rd - 4th August
-10th - 11th August
-Day before these weekends i.e. 12th June, 19th June cover will stop from 6pm
-21st is an exception see Midsummer note below
 
 *Ad hoc*
-No cover for Midsummer from 23:00 on 20th to 22th June
-Summer party no cover after 3pm
 
 *Regular Working Hours*
 
 *Måndag-Torsdag*
 08-17 – Hedvig svarar inom 10 min **
-17-22 - Hedvig svarar inom 20 min **
+17-20 - Hedvig svarar inom 20 min **
+17-22 - Hedvig svarar inom 30 min **
 22-02 – Hedvig svarar i morgon
 02-07.59 – Hedvig svarar efter kl. 08
 
 *Fredag*
 08-17 – Hedvig svarar inom 10 min **
 11-11.45 - Hedvig svarar inom {11.45 - current time rounded to 5 minutes and with a 5 minute buffer} min
-17-22 – Hedvig svarar inom 20 min
+17-20 - Hedvig svarar inom 20 min **
+17-22 - Hedvig svarar inom 30 min **
 22-02 – Hedvig svarar i morgon
 02-08.59 – Hedvig svarar efter kl. 9
 
@@ -88,12 +81,8 @@ public class StatusBuilderImpl implements StatusBuilder {
   private static int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
   private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(
-    LocalDate.parse("2019-01-01"), LocalDate.parse("2019-01-06"), LocalDate.parse("2019-04-19"),
-    LocalDate.parse("2019-04-21"), LocalDate.parse("2019-04-22"), LocalDate.parse("2019-05-01"),
-    LocalDate.parse("2019-05-30"), LocalDate.parse("2019-06-06"), LocalDate.parse("2019-12-25"),
-    LocalDate.parse("2019-12-26")
-  )
-  );
+    LocalDate.parse("2020-05-01"), LocalDate.parse("2020-05-21"), LocalDate.parse("2019-06-19")
+  ));
 
   private static ArrayList<LocalDate> summerWeekendsWithNoChatCover = new ArrayList<>(Arrays.asList(
     LocalDate.parse("2019-07-13"), LocalDate.parse("2019-07-14"), LocalDate.parse("2019-07-20"),
@@ -286,8 +275,12 @@ public class StatusBuilderImpl implements StatusBuilder {
           }
           if (hour < 17) {
             return getRepliesWithinMinText(10, locale);
-          } else if (hour < 22) {
+          }
+          if (hour < 20) {
             return getRepliesWithinMinText(20, locale);
+          }
+          if (hour < 22) {
+            return getRepliesWithinMinText(30, locale);
           } else {
             return getRepliesTomorrow(locale);
           }
@@ -305,8 +298,12 @@ public class StatusBuilderImpl implements StatusBuilder {
           }
           if (hour < 17) {
             return getRepliesWithinMinText(10, locale);
-          } else if (hour < 22) {
+          }
+          if (hour < 20) {
             return getRepliesWithinMinText(20, locale);
+          }
+          if (hour < 22) {
+            return getRepliesWithinMinText(30, locale);
           } else {
             return getRepliesTomorrow(locale);
           }
