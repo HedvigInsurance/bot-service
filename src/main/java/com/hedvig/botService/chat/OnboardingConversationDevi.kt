@@ -783,7 +783,6 @@ class OnboardingConversationDevi(
                 SelectOption("Folksam", "Folksam"),
                 SelectOption("Trygg-Hansa", "Trygg-Hansa"),
                 SelectOption("Länsförsäkringar", "Länsförsäkringar"),
-                SelectOption("Länsförsäkringar Stockholm", "Länsförsäkringar Stockholm"),
                 SelectOption("Annat bolag", "message.bolag.annat.expand"),
                 SelectOption("Ingen aning", "message.bolag.vetej")
             )
@@ -797,8 +796,6 @@ class OnboardingConversationDevi(
                 SelectOption("Tre Kronor", "Tre Kronor"),
                 SelectOption("Vardia", "Vardia"),
                 SelectOption("Gjensidige", "Gjensidige"),
-                SelectOption("Aktsam", "Aktsam"),
-                SelectOption("Dina Försäkringar", "Dina Försäkringar"),
                 SelectOption("Annat bolag", MESSAGE_ANNATBOLAG)
             )
         )
