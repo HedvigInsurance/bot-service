@@ -7,9 +7,9 @@ public class SwitchableInsurers {
     "Folksam",
     "Trygg-Hansa",
     "ICA",
-    "Tre Kronor",
-    "Länsförsäkringar Stockholm",
-    "Aktsam"
+    "Tre Kronor"
   );
 }
+
+
 
