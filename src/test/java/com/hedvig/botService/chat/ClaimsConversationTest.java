@@ -10,6 +10,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;

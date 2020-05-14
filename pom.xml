@@ -260,6 +260,12 @@
             <artifactId>lokalise-client</artifactId>
             <version>1.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>io.mockk</groupId>
+            <artifactId>mockk</artifactId>
+            <version>1.10.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
