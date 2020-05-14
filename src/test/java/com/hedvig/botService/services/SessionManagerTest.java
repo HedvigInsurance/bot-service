@@ -19,7 +19,6 @@ import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingSer
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
 import com.hedvig.common.localization.LocalizationService;
-import com.hedvig.resolver.LocaleResolver;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
@@ -172,7 +171,6 @@ public class SessionManagerTest {
     val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
     when(conversationFactory.createConversation(any(Class.class), any()))
         .thenReturn(onboardingConversation);
-    when(LocaleResolver.INSTANCE.resolveLocale(any())).thenReturn(LocaleResolver.INSTANCE.getDEFAULT_LOCALE());
 
     val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID,  null, null);
 
@@ -194,7 +192,6 @@ public class SessionManagerTest {
     when(conversationFactory.createConversation(any(Class.class), anyObject()))
       .thenReturn(onboardingConversation);
     when(memberService.auth(TOLVANSSON_MEMBERID)).thenReturn(Optional.of(makeBankIdResponse()));
-    when(LocaleResolver.INSTANCE.resolveLocale(any())).thenReturn(LocaleResolver.INSTANCE.getDEFAULT_LOCALE());
 
     val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, null, SessionManager.Intent.LOGIN);
 
