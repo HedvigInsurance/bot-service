@@ -76,7 +76,7 @@ class ConversationTest {
         val linkText = "Länk text"
         val linkValue = "selected.value"
 
-        `when`(localizationService!!.getTranslation(Mockito.anyString(), Mockito.any(Locale::class.java))).thenReturn(linkText)
+        `when`(localizationService!!.getTranslation(Mockito.anyString(), anyObject())).thenReturn(linkText)
 
         val m = createSingleSelectMessage(
             "En förklarande text",
@@ -353,5 +353,9 @@ class ConversationTest {
 
         @JvmField
         val TESTMESSAGE_ID = "testmessage"
+    }
+
+    private fun <T> anyObject(): T {
+        return Mockito.anyObject<T>()
     }
 }
