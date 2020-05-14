@@ -81,7 +81,7 @@ class MessagesServiceTest {
         userContext.putUserData(UserContext.LANGUAGE_KEY, "se")
 
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.getMessagesAndStatus("1337", null, SessionManager.Intent.ONBOARDING)
 
@@ -101,7 +101,7 @@ class MessagesServiceTest {
         userContext.putUserData(UserContext.LANGUAGE_KEY, "se")
 
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.fabTrigger("1337", null, FABAction.CALL_ME)
 
@@ -118,7 +118,7 @@ class MessagesServiceTest {
         } returns mockConversation
 
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.fabTrigger("1337", "en-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3", FABAction.CALL_ME)
 
@@ -135,7 +135,7 @@ class MessagesServiceTest {
         } returns mockConversation
 
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.fabTrigger("1337", "nb-NO", FABAction.CALL_ME)
 
