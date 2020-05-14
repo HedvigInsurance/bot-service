@@ -8,7 +8,6 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.services.triggerService.TriggerService;
-import com.hedvig.localization.service.LocalizationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

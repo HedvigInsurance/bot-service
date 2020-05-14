@@ -22,7 +22,7 @@ import com.hedvig.botService.services.events.RequestObjectInsuranceEvent
 import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
 import com.hedvig.botService.testHelpers.TestData
 import com.hedvig.botService.testHelpers.TestData.*
-import com.hedvig.localization.service.LocalizationService
+import com.hedvig.common.localization.LocalizationService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.Before

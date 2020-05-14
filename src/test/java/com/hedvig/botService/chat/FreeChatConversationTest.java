@@ -11,7 +11,6 @@ import com.hedvig.botService.enteties.message.MessageBodyFileUpload;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
-import com.hedvig.localization.service.LocalizationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -7,8 +7,7 @@ import com.hedvig.botService.services.SessionManager
 import com.hedvig.botService.enteties.message.Message
 
 import com.hedvig.botService.web.v2.dto.*
-import com.hedvig.localization.service.LocalizationService
-import com.hedvig.localization.service.TextKeysLocaleResolver
+import com.hedvig.common.localization.LocalizationService
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,8 +26,7 @@ class AppController(
     private val messagesService: MessagesService,
     private val notificationService: NotificationService,
     private val userContextRepository: UserContextRepository,
-    private val localizationService: LocalizationService,
-    private val textKeysLocaleResolver: TextKeysLocaleResolver
+    private val localizationService: LocalizationService
 ) {
 
     @GetMapping("/")

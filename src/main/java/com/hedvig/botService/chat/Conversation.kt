@@ -8,7 +8,7 @@ import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.events.MessageSentEvent
-import com.hedvig.localization.service.LocalizationService
+import com.hedvig.common.localization.LocalizationService
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.security.jwt.JwtHelper
@@ -182,7 +182,7 @@ abstract class Conversation(
         if (!ok) {
           mCorr.id += NOT_VALID_POST_FIX
           val localizedErrorMessage =
-            localizationService.getText(userContext.locale, mCorr.expectedType.errorMessageId)
+            localizationService.getTranslation(mCorr.expectedType.errorMessageId, userContext.locale)
               ?: mCorr.expectedType.getErrorMessage()
 
           mCorr.body.text = localizedErrorMessage.replace("{INPUT}", m.body.text)
@@ -257,7 +257,7 @@ abstract class Conversation(
  * Splits the message text into separate messages based on \f and adds 'Hedvig is thinking' messages in between
  * */
   fun createChatMessage(id: String, body: MessageBody, avatar: String?) {
-    val text = localizationService.getText(userContext.locale, id) ?: body.text
+    val text = localizationService.getTranslation(id, userContext.locale) ?: body.text
     val paragraphs = text.split("\u000C".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
     var pId = 0
     val msgs = ArrayList<String>()

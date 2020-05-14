@@ -43,7 +43,7 @@ import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
 import com.hedvig.botService.utils.ConversationUtils
 import com.hedvig.botService.utils.ssnLookupAndStore
 import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
-import com.hedvig.localization.service.LocalizationService
+import com.hedvig.common.localization.LocalizationService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher

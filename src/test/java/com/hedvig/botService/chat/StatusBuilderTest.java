@@ -1,6 +1,4 @@
 package com.hedvig.botService.chat;
-
-import com.hedvig.localization.service.LocalizationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.Before;

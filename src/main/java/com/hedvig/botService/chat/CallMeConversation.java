@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 

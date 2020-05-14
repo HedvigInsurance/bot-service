@@ -7,7 +7,7 @@ import com.hedvig.botService.enteties.message.MessageBodyText
 import com.hedvig.botService.enteties.message.SelectItem
 import com.hedvig.botService.enteties.message.SelectLink
 import com.hedvig.botService.enteties.message.SelectOption
-import com.hedvig.localization.service.LocalizationService
+import com.hedvig.common.localization.LocalizationService
 import org.springframework.context.ApplicationEventPublisher
 
 class MemberSourceConversation(

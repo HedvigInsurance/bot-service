@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -321,7 +321,7 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   private String getRepliesWithinMinText(int min, Locale locale) {
-    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_MIN");
+    String text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale);
     if (text == null) {
       text = "Hedvig svarar inom {MINUTES} min";
     }
@@ -330,7 +330,7 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   private String getRepliesAfterHourOfDay(int hourOfDay, Locale locale) {
-    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY");
+    String text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale);
     if (text == null) {
       text = "Hedvig svarar efter kl. {HOUR_OF_DAY}";
     }
@@ -339,7 +339,7 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   private String getRepliesTomorrow(Locale locale) {
-    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_TOMORROW");
+    String text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_TOMORROW", locale);
     if (text == null) {
       text = "Hedvig svarar imorgon";
     }
@@ -348,7 +348,7 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   private String getRepliesWithinHalfAnHour(Locale locale) {
-    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_HALF_AN_HOUR");
+    String text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_HALF_AN_HOUR", locale);
     if (text == null) {
       text = "Hedvig svarar inom en halvtimme";
     }
@@ -357,7 +357,7 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   private String getRepliesWithinAnHour(Locale locale) {
-    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR");
+    String text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR", locale);
     if (text == null) {
       text = "Hedvig svarar inom en timme";
     }
@@ -367,7 +367,7 @@ public class StatusBuilderImpl implements StatusBuilder {
 
 
   private String getRepliesOnMonday(Locale locale) {
-    String text = localizationService.getText(locale, "BOT_SERVICE_STATUS_REPLY_ON_MONDAY");
+    String text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_ON_MONDAY", locale);
     if (text == null) {
       text = "Hedvig svarar på Måndag";
     }

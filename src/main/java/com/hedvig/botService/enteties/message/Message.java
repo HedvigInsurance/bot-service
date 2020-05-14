@@ -23,7 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.Data;
 import lombok.ToString;
 

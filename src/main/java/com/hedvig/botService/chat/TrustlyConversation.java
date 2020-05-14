@@ -7,7 +7,7 @@ import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.services.triggerService.TriggerService;
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;

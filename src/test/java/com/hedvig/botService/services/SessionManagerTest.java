@@ -18,8 +18,6 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
-import com.hedvig.localization.service.LocalizationService;
-import com.hedvig.localization.service.TextKeysLocaleResolver;
 import com.hedvig.localization.service.TextKeysLocaleResolverImpl;
 import lombok.val;
 import org.junit.Before;

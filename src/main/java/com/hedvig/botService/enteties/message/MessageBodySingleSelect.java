@@ -2,7 +2,7 @@ package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
