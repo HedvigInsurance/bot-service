@@ -9,11 +9,9 @@ import java.util.*
 @Component
 class LocalizationServiceImpl(
     @Value("\${lokalise.useFakes}")
-    private val useFakes: Boolean
+    private val useFakes: Boolean,
+    private val configuration: LokaliseConfigurationProperties
 ) : LocalizationService {
-
-    @Autowired
-    lateinit var configuration: LokaliseConfigurationProperties
 
     val client = if (!useFakes) LokaliseClient(configuration.projectId, configuration.apiToken) else null
 
