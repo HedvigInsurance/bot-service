@@ -3,9 +3,10 @@ package com.hedvig.botService.enteties.message;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.hedvig.botService.enteties.UserContext;
+
 import java.io.Serializable;
 
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.ToString;
 
 /*
@@ -28,7 +29,8 @@ public class SelectItem implements Serializable {
   public String text;
   public String value;
 
-  public SelectItem() {}
+  public SelectItem() {
+  }
 
   public SelectItem(boolean selected, String text, String value) {
     this.selected = selected;
@@ -37,8 +39,8 @@ public class SelectItem implements Serializable {
   }
 
   public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    String localizedText = localizationService.getText(userContext.getLocale(), value + SELECT_POST_FIX);
-    if (localizedText != null){
+    String localizedText = localizationService.getTranslation(value + SELECT_POST_FIX, userContext.getLocale());
+    if (localizedText != null) {
       text = localizedText;
     }
   }

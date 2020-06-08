@@ -2,7 +2,7 @@ package com.hedvig.botService.enteties.userContextHelpers;
 
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType;
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.LocalDate;
@@ -278,7 +278,7 @@ public class UserData {
 
   public void setHouseExtraBuildingType(ExtraBuildingType type, int buildingNumber, Locale locale, LocalizationService localizationService) {
     ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_" + buildingNumber + "}", type.toString());
-    String text = localizationService.getText(locale, "HOUSE_EXTRA_BUILDING_" + type.toString());
+    String text = localizationService.getTranslation("HOUSE_EXTRA_BUILDING_" + type.toString(), locale);
     ctx.putUserData("{HOUSE_EXTRA_BUILDINGS_TYPE_TEXT}", text);
   }
 

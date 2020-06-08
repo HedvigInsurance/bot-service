@@ -5,7 +5,7 @@ import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

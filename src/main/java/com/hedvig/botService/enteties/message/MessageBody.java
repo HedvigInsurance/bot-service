@@ -15,7 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.ToString;
 
 import static com.hedvig.botService.enteties.message.SelectItem.SELECT_POST_FIX;
@@ -83,7 +83,7 @@ public class MessageBody {
       localizationKey = MessageUtil.INSTANCE.getBaseMessageId(id);
     }
 
-    String localizedText = localizationService.getText(userContext.getLocale(), localizationKey);
+    String localizedText = localizationService.getTranslation(localizationKey, userContext.getLocale());
 
     if (localizedText != null) {
       Integer index = ConversationUtils.INSTANCE.getSplitIndexFromText(id);

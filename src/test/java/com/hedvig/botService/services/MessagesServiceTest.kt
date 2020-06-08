@@ -6,7 +6,7 @@ import com.hedvig.botService.enteties.MessageRepository
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.UserContextRepository
 import com.hedvig.botService.web.v2.dto.FABAction
-import com.hedvig.localization.service.TextKeysLocaleResolverImpl
+import com.hedvig.resolver.LocaleResolver
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -44,10 +44,8 @@ class MessagesServiceTest {
             convsersationFactory.createConversation(any<Class<Any>>(), any())
         } returns mockConversation
 
-        val textKeysLocaleResolver = TextKeysLocaleResolverImpl()
-
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.getMessagesAndStatus("1337", "sv-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3", SessionManager.Intent.ONBOARDING)
 
@@ -63,14 +61,12 @@ class MessagesServiceTest {
             convsersationFactory.createConversation(any<Class<Any>>(), any())
         } returns mockConversation
 
-        val textKeysLocaleResolver = TextKeysLocaleResolverImpl()
-
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.getMessagesAndStatus("1337", null, SessionManager.Intent.ONBOARDING)
 
-        assertThat(userContext.locale).isEqualTo(TextKeysLocaleResolverImpl.DEFAULT_LOCALE)
+        assertThat(userContext.locale).isEqualTo(LocaleResolver.DEFAULT_LOCALE)
     }
 
     @Test
@@ -82,17 +78,14 @@ class MessagesServiceTest {
             convsersationFactory.createConversation(any<Class<Any>>(), any())
         } returns mockConversation
 
-        val textKeysLocaleResolver = TextKeysLocaleResolverImpl()
-
-
         userContext.putUserData(UserContext.LANGUAGE_KEY, "se")
 
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.getMessagesAndStatus("1337", null, SessionManager.Intent.ONBOARDING)
 
-        assertThat(userContext.locale).isEqualTo(TextKeysLocaleResolverImpl.DEFAULT_LOCALE)
+        assertThat(userContext.locale).isEqualTo(LocaleResolver.DEFAULT_LOCALE)
     }
 
 
@@ -105,17 +98,14 @@ class MessagesServiceTest {
             convsersationFactory.createConversation(any<Class<Any>>(), any())
         } returns mockConversation
 
-        val textKeysLocaleResolver = TextKeysLocaleResolverImpl()
-
-
         userContext.putUserData(UserContext.LANGUAGE_KEY, "se")
 
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.fabTrigger("1337", null, FABAction.CALL_ME)
 
-        assertThat(userContext.locale).isEqualTo(TextKeysLocaleResolverImpl.DEFAULT_LOCALE)
+        assertThat(userContext.locale).isEqualTo(LocaleResolver.DEFAULT_LOCALE)
     }
 
     @Test
@@ -127,10 +117,8 @@ class MessagesServiceTest {
             convsersationFactory.createConversation(any<Class<Any>>(), any())
         } returns mockConversation
 
-        val textKeysLocaleResolver = TextKeysLocaleResolverImpl()
-
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.fabTrigger("1337", "en-SE,sv;q=0.8,en-US;q=0.5,en;q=0.3", FABAction.CALL_ME)
 
@@ -146,10 +134,8 @@ class MessagesServiceTest {
             convsersationFactory.createConversation(any<Class<Any>>(), any())
         } returns mockConversation
 
-        val textKeysLocaleResolver = TextKeysLocaleResolverImpl()
-
         val cut =
-            MessagesService(userContextRepository, convsersationFactory, messageRepository, textKeysLocaleResolver)
+            MessagesService(userContextRepository, convsersationFactory, messageRepository)
 
         cut.fabTrigger("1337", "nb-NO", FABAction.CALL_ME)
 

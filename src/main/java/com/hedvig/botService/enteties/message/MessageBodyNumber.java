@@ -2,7 +2,7 @@ package com.hedvig.botService.enteties.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.localization.service.LocalizationService;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -17,32 +17,33 @@ public class MessageBodyNumber extends MessageBodyText {
     super(content, KeyboardType.NUMBER_PAD);
   }
 
-  public MessageBodyNumber(String content, String placeholder){
+  public MessageBodyNumber(String content, String placeholder) {
     this(content);
     this.placeholder = placeholder;
   }
 
-  public MessageBodyNumber(String content, TextContentType textContentType){
+  public MessageBodyNumber(String content, TextContentType textContentType) {
     super(content, textContentType, KeyboardType.NUMBER_PAD);
   }
 
-  public MessageBodyNumber(String content, TextContentType textContentType, String placeholder){
+  public MessageBodyNumber(String content, TextContentType textContentType, String placeholder) {
     super(content, textContentType, KeyboardType.NUMBER_PAD);
     this.placeholder = placeholder;
   }
 
-  MessageBodyNumber() {}
+  MessageBodyNumber() {
+  }
 
   @JsonIgnore
-  public Integer getValue(){
+  public Integer getValue() {
     return Integer.parseInt(text);
   }
 
   @Override
   public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
     super.render(id, fromUser, userContext, localizationService);
-    String localizedText = localizationService.getText(userContext.getLocale(), id + ID_PLACEHOLDER_POST_FIX);
-    if (localizedText != null){
+    String localizedText = localizationService.getTranslation(id + ID_PLACEHOLDER_POST_FIX, userContext.getLocale());
+    if (localizedText != null) {
       placeholder = localizedText;
     }
   }

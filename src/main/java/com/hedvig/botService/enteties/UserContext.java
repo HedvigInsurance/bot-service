@@ -33,8 +33,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
-import com.hedvig.localization.service.TextKeysLocaleResolver;
-import com.hedvig.localization.service.TextKeysLocaleResolverImpl;
+import com.hedvig.resolver.LocaleResolver;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
@@ -383,7 +382,7 @@ public class UserContext implements Serializable {
   public Locale getLocale() {
     String languageCode = getDataEntry(LANGUAGE_KEY);
     return languageCode != null ?
-      Locale.forLanguageTag(languageCode) : TextKeysLocaleResolverImpl.Companion.getDEFAULT_LOCALE();
+      Locale.forLanguageTag(languageCode) : LocaleResolver.INSTANCE.getDEFAULT_LOCALE();
   }
 
   public void setLocale(Locale locale) {

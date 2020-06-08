@@ -27,7 +27,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Address
 import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse
 import com.hedvig.botService.testHelpers.TestData
-import com.hedvig.localization.service.LocalizationService
+import com.hedvig.common.localization.LocalizationService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test

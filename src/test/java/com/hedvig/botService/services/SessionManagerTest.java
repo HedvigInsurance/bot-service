@@ -18,9 +18,7 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdStatusTy
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.web.dto.AddMessageRequestDTO;
-import com.hedvig.localization.service.LocalizationService;
-import com.hedvig.localization.service.TextKeysLocaleResolver;
-import com.hedvig.localization.service.TextKeysLocaleResolverImpl;
+import com.hedvig.common.localization.LocalizationService;
 import lombok.val;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,9 +67,6 @@ public class SessionManagerTest {
 
   @Mock Underwriter underwriter;
 
-  @Mock
-  TextKeysLocaleResolver localeResolver;
-
   @Mock PhoneNumberUtil phoneNumberUtil;
 
   @Mock
@@ -88,8 +83,7 @@ public class SessionManagerTest {
             memberService,
           conversationFactory,
             campaignCodeRepository,
-            objectMapper,
-            localeResolver);
+            objectMapper);
   }
 
   // FIXME
@@ -177,7 +171,6 @@ public class SessionManagerTest {
     val onboardingConversation = makeOnboardingConversation(tolvanssonUserContext);
     when(conversationFactory.createConversation(any(Class.class), any()))
         .thenReturn(onboardingConversation);
-    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolverImpl.Companion.getDEFAULT_LOCALE());
 
     val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID,  null, null);
 
@@ -199,7 +192,6 @@ public class SessionManagerTest {
     when(conversationFactory.createConversation(any(Class.class), anyObject()))
       .thenReturn(onboardingConversation);
     when(memberService.auth(TOLVANSSON_MEMBERID)).thenReturn(Optional.of(makeBankIdResponse()));
-    when(localeResolver.resolveLocale(any())).thenReturn(TextKeysLocaleResolverImpl.Companion.getDEFAULT_LOCALE());
 
     val messages = sessionManager.getAllMessages(TOLVANSSON_MEMBERID, null, SessionManager.Intent.LOGIN);
 
@@ -222,8 +214,7 @@ public class SessionManagerTest {
         memberService,
         conversationFactory,
         campaignCodeRepository,
-        new ObjectMapper(),
-        new TextKeysLocaleResolverImpl());
+        new ObjectMapper());
     sessionManager.init(TOLVANSSON_MEMBERID, "nb-NO", "");
 
     assertThat(tolvanssonUserContext.getLocale()).isEqualTo(new Locale("nb","no"));
@@ -245,8 +236,7 @@ public class SessionManagerTest {
         memberService,
         conversationFactory,
         campaignCodeRepository,
-        new ObjectMapper(),
-        new TextKeysLocaleResolverImpl());
+        new ObjectMapper());
     sessionManager.getAllMessages(TOLVANSSON_MEMBERID, "nb-NO", SessionManager.Intent.LOGIN);
 
     assertThat(tolvanssonUserContext.getLocale()).isEqualTo(new Locale("nb","no"));

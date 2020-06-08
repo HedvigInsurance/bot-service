@@ -13,7 +13,7 @@ import com.hedvig.botService.enteties.message.SelectLink
 import com.hedvig.botService.enteties.message.SelectOption
 import com.hedvig.botService.services.events.QuestionAskedEvent
 import com.hedvig.botService.services.events.RequestPhoneCallEvent
-import com.hedvig.localization.service.LocalizationService
+import com.hedvig.common.localization.LocalizationService
 import org.joda.time.LocalDate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired

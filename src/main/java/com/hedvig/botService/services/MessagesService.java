@@ -10,7 +10,7 @@ import com.hedvig.botService.enteties.*;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.web.v2.dto.FABAction;
 import com.hedvig.botService.web.v2.dto.MessagesDTO;
-import com.hedvig.localization.service.TextKeysLocaleResolver;
+import com.hedvig.resolver.LocaleResolver;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -28,17 +28,14 @@ public class MessagesService {
   private final UserContextRepository userContextRepository;
   private final ConversationFactory conversationFactory;
   private final MessageRepository messageRepository;
-  private final TextKeysLocaleResolver graphCMSLocaleResolver;
 
   public MessagesService(
     UserContextRepository userContextRepository,
     ConversationFactory conversationFactory,
-    MessageRepository messageRepository,
-    TextKeysLocaleResolver graphCMSLocaleResolver) {
+    MessageRepository messageRepository) {
     this.userContextRepository = userContextRepository;
     this.conversationFactory = conversationFactory;
     this.messageRepository = messageRepository;
-    this.graphCMSLocaleResolver = graphCMSLocaleResolver;
   }
 
   public MessagesDTO getMessagesAndStatus(String hid, String acceptLanguage, SessionManager.Intent intent) {
@@ -132,7 +129,7 @@ public class MessagesService {
   }
 
   private void putAcceptLanguage(String acceptLanguage, UserContext uc) {
-    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    val locale = LocaleResolver.INSTANCE.resolveLocale(acceptLanguage);
     uc.setLocale(locale);
   }
 }

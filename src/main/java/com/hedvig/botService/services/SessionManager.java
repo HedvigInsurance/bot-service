@@ -11,7 +11,7 @@ import com.hedvig.botService.web.dto.AddMessageRequestDTO;
 import com.hedvig.botService.web.dto.BackOfficeAnswerDTO;
 import com.hedvig.botService.web.dto.TrackingDTO;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
-import com.hedvig.localization.service.TextKeysLocaleResolver;
+import com.hedvig.resolver.LocaleResolver;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -49,7 +49,6 @@ public class SessionManager {
   private final ConversationFactory conversationFactory;
   private final TrackingDataRespository trackerRepo;
   private final ObjectMapper objectMapper;
-  private final TextKeysLocaleResolver graphCMSLocaleResolver;
 
   private static final String LINK_URI_KEY = "{{LINK_URI}";
   private static final String LINK_URI_VALUE = "hedvig://+";
@@ -66,14 +65,12 @@ public class SessionManager {
     MemberService memberService,
     ConversationFactory conversationFactory,
     TrackingDataRespository trackerRepo,
-    ObjectMapper objectMapper,
-    TextKeysLocaleResolver graphCMSLocaleResolver) {
+    ObjectMapper objectMapper) {
     this.userContextRepository = userContextRepository;
     this.memberService = memberService;
     this.conversationFactory = conversationFactory;
     this.trackerRepo = trackerRepo;
     this.objectMapper = objectMapper;
-    this.graphCMSLocaleResolver = graphCMSLocaleResolver;
   }
 
   public List<Message> getMessages(int i, String hid, String acceptLanguage) {
@@ -179,7 +176,7 @@ public class SessionManager {
     uc.putUserData("{LINK_URI}", linkUri);
     uc.putUserData(UserContext.ONBOARDING_COMPLETE, "false");
 
-    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    val locale = LocaleResolver.INSTANCE.resolveLocale(acceptLanguage);
     uc.setLocale(locale);
 
     userContextRepository.saveAndFlush(uc);
@@ -305,7 +302,7 @@ public class SessionManager {
         .findByMemberId(hid)
         .orElseThrow(() -> new ResourceNotFoundException("Could not find usercontext."));
 
-    val locale = graphCMSLocaleResolver.resolveLocale(acceptLanguage);
+    val locale = LocaleResolver.INSTANCE.resolveLocale(acceptLanguage);
     uc.setLocale(locale);
 
     val messages = uc.getMessages(intent, conversationFactory);

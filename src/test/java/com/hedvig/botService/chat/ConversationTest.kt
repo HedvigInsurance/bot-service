@@ -11,7 +11,7 @@ import com.hedvig.botService.enteties.message.SelectLink
 import com.hedvig.botService.testHelpers.MessageHelpers.createSingleSelectMessage
 import com.hedvig.botService.testHelpers.MessageHelpers.createTextMessage
 import com.hedvig.botService.utils.ConversationUtils
-import com.hedvig.localization.service.LocalizationService
+import com.hedvig.common.localization.LocalizationService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -76,7 +76,7 @@ class ConversationTest {
         val linkText = "Länk text"
         val linkValue = "selected.value"
 
-        `when`(localizationService!!.getText(Mockito.any(Locale::class.java), Mockito.anyString())).thenReturn(linkText)
+        `when`(localizationService!!.getTranslation(Mockito.anyString(), anyObject())).thenReturn(linkText)
 
         val m = createSingleSelectMessage(
             "En förklarande text",
@@ -353,5 +353,9 @@ class ConversationTest {
 
         @JvmField
         val TESTMESSAGE_ID = "testmessage"
+    }
+
+    private fun <T> anyObject(): T {
+        return Mockito.anyObject<T>()
     }
 }
