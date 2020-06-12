@@ -49,8 +49,8 @@ public class StatusBuilderTest {
 
   @Test
   public void summerTimeShouldReturnTrueIfSummer() {
-    boolean resTrue1 = builder.isSummerTime(LocalDate.of(currentYear, 6, 21));
-    boolean resTrue2 = builder.isSummerTime(LocalDate.of(currentYear, 8, 11));
+    boolean resTrue1 = builder.isSummerTime(LocalDate.of(currentYear, 6, 13));
+    boolean resTrue2 = builder.isSummerTime(LocalDate.of(currentYear, 8, 9));
     assertTrue(resTrue1);
     assertTrue(resTrue2);
   }
@@ -75,8 +75,9 @@ public class StatusBuilderTest {
 
   @Test
   public void summerWeekendTimesWithCoverToBeAsExpected() {
+    assertEquals("Hedvig svarar efter kl. 10", builder.getSummerWeekendTimes(9, DEFAULT_LOCALE));
     assertEquals("Hedvig svarar inom en timme", builder.getSummerWeekendTimes(12, DEFAULT_LOCALE));
-    assertEquals("Hedvig svarar imorgon", builder.getSummerWeekendTimes(18, DEFAULT_LOCALE));
+    assertEquals("Hedvig svarar imorgon", builder.getSummerWeekendTimes(22, DEFAULT_LOCALE));
   }
 
   @Test
@@ -86,13 +87,6 @@ public class StatusBuilderTest {
     assertEquals("Hedvig svarar inom en timme", builder.getRedDayAndWeekendAnswerTimes(10, DEFAULT_LOCALE));
     assertEquals("Hedvig svarar inom en timme", builder.getRedDayAndWeekendAnswerTimes(20, DEFAULT_LOCALE));
     assertEquals("Hedvig svarar imorgon", builder.getRedDayAndWeekendAnswerTimes(23, DEFAULT_LOCALE));
-  }
-
-  @Test
-  public void returnHedvigSvararMandagWhenNonWorkingDay() {
-    assertEquals("Hedvig svarar på Måndag", builder.getSummerWeekendTimes(2, DEFAULT_LOCALE));
-    assertEquals("Hedvig svarar på Måndag", builder.getSummerWeekendTimes(19, DEFAULT_LOCALE));
-    assertEquals("Hedvig svarar på Måndag", builder.getSummerWeekendTimes(11, DEFAULT_LOCALE));
   }
 }
 
