@@ -207,7 +207,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
 
     if (todayDate.equals(midsommar)) {
-      getMidsommarAnsweringTimes(hour, locale);
+      return getMidsommarAnsweringTimes(hour, locale);
     }
 
     if (isSummerTime(todayDate) && (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY))) {
