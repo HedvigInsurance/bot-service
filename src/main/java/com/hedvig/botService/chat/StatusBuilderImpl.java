@@ -81,16 +81,8 @@ public class StatusBuilderImpl implements StatusBuilder {
   private static int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
   private static ArrayList<LocalDate> redDays = new ArrayList<>(Arrays.asList(
-    LocalDate.parse("2020-05-01"), LocalDate.parse("2020-05-21"), LocalDate.parse("2019-06-19")
+    LocalDate.parse("2020-05-01"), LocalDate.parse("2020-05-21")
   ));
-
-  private static ArrayList<LocalDate> summerWeekendsWithNoChatCover = new ArrayList<>(Arrays.asList(
-    LocalDate.parse("2019-07-13"), LocalDate.parse("2019-07-14"), LocalDate.parse("2019-07-20"),
-    LocalDate.parse("2019-07-21"), LocalDate.parse("2019-07-27"), LocalDate.parse("2019-07-28"),
-    LocalDate.parse("2019-08-03"), LocalDate.parse("2019-08-04"), LocalDate.parse("2019-08-10"),
-    LocalDate.parse("2019-08-11")
-  )
-  );
 
   private static LocalDate dayBeforeEasterHoliday = LocalDate.parse("2020-04-08");
   private static LocalDate dayAfterEasterHoliday = LocalDate.parse("2020-04-14");
@@ -100,8 +92,7 @@ public class StatusBuilderImpl implements StatusBuilder {
     LocalDate.parse("2019-12-31"), LocalDate.parse("2020-01-01"), LocalDate.parse("2020-01-06")
   ));
 
-  final private LocalDate midsommarStartDate = LocalDate.parse("2019-06-20");
-  final private LocalDate midsommarEndDate = LocalDate.parse("2019-06-21");
+  private static LocalDate midsommar = LocalDate.parse("2020-06-19");
 
   public String getFridayRetroMeetingTime(int currentMinute, int meetingEndTime, Locale locale) {
     int roundedTime = currentMinute;
@@ -149,7 +140,6 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   public String getRedDayAndWeekendAnswerTimes(int hour, Locale locale) {
-
     if (hour <= 2) {
       return getRepliesTomorrow(locale);
     } else if (hour < 9) {
@@ -161,52 +151,21 @@ public class StatusBuilderImpl implements StatusBuilder {
     }
   }
 
-  public String getSummerWeekdayAnswerTimes(int hour, int minute, LocalDate todayDate, Locale locale) {
-    final DayOfWeek dayOfWeek = todayDate.getDayOfWeek();
-    final LocalDate tomorrowDate = todayDate.plusDays(1);
-    final LocalDate summerParty = LocalDate.parse("2019-06-28");
-
-    if (dayOfWeek.equals(DayOfWeek.FRIDAY) && hour == 11 && minute >= 0 && minute <= 45) {
-      return getFridayRetroMeetingTime(minute, 45, locale);
-    }
-
-    if (todayDate.isEqual(summerParty) && hour >= 15) {
+  public String getSummerWeekendTimes(int hour, Locale locale) {
+    if (hour <= 2) {
       return getRepliesTomorrow(locale);
     }
-
-    switch (dayOfWeek) {
-      case MONDAY:
-      case TUESDAY:
-      case WEDNESDAY:
-      case THURSDAY:
-      case FRIDAY: {
-        if (hour <= 2) {
-          return getRepliesTomorrow(locale);
-        }
-        if (hour < 8) {
-          return getRepliesAfterHourOfDay(8, locale);
-        }
-        if (hour < 17) {
-          return getRepliesWithinMinText(15, locale);
-        }
-        if (summerWeekendsWithNoChatCover.contains(tomorrowDate)) {
-          return getRepliesOnMonday(locale);
-        }
-        return getRepliesTomorrow(locale);
-      }
-      default: {
-        log.error("getSummerWeekdayAnswerTimes method has not returned a hedvig answer time");
-        return "";
-      }
+    if (hour < 10) {
+      return getRepliesAfterHourOfDay(10, locale);
+    }
+    if (hour < 22) {
+      return getRepliesWithinAnHour(locale);
+    } else {
+      return getRepliesTomorrow(locale);
     }
   }
 
-  public String getSummerWeekendTimes(int hour, LocalDate todayDate, Locale locale) {
-
-    if (summerWeekendsWithNoChatCover.contains(todayDate)) {
-      return getRepliesOnMonday(locale);
-    }
-
+  public String getMidsommarAnsweringTimes(int hour, Locale locale) {
     if (hour <= 2) {
       return getRepliesTomorrow(locale);
     }
@@ -221,8 +180,8 @@ public class StatusBuilderImpl implements StatusBuilder {
   }
 
   public boolean isSummerTime(LocalDate todayDate) {
-    LocalDate summerStart = LocalDate.of(currentYear, 6, 20);
-    LocalDate summerEnd = LocalDate.of(currentYear, 8, 12);
+    LocalDate summerStart = LocalDate.of(currentYear, 6, 12);
+    LocalDate summerEnd = LocalDate.of(currentYear, 8, 10);
     return todayDate.isAfter(summerStart) && todayDate.isBefore(summerEnd);
   }
 
@@ -247,16 +206,12 @@ public class StatusBuilderImpl implements StatusBuilder {
       return getRepliesTomorrow(locale);
     }
 
-    if ((todayDate.equals(midsommarStartDate) && hour >= 23) || (todayDate.equals(midsommarEndDate))) {
-      return "Hedvig svarar den 22e juni"; //TODO lets fix support for dates later!
+    if (todayDate.equals(midsommar)) {
+      getMidsommarAnsweringTimes(hour, locale);
     }
 
     if (isSummerTime(todayDate) && (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY))) {
-      return getSummerWeekendTimes(hour, todayDate, locale);
-    }
-
-    if (isSummerTime(todayDate) && (!dayOfWeek.equals(DayOfWeek.SATURDAY)) && !dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-      return getSummerWeekdayAnswerTimes(hour, minute, todayDate, locale);
+      return getSummerWeekendTimes(hour, locale);
     }
 
     if (redDays.contains(todayDate)) {
