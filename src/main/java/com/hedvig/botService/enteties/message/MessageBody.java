@@ -29,10 +29,14 @@ import static com.hedvig.botService.enteties.message.SelectItem.SELECT_POST_FIX;
   @JsonSubTypes.Type(value = MessageBodyNumber.class, name = "number"),
   @JsonSubTypes.Type(value = MessageBodySingleSelect.class, name = "single_select"),
   @JsonSubTypes.Type(value = MessageBodyMultipleSelect.class, name = "multiple_select"),
+  @JsonSubTypes.Type(value = MessageBodyDatePicker.class, name = "date_picker"),
   @JsonSubTypes.Type(value = MessageBodyAudio.class, name = "audio"),
+  @JsonSubTypes.Type(value = MessageBodyPhotoUpload.class, name = "photo_upload"),
+  @JsonSubTypes.Type(value = MessageBodyVideo.class, name = "video"),
   @JsonSubTypes.Type(value = MessageBodyHero.class, name = "hero"),
   @JsonSubTypes.Type(value = MessageBodyParagraph.class, name = "paragraph"),
   @JsonSubTypes.Type(value = MessageBodyBankIdCollect.class, name = "bankid_collect"),
+  @JsonSubTypes.Type(value = MessageBodyPolling.class, name = "polling"),
   @JsonSubTypes.Type(value = MessageBodyFileUpload.class, name = "file_upload")
 })
 @ToString
