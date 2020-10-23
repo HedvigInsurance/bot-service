@@ -72,8 +72,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void init_WhenMemberInsuranceIsInactive_StartsNotActiveFlow() {
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(false);
-
     testConversation.init();
 
     Message msg;
@@ -93,8 +91,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void init_WhenMemberInsuranceIsActive_StartsClaimFlow() {
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
-
     testConversation.init();
 
     assertThat(userContext.getMemberChat().chatHistory.get(0).id)
@@ -103,8 +99,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void callMe_WhenMemberInsuranceIsActive_SendsClaimCallMeEventActiveTrue() {
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(true);
-
     Message m = testConversation.getMessage(ClaimsConversation.MESSAGE_CLAIM_CALLME);
     m.body.text = TOLVANSSON_PHONE_NUMBER;
 
@@ -123,8 +117,6 @@ public class ClaimsConversationTest {
 
   @Test
   public void callMe_WhenMemberInsuranceIsInactive_SendsClaimCallMeEventActiveFalse() {
-    when(productPricingService.isMemberInsuranceActive(TOLVANSSON_MEMBER_ID)).thenReturn(false);
-
     Message m = testConversation.getMessage(ClaimsConversation.MESSAGE_CLAIM_CALLME);
     m.body.text = TOLVANSSON_PHONE_NUMBER;
 

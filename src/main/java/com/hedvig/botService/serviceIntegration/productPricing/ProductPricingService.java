@@ -22,29 +22,6 @@ public class ProductPricingService {
     this.productPricingClient = productPricingClient;
   }
 
-  public String getInsuranceStatus(String hid) {
-    ResponseEntity<InsuranceStatusDTO> isd = this.productPricingClient.getInsuranceStatus(hid);
-    log.info("Getting insurance status: " + (isd == null ? null : isd.getStatusCodeValue()));
-    if (isd != null) {
-      return isd.getBody().getInsuranceStatus();
-    }
-    return null;
-  }
-
-  public Boolean isMemberInsuranceActive(final String memberId) {
-    Boolean isActive = true;
-    try {
-      isActive = this.getInsuranceStatus(memberId).equals("ACTIVE");
-    } catch (FeignException ex) {
-      if (ex.status() != 404) {
-        log.error(ex.getMessage());
-      }
-    } catch (Exception ex) {
-      log.error(ex.getMessage());
-    }
-    return isActive;
-  }
-
   public void initAppleProduct(String appleMemberId) {
     try {
       this.productPricingClient.initAppleProduct(new AppleInitializationRequest(appleMemberId));

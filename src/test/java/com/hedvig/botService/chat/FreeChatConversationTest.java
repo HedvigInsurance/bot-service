@@ -69,8 +69,6 @@ public class FreeChatConversationTest {
 
     userContext.putUserData("{NAME}", "TestName");
 
-    when(productPricingService.getInsuranceStatus(anyString())).thenReturn(null);
-
     Message m = testFreeChatConversation
       .getMessage(FreeChatConversation.FREE_CHAT_ONBOARDING_START);
     m.body = new MessageBodyFileUpload("TestContent", TEST_KEY, TEST_TYPE);
@@ -90,8 +88,6 @@ public class FreeChatConversationTest {
   public void Should_SendFileUploadedEventWithKeyAndType_WhenUserUploadsFileAndInsuranceIsSigned() {
 
     userContext.putUserData("{NAME}", "TestName");
-
-    when(productPricingService.getInsuranceStatus(anyString())).thenReturn("SIGNED");
 
     Message m = testFreeChatConversation
       .getMessage(FreeChatConversation.FREE_CHAT_ONBOARDING_START);
