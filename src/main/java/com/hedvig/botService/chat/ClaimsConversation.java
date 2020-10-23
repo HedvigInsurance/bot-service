@@ -163,11 +163,6 @@ public class ClaimsConversation extends Conversation {
 
   @Override
   public void init() {
-    if (productPricingService.isMemberInsuranceActive(getUserContext().getMemberId()) == false) {
-      init(MESSAGE_CLAIMS_NOT_ACTIVE);
-      return;
-    }
-
     init(MESSAGE_CLAIMS_START);
   }
 
@@ -244,15 +239,13 @@ public class ClaimsConversation extends Conversation {
   }
 
   private void sendCallMeEvent(Message m) {
-    val isInsuranceActive =
-      productPricingService.isMemberInsuranceActive(getUserContext().getMemberId());
     eventPublisher.publishEvent(
       new ClaimCallMeEvent(
         getUserContext().getMemberId(),
         getUserContext().getOnBoardingData().getFirstName(),
         getUserContext().getOnBoardingData().getFamilyName(),
         m.body.text,
-        isInsuranceActive));
+        true));
   }
 
   private String handleClaimNotActive(Message m) {

@@ -5,11 +5,8 @@ import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.FileUploadedEvent;
-import com.hedvig.botService.services.events.OnboardingFileUploadedEvent;
-import com.hedvig.botService.services.events.OnboardingQuestionAskedEvent;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
 import com.hedvig.common.localization.LocalizationService;
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
@@ -88,30 +85,11 @@ public class FreeChatConversation extends Conversation {
 
         boolean isFile = m.body instanceof MessageBodyFileUpload;
 
-        String status;
-        try {
-          status = productPricingService.getInsuranceStatus(getUserContext().getMemberId());
-        } catch (FeignException e) {
-          status = null;
-          log.error("FeignException in getInsuranceStatus", e);
-        }
-
-        if (status != null) {
-          if (isFile) {
-            val body = (MessageBodyFileUpload) m.body;
-            eventPublisher.publishEvent(new FileUploadedEvent(getUserContext().getMemberId(), body.key, body.mimeType));
-          } else {
-            eventPublisher
-              .publishEvent(new QuestionAskedEvent(getUserContext().getMemberId(), m.body.text));
-          }
+        if (isFile) {
+          val body = (MessageBodyFileUpload) m.body;
+          eventPublisher.publishEvent(new FileUploadedEvent(getUserContext().getMemberId(), body.key, body.mimeType));
         } else {
-          if (isFile) {
-            val body = (MessageBodyFileUpload) m.body;
-            eventPublisher.publishEvent(new OnboardingFileUploadedEvent(getUserContext().getMemberId(), body.key, body.mimeType));
-          } else {
-            eventPublisher.publishEvent(
-              new OnboardingQuestionAskedEvent(getUserContext().getMemberId(), m.body.text));
-          }
+          eventPublisher.publishEvent(new QuestionAskedEvent(getUserContext().getMemberId(), m.body.text));
         }
 
         addToChat(m);
