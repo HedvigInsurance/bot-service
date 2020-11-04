@@ -61,9 +61,7 @@ constructor(
                     SelectOption("Jag har en fråga", MESSAGE_MAIN_START_FREE_TEXT_CHAT)
                 )
             ) { body, uc, _ ->
-                if (body.selectedItem.value == MESSAGE_MAIN_START_FREE_TEXT_CHAT) {
-                    startFreeTextChatConversation(uc)
-                }
+                startFreeTextChatConversation(uc)
                 body.selectedItem.value
             }
         )
