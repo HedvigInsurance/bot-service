@@ -377,7 +377,7 @@ abstract class Conversation(
     return nxtMsgOut
   }
 
-  open fun resetConversation() {
+  fun resetConversation() {
     startConversation(FreeChatConversation.FREE_CHAT_START)
   }
 

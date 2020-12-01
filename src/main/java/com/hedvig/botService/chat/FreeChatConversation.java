@@ -103,11 +103,6 @@ public class FreeChatConversation extends Conversation {
     completeRequest(handledNxtMsg);
   }
 
-  @Override
-  public void resetConversation() {
-    //no-op
-  }
-
   @NotNull
   @Override
   public Message createBackOfficeMessage(String message, String id) {
