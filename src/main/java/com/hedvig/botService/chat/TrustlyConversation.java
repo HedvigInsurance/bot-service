@@ -8,6 +8,7 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import com.hedvig.common.localization.LocalizationService;
+import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.List;
@@ -66,20 +67,8 @@ public class TrustlyConversation extends Conversation {
   public void handleMessage(final Message m) {
 
     String nxtMsg = "";
-    /*
-     * In a Single select, there is only one trigger event. Set default here to be a link to a new message
-     */
-    if (m.body.getClass().equals(MessageBodySingleSelect.class)) {
 
-      MessageBodySingleSelect body1 = (MessageBodySingleSelect) m.body;
-      for (SelectItem o : body1.choices) {
-        if (o.selected) {
-          m.body.text = o.text;
-          addToChat(m);
-          nxtMsg = o.value;
-        }
-      }
-    }
+    val handledNxtMsg = handleSingleSelect(m, nxtMsg);
 
     switch (m.getStrippedBaseMessageId()) {
       case START:
@@ -99,7 +88,7 @@ public class TrustlyConversation extends Conversation {
         return;
     }
 
-    completeRequest(nxtMsg);
+    completeRequest(handledNxtMsg);
   }
 
   private void handleTrustlyPollResponse(MessageBodySingleSelect body) {

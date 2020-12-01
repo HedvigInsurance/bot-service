@@ -2,12 +2,12 @@ package com.hedvig.botService.chat
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.hedvig.botService.utils.MessageUtil
 import com.hedvig.botService.dataTypes.HedvigDataType
 import com.hedvig.botService.dataTypes.TextInput
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.events.MessageSentEvent
+import com.hedvig.botService.utils.MessageUtil
 import com.hedvig.common.localization.LocalizationService
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
@@ -316,7 +316,6 @@ abstract class Conversation(
     return true
   }
 
-
   open fun createBackOfficeMessage(message: String, id: String): Message {
     val msg = Message()
     val selectionItems = getSelectItemsForAnswer()
@@ -352,6 +351,34 @@ abstract class Conversation(
 
   fun execGenericCallback(m: Message): String {
     return this.genericCallbacks[m.strippedBaseMessageId]!!.invoke(m, userContext)
+  }
+
+  fun hasMessage(id: String) = messageList[id] != null
+
+  fun handleSingleSelect(m: Message, nxtMsg: String): String {
+    var nxtMsgOut = nxtMsg
+    /*
+     * In a Single select, there is only one trigger event. Set default here to be a link to a new message
+     */
+    if (nxtMsg == "" && m.body is MessageBodySingleSelect) {
+      for (o in (m.body as MessageBodySingleSelect).choices) {
+        if (o.selected) {
+          if (!hasMessage(o.value)) {
+            resetConversation()
+          } else {
+            m.body.text = o.text
+            addToChat(m)
+            nxtMsgOut = o.value
+          }
+        }
+      }
+    }
+
+    return nxtMsgOut
+  }
+
+  open fun resetConversation() {
+    startConversation(FreeChatConversation.FREE_CHAT_START)
   }
 
   companion object {

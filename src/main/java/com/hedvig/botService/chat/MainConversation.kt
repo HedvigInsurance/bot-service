@@ -3,14 +3,7 @@ package com.hedvig.botService.chat
 import com.google.common.collect.Lists
 import com.hedvig.botService.chat.FreeChatConversation.FREE_CHAT_FROM_CLAIM
 import com.hedvig.botService.enteties.UserContext
-import com.hedvig.botService.enteties.message.Message
-import com.hedvig.botService.enteties.message.MessageBodyNumber
-import com.hedvig.botService.enteties.message.MessageBodySingleSelect
-import com.hedvig.botService.enteties.message.MessageBodyText
-import com.hedvig.botService.enteties.message.MessageHeader
-import com.hedvig.botService.enteties.message.SelectItem
-import com.hedvig.botService.enteties.message.SelectLink
-import com.hedvig.botService.enteties.message.SelectOption
+import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.events.QuestionAskedEvent
 import com.hedvig.botService.services.events.RequestPhoneCallEvent
 import com.hedvig.common.localization.LocalizationService
@@ -154,22 +147,9 @@ constructor(
             MESSAGE_MAIN_QUESTION -> nxtMsg = handleQuestion(m)
         }
 
-        /*
-     * In a Single select, there is only one trigger event. Set default here to be a link to a new message
-     */
-        if (nxtMsg == "" && m.body.javaClass == MessageBodySingleSelect::class.java) {
+        val handledNxtMsg = handleSingleSelect(m, nxtMsg)
 
-            val body1 = m.body as MessageBodySingleSelect
-            for (o in body1.choices) {
-                if (o.selected) {
-                    m.body.text = o.text
-                    addToChat(m)
-                    nxtMsg = o.value
-                }
-            }
-        }
-
-        completeRequest(nxtMsg)
+        completeRequest(handledNxtMsg)
     }
 
     private fun startFreeTextChatConversation(uc: UserContext) {

@@ -98,23 +98,14 @@ public class FreeChatConversation extends Conversation {
       }
     }
 
-    /*
-     * In a Single select, there is only one trigger event. Set default here to be a link to a new message
-     */
+    val handledNxtMsg = handleSingleSelect(m, nxtMsg);
 
-    if (nxtMsg.equals("") && m.body.getClass().equals(MessageBodySingleSelect.class)) {
+    completeRequest(handledNxtMsg);
+  }
 
-      MessageBodySingleSelect body1 = (MessageBodySingleSelect) m.body;
-      for (SelectItem o : body1.choices) {
-        if (o.selected) {
-          m.body.text = o.text;
-          addToChat(m);
-          nxtMsg = o.value;
-        }
-      }
-    }
-
-    completeRequest(nxtMsg);
+  @Override
+  public void resetConversation() {
+    //no-op
   }
 
   @NotNull
