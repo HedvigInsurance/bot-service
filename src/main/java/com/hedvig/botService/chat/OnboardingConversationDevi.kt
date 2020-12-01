@@ -1687,23 +1687,9 @@ class OnboardingConversationDevi(
             }
         }
 
-        /*
-     * In a Single select, there is only one trigger event. Set default here to be a link to a new
-     * message
-     */
-        if (nxtMsg == "" && m.body.javaClass == MessageBodySingleSelect::class.java) {
+        val handledNxtMsg = handleSingleSelect(m, nxtMsg)
 
-            val body1 = m.body as MessageBodySingleSelect
-            for (o in body1.choices) {
-                if (o.selected) {
-                    m.body.text = o.text
-                    addToChat(m)
-                    nxtMsg = o.value
-                }
-            }
-        }
-
-        completeRequest(nxtMsg)
+        completeRequest(handledNxtMsg)
     }
 
     private fun handleStudentEntrypoint(defaultMessage: String, uc: UserContext): String {

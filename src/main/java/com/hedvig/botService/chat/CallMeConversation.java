@@ -87,23 +87,9 @@ public class CallMeConversation extends Conversation {
       }
     }
 
-    /*
-     * In a Single select, there is only one trigger event. Set default here to be a link to a
-     * new message
-     */
-    if (nxtMsg.equals("") && m.body.getClass().equals(MessageBodySingleSelect.class)) {
+    val handledNxtMsg = handleSingleSelect(m, nxtMsg);
 
-      MessageBodySingleSelect body1 = (MessageBodySingleSelect) m.body;
-      for (SelectItem o : body1.choices) {
-        if (o.selected) {
-          m.body.text = o.text;
-          addToChat(m);
-          nxtMsg = o.value;
-        }
-      }
-    }
-
-    completeRequest(nxtMsg);
+    completeRequest(handledNxtMsg);
   }
 
   private void endConversation(Message m) {
