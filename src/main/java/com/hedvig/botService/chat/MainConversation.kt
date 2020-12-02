@@ -147,7 +147,7 @@ constructor(
             MESSAGE_MAIN_QUESTION -> nxtMsg = handleQuestion(m)
         }
 
-        val handledNxtMsg = handleSingleSelect(m, nxtMsg)
+        val handledNxtMsg = handleSingleSelect(m, nxtMsg, listOf(CONVERSATION_DONE))
 
         completeRequest(handledNxtMsg)
     }
