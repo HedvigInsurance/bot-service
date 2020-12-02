@@ -78,7 +78,7 @@ public class FreeChatConversationTest {
     then(eventPublisher)
       .should()
       .publishEvent(
-        new OnboardingFileUploadedEvent(
+        new FileUploadedEvent(
           userContext.getMemberId(),
           TEST_KEY,
           TEST_TYPE));
