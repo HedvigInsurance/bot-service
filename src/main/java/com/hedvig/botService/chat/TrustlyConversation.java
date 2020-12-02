@@ -11,6 +11,7 @@ import com.hedvig.common.localization.LocalizationService;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,7 +69,7 @@ public class TrustlyConversation extends Conversation {
 
     String nxtMsg = "";
 
-    val handledNxtMsg = handleSingleSelect(m, nxtMsg);
+    val handledNxtMsg = handleSingleSelect(m, nxtMsg, Collections.emptyList());
 
     switch (m.getStrippedBaseMessageId()) {
       case START:

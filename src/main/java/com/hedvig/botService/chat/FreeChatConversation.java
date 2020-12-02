@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import javax.validation.constraints.NotNull;
 import java.time.Clock;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -98,7 +99,7 @@ public class FreeChatConversation extends Conversation {
       }
     }
 
-    val handledNxtMsg = handleSingleSelect(m, nxtMsg);
+    val handledNxtMsg = handleSingleSelect(m, nxtMsg, Collections.emptyList());
 
     completeRequest(handledNxtMsg);
   }

@@ -8,6 +8,7 @@ import com.hedvig.common.localization.LocalizationService;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,7 +88,7 @@ public class CallMeConversation extends Conversation {
       }
     }
 
-    val handledNxtMsg = handleSingleSelect(m, nxtMsg);
+    val handledNxtMsg = handleSingleSelect(m, nxtMsg, Collections.emptyList());
 
     completeRequest(handledNxtMsg);
   }

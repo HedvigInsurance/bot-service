@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -210,7 +211,7 @@ public class ClaimsConversation extends Conversation {
         break;
     }
 
-    val handledNxtMsg = handleSingleSelect(m, nxtMsg);
+    val handledNxtMsg = handleSingleSelect(m, nxtMsg, Collections.emptyList());
 
     completeRequest(handledNxtMsg);
   }

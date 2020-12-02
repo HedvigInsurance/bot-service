@@ -355,7 +355,7 @@ abstract class Conversation(
 
   fun hasMessage(id: String) = messageList[id] != null
 
-  fun handleSingleSelect(m: Message, nxtMsg: String): String {
+  fun handleSingleSelect(m: Message, nxtMsg: String, exceptions: List<String> = emptyList()): String {
     var nxtMsgOut = nxtMsg
     /*
      * In a Single select, there is only one trigger event. Set default here to be a link to a new message
@@ -363,7 +363,7 @@ abstract class Conversation(
     if (nxtMsg == "" && m.body is MessageBodySingleSelect) {
       for (o in (m.body as MessageBodySingleSelect).choices) {
         if (o.selected) {
-          if (!hasMessage(o.value)) {
+          if (!hasMessage(o.value) && !exceptions.contains(o.value)) {
             resetConversation()
           } else {
             m.body.text = o.text
