@@ -71,25 +71,6 @@ public class ClaimsConversationTest {
   }
 
   @Test
-  public void init_WhenMemberInsuranceIsInactive_StartsNotActiveFlow() {
-    testConversation.init();
-
-    Message msg;
-    boolean messageIsParagraph;
-    int i = 0;
-    do {
-      msg = Iterables.getLast(userContext.getMemberChat().chatHistory);
-      messageIsParagraph = MessageBodyParagraph.class.isInstance(msg.body);
-      if (messageIsParagraph) {
-        testConversation.receiveEvent(Conversation.EventTypes.MESSAGE_FETCHED, msg.id);
-      }
-    } while (messageIsParagraph && i++ < 20);
-
-    assertThat(msg.body).isNotInstanceOf(MessageBodyParagraph.class);
-    assertThat(msg.id).startsWith(ClaimsConversation.MESSAGE_CLAIMS_NOT_ACTIVE);
-  }
-
-  @Test
   public void init_WhenMemberInsuranceIsActive_StartsClaimFlow() {
     testConversation.init();
 
@@ -113,24 +94,6 @@ public class ClaimsConversationTest {
                 userContext.getOnBoardingData().getFamilyName(),
                 m.body.text,
                 true));
-  }
-
-  @Test
-  public void callMe_WhenMemberInsuranceIsInactive_SendsClaimCallMeEventActiveFalse() {
-    Message m = testConversation.getMessage(ClaimsConversation.MESSAGE_CLAIM_CALLME);
-    m.body.text = TOLVANSSON_PHONE_NUMBER;
-
-    testConversation.receiveMessage(m);
-
-    then(eventPublisher)
-        .should()
-        .publishEvent(
-            new ClaimCallMeEvent(
-                userContext.getMemberId(),
-                userContext.getOnBoardingData().getFirstName(),
-                userContext.getOnBoardingData().getFamilyName(),
-                m.body.text,
-                false));
   }
 
   @Test

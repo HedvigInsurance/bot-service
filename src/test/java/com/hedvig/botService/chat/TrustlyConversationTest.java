@@ -77,17 +77,4 @@ public class TrustlyConversationTest {
 
     assertThat(userContext.getDataEntry("{TRUSTLY_TRIGGER_ID}")).isEqualTo(triggerUUID.toString());
   }
-
-  @Test
-  public void responding_to_START_addNoNewMessageToChat() {
-
-    final Message message = testConversation.getMessage(START + ".4");
-    ((MessageBodySingleSelect) message.body).choices.get(0).selected = true;
-
-    addTolvansonToUserContext();
-
-    testConversation.receiveMessage(message);
-
-    assertThat(userContext.getMemberChat().chatHistory.size()).isEqualTo(1);
-  }
 }
