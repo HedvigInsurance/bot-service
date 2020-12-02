@@ -1687,7 +1687,7 @@ class OnboardingConversationDevi(
             }
         }
 
-        val handledNxtMsg = handleSingleSelect(m, nxtMsg, listOf(HouseConversationConstants.HOUSE_FIRST.id))
+        val handledNxtMsg = handleSingleSelect(m, nxtMsg, listOf(MESSAGE_HUS))
 
         completeRequest(handledNxtMsg)
     }
