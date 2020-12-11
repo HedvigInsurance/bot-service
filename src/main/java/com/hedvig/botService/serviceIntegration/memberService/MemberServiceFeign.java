@@ -137,8 +137,8 @@ public class MemberServiceFeign implements MemberService {
   }
 
   @Override
-  public void updateSSN(String memberId, SsnWithNationality ssnWithNationality) {
-    send(() -> this.client.updateSSN(memberId, new UpdateSsnRequest(ssnWithNationality.getSsn(), ssnWithNationality)));
+  public void updateSSN(String memberId, String ssn, Nationality nationality) {
+    send(() -> this.client.updateSSN(memberId, new UpdateSsnRequest(ssn, nationality)));
   }
 
   @Nullable

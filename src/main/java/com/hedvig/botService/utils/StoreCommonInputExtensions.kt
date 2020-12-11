@@ -4,7 +4,7 @@ import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.MessageBodyNumber
 import com.hedvig.botService.enteties.message.MessageBodyText
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
-import com.hedvig.botService.serviceIntegration.memberService.dto.SsnWithNationality
+import com.hedvig.botService.serviceIntegration.memberService.dto.Nationality
 import java.time.LocalDate
 
 fun UserContext.storeFamilyName(body: MessageBodyText): String {
@@ -47,9 +47,9 @@ fun UserContext.storeAndTrimAndAddSSNToChat(body: MessageBodyNumber, addToChat: 
     return Pair(trimmedSSN, memberBirthDate)
 }
 
-fun MemberService.ssnLookupAndStore(userContext: UserContext, ssnWithNationality: SsnWithNationality): Boolean {
-    this.updateSSN(userContext.memberId, ssnWithNationality)
-    return this.lookupAddressSWE(ssnWithNationality.ssn, userContext.memberId)?.let { response ->
+fun MemberService.ssnLookupAndStore(userContext: UserContext, ssn: String, nationality: Nationality): Boolean {
+    this.updateSSN(userContext.memberId, ssn, nationality)
+    return this.lookupAddressSWE(ssn, userContext.memberId)?.let { response ->
         userContext.onBoardingData.let { userData ->
             userData.familyName = response.lastName
             userData.firstName = response.firstName

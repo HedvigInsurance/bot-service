@@ -33,7 +33,6 @@ import com.hedvig.botService.enteties.userContextHelpers.UserData.LOGIN
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Flag
 import com.hedvig.botService.serviceIntegration.memberService.dto.Nationality
-import com.hedvig.botService.serviceIntegration.memberService.dto.SsnWithNationality
 import com.hedvig.botService.serviceIntegration.memberService.exceptions.ErrorType
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
 import com.hedvig.botService.services.events.MemberSignedEvent
@@ -274,7 +273,7 @@ class OnboardingConversationDevi(
                     return@WrappedMessage(MESSAGE_MEMBER_UNDER_EIGHTEEN)
                 }
 
-                val hasAddress = memberService.ssnLookupAndStore(uc, SsnWithNationality(trimmedSSN, Nationality.SWEDEN))
+                val hasAddress = memberService.ssnLookupAndStore(uc, trimmedSSN, Nationality.SWEDEN)
 
                 if (hasAddress) {
                     MESSAGE_BANKIDJA
