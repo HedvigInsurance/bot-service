@@ -58,7 +58,7 @@ public interface MemberServiceClient {
 
   @PostMapping("/i/member/{memberId}/updateSSN")
   ResponseEntity<String> updateSSN(
-    @PathVariable("memberId") String memberId, @RequestBody UpdateSSNRequest request);
+    @PathVariable("memberId") String memberId, @RequestBody UpdateSsnRequest request);
 
   @GetMapping("/_/person/status/{ssn}")
   ResponseEntity<PersonStatusDto> personStatus(@PathVariable("ssn") String ssn);

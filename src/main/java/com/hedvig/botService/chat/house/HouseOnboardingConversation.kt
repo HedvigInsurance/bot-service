@@ -66,6 +66,7 @@ import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.serviceIntegration.lookupService.LookupService
 import com.hedvig.botService.serviceIntegration.lookupService.dto.RealEstateDto
 import com.hedvig.botService.serviceIntegration.memberService.MemberService
+import com.hedvig.botService.serviceIntegration.memberService.dto.Nationality
 import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuildingType
 import com.hedvig.botService.services.events.HouseUnderwritingLimitCallMeExceedsEvent
 import com.hedvig.botService.utils.ConversationUtils.isYoungerThan18
@@ -447,7 +448,7 @@ constructor(
             return ASK_SSN_UNDER_EIGHTEEN.id
         }
 
-        val hasAddress = memberService.ssnLookupAndStore(userContext, trimmedSSN)
+        val hasAddress = memberService.ssnLookupAndStore(userContext, trimmedSSN, Nationality.SWEDEN)
 
         return if (hasAddress) {
             ASK_ADDRESS_LOOK_UP_SUCCESS.id
