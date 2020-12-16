@@ -1,21 +1,15 @@
 package com.hedvig.botService.chat;
 
-import java.time.Clock;
-import java.time.DayOfWeek;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-
 import com.hedvig.common.localization.LocalizationService;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.time.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Locale;
 
 /*
 
