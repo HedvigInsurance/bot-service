@@ -103,7 +103,7 @@ internal class StatusBuilderImplTest {
 
     @Test
     fun `Returns correct reply for red day`() {
-        val today = LocalDate.of(2021, 1, 25)
+        val today = LocalDate.of(2021, 1, 6)
         val replyEarlyNight = statusBuilderToTest.getStatusReplyMessage(today.atTime(2, 0, 0), DEFAULT_LOCALE)
         val replyEarlyMorning = statusBuilderToTest.getStatusReplyMessage(today.atTime(7, 0, 0), DEFAULT_LOCALE)
         val replyMiddleOfTheDay = statusBuilderToTest.getStatusReplyMessage(today.atTime(13, 0, 0), DEFAULT_LOCALE)
