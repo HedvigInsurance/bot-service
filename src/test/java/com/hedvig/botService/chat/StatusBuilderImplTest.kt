@@ -1,5 +1,7 @@
 package com.hedvig.botService.chat
 
+import com.hedvig.botService.chat.StatusBuilderImpl.Companion.RETRO_END_MINUTE
+import com.hedvig.botService.chat.StatusBuilderImpl.Companion.RETRO_START_HOUR
 import com.hedvig.common.localization.LocalizationService
 import io.mockk.MockKAnnotations
 import io.mockk.every
@@ -40,6 +42,29 @@ internal class StatusBuilderImplTest {
         assertThat(replyEarlyEvening).isEqualTo("Hedvig svarar inom 20 min")
         assertThat(replyLateEvening).isEqualTo("Hedvig svarar inom 30 min")
         assertThat(replyLateNight).isEqualTo("Hedvig svarar imorgon")
+    }
+
+    @Test
+    fun `Returns correct reply for retro meeting`() {
+        val today = LocalDate.of(2020, 12, 18) // regular Friday
+        val replyBeforeRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR - 1, 59), DEFAULT_LOCALE)
+        val replyAtRetroStart = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, 0), DEFAULT_LOCALE)
+        val replyAt5MinIntoRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, 5), DEFAULT_LOCALE)
+        val replyAt10MinIntoRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, 10), DEFAULT_LOCALE)
+        val replyAt15MinIntoRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, 15), DEFAULT_LOCALE)
+        val replyAt13MinIntoRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, 13), DEFAULT_LOCALE)
+        val replyBeforeRetroEnd = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, RETRO_END_MINUTE - 1), DEFAULT_LOCALE)
+        val replyAtEndOfRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, RETRO_END_MINUTE), DEFAULT_LOCALE)
+        val replyAfterRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, RETRO_END_MINUTE + 1), DEFAULT_LOCALE)
+        assertThat(replyBeforeRetro).isEqualTo("Hedvig svarar inom 10 min")
+        assertThat(replyAtRetroStart).isEqualTo("Hedvig svarar inom 45 min")
+        assertThat(replyAt5MinIntoRetro).isEqualTo("Hedvig svarar inom 40 min")
+        assertThat(replyAt10MinIntoRetro).isEqualTo("Hedvig svarar inom 35 min")
+        assertThat(replyAt13MinIntoRetro).isEqualTo("Hedvig svarar inom 35 min")
+        assertThat(replyAt15MinIntoRetro).isEqualTo("Hedvig svarar inom 30 min")
+        assertThat(replyBeforeRetroEnd).isEqualTo("Hedvig svarar inom 10 min")
+        assertThat(replyAtEndOfRetro).isEqualTo("Hedvig svarar inom 10 min")
+        assertThat(replyAfterRetro).isEqualTo("Hedvig svarar inom 10 min")
     }
 
     @Test

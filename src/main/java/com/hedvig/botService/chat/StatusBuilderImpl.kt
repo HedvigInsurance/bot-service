@@ -118,8 +118,8 @@ class StatusBuilderImpl(
 
     companion object {
         private val RETRO_DAY = DayOfWeek.FRIDAY
-        private const val RETRO_START_HOUR = 11
-        private const val RETRO_END_MINUTE = 45
+        const val RETRO_START_HOUR = 11
+        const val RETRO_END_MINUTE = 45
 
         private val UNDERSTAFFED_DAYS = setOf(
             LocalDate.of(2020, 12, 25),
