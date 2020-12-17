@@ -88,10 +88,9 @@ class StatusBuilderImpl(
             ?: "Hedvig svarar imorgon"
 
     private fun getRepliesAfterHour(locale: Locale, hour: Int): String {
-        var text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale)
+        val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale)
             ?: "Hedvig svarar efter kl. {HOUR_OF_DAY}"
-        text = text.replace("{HOUR_OF_DAY}", hour.toString())
-        return text
+        return text.replace("{HOUR_OF_DAY}", hour.toString())
     }
 
     private fun getRepliesWithinAnHour(locale: Locale) =
@@ -99,10 +98,9 @@ class StatusBuilderImpl(
             ?: "Hedvig svarar inom en timme"
 
     private fun getRepliesWithinMinutes(locale: Locale, minutes: Int): String {
-        var text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale)
+        val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale)
             ?: "Hedvig svarar inom {MINUTES} min"
-        text = text.replace("{MINUTES}", minutes.toString())
-        return text
+        return text.replace("{MINUTES}", minutes.toString())
     }
 
     private fun getRepliesOnChristmasDayReply(locale: Locale) =
