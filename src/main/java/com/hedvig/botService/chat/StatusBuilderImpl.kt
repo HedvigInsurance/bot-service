@@ -1,26 +1,40 @@
 package com.hedvig.botService.chat
 
 import com.hedvig.common.localization.LocalizationService
-import java.time.*
-import java.util.*
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.Month
+import java.util.Locale
+import org.springframework.stereotype.Component
 
-class StatusBuilderImplV2(
+@Component
+class StatusBuilderImpl(
     private val localizationService: LocalizationService
 ) : StatusBuilder {
-    override fun getStatusMessage(clock: Clock, locale: Locale): String {
-        val today = LocalDate.now(clock)
+    override fun getStatusReplyMessage(now: LocalDateTime, locale: Locale): String {
+        val today = LocalDate.from(now)
         val dayOfWeek = today.dayOfWeek!!
-        val now = LocalDateTime.now(clock)
         val hour = now.hour
         val minute = now.minute
         if (isChristmasPeriod(today)) {
-            return getRepliesOnChristmasDay(locale)
+            return getRepliesOnChristmasDayReply(locale)
         }
         if (isUnderstaffedDay(today)) {
-            return getRedDayReply(locale, hour)
+            return getLongResponseWindowDayReply(
+                locale = locale,
+                dayStartHour = 10,
+                dayEndHour = 18,
+                hour = hour
+            )
         }
         if (isRedDay(today)) {
-            return getRedDayReply(locale, hour)
+            return getLongResponseWindowDayReply(
+                locale = locale,
+                dayStartHour = 10,
+                dayEndHour = 18,
+                hour = hour
+            )
         }
         return when (dayOfWeek) {
             DayOfWeek.MONDAY,
@@ -29,7 +43,12 @@ class StatusBuilderImplV2(
             DayOfWeek.THURSDAY,
             DayOfWeek.FRIDAY -> getRegularWeekdayReply(locale, dayOfWeek, hour, minute)
             DayOfWeek.SATURDAY,
-            DayOfWeek.SUNDAY -> getRegularWeekendReply(locale, hour)
+            DayOfWeek.SUNDAY -> getLongResponseWindowDayReply(
+                locale = locale,
+                dayStartHour = 10,
+                dayEndHour = 22,
+                hour = hour
+            )
         }
     }
 
@@ -49,23 +68,15 @@ class StatusBuilderImplV2(
         else -> getRepliesTomorrow(locale)
     }
 
-    private fun getRegularWeekendReply(
+    private fun getLongResponseWindowDayReply(
         locale: Locale,
+        dayStartHour: Int,
+        dayEndHour: Int,
         hour: Int
     ) = when {
         hour < 3 -> getRepliesTomorrow(locale)
-        hour < 10 -> getRepliesAfterHour(locale, 9)
-        hour < 22 -> getRepliesWithinAnHour(locale)
-        else -> getRepliesTomorrow(locale)
-    }
-
-    private fun getRedDayReply(
-        locale: Locale,
-        hour: Int
-    ) = when {
-        hour < 3 -> getRepliesTomorrow(locale)
-        hour < 10 -> getRepliesAfterHour(locale, 10)
-        hour < 18 -> getRepliesWithinAnHour(locale)
+        hour < dayStartHour -> getRepliesAfterHour(locale, dayStartHour)
+        hour < dayEndHour -> getRepliesWithinAnHour(locale)
         else -> getRepliesTomorrow(locale)
     }
 
@@ -77,9 +88,9 @@ class StatusBuilderImplV2(
             ?: "Hedvig svarar imorgon"
 
     private fun getRepliesAfterHour(locale: Locale, hour: Int): String {
-        val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale)
+        var text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale)
             ?: "Hedvig svarar efter kl. {HOUR_OF_DAY}"
-        text.replace("{HOUR_OF_DAY}", hour.toString())
+        text = text.replace("{HOUR_OF_DAY}", hour.toString())
         return text
     }
 
@@ -88,20 +99,20 @@ class StatusBuilderImplV2(
             ?: "Hedvig svarar inom en timme"
 
     private fun getRepliesWithinMinutes(locale: Locale, minutes: Int): String {
-        val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale)
+        var text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale)
             ?: "Hedvig svarar inom {MINUTES} min"
-        text.replace("{MINUTES}", minutes.toString())
+        text = text.replace("{MINUTES}", minutes.toString())
         return text
     }
 
-    private fun getRepliesOnChristmasDay(locale: Locale) =
+    private fun getRepliesOnChristmasDayReply(locale: Locale) =
         localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY", locale)
             ?: "Hedvig återkommer på juldagen"
 
     private fun isChristmasPeriod(date: LocalDate) =
         date.month == Month.DECEMBER && (date.dayOfMonth == 23 || date.dayOfMonth == 24)
 
-    private fun isUnderstaffedDay(date: LocalDate) = SINGLE_STUDENT_DAYS.contains(date)
+    private fun isUnderstaffedDay(date: LocalDate) = UNDERSTAFFED_DAYS.contains(date)
 
     private fun isRedDay(date: LocalDate) = RED_DAYS.contains(date)
 
@@ -110,7 +121,7 @@ class StatusBuilderImplV2(
         private const val RETRO_START_HOUR = 11
         private const val RETRO_END_MINUTE = 45
 
-        private val SINGLE_STUDENT_DAYS = setOf(
+        private val UNDERSTAFFED_DAYS = setOf(
             LocalDate.of(2020, 12, 25),
             LocalDate.of(2020, 12, 26),
             LocalDate.of(2020, 12, 27),

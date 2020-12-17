@@ -6,13 +6,13 @@ import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
+import com.hedvig.botService.utils.DateUtil;
 import com.hedvig.common.localization.LocalizationService;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.validation.constraints.NotNull;
-import java.time.Clock;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,7 +82,7 @@ public class FreeChatConversation extends Conversation {
       case FREE_CHAT_FROM_BO:
       case FREE_CHAT_FROM_CLAIM:
       case FREE_CHAT_MESSAGE: {
-        m.header.statusMessage = statusBuilder.getStatusMessage(Clock.systemUTC(), getUserContext().getLocale());
+        m.header.statusMessage = statusBuilder.getStatusReplyMessage(DateUtil.INSTANCE.nowInStockholm(), getUserContext().getLocale());
 
         boolean isFile = m.body instanceof MessageBodyFileUpload;
 
