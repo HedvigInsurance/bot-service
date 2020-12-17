@@ -136,8 +136,8 @@ public class StatusBuilderImpl implements StatusBuilder {
   public String getRedDayAndWeekendAnswerTimes(int hour, Locale locale) {
     if (hour <= 2) {
       return getRepliesTomorrow(locale);
-    } else if (hour < 9) {
-      return getRepliesAfterHourOfDay(9, locale);
+    } else if (hour < 10) {
+      return getRepliesAfterHourOfDay(10, locale);
     } else if (hour < 22) {
       return getRepliesWithinAnHour(locale);
     } else {

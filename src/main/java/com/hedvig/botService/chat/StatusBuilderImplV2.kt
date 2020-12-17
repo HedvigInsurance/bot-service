@@ -16,11 +16,11 @@ class StatusBuilderImplV2(
         if (isChristmasPeriod(today)) {
             return getRepliesOnChristmasDay(locale)
         }
-        if (isSingleStudentDay(today)) {
-            return getSingleStudentWorkdayReply(locale, hour)
+        if (isUnderstaffedDay(today)) {
+            return getRedDayReply(locale, hour)
         }
         if (isRedDay(today)) {
-            return getRegularRedDayAndWeekendReply(locale, hour)
+            return getRedDayReply(locale, hour)
         }
         return when (dayOfWeek) {
             DayOfWeek.MONDAY,
@@ -29,7 +29,7 @@ class StatusBuilderImplV2(
             DayOfWeek.THURSDAY,
             DayOfWeek.FRIDAY -> getRegularWeekdayReply(locale, dayOfWeek, hour, minute)
             DayOfWeek.SATURDAY,
-            DayOfWeek.SUNDAY -> getRegularRedDayAndWeekendReply(locale, hour)
+            DayOfWeek.SUNDAY -> getRegularWeekendReply(locale, hour)
         }
     }
 
@@ -49,17 +49,17 @@ class StatusBuilderImplV2(
         else -> getRepliesTomorrow(locale)
     }
 
-    private fun getRegularRedDayAndWeekendReply(
+    private fun getRegularWeekendReply(
         locale: Locale,
         hour: Int
     ) = when {
         hour < 3 -> getRepliesTomorrow(locale)
-        hour < 9 -> getRepliesAfterHour(locale, 9)
+        hour < 10 -> getRepliesAfterHour(locale, 9)
         hour < 22 -> getRepliesWithinAnHour(locale)
         else -> getRepliesTomorrow(locale)
     }
 
-    private fun getSingleStudentWorkdayReply(
+    private fun getRedDayReply(
         locale: Locale,
         hour: Int
     ) = when {
@@ -101,7 +101,7 @@ class StatusBuilderImplV2(
     private fun isChristmasPeriod(date: LocalDate) =
         date.month == Month.DECEMBER && (date.dayOfMonth == 23 || date.dayOfMonth == 24)
 
-    private fun isSingleStudentDay(date: LocalDate) = SINGLE_STUDENT_DAYS.contains(date)
+    private fun isUnderstaffedDay(date: LocalDate) = SINGLE_STUDENT_DAYS.contains(date)
 
     private fun isRedDay(date: LocalDate) = RED_DAYS.contains(date)
 
