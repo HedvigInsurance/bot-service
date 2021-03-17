@@ -24,12 +24,6 @@
         </encoder>
     </appender>
 
-    <appender name="SENTRY" class="io.sentry.logback.SentryAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>ERROR</level>
-        </filter>
-    </appender>
-
     <!-- Appender to log to file in a JSON format, one JSON object per line -->
     <appender name="JSON_FILE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
@@ -65,12 +59,6 @@
     <springProfile name="!development">
         <root level="INFO">
             <appender-ref ref="JSON_FILE"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="production | staging">
-        <root level="INFO">
-            <appender-ref ref="SENTRY" />
         </root>
     </springProfile>
 </configuration>
