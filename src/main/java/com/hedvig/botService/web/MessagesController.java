@@ -57,22 +57,20 @@ public class MessagesController {
         .collect(Collectors.toMap(m -> m.getGlobalId(), Function.identity()));
   }
 
-  /*
-   * TODO: Change hedvig.token from optional to required
-   * */
   @RequestMapping(
       path = "/messages",
       produces = "application/json; charset=utf-8",
       method = RequestMethod.GET)
   public Map<Integer, Message> allMessages(
-      @RequestHeader(value = "hedvig.token", required = false) String hid,
+      @RequestHeader(value = "hedvig.token") String hid,
       @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
-      @RequestParam(name = "intent", required = false, defaultValue = "onboarding")
-          String intentParameter) {
+      @RequestParam(name = "intent", required = false, defaultValue = "onboarding") String intentParameter
+  ) {
 
-    log.error(
+    log.warn(
         ControllerUtils.markDeprecated(),
-        String.format("Getting all messages for member:%s with intent: %s", hid, intentParameter));
+        String.format("Getting all messages for member:%s with intent: %s", hid, intentParameter)
+    );
 
     SessionManager.Intent intent =
         Objects.equals(intentParameter, "login")
