@@ -11,9 +11,7 @@
 
     <!-- Don't forget to set "spring.application.name" in application.yml -->
     <springProperty scope="context" name="springAppName" source="spring.application.name"/>
-    <!-- <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-logs}/${springAppName}}"/> -->
 
-    <property name="CONSOLE_LOG_PATTERN2" value="${CONSOLE_LOG_PATTERN2:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([%X{memberId}]) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
     <!-- Appender to log to console in plain text format -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -21,51 +19,22 @@
             <level>DEBUG</level>
         </filter>
         <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN2}</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>
         </encoder>
     </appender>
 
-    <!-- Appender to log to file in plain text format -->
-    <!-- <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_FILE}</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>${FILE_LOG_PATTERN}</pattern>
-            <charset>utf8</charset>
-        </encoder>
-    </appender> -->
-
     <!-- Appender to log to file in a JSON format, one JSON object per line -->
-     <appender name="JSON_FILE" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- <file>${LOG_FILE}.json</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_FILE}.json.%d{yyyy-MM-dd}.gz</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy> -->
+    <appender name="JSON_FILE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
-                <!-- Log all StructuredArgument instances -->
                 <arguments/>
-                <!-- Log all MDC fields except the ones from Sleuth - we add them below
-                     under cleaned up names -->
-                <mdc>
-                    <!--
-                    <excludeMdcKeyName>X-B3-TraceId</excludeMdcKeyName>
-                    <excludeMdcKeyName>X-B3-SpanId</excludeMdcKeyName>
-                    <excludeMdcKeyName>X-B3-ParentSpanId</excludeMdcKeyName>
-                    <excludeMdcKeyName>X-Span-Export</excludeMdcKeyName>
-                    -->
-                </mdc>
-                <!-- Include Exception stack traces -->
+                <mdc/>
                 <stackTrace/>
+                <logstashMarkers/>
                 <timestamp>
                     <timeZone>UTC</timeZone>
                 </timestamp>
-                <!-- Assign logger fields to JSON object -->
                 <pattern>
                     <pattern>
                         {
@@ -73,31 +42,23 @@
                         "service": "${springAppName:-}",
                         "thread": "%thread",
                         "logger": "%logger",
-                        "message": "%message",
-                        "memberId": "%X{memberId}"
+                        "message": "%message"
                         }
                     </pattern>
                 </pattern>
             </providers>
         </encoder>
-    </appender>-->
+    </appender>
 
-
-
-    <springProfile name="!kubernetes">
+    <springProfile name="development">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
-            <!--<appender-ref ref="FILE"/>-->
-            <!-- <appender-ref ref="JSON_FILE"/> -->
         </root>
     </springProfile>
 
-    <springProfile name="kubernetes">
+    <springProfile name="!development">
         <root level="INFO">
-            <!--  <appender-ref ref="CONSOLE"/> -->
-            <!--<appender-ref ref="FILE"/>-->
             <appender-ref ref="JSON_FILE"/>
         </root>
     </springProfile>
-
 </configuration>
