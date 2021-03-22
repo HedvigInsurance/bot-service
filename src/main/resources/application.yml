@@ -4,8 +4,6 @@ server:
 cloud.aws.stack.auto: false
 
 spring:
-  application:
-    name: bot-service
   jpa:
     generate-ddl: true
     properties:
