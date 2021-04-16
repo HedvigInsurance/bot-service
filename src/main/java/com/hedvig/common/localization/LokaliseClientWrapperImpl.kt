@@ -1,6 +1,6 @@
 package com.hedvig.common.localization
 
-import com.hedvig.lokalise.client.LokaliseClient
+import com.hedvig.lokalise.repository.LokaliseRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.util.*
@@ -11,7 +11,7 @@ class LokaliseClientWrapperImpl(
     private val useFakes: Boolean,
     private val configuration: LokaliseConfigurationProperties
 ) : LokaliseClientWrapper {
-    val client = if (!useFakes) LokaliseClient(
+    val client = if (!useFakes) LokaliseRepository(
         configuration.projectId,
         configuration.apiToken
     ) else null
