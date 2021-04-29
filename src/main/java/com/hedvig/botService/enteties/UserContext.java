@@ -382,7 +382,7 @@ public class UserContext implements Serializable {
   public Locale getLocale() {
     String languageCode = getDataEntry(LANGUAGE_KEY);
     return languageCode != null ?
-      Locale.forLanguageTag(languageCode) : LocaleResolver.INSTANCE.getDEFAULT_LOCALE();
+      Locale.forLanguageTag(languageCode) : LocaleResolver.INSTANCE.getFALLBACK_LOCALE();
   }
 
   public void setLocale(Locale locale) {
