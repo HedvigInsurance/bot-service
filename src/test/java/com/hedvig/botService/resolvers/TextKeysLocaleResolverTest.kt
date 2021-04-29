@@ -15,7 +15,7 @@ class TextKeysLocaleResolverTest {
     fun givenFrenchWithEnglishLowerQFactor_thenReturnEnglish() {
         val locale = LocaleResolver.resolveLocale("fr-CH, fr;q=0.9, en;q=0.8")
 
-        assertThat(locale).isEqualTo(LocaleResolver.DEFAULT_LOCALE)
+        assertThat(locale).isEqualTo(LocaleResolver.FALLBACK_LOCALE)
     }
 
     @Test

@@ -66,7 +66,7 @@ class MessagesServiceTest {
 
         cut.getMessagesAndStatus("1337", null, SessionManager.Intent.ONBOARDING)
 
-        assertThat(userContext.locale).isEqualTo(LocaleResolver.DEFAULT_LOCALE)
+        assertThat(userContext.locale).isEqualTo(LocaleResolver.FALLBACK_LOCALE)
     }
 
     @Test
@@ -85,7 +85,7 @@ class MessagesServiceTest {
 
         cut.getMessagesAndStatus("1337", null, SessionManager.Intent.ONBOARDING)
 
-        assertThat(userContext.locale).isEqualTo(LocaleResolver.DEFAULT_LOCALE)
+        assertThat(userContext.locale).isEqualTo(LocaleResolver.FALLBACK_LOCALE)
     }
 
 
@@ -105,7 +105,7 @@ class MessagesServiceTest {
 
         cut.fabTrigger("1337", null, FABAction.CALL_ME)
 
-        assertThat(userContext.locale).isEqualTo(LocaleResolver.DEFAULT_LOCALE)
+        assertThat(userContext.locale).isEqualTo(LocaleResolver.FALLBACK_LOCALE)
     }
 
     @Test
