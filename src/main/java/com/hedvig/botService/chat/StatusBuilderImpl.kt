@@ -85,27 +85,27 @@ class StatusBuilderImpl(
 
     private fun getRepliesTomorrow(locale: Locale): String =
         localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_TOMORROW", locale)
-            ?: "Hedvig svarar imorgon"
+            ?: "BOT_SERVICE_STATUS_REPLY_TOMORROW"
 
     private fun getRepliesAfterHour(locale: Locale, hour: Int): String {
         val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale)
-            ?: "Hedvig svarar efter kl. {HOUR_OF_DAY}"
+            ?: "BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY"
         return text.replace("{HOUR_OF_DAY}", hour.toString())
     }
 
     private fun getRepliesWithinAnHour(locale: Locale) =
         localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR", locale)
-            ?: "Hedvig svarar inom en timme"
+            ?: "BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR"
 
     private fun getRepliesWithinMinutes(locale: Locale, minutes: Int): String {
         val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale)
-            ?: "Hedvig svarar inom {MINUTES} min"
+            ?: "BOT_SERVICE_STATUS_REPLY_WITHIN_MIN"
         return text.replace("{MINUTES}", minutes.toString())
     }
 
     private fun getRepliesOnChristmasDayReply(locale: Locale) =
         localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY", locale)
-            ?: "Hedvig återkommer på juldagen"
+            ?: "BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY"
 
     private fun isChristmasPeriod(date: LocalDate) =
         date.month == Month.DECEMBER && (date.dayOfMonth == 23 || date.dayOfMonth == 24)
