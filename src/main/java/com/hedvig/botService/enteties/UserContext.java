@@ -12,9 +12,15 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResp
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
+import com.hedvig.resolver.LocaleResolver;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.persistence.CascadeType;
@@ -32,8 +38,6 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
-
-import com.hedvig.resolver.LocaleResolver;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
@@ -57,35 +61,36 @@ public class UserContext implements Serializable {
 
   private static Logger log = LoggerFactory.getLogger(UserContext.class);
   private static Map<String, String> requiredData =
-      new ImmutableMap.Builder<String, String>()
-          .put("{ADDRESS}", "T.ex har jag vet jag inte var du bor. Vad har du för gatuadress?")
-          .put("{ADDRESS_ZIP}", "T.ex har jag inte ditt postnummer?")
-          .
-          // ("{EMAIL}"), Email is not required to get a quote
+    new ImmutableMap.Builder<String, String>()
+      .put("{ADDRESS}", "T.ex har jag vet jag inte var du bor. Vad har du för gatuadress?")
+      .put("{ADDRESS_ZIP}", "T.ex har jag inte ditt postnummer?")
+      .
+      // ("{EMAIL}"), Email is not required to get a quote
 
-          put(
-              "{FAMILY_NAME}",
-              "T.ex vet jag inte vad heter i efternamn... "
-                  + OnboardingConversationDevi.Companion.getEmoji_flushed_face()
-                  + " ?")
-          .put("{HOUSE}", "T.ex vet jag inte om du bor i hus eller lägenhet?")
-          .put("{KVM}", "T.ex vet jag inte hur stor din bostad är?")
-          .put("{SSN}", "T.ex har jag inte ditt personnummer?")
-          .put(
-              "{NAME}",
-              "T.ex vet jag inte vad heter... "
-                  + OnboardingConversationDevi.Companion.getEmoji_flushed_face()
-                  + " ?")
-          .put("{NR_PERSONS}", "Tex. hur många är ni i hushållet")
-          //.put(
-          //    "{SECURE_ITEMS_NO}", "T.ex skulle jag behöver veta hur många säkerhetsgrejer du har?")
-          .build();
+        put(
+        "{FAMILY_NAME}",
+        "T.ex vet jag inte vad heter i efternamn... "
+          + OnboardingConversationDevi.Companion.getEmoji_flushed_face()
+          + " ?")
+      .put("{HOUSE}", "T.ex vet jag inte om du bor i hus eller lägenhet?")
+      .put("{KVM}", "T.ex vet jag inte hur stor din bostad är?")
+      .put("{SSN}", "T.ex har jag inte ditt personnummer?")
+      .put(
+        "{NAME}",
+        "T.ex vet jag inte vad heter... "
+          + OnboardingConversationDevi.Companion.getEmoji_flushed_face()
+          + " ?")
+      .put("{NR_PERSONS}", "Tex. hur många är ni i hushållet")
+      //.put(
+      //    "{SECURE_ITEMS_NO}", "T.ex skulle jag behöver veta hur många säkerhetsgrejer du har?")
+      .build();
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @Version private Long version;
+  @Version
+  private Long version;
 
   private String memberId;
 
@@ -132,21 +137,21 @@ public class UserContext implements Serializable {
 
   public void startConversation(Conversation c) {
     log.info(
-        "Starting conversation of type: " + c.getClass().getName() + " for user: " + getMemberId());
+      "Starting conversation of type: " + c.getClass().getName() + " for user: " + getMemberId());
 
     if (conversationManager.startConversation(c.getClass())) {
-       c.init();
+      c.init();
     }
   }
 
   public void startConversation(Conversation c, String startMessage) {
     log.info(
-        "Starting conversation of type: "
-            + c.getClass().getName()
-            + " for user: "
-            + getMemberId()
-            + " with message: "
-            + startMessage);
+      "Starting conversation of type: "
+        + c.getClass().getName()
+        + " for user: "
+        + getMemberId()
+        + " with message: "
+        + startMessage);
 
     if (conversationManager.startConversation(c.getClass(), startMessage)) {
       c.init(startMessage);
@@ -174,7 +179,8 @@ public class UserContext implements Serializable {
     this.memberChat.userContext = this;
   }
 
-  public UserContext() {}
+  public UserContext() {
+  }
 
   public void clearContext() {
     this.setInOfferState(false);
@@ -207,23 +213,23 @@ public class UserContext implements Serializable {
   public void startBankIdAuth(BankIdAuthResponse bankIdAuthResponse) {
 
     createCollectType(
-        BankIdSessionImpl.CollectionType.AUTH,
-        bankIdAuthResponse.getReferenceToken(),
-        bankIdAuthResponse.getAutoStartToken());
+      BankIdSessionImpl.CollectionType.AUTH,
+      bankIdAuthResponse.getReferenceToken(),
+      bankIdAuthResponse.getAutoStartToken());
   }
 
   public void startBankIdSign(BankIdSignResponse bankIdSignResponse) {
 
     createCollectType(
-        BankIdSessionImpl.CollectionType.SIGN,
-        bankIdSignResponse.getReferenceToken(),
-        bankIdSignResponse.getAutoStartToken());
+      BankIdSessionImpl.CollectionType.SIGN,
+      bankIdSignResponse.getReferenceToken(),
+      bankIdSignResponse.getAutoStartToken());
   }
 
   private void createCollectType(
-      BankIdSessionImpl.CollectionType collectionType,
-      String referenceToken,
-      String autoStartToken) {
+    BankIdSessionImpl.CollectionType collectionType,
+    String referenceToken,
+    String autoStartToken) {
     BankIdSessionImpl bankIdSessionImpl = new BankIdSessionImpl();
     bankIdSessionImpl.setLastCallTime(Instant.now());
     bankIdSessionImpl.setUserContext(this);
@@ -239,7 +245,7 @@ public class UserContext implements Serializable {
     this.putUserData("{REFERENCE_TOKEN}", referenceToken);
   }
 
-  public void updateUserContextWebOnboarding(UpdateUserContextDTO context){
+  public void updateUserContextWebOnboarding(UpdateUserContextDTO context) {
     UserData ud = getOnBoardingData();
 
     ud.setSSN(context.getPersonalNumber());
@@ -267,14 +273,14 @@ public class UserContext implements Serializable {
     // obd.setEmail(member.getEmail()); I don't think we will ever get his from bisnode
 
     member
-        .getAddress()
-        .ifPresent(
-            (address) -> {
-              obd.setAddressStreet(address.getStreet());
-              obd.setAddressCity(address.getCity());
-              obd.setAddressZipCode(address.getZipCode());
-              obd.setFloor(address.getFloor());
-            });
+      .getAddress()
+      .ifPresent(
+        (address) -> {
+          obd.setAddressStreet(address.getStreet());
+          obd.setAddressCity(address.getCity());
+          obd.setAddressZipCode(address.getZipCode());
+          obd.setFloor(address.getFloor());
+        });
   }
 
   public String replaceWithContext(String input) {
@@ -306,7 +312,7 @@ public class UserContext implements Serializable {
     putUserData("{WEB_USER}", "FALSE");
 
     Conversation onboardingConversation =
-        conversationFactory.createConversation(OnboardingConversationDevi.class, this);
+      conversationFactory.createConversation(OnboardingConversationDevi.class, this);
     startConversation(onboardingConversation, startMsg);
   }
 
@@ -319,13 +325,15 @@ public class UserContext implements Serializable {
   }
 
   public List<Message> getMessages(
-      SessionManager.Intent intent, ConversationFactory conversationFactory) {
+    SessionManager.Intent intent, ConversationFactory conversationFactory) {
     MemberChat chat = getMemberChat();
 
     if (getActiveConversation().isPresent() == false) {
       if (intent == SessionManager.Intent.LOGIN) {
         initChat(OnboardingConversationDevi.MESSAGE_START_LOGIN, conversationFactory);
-      } else if(chat.userContext.getLocale().getCountry().equals("NO")){
+      } else if (chat.userContext.getLocale().getCountry().equals("NO")) {
+        initFreeChat(FreeChatConversation.FREE_CHAT_ONBOARDING_START, conversationFactory);
+      } else if (chat.userContext.getLocale().getCountry().equals("DK")) {
         initFreeChat(FreeChatConversation.FREE_CHAT_ONBOARDING_START, conversationFactory);
       } else {
         initChat(OnboardingConversationDevi.MESSAGE_ONBOARDINGSTART_ASK_NAME, conversationFactory);
@@ -338,7 +346,7 @@ public class UserContext implements Serializable {
       Message lastMessage = returnList.get(0);
       if (lastMessage != null) {
         conversationManager.receiveEvent(
-            "MESSAGE_FETCHED", lastMessage.id, conversationFactory, this);
+          "MESSAGE_FETCHED", lastMessage.id, conversationFactory, this);
       }
     } else {
       log.info("No messages in chat....");
