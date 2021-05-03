@@ -36,12 +36,12 @@ internal class StatusBuilderImplTest {
         val replyEarlyEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(18, 0, 0), DEFAULT_LOCALE)
         val replyLateEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(21, 0, 0), DEFAULT_LOCALE)
         val replyLateNight = statusBuilderToTest.getStatusReplyMessage(today.atTime(23, 0, 0), DEFAULT_LOCALE)
-        assertThat(replyEarlyNight).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyEarlyMorning).isEqualTo("Hedvig svarar efter kl. 8")
-        assertThat(replyMiddleOfTheDay).isEqualTo("Hedvig svarar inom 10 min")
-        assertThat(replyEarlyEvening).isEqualTo("Hedvig svarar inom 20 min")
-        assertThat(replyLateEvening).isEqualTo("Hedvig svarar inom 30 min")
-        assertThat(replyLateNight).isEqualTo("Hedvig svarar imorgon")
+        assertThat(replyEarlyNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyEarlyMorning).isEqualTo("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY")
+        assertThat(replyMiddleOfTheDay).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyEarlyEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyLateEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyLateNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
     }
 
     @Test
@@ -56,15 +56,15 @@ internal class StatusBuilderImplTest {
         val replyBeforeRetroEnd = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, RETRO_END_MINUTE - 1), DEFAULT_LOCALE)
         val replyAtEndOfRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, RETRO_END_MINUTE), DEFAULT_LOCALE)
         val replyAfterRetro = statusBuilderToTest.getStatusReplyMessage(today.atTime(RETRO_START_HOUR, RETRO_END_MINUTE + 1), DEFAULT_LOCALE)
-        assertThat(replyBeforeRetro).isEqualTo("Hedvig svarar inom 10 min")
-        assertThat(replyAtRetroStart).isEqualTo("Hedvig svarar inom 45 min")
-        assertThat(replyAt5MinIntoRetro).isEqualTo("Hedvig svarar inom 40 min")
-        assertThat(replyAt10MinIntoRetro).isEqualTo("Hedvig svarar inom 35 min")
-        assertThat(replyAt13MinIntoRetro).isEqualTo("Hedvig svarar inom 35 min")
-        assertThat(replyAt15MinIntoRetro).isEqualTo("Hedvig svarar inom 30 min")
-        assertThat(replyBeforeRetroEnd).isEqualTo("Hedvig svarar inom 10 min")
-        assertThat(replyAtEndOfRetro).isEqualTo("Hedvig svarar inom 10 min")
-        assertThat(replyAfterRetro).isEqualTo("Hedvig svarar inom 10 min")
+        assertThat(replyBeforeRetro).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyAtRetroStart).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyAt5MinIntoRetro).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyAt10MinIntoRetro).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyAt13MinIntoRetro).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyAt15MinIntoRetro).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyBeforeRetroEnd).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyAtEndOfRetro).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
+        assertThat(replyAfterRetro).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN")
     }
 
     @Test
@@ -76,12 +76,12 @@ internal class StatusBuilderImplTest {
         val replyEarlyEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(18, 0, 0), DEFAULT_LOCALE)
         val replyLateEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(21, 0, 0), DEFAULT_LOCALE)
         val replyLateNight = statusBuilderToTest.getStatusReplyMessage(today.atTime(23, 0, 0), DEFAULT_LOCALE)
-        assertThat(replyEarlyNight).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyEarlyMorning).isEqualTo("Hedvig svarar efter kl. 10")
-        assertThat(replyMiddleOfTheDay).isEqualTo("Hedvig svarar inom en timme")
-        assertThat(replyEarlyEvening).isEqualTo("Hedvig svarar inom en timme")
-        assertThat(replyLateEvening).isEqualTo("Hedvig svarar inom en timme")
-        assertThat(replyLateNight).isEqualTo("Hedvig svarar imorgon")
+        assertThat(replyEarlyNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyEarlyMorning).isEqualTo("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY")
+        assertThat(replyMiddleOfTheDay).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR")
+        assertThat(replyEarlyEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR")
+        assertThat(replyLateEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR")
+        assertThat(replyLateNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
     }
 
     @Test
@@ -93,12 +93,12 @@ internal class StatusBuilderImplTest {
         val replyEarlyEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(18, 0, 0), DEFAULT_LOCALE)
         val replyLateEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(21, 0, 0), DEFAULT_LOCALE)
         val replyLateNight = statusBuilderToTest.getStatusReplyMessage(today.atTime(23, 0, 0), DEFAULT_LOCALE)
-        assertThat(replyEarlyNight).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyEarlyMorning).isEqualTo("Hedvig svarar efter kl. 10")
-        assertThat(replyMiddleOfTheDay).isEqualTo("Hedvig svarar inom en timme")
-        assertThat(replyEarlyEvening).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyLateEvening).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyLateNight).isEqualTo("Hedvig svarar imorgon")
+        assertThat(replyEarlyNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyEarlyMorning).isEqualTo("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY")
+        assertThat(replyMiddleOfTheDay).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR")
+        assertThat(replyEarlyEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyLateEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyLateNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
     }
 
     @Test
@@ -110,12 +110,12 @@ internal class StatusBuilderImplTest {
         val replyEarlyEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(18, 0, 0), DEFAULT_LOCALE)
         val replyLateEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(21, 0, 0), DEFAULT_LOCALE)
         val replyLateNight = statusBuilderToTest.getStatusReplyMessage(today.atTime(23, 0, 0), DEFAULT_LOCALE)
-        assertThat(replyEarlyNight).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyEarlyMorning).isEqualTo("Hedvig svarar efter kl. 10")
-        assertThat(replyMiddleOfTheDay).isEqualTo("Hedvig svarar inom en timme")
-        assertThat(replyEarlyEvening).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyLateEvening).isEqualTo("Hedvig svarar imorgon")
-        assertThat(replyLateNight).isEqualTo("Hedvig svarar imorgon")
+        assertThat(replyEarlyNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyEarlyMorning).isEqualTo("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY")
+        assertThat(replyMiddleOfTheDay).isEqualTo("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR")
+        assertThat(replyEarlyEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyLateEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
+        assertThat(replyLateNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_TOMORROW")
     }
 
     @Test
@@ -127,11 +127,11 @@ internal class StatusBuilderImplTest {
         val replyEarlyEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(18, 0, 0), DEFAULT_LOCALE)
         val replyLateEvening = statusBuilderToTest.getStatusReplyMessage(today.atTime(21, 0, 0), DEFAULT_LOCALE)
         val replyLateNight = statusBuilderToTest.getStatusReplyMessage(today.atTime(23, 0, 0), DEFAULT_LOCALE)
-        assertThat(replyEarlyNight).isEqualTo("Hedvig återkommer på juldagen")
-        assertThat(replyEarlyMorning).isEqualTo("Hedvig återkommer på juldagen")
-        assertThat(replyMiddleOfTheDay).isEqualTo("Hedvig återkommer på juldagen")
-        assertThat(replyEarlyEvening).isEqualTo("Hedvig återkommer på juldagen")
-        assertThat(replyLateEvening).isEqualTo("Hedvig återkommer på juldagen")
-        assertThat(replyLateNight).isEqualTo("Hedvig återkommer på juldagen")
+        assertThat(replyEarlyNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY")
+        assertThat(replyEarlyMorning).isEqualTo("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY")
+        assertThat(replyMiddleOfTheDay).isEqualTo("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY")
+        assertThat(replyEarlyEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY")
+        assertThat(replyLateEvening).isEqualTo("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY")
+        assertThat(replyLateNight).isEqualTo("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY")
     }
 }
