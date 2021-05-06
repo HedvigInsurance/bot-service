@@ -1496,7 +1496,7 @@ class OnboardingConversationDevi(
                 nxtMsg = if (nrPersons > 6) {
                     "message.uwlimit.householdsize"
                 } else {
-                    handleStudentPolicyPersonLimit(MESSAGE_50K_LIMIT, userContext)
+                    handleStudentPolicyPersonLimit(MESSAGE_FORSAKRINGIDAG, userContext)
                 }
             }
             MESSAGE_KVADRAT, MESSAGE_KVADRAT_ALT -> {
@@ -1567,7 +1567,7 @@ class OnboardingConversationDevi(
                     MESSAGE_STUDENT_25K_LIMIT
 
                 } else {
-                    MESSAGE_50K_LIMIT
+                    MESSAGE_FORSAKRINGIDAG
                 }
             }
             MESSAGE_PHONENUMBER -> {
