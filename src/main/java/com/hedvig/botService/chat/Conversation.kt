@@ -99,9 +99,7 @@ abstract class Conversation(
     log.info("Putting message: " + m.id + " content: " + m.body.text)
     userContext.addToHistory(m)
     addMessageCallbacks[m.id]?.invoke(userContext)
-    if (eventPublisher != null) {
-      eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, m))
-    }
+    eventPublisher.publishEvent(MessageSentEvent(userContext.memberId, m))
   }
 
   fun createMessage(id:String, header: MessageHeader, body: MessageBody){

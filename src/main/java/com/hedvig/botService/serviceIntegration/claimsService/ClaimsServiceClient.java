@@ -13,9 +13,6 @@ public interface ClaimsServiceClient {
   @RequestMapping(value = "/_/claims/startClaimFromAudio", method = RequestMethod.POST)
   void createClaimFromAudio(@RequestBody StartClaimAudioDTO dto);
 
-  @RequestMapping(value = "/_/claims/activeClaims/{userId}", method = RequestMethod.GET)
-  ActiveClaimsDTO getActiveClaims(@PathVariable("userId") String memberId);
-
   @PostMapping("/_/claims/linkFileToClaim")
   ResponseEntity<Void> linkFileFromAppToClaim(@RequestBody ClaimFileFromAppDTO dto);
 }
