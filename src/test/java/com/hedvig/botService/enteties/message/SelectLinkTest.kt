@@ -1,7 +1,7 @@
 package com.hedvig.botService.enteties.message
 
 import com.hedvig.botService.enteties.UserContext
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +14,7 @@ class SelectLinkTest {
     lateinit var userContext: UserContext
 
     @Mock
-    internal var localizationService: LocalizationService? = null
+    internal lateinit var translations: Translations
 
     @Before
     fun setup() {
@@ -26,6 +26,6 @@ class SelectLinkTest {
 
         val link = SelectLink("text", null, null, null, null, false)
 
-        link.render("", userContext, localizationService)
+        link.render("", userContext, translations)
     }
 }

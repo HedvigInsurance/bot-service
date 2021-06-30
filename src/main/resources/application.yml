@@ -53,10 +53,3 @@ hedvig:
 graphcms:
   url: https://api-euwest.graphcms.com/v1/cjmawd9hw036a01cuzmjhplka/master
   project: BotService
-
----
-spring:
-  profiles: test, development
-
-lokalise:
-  useFakes: true

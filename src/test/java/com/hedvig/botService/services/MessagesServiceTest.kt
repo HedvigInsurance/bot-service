@@ -6,7 +6,7 @@ import com.hedvig.botService.enteties.MessageRepository
 import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.UserContextRepository
 import com.hedvig.botService.web.v2.dto.FABAction
-import com.hedvig.resolver.LocaleResolver
+import com.hedvig.libs.translations.LocaleResolver
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

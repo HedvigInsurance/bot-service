@@ -5,7 +5,7 @@ import static com.hedvig.botService.testHelpers.TestData.TOLVANSSON_PHONE_NUMBER
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,7 @@ public class CallMeConversationTest {
   private ConversationFactory conversationFactory;
 
   @Mock
-  private LocalizationService localizationService;
+  private Translations translations;
 
   private CallMeConversation testCallMeConversation;
   private UserContext userContext;
@@ -33,7 +33,7 @@ public class CallMeConversationTest {
   @Before
   public void SetUp() {
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
-    testCallMeConversation = new CallMeConversation(eventPublisher, localizationService, userContext);
+    testCallMeConversation = new CallMeConversation(eventPublisher, translations, userContext);
   }
 
   @Test

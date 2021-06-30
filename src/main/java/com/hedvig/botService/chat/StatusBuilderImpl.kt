@@ -1,6 +1,6 @@
 package com.hedvig.botService.chat
 
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class StatusBuilderImpl(
-    private val localizationService: LocalizationService
+    private val translations: Translations
 ) : StatusBuilder {
     override fun getStatusReplyMessage(now: LocalDateTime, locale: Locale): String {
         val today = LocalDate.from(now)
@@ -84,27 +84,27 @@ class StatusBuilderImpl(
         dayOfWeek == RETRO_DAY && hour == RETRO_START_HOUR && minute <= RETRO_END_MINUTE
 
     private fun getRepliesTomorrow(locale: Locale): String =
-        localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_TOMORROW", locale)
+        translations.get("BOT_SERVICE_STATUS_REPLY_TOMORROW", locale)
             ?: "BOT_SERVICE_STATUS_REPLY_TOMORROW"
 
     private fun getRepliesAfterHour(locale: Locale, hour: Int): String {
-        val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale)
+        val text = translations.get("BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY", locale)
             ?: "BOT_SERVICE_STATUS_REPLY_AFTER_HOUR_OF_DAY"
         return text.replace("{HOUR_OF_DAY}", hour.toString())
     }
 
     private fun getRepliesWithinAnHour(locale: Locale) =
-        localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR", locale)
+        translations.get("BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR", locale)
             ?: "BOT_SERVICE_STATUS_REPLY_WITHIN_AN_HOUR"
 
     private fun getRepliesWithinMinutes(locale: Locale, minutes: Int): String {
-        val text = localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale)
+        val text = translations.get("BOT_SERVICE_STATUS_REPLY_WITHIN_MIN", locale)
             ?: "BOT_SERVICE_STATUS_REPLY_WITHIN_MIN"
         return text.replace("{MINUTES}", minutes.toString())
     }
 
     private fun getRepliesOnChristmasDayReply(locale: Locale) =
-        localizationService.getTranslation("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY", locale)
+        translations.get("BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY", locale)
             ?: "BOT_SERVICE_STATUS_REPLY_CHRISTMAS_DAY"
 
     private fun isChristmasPeriod(date: LocalDate) =

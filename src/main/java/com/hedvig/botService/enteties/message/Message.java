@@ -23,7 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.Data;
 import lombok.ToString;
 
@@ -90,8 +90,8 @@ public class Message {
     header.markedAsRead = true;
   }
 
-  public void render(UserContext userContext, LocalizationService localizationService) {
-    this.body.render(id, isFromUser(), userContext, localizationService);
+  public void render(UserContext userContext, Translations translations) {
+    this.body.render(id, isFromUser(), userContext, translations);
   }
 
   protected Boolean isFromUser() {

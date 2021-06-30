@@ -8,7 +8,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter;
 import com.hedvig.botService.services.triggerService.TriggerService;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ public class ConversationFactoryTest {
   @Mock private Underwriter underwriter;
   @Mock private ProductPricingService productPricingService;
   @Mock private TriggerService triggerService;
-  @Mock private LocalizationService localizationService;
+  @Mock private Translations translations;
   @Mock private PhoneNumberUtil phoneNumberUtil;
 
   public ConversationFactoryTest(Class<?> conversationClass) {
@@ -78,7 +78,7 @@ public class ConversationFactoryTest {
             applicationEventPublisher,
             claimsService,
             statusBuilder,
-            localizationService,
+            translations,
             0,
           "Test",
           "Test",

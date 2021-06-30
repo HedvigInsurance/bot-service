@@ -9,7 +9,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService
 import com.hedvig.botService.serviceIntegration.underwriter.Underwriter
 import com.hedvig.botService.services.triggerService.TriggerService
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
@@ -25,7 +25,7 @@ class ConversationFactoryImpl(
     private val eventPublisher: ApplicationEventPublisher,
     private val claimsService: ClaimsService,
     private val statusBuilder: StatusBuilder,
-    private val localizationService: LocalizationService,
+    private val translations: Translations,
     @Value("\${hedvig.waitlist.length}") private val queuePos: Int?,
     @Value("\${hedvig.appleUser.email}") private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}") private val appleUserPwd: String,
@@ -36,7 +36,7 @@ class ConversationFactoryImpl(
     override fun createConversation(conversationClass: Class<*>, userContext: UserContext): Conversation {
 
         if (conversationClass == CharityConversation::class.java) {
-            return CharityConversation(this, memberService, productPricingService, eventPublisher, localizationService, userContext)
+            return CharityConversation(this, memberService, productPricingService, eventPublisher, translations, userContext)
         }
 
         if (conversationClass == ClaimsConversation::class.java) {
@@ -46,13 +46,13 @@ class ConversationFactoryImpl(
                 productPricingService,
                 this,
                 memberService,
-                localizationService,
+                translations,
                 userContext
             )
         }
 
         if (conversationClass == MainConversation::class.java) {
-            return MainConversation(this, eventPublisher, localizationService, userContext)
+            return MainConversation(this, eventPublisher, translations, userContext)
         }
 
         if (conversationClass == OnboardingConversationDevi::class.java) {
@@ -61,7 +61,7 @@ class ConversationFactoryImpl(
                 underwriter,
                 eventPublisher,
                 this,
-                localizationService,
+                translations,
                 appleUserEmail,
                 appleUserPwd,
                 phoneNumberUtil,
@@ -73,26 +73,26 @@ class ConversationFactoryImpl(
 
         if (conversationClass == HouseOnboardingConversation::class.java) {
             val houseOnboardingConversation = HouseOnboardingConversation(
-                memberService, lookupService, eventPublisher, this, localizationService, userContext
+                memberService, lookupService, eventPublisher, this, translations, userContext
             )
             houseOnboardingConversation.queuePos = queuePos
             return houseOnboardingConversation
         }
 
         if (conversationClass == TrustlyConversation::class.java) {
-            return TrustlyConversation(triggerService, eventPublisher, localizationService, userContext)
+            return TrustlyConversation(triggerService, eventPublisher, translations, userContext)
         }
 
         if (conversationClass == FreeChatConversation::class.java) {
-            return FreeChatConversation(statusBuilder, eventPublisher, productPricingService, localizationService, userContext)
+            return FreeChatConversation(statusBuilder, eventPublisher, productPricingService, translations, userContext)
         }
 
         if (conversationClass == CallMeConversation::class.java) {
-            return CallMeConversation(eventPublisher, localizationService, userContext)
+            return CallMeConversation(eventPublisher, translations, userContext)
         }
 
         return if (conversationClass == MemberSourceConversation::class.java) {
-            MemberSourceConversation(eventPublisher, localizationService, userContext)
+            MemberSourceConversation(eventPublisher, translations, userContext)
         } else throw RuntimeException("Failed to create conversation")
 
     }

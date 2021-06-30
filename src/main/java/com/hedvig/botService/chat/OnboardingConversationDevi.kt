@@ -44,7 +44,7 @@ import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
 import com.hedvig.botService.utils.ConversationUtils
 import com.hedvig.botService.utils.ssnLookupAndStore
 import com.hedvig.botService.utils.storeAndTrimAndAddSSNToChat
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationEventPublisher
@@ -57,14 +57,14 @@ class OnboardingConversationDevi(
     private val underwriter: Underwriter,
     eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
-    localizationService: LocalizationService,
+    translations: Translations,
     @Value("\${hedvig.appleUser.email}")
     private val appleUserEmail: String,
     @Value("\${hedvig.appleUser.password}")
     private val appleUserPassword: String,
     private val phoneNumberUtil: PhoneNumberUtil,
     userContext: UserContext
-) : Conversation(eventPublisher, localizationService, userContext), BankIdChat {
+) : Conversation(eventPublisher, translations, userContext), BankIdChat {
 
     var queuePos: Int? = null
 
