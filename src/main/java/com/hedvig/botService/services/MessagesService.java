@@ -10,14 +10,12 @@ import com.hedvig.botService.enteties.*;
 import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.web.v2.dto.FABAction;
 import com.hedvig.botService.web.v2.dto.MessagesDTO;
-import com.hedvig.resolver.LocaleResolver;
+import com.hedvig.libs.translations.LocaleResolver;
 import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Component
@@ -129,7 +127,7 @@ public class MessagesService {
   }
 
   private void putAcceptLanguage(String acceptLanguage, UserContext uc) {
-    val locale = LocaleResolver.INSTANCE.resolveLocale(acceptLanguage);
+    val locale = LocaleResolver.INSTANCE.resolve(acceptLanguage);
     uc.setLocale(locale);
   }
 }

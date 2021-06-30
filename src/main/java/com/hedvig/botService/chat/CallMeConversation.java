@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -23,8 +23,8 @@ public class CallMeConversation extends Conversation {
 
   private final ApplicationEventPublisher eventPublisher;
 
-  public CallMeConversation(ApplicationEventPublisher eventPublisher, LocalizationService localizationService, UserContext userContext) {
-    super(eventPublisher, localizationService, userContext);
+  public CallMeConversation(ApplicationEventPublisher eventPublisher, Translations translations, UserContext userContext) {
+    super(eventPublisher, translations, userContext);
     this.eventPublisher = eventPublisher;
     createMessage(
       CALLME_CHAT_START,

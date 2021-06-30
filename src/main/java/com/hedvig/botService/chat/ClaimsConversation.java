@@ -2,33 +2,20 @@ package com.hedvig.botService.chat;
 
 import com.google.common.collect.Lists;
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.botService.enteties.message.Message;
-import com.hedvig.botService.enteties.message.MessageBodyAudio;
-import com.hedvig.botService.enteties.message.MessageBodyNumber;
-import com.hedvig.botService.enteties.message.MessageBodyParagraph;
-import com.hedvig.botService.enteties.message.MessageBodySingleSelect;
-import com.hedvig.botService.enteties.message.MessageBodyText;
-import com.hedvig.botService.enteties.message.MessageHeader;
-import com.hedvig.botService.enteties.message.SelectItem;
-import com.hedvig.botService.enteties.message.SelectLink;
-import com.hedvig.botService.enteties.message.SelectOption;
+import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import static com.hedvig.botService.chat.MainConversation.MESSAGE_COMPLETE_CLAIM;
 
@@ -64,9 +51,9 @@ public class ClaimsConversation extends Conversation {
     ProductPricingService productPricingService,
     ConversationFactory conversationFactory,
     MemberService memberService,
-    LocalizationService localizationService,
+    Translations translations,
     UserContext userContext) {
-    super(eventPublisher, localizationService, userContext);
+    super(eventPublisher, translations, userContext);
     this.eventPublisher = eventPublisher;
     this.claimsService = claimsService;
     this.productPricingService = productPricingService;

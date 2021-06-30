@@ -11,7 +11,7 @@ import com.hedvig.botService.enteties.message.Message;
 import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingService;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
 import com.hedvig.botService.services.events.RequestPhoneCallEvent;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +31,7 @@ public class MainConversationTest {
   @Mock ProductPricingService productPricingService;
 
   @Mock
-  LocalizationService localizationService;
+  Translations translations;
 
   @Mock Environment springEnvironment;
 
@@ -41,7 +41,7 @@ public class MainConversationTest {
   @Before
   public void setup() {
     uc = new UserContext(TOLVANSSON_MEMBER_ID);
-    testConversation = new MainConversation(conversationFactory, eventPublisher, localizationService, uc);
+    testConversation = new MainConversation(conversationFactory, eventPublisher, translations, uc);
   }
 
   @Test

@@ -12,7 +12,6 @@ import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdAuthResp
 import com.hedvig.botService.serviceIntegration.memberService.dto.BankIdSignResponse;
 import com.hedvig.botService.services.SessionManager;
 import com.hedvig.botService.web.dto.UpdateUserContextDTO;
-import com.hedvig.resolver.LocaleResolver;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashMap;
@@ -38,6 +37,8 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
+
+import com.hedvig.libs.translations.LocaleResolver;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;

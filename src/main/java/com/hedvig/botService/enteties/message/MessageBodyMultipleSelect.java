@@ -1,7 +1,7 @@
 package com.hedvig.botService.enteties.message;
 
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.ToString;
 
 import javax.persistence.DiscriminatorValue;
@@ -67,9 +67,9 @@ public class MessageBodyMultipleSelect extends MessageBody {
   }
 
   @Override
-  public void render(String id, Boolean fromUser, UserContext userContext, LocalizationService localizationService) {
-    choices.forEach(x -> x.render(id, userContext, localizationService));
+  public void render(String id, Boolean fromUser, UserContext userContext, Translations translations) {
+    choices.forEach(x -> x.render(id, userContext, translations));
 
-    super.render(id, fromUser, userContext, localizationService);
+    super.render(id, fromUser, userContext, translations);
   }
 }

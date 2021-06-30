@@ -22,7 +22,7 @@ import com.hedvig.botService.services.events.RequestObjectInsuranceEvent
 import com.hedvig.botService.services.events.UnderwritingLimitExcededEvent
 import com.hedvig.botService.testHelpers.TestData
 import com.hedvig.botService.testHelpers.TestData.*
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.tuple
 import org.junit.Before
@@ -42,7 +42,7 @@ class OnboardingConversationDeviTest {
     @Mock
     private lateinit var memberService: MemberService
     @Mock
-    private lateinit var localizationService: LocalizationService
+    private lateinit var translations: Translations
     @Mock
     private lateinit var underwriter: Underwriter
     @Mock
@@ -71,7 +71,7 @@ class OnboardingConversationDeviTest {
             underwriter,
             publisher,
             conversationFactory,
-            localizationService,
+            translations,
             "test",
             "test",
             phoneNumberUtil,

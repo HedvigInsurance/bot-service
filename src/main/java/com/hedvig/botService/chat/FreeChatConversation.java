@@ -7,7 +7,7 @@ import com.hedvig.botService.serviceIntegration.productPricing.ProductPricingSer
 import com.hedvig.botService.services.events.FileUploadedEvent;
 import com.hedvig.botService.services.events.QuestionAskedEvent;
 import com.hedvig.botService.utils.DateUtil;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
@@ -34,9 +34,9 @@ public class FreeChatConversation extends Conversation {
     StatusBuilder statusBuilder,
     ApplicationEventPublisher eventPublisher,
     ProductPricingService productPricingService,
-    LocalizationService localizationService,
+    Translations translations,
     UserContext userContext) {
-    super(eventPublisher, localizationService, userContext);
+    super(eventPublisher, translations, userContext);
     this.statusBuilder = statusBuilder;
     this.eventPublisher = eventPublisher;
     this.productPricingService = productPricingService;

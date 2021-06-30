@@ -11,7 +11,7 @@ import com.hedvig.botService.enteties.message.SelectLink
 import com.hedvig.botService.testHelpers.MessageHelpers.createSingleSelectMessage
 import com.hedvig.botService.testHelpers.MessageHelpers.createTextMessage
 import com.hedvig.botService.utils.ConversationUtils
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -34,7 +34,7 @@ class ConversationTest {
     private val eventPublisher: ApplicationEventPublisher? = null
 
     @Mock
-    private val localizationService: LocalizationService? = null
+    private lateinit var translations: Translations
 
     private lateinit var uc: UserContext
 
@@ -76,7 +76,7 @@ class ConversationTest {
         val linkText = "Länk text"
         val linkValue = "selected.value"
 
-        `when`(localizationService!!.getTranslation(Mockito.anyString(), anyObject())).thenReturn(linkText)
+        `when`(translations.get(Mockito.anyString(), anyObject())).thenReturn(linkText)
 
         val m = createSingleSelectMessage(
             "En förklarande text",
@@ -325,7 +325,7 @@ class ConversationTest {
     }
 
     fun makeConversation(constructor: Conversation.(Unit) -> Unit): Conversation {
-        return object : Conversation(eventPublisher!!, localizationService!!, uc) {
+        return object : Conversation(eventPublisher!!, translations!!, uc) {
             override fun getSelectItemsForAnswer(): List<SelectItem> {
                 return listOf()
             }

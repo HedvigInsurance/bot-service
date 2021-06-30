@@ -1,7 +1,7 @@
 package com.hedvig.botService.enteties.message;
 
 import com.hedvig.botService.enteties.UserContext;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.ToString;
 
 @ToString
@@ -23,8 +23,8 @@ public class SelectItemTrustly extends SelectItem {
   public SelectItemTrustly() {}
 
   @Override
-  public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    super.render(id, userContext, localizationService);
+  public void render(String id, UserContext userContext, Translations translations) {
+    super.render(id, userContext, translations);
 
     this.id = userContext.replaceWithContext(UserContext.TRUSTLY_TRIGGER_ID);
   }

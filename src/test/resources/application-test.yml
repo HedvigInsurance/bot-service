@@ -10,6 +10,8 @@ hedvig:
   slack:
     url: ""
     underwriting.url: ""
+  translations:
+    fakes: true
 
 cloud:
   aws:

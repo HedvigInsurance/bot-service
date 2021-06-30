@@ -71,7 +71,7 @@ import com.hedvig.botService.serviceIntegration.productPricing.dto.ExtraBuilding
 import com.hedvig.botService.services.events.HouseUnderwritingLimitCallMeExceedsEvent
 import com.hedvig.botService.utils.ConversationUtils.isYoungerThan18
 import com.hedvig.botService.utils.MessageUtil
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
 
@@ -81,9 +81,9 @@ constructor(
     private val lookupService: LookupService,
     override var eventPublisher: ApplicationEventPublisher,
     private val conversationFactory: ConversationFactory,
-    localizationService: LocalizationService,
+    translations: Translations,
     userContext: UserContext
-) : Conversation(eventPublisher, localizationService, userContext) {
+) : Conversation(eventPublisher, translations, userContext) {
 
     var queuePos: Int? = null
 
@@ -561,7 +561,7 @@ constructor(
                     ExtraBuildingType.GARAGE,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
                 ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
             }
@@ -570,7 +570,7 @@ constructor(
                     ExtraBuildingType.FRIGGEBOD,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
                 ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
             }
@@ -579,7 +579,7 @@ constructor(
                     ExtraBuildingType.ATTEFALL,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
                 ASK_SQUARE_METERS_EXTRA_BUILDING.id + buildingNumber
             }
@@ -604,7 +604,7 @@ constructor(
                     ExtraBuildingType.GUESTHOUSE,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
             }
             SELECT_EXTRA_BUILDING_CARPORT.value -> {
@@ -612,7 +612,7 @@ constructor(
                     ExtraBuildingType.CARPORT,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
             }
             SELECT_EXTRA_BUILDING_SAUNA.value -> {
@@ -620,7 +620,7 @@ constructor(
                     ExtraBuildingType.SAUNA,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
             }
             SELECT_EXTRA_BUILDING_BOATHOUSE.value -> {
@@ -628,7 +628,7 @@ constructor(
                     ExtraBuildingType.BOATHOUSE,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
             }
             else -> {
@@ -636,7 +636,7 @@ constructor(
                     ExtraBuildingType.OTHER,
                     buildingNumber,
                     this.userContext.locale,
-                    localizationService
+                    translations
                 )
             }
         }

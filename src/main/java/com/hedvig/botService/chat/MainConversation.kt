@@ -6,7 +6,7 @@ import com.hedvig.botService.enteties.UserContext
 import com.hedvig.botService.enteties.message.*
 import com.hedvig.botService.services.events.QuestionAskedEvent
 import com.hedvig.botService.services.events.RequestPhoneCallEvent
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.joda.time.LocalDate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,9 +16,9 @@ class MainConversation @Autowired
 constructor(
     private val conversationFactory: ConversationFactory,
     eventPublisher: ApplicationEventPublisher,
-    localizationService: LocalizationService,
+    translations: Translations,
     userContext: UserContext
-) : Conversation(eventPublisher, localizationService, userContext) {
+) : Conversation(eventPublisher, translations, userContext) {
 
     init {
 

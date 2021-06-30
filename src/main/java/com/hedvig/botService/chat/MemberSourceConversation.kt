@@ -7,14 +7,14 @@ import com.hedvig.botService.enteties.message.MessageBodyText
 import com.hedvig.botService.enteties.message.SelectItem
 import com.hedvig.botService.enteties.message.SelectLink
 import com.hedvig.botService.enteties.message.SelectOption
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.springframework.context.ApplicationEventPublisher
 
 class MemberSourceConversation(
     eventPublisher: ApplicationEventPublisher,
-    localizationService: LocalizationService,
+    translations: Translations,
     userContext: UserContext
-) : Conversation(eventPublisher, localizationService, userContext) {
+) : Conversation(eventPublisher, translations, userContext) {
     override fun getSelectItemsForAnswer(): List<SelectItem> {
         return listOf()
     }

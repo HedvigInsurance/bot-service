@@ -27,7 +27,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService
 import com.hedvig.botService.serviceIntegration.memberService.dto.Address
 import com.hedvig.botService.serviceIntegration.memberService.dto.LookupResponse
 import com.hedvig.botService.testHelpers.TestData
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -47,7 +47,7 @@ class HouseOnboardingConversationTest {
     @Mock
     private lateinit var lookupService: LookupService
     @Mock
-    private lateinit var localizationService: LocalizationService
+    private lateinit var translations: Translations
     @Mock
     private lateinit var publisher: ApplicationEventPublisher
     @Mock
@@ -63,7 +63,7 @@ class HouseOnboardingConversationTest {
         userContext = UserContext(TestData.TOLVANSSON_MEMBER_ID)
 
         testConversation = HouseOnboardingConversation(
-            memberService, lookupService, publisher, conversationFactory, localizationService, userContext
+            memberService, lookupService, publisher, conversationFactory, translations, userContext
         )
     }
 

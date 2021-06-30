@@ -2,7 +2,7 @@ package com.hedvig.botService.chat
 
 import com.hedvig.botService.chat.StatusBuilderImpl.Companion.RETRO_END_MINUTE
 import com.hedvig.botService.chat.StatusBuilderImpl.Companion.RETRO_START_HOUR
-import com.hedvig.common.localization.LocalizationService
+import com.hedvig.libs.translations.Translations
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -16,15 +16,15 @@ internal class StatusBuilderImplTest {
     private val DEFAULT_LOCALE = Locale("sv-SE")
 
     @MockK
-    private lateinit var localizationService: LocalizationService
+    private lateinit var translations: Translations
 
     private lateinit var statusBuilderToTest: StatusBuilderImpl
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        every { localizationService.getTranslation(any(), any()) } returns null
-        statusBuilderToTest = StatusBuilderImpl(localizationService)
+        every { translations.get(any(), any()) } returns null
+        statusBuilderToTest = StatusBuilderImpl(translations)
     }
 
     @Test

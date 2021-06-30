@@ -17,7 +17,7 @@ import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.services.triggerService.TriggerService;
 import java.util.UUID;
 
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +36,7 @@ public class TrustlyConversationTest {
   private TrustlyConversation testConversation;
 
   @Mock
-  private LocalizationService localizationService;
+  private Translations translations;
 
 
   @Mock
@@ -45,7 +45,7 @@ public class TrustlyConversationTest {
   @Before
   public void setup() {
     userContext = new UserContext(TOLVANSSON_MEMBER_ID);
-    testConversation = new TrustlyConversation(triggerService, applicationEventPublisher, localizationService, userContext);
+    testConversation = new TrustlyConversation(triggerService, applicationEventPublisher, translations, userContext);
   }
 
   public void addTolvansonToUserContext() {

@@ -5,9 +5,8 @@ import com.hedvig.botService.enteties.DirectDebitMandateTrigger;
 import com.hedvig.botService.enteties.UserContext;
 import com.hedvig.botService.enteties.message.*;
 import com.hedvig.botService.enteties.userContextHelpers.UserData;
-import com.hedvig.botService.serviceIntegration.memberService.MemberService;
 import com.hedvig.botService.services.triggerService.TriggerService;
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.val;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -26,8 +25,8 @@ public class TrustlyConversation extends Conversation {
   public static final String FORCED_START = "forced.start";
   private final TriggerService triggerService;
 
-  public TrustlyConversation(TriggerService triggerService, ApplicationEventPublisher eventPublisher, LocalizationService localizationService, UserContext userContext) {
-    super(eventPublisher, localizationService, userContext);
+  public TrustlyConversation(TriggerService triggerService, ApplicationEventPublisher eventPublisher, Translations translations, UserContext userContext) {
+    super(eventPublisher, translations, userContext);
     this.triggerService = triggerService;
 
     createChatMessage(

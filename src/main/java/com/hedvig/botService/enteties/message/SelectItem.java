@@ -6,7 +6,7 @@ import com.hedvig.botService.enteties.UserContext;
 
 import java.io.Serializable;
 
-import com.hedvig.common.localization.LocalizationService;
+import com.hedvig.libs.translations.Translations;
 import lombok.ToString;
 
 /*
@@ -38,8 +38,8 @@ public class SelectItem implements Serializable {
     this.value = value;
   }
 
-  public void render(String id, UserContext userContext, LocalizationService localizationService) {
-    String localizedText = localizationService.getTranslation(value + SELECT_POST_FIX, userContext.getLocale());
+  public void render(String id, UserContext userContext, Translations translations) {
+    String localizedText = translations.get(value + SELECT_POST_FIX, userContext.getLocale());
     if (localizedText != null) {
       text = localizedText;
     }
