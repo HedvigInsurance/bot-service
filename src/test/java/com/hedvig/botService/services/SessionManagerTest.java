@@ -36,8 +36,7 @@ import static com.hedvig.botService.enteties.message.MessageHeader.HEDVIG_USER_I
 import static com.hedvig.botService.services.TriggerServiceTest.TOLVANSSON_MEMBERID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SessionManagerTest {
@@ -103,6 +102,7 @@ public class SessionManagerTest {
         .thenReturn(Lists.newArrayList(SELECT_LINK));
     when(mockConversation.getUserContext())
         .thenReturn(tolvanssonUserContext);
+    doNothing().when(mockConversation).addMessage(any());
 
     AddMessageRequestDTO requestDTO = new AddMessageRequestDTO(TOLVANSSON_MEMBERID, MESSAGE, false);
 

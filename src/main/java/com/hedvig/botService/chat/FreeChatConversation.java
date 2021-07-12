@@ -60,7 +60,6 @@ public class FreeChatConversation extends Conversation {
       FREE_CHAT_FROM_CLAIM,
       MessageHeader.createRichTextHeader(),
       new MessageBodyText("Självklart, vad kan jag hjälpa dig med?"));
-
   }
 
   @Override
@@ -114,7 +113,7 @@ public class FreeChatConversation extends Conversation {
     msg.globalId = null;
     msg.body.id = null;
     msg.id = FREE_CHAT_FROM_BO;
-
+    addMessage(msg);
     return msg;
   }
 

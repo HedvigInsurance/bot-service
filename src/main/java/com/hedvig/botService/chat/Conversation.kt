@@ -54,6 +54,10 @@ abstract class Conversation(
     return m
   }
 
+  fun addMessage(message: Message) {
+    messageList[message.id] = message
+  }
+
   protected fun addRelayToChatMessage(s1: String, s2: String) {
     val i = findLastChatMessageId(s1)
 
@@ -323,7 +327,7 @@ abstract class Conversation(
     msg.header.messageId = null
     msg.body.id = null
     msg.id = id
-
+    addMessage(msg)
     return msg
   }
 
