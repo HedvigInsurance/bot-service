@@ -58,7 +58,5 @@ internal constructor(
 
     }
 
-    companion object {
-        private val logger = LoggerFactory.getLogger(SlackService::class.java)
-    }
+    private val logger = LoggerFactory.getLogger(javaClass)
 }

@@ -53,3 +53,13 @@ hedvig:
 graphcms:
   url: https://api-euwest.graphcms.com/v1/cjmawd9hw036a01cuzmjhplka/master
   project: BotService
+
+---
+
+spring:
+  profiles: production
+
+hedvig:
+  notifications:
+    enabled: true
+    slackUrl: ${HEDVIG_NOTIFICATIONS_SLACK_URL}
