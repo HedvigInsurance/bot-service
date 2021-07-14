@@ -42,7 +42,6 @@ public class NotificationService {
 
     String message = String.format("Member %s(%s %s) would like to be contacted on number %s",
       evt.getMemberId(), evt.getFirstName(), evt.getLastName(), evt.getPhoneNumber());
-    sendSlackMessage(message, "#messages-to-hedvig");
     sendSlackMessage(message, "#callme");
   }
 

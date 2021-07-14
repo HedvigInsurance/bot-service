@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 
 import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.slack.SlackClient;
-import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
 import com.hedvig.botService.services.events.ClaimAudioReceivedEvent;
 import com.hedvig.botService.services.events.ClaimCallMeEvent;
 import com.hedvig.botService.services.events.FileUploadedEvent;
@@ -39,14 +38,12 @@ public class NotificationServiceTest {
   @Mock
   private SlackClient slackClient;
   @Mock
-  private TicketService ticketService;
-  @Mock
   private ClaimsService claimsService;
   private NotificationService notificationService;
 
   @Before
   public void setup() {
-    notificationService = new NotificationService(slackClient, ticketService, claimsService);
+    notificationService = new NotificationService(slackClient, claimsService);
   }
 
   @Test
@@ -60,7 +57,9 @@ public class NotificationServiceTest {
         TOLVANSSON_LASTNAME);
     notificationService.on(event);
 
-    verify(slackClient, times(2)).post(any());
+    then(slackClient)
+      .should()
+      .post(any());
   }
 
   @Test
