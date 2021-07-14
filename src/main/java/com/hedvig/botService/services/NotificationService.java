@@ -40,7 +40,7 @@ public class NotificationService {
   public void on(RequestPhoneCallEvent evt) {
     ticketService.createCallMeTicket(evt.getMemberId(), evt.getPhoneNumber(), evt.getFirstName(), evt.getLastName());
 
-    String message = String.format("Medlem %s(%s %s) vill bli kontaktad på %s",
+    String message = String.format("Member %s(%s %s) would like to be contacted on number %s",
       evt.getMemberId(), evt.getFirstName(), evt.getLastName(), evt.getPhoneNumber());
     sendSlackMessage(message, "#messages-to-hedvig");
     sendSlackMessage(message, "#callme");
@@ -49,35 +49,35 @@ public class NotificationService {
   @EventListener
   public void on(UnderwritingLimitExcededEvent event) {
     String message = String.format(
-      "Underwriting guideline för onboarding-medlem: %s, ring upp medlem på nummer: %s",
+      "Underwriting guideline for onboarding member: %s, call member on number: %s",
       event.getMemberId(), event.getPhoneNumber());
     sendSlackMessage(message, "#signups-and-stuff");
   }
 
   @EventListener
   public void on(OnboardingQuestionAskedEvent event) {
-    String message = String.format("Ny fråga från onboarding-medlem: %s, \"%s\"",
+    String message = String.format("New question from onboarding member: %s, \"%s\"",
       event.getMemberId(), event.getQuestion());
     sendSlackMessage(message, "#messages-to-hedvig");
   }
 
   @EventListener
   public void on(OnboardingFileUploadedEvent e) {
-    String message = String.format(
-      "A new file during  is uploaded from onboarding-member %s with type %s. The file key is %s",
-      e.getMemberId(), e.getMimeType(), e.getKey());
+    String message =
+      String.format("A new file is uploaded from member %s with type %s. The file key is %s",
+        e.getMemberId(), e.getMimeType(), e.getKey());
     sendSlackMessage(message, "#messages-to-hedvig");
   }
 
   @EventListener
   public void on(ClaimAudioReceivedEvent event) {
-    String message = String.format("Ny skadeanmälan ifrån medlem: %s", event.getMemberId());
+    String message = String.format("New claim from member: %s", event.getMemberId());
     sendSlackMessage(message, "#claims-and-such");
   }
 
   @EventListener
   public void on(QuestionAskedEvent event) {
-    String message = String.format("Ny fråga från medlem: %s, \"%s\".", event.getMemberId(),
+    String message = String.format("New question from member: %s, \"%s\".", event.getMemberId(),
       event.getQuestion());
     sendSlackMessage(message, "#messages-to-hedvig");
   }
@@ -106,7 +106,7 @@ public class NotificationService {
   @EventListener
   public void on(RequestObjectInsuranceEvent event) {
     String message = String.format(
-      "Ny medlem signerad! Medlemmen har id %s och har någon pryl som är dyrare än 50':-. Produkttypen är %s",
+      "New member signed! Member has ID %s and has an item more expensive than 50':-. Product type = %s",
       event.getMemberId(), event.getProductType());
     sendSlackMessage(message, "#signups-and-stuff");
   }
@@ -114,14 +114,14 @@ public class NotificationService {
   @EventListener
   public void on(RequestStudentObjectInsuranceEvent event) {
     val message = String.format(
-      "Ny studentmedlem signerad! Medlemmen har id %s och har någon pryl som är dyrare än 25':-. Produkttypen är %s",
+      "New student member signed! Member has ID %s and has an item more expensive than 25':-. Product type = %s",
       event.getMemberId(), event.getProductType());
     sendSlackMessage(message, "#signups-and-stuff");
   }
 
   @EventListener
   public void on(MemberSignedEvent event) {
-    val message = String.format("Ny medlem signerad! Medlemmen har id %s och produkttypen är %s",
+    val message = String.format("Ny medlem signerad! Medlemmen har id %s, product type = %s",
       event.getMemberId(), event.getProductType());
     sendSlackMessage(message, "#signups-and-stuff");
   }
@@ -131,7 +131,7 @@ public class NotificationService {
     ticketService.createCallMeTicket(event.getMemberId(), event.getPhoneNumber(), event.getFirstName(), event.getFamilyName());
 
     String message = String.format(
-      "Medlem %s(%s %s) med %s försäkring har fått en skada och vill bli uppringd på %s",
+      "Member %s(%s %s) with %s insurance would like to report a claim, and be called on number %s",
       event.getMemberId(), event.getFirstName(), event.getFamilyName(),
       event.isInsuranceActive() ? "AKTIV" : "INAKTIV", event.getPhoneNumber());
     sendSlackMessage(message, "#claims-and-such");
