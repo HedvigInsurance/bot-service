@@ -4,7 +4,6 @@ import com.hedvig.botService.serviceIntegration.claimsService.ClaimsService;
 import com.hedvig.botService.serviceIntegration.claimsService.dto.ClaimFileFromAppDTO;
 import com.hedvig.botService.serviceIntegration.slack.SlackClient;
 import com.hedvig.botService.serviceIntegration.slack.SlackMessage;
-import com.hedvig.botService.serviceIntegration.ticketService.TicketService;
 import com.hedvig.botService.services.events.*;
 import io.sentry.Sentry;
 import lombok.val;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 public class NotificationService {
 
   private final SlackClient slackClient;
-  private final TicketService ticketService;
   private final ClaimsService claimsService;
 
   private final Logger log = LoggerFactory.getLogger(getClass());
@@ -28,17 +26,14 @@ public class NotificationService {
   @Autowired
   public NotificationService(
     SlackClient slackClient,
-    TicketService ticketService,
     ClaimsService claimsService
   ) {
     this.slackClient = slackClient;
-    this.ticketService = ticketService;
     this.claimsService = claimsService;
   }
 
   @EventListener
   public void on(RequestPhoneCallEvent evt) {
-    ticketService.createCallMeTicket(evt.getMemberId(), evt.getPhoneNumber(), evt.getFirstName(), evt.getLastName());
 
     String message = String.format("Member %s(%s %s) would like to be contacted on number %s",
       evt.getMemberId(), evt.getFirstName(), evt.getLastName(), evt.getPhoneNumber());
@@ -127,8 +122,6 @@ public class NotificationService {
 
   @EventListener
   public void on(ClaimCallMeEvent event) {
-    ticketService.createCallMeTicket(event.getMemberId(), event.getPhoneNumber(), event.getFirstName(), event.getFamilyName());
-
     String message = String.format(
       "Member %s(%s %s) with %s insurance would like to report a claim, and be called on number %s",
       event.getMemberId(), event.getFirstName(), event.getFamilyName(),
