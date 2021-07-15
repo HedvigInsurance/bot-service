@@ -115,7 +115,7 @@ public class NotificationService {
 
   @EventListener
   public void on(MemberSignedEvent event) {
-    val message = String.format("Ny medlem signerad! Medlemmen har id %s, product type = %s",
+    val message = String.format("New member signed with ID %s, product type = %s",
       event.getMemberId(), event.getProductType());
     sendSlackMessage(message, "#signups-and-stuff");
   }
