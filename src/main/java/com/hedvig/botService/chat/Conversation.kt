@@ -50,7 +50,24 @@ abstract class Conversation(
 
   fun getMessage(key: String): Message? {
     val m = messageList[key]
-    if (m == null) log.error("Message not found with id: $key")
+    if (m == null) {
+      // These happen literally all the time, and I (Fredrik TB) made an attempt at
+      // making them disappear by calling addMessage(Message) from createBackOfficeMessage(...)
+      // which should end up here. But I think what differs that code path (createBackOfficeMessage)
+      // is that all/most the other ones that end up in `messageList` are added in constructors of
+      // subclasses of Conversation (see subclass CallMeConversation for instance),
+      // whereas createBackOfficeMessage is called from some endpoint. Therefore it probably is not automatically
+      // present in the messageList. But I don't really know how all of this fits together.
+      //
+      // But since this happens aaaall the time, it cannot possible be a real error. I guess someone
+      // who knows more about how bot-service works should look into actually handling these in a way
+      // that makes more sense.
+      if (key == "free.chat.from.bo" || key == "message.main.start.free.text.chat") {
+        log.info("Message not found with id: $key")
+      } else {
+        log.error("Message not found with id: $key")
+      }
+    }
     return m
   }
 
